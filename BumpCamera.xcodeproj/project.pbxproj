@@ -12,6 +12,9 @@
 		171E542C21E44E170045ED77 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 171E542A21E44E170045ED77 /* Main.storyboard */; };
 		171E542E21E44E180045ED77 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 171E542D21E44E180045ED77 /* Assets.xcassets */; };
 		171E543121E44E180045ED77 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 171E542F21E44E180045ED77 /* LaunchScreen.storyboard */; };
+		1739EACC21E7407600407556 /* ImagePreviewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1739EACB21E7407600407556 /* ImagePreviewController.swift */; };
+		1739EACE21E7411400407556 /* ImageViewProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1739EACD21E7411400407556 /* ImageViewProtocol.swift */; };
+		1739EAD021E7563300407556 /* ImageFilterer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1739EACF21E7563300407556 /* ImageFilterer.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -22,6 +25,9 @@
 		171E542D21E44E180045ED77 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		171E543021E44E180045ED77 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		171E543221E44E180045ED77 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		1739EACB21E7407600407556 /* ImagePreviewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePreviewController.swift; sourceTree = "<group>"; };
+		1739EACD21E7411400407556 /* ImageViewProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageViewProtocol.swift; sourceTree = "<group>"; };
+		1739EACF21E7563300407556 /* ImageFilterer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageFilterer.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -57,9 +63,12 @@
 				171E542621E44E170045ED77 /* AppDelegate.swift */,
 				171E542821E44E170045ED77 /* MainUIViewer.swift */,
 				171E542A21E44E170045ED77 /* Main.storyboard */,
+				1739EACF21E7563300407556 /* ImageFilterer.swift */,
 				171E542D21E44E180045ED77 /* Assets.xcassets */,
 				171E542F21E44E180045ED77 /* LaunchScreen.storyboard */,
 				171E543221E44E180045ED77 /* Info.plist */,
+				1739EACB21E7407600407556 /* ImagePreviewController.swift */,
+				1739EACD21E7411400407556 /* ImageViewProtocol.swift */,
 			);
 			path = BumpCamera;
 			sourceTree = "<group>";
@@ -137,6 +146,9 @@
 			files = (
 				171E542921E44E170045ED77 /* MainUIViewer.swift in Sources */,
 				171E542721E44E170045ED77 /* AppDelegate.swift in Sources */,
+				1739EACE21E7411400407556 /* ImageViewProtocol.swift in Sources */,
+				1739EAD021E7563300407556 /* ImageFilterer.swift in Sources */,
+				1739EACC21E7407600407556 /* ImagePreviewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
