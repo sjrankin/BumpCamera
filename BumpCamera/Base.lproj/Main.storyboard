@@ -35,13 +35,13 @@
                                         </connections>
                                     </barButtonItem>
                                     <barButtonItem style="plain" systemItem="flexibleSpace" id="GTh-2i-8Q3"/>
-                                    <barButtonItem title="Save" id="If5-uR-elY">
+                                    <barButtonItem systemItem="camera" id="If5-uR-elY">
                                         <connections>
                                             <action selector="HandleSaveButtonPressed:" destination="BYZ-38-t0r" id="w0z-Lv-XX3"/>
                                         </connections>
                                     </barButtonItem>
                                     <barButtonItem width="42" style="plain" systemItem="fixedSpace" id="0kb-3I-kl3"/>
-                                    <barButtonItem title="Mode" id="u5k-xP-67e">
+                                    <barButtonItem title="Filters" id="u5k-xP-67e">
                                         <connections>
                                             <action selector="HandleModeButtonPressed:" destination="BYZ-38-t0r" id="I2Z-ld-7EI"/>
                                         </connections>
@@ -68,11 +68,65 @@
                         <outlet property="ModeButton" destination="u5k-xP-67e" id="TVj-bI-uLR"/>
                         <outlet property="OutputView" destination="gXS-fM-9Dk" id="64D-qV-gpP"/>
                         <outlet property="SaveButton" destination="If5-uR-elY" id="vR8-WF-zDN"/>
+                        <segue destination="7iF-u5-Oe8" kind="show" identifier="ToFilteredView" id="dWm-FJ-AsX"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="130.43478260869566" y="132.06521739130434"/>
+        </scene>
+        <!--Image Preview Controller-->
+        <scene sceneID="fIG-PJ-MkF">
+            <objects>
+                <viewController id="7iF-u5-Oe8" customClass="ImagePreviewController" customModule="BumpCamera" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="rIU-pg-s3n">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" preservesSuperviewLayoutMargins="YES" translatesAutoresizingMaskIntoConstraints="NO" id="stl-Hn-9x6">
+                                <rect key="frame" x="0.0" y="28" width="414" height="664"/>
+                                <viewLayoutGuide key="safeArea" id="G9w-eq-RXy"/>
+                            </imageView>
+                            <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="UDp-s1-F6N">
+                                <rect key="frame" x="0.0" y="692" width="414" height="44"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="44" id="JsT-oK-Xgp"/>
+                                </constraints>
+                                <items>
+                                    <barButtonItem title="Save" id="22y-cQ-OYT">
+                                        <connections>
+                                            <action selector="HandleSaveButton:" destination="7iF-u5-Oe8" id="jHO-wa-kEe"/>
+                                        </connections>
+                                    </barButtonItem>
+                                    <barButtonItem style="plain" systemItem="flexibleSpace" id="wqm-yF-Bc9"/>
+                                    <barButtonItem title="Cancel" id="l16-cb-pnC">
+                                        <connections>
+                                            <action selector="HandleCancelButton:" destination="7iF-u5-Oe8" id="AAo-bx-F6H"/>
+                                        </connections>
+                                    </barButtonItem>
+                                </items>
+                            </toolbar>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstItem="UDp-s1-F6N" firstAttribute="bottom" secondItem="97n-Mw-QmK" secondAttribute="bottom" id="3tN-EJ-3aL"/>
+                            <constraint firstAttribute="trailing" secondItem="UDp-s1-F6N" secondAttribute="trailing" id="J3R-V4-7ly"/>
+                            <constraint firstItem="UDp-s1-F6N" firstAttribute="top" secondItem="stl-Hn-9x6" secondAttribute="bottom" id="NMg-JV-EKx"/>
+                            <constraint firstItem="UDp-s1-F6N" firstAttribute="trailing" secondItem="stl-Hn-9x6" secondAttribute="trailing" id="PrX-PJ-Zb4"/>
+                            <constraint firstItem="stl-Hn-9x6" firstAttribute="top" secondItem="97n-Mw-QmK" secondAttribute="top" constant="8" id="ejV-z5-YaT"/>
+                            <constraint firstItem="UDp-s1-F6N" firstAttribute="leading" secondItem="stl-Hn-9x6" secondAttribute="leading" id="kGN-oR-p8k"/>
+                            <constraint firstItem="UDp-s1-F6N" firstAttribute="leading" secondItem="rIU-pg-s3n" secondAttribute="leading" id="nMX-qP-tfF"/>
+                            <constraint firstItem="UDp-s1-F6N" firstAttribute="top" secondItem="stl-Hn-9x6" secondAttribute="bottom" id="np9-G8-k60"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="97n-Mw-QmK"/>
+                    </view>
+                    <connections>
+                        <outlet property="PreviewImageOut" destination="stl-Hn-9x6" id="9Sl-m9-6U1"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="9XL-S6-ao9" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1066.6666666666667" y="131.25"/>
         </scene>
     </scenes>
 </document>
