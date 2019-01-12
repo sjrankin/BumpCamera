@@ -70,6 +70,43 @@ class ImageFilterer
         return nil
     }
     
+    public static func HatchedScreen(_ Source: UIImage, Center: CGPoint? = nil, Angle: Double? = nil, Width: Double? = nil, Merged: Bool = false) -> UIImage?
+    {
+        let Hatched = CIFilter(name: "CIHatchedScreen")
+        Hatched?.setDefaults()
+        if let Center = Center
+        {
+            //Reverse x and y because for some reason, iOS rotates images, making a real mess of things.
+            let CV = CIVector(x: Center.y, y: Center.x)
+            Hatched?.setValue(CV, forKey: kCIInputCenterKey)
+        }
+        if let Width = Width
+        {
+            Hatched?.setValue(Width, forKey: kCIInputWidthKey)
+        }
+        if let Angle = Angle
+        {
+            Hatched?.setValue(Angle, forKey: kCIInputAngleKey)
+        }
+        if let CImage = CIImage(image: Source)
+        {
+            Hatched?.setValue(CImage, forKey: kCIInputImageKey)
+            if let Result = Hatched?.value(forKey: kCIOutputImageKey) as? CIImage
+            {
+                let Rotated = RotateImage(Result)
+                var Final = UIImage(ciImage: Rotated)
+                if Merged
+                {
+                    var ISource = CIImage(image: Source)
+                    ISource = RotateImage(ISource!)
+                    Final = Merge(Rotated, ISource!)
+                }
+                return Final
+            }
+        }
+        return nil
+    }
+    
     /// Merge the two passed images into one image. The operation used for merging the images is SourceAtop. Working on the assumption
     /// the Top image is black and white, the colors of the Top image are inverted. Then, the Top image is run through the MaskToAlpha
     /// filter (which changes white to transparent), then re-inverted (which leaves the transparent areas alone). The result is merged
@@ -158,7 +195,8 @@ class ImageFilterer
         return nil
     }
     
-    public static func TVLines(_ Source: UIImage, Center: CGPoint? = nil, Angle: Double? = nil, Width: Double? = nil, Merged: Bool = false) -> UIImage?
+    public static func TVLines(_ Source: UIImage, Center: CGPoint? = nil, Angle: Double? = nil, Width: Double? = nil,
+                               Merged: Bool = false, AdjustAngleIfInLandscape: Bool = true) -> UIImage?
     {
         let TV = CIFilter(name: "CILineScreen")
         TV?.setDefaults()
@@ -168,10 +206,19 @@ class ImageFilterer
             let CV = CIVector(x: Center.y, y: Center.x)
             TV?.setValue(CV, forKey: kCIInputCenterKey)
         }
+        var FinalAngle = 0.0
         if let Angle = Angle
         {
-            TV?.setValue(Angle, forKey: kCIInputAngleKey)
+            FinalAngle = Angle
         }
+        if AdjustAngleIfInLandscape
+        {
+        if UIDevice.current.orientation == .landscapeLeft || UIDevice.current.orientation == .landscapeRight
+        {
+            FinalAngle = FinalAngle + 90.0
+            }
+        }
+            TV?.setValue(FinalAngle, forKey: kCIInputAngleKey)
         if let Width = Width
         {
             TV?.setValue(Width, forKey: kCIInputWidthKey)
