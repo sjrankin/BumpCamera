@@ -19,7 +19,7 @@ class MainUIViewer: UIViewController, AVCapturePhotoCaptureDelegate
     override func viewDidLoad()
     {
         super.viewDidLoad()
-        ApplyButton.title = "Still"
+        //ApplyButton.title = "Still"
         setNeedsStatusBarAppearanceUpdate()
     }
     
@@ -70,21 +70,11 @@ class MainUIViewer: UIViewController, AVCapturePhotoCaptureDelegate
     var CaptureSession: AVCaptureSession? = nil
     var VideoPreviewLayer: AVCaptureVideoPreviewLayer? = nil
     
-    @IBAction func HandleApplyButtonPressed(_ sender: Any)
+    @IBAction func HandleCameraSwitchButtonPressed(_ sender: Any)
     {
-        if InStillMode
-        {
-            InStillMode = false
-            ApplyButton.title = "Movie"
-        }
-        else
-        {
-            InStillMode = true
-            ApplyButton.title = "Still"
-        }
     }
     
-    @IBOutlet weak var ApplyButton: UIBarButtonItem!
+    @IBOutlet weak var CameraSwitchButton: UIBarButtonItem!
     
     var CapturePhotoOutput: AVCapturePhotoOutput?
     
@@ -289,6 +279,10 @@ class MainUIViewer: UIViewController, AVCapturePhotoCaptureDelegate
         Filters.addAction(Filter5)
         let Cancel = UIAlertAction(title: "Cancel", style: .default, handler: nil)
         Filters.addAction(Cancel)
+        if let PopOver = Filters.popoverPresentationController
+        {
+            PopOver.barButtonItem = ModeButton
+        }
         present(Filters, animated: true)
     }
     

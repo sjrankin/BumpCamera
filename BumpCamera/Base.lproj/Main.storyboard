@@ -29,26 +29,27 @@
                                 </constraints>
                                 <viewLayoutGuide key="safeArea" id="sVh-Gh-940"/>
                                 <items>
-                                    <barButtonItem title="Apply" id="FPN-k2-0O9">
+                                    <barButtonItem image="SwapRawIcon" id="FPN-k2-0O9">
                                         <connections>
-                                            <action selector="HandleApplyButtonPressed:" destination="BYZ-38-t0r" id="zNx-gM-dlQ"/>
+                                            <action selector="HandleCameraSwitchButtonPressed:" destination="BYZ-38-t0r" id="hQ2-3G-2zK"/>
                                         </connections>
                                     </barButtonItem>
                                     <barButtonItem style="plain" systemItem="flexibleSpace" id="GTh-2i-8Q3"/>
-                                    <barButtonItem systemItem="camera" id="If5-uR-elY">
+                                    <barButtonItem title="Item" image="CameraRawIcon" id="If5-uR-elY">
                                         <connections>
                                             <action selector="HandleSaveButtonPressed:" destination="BYZ-38-t0r" id="w0z-Lv-XX3"/>
                                         </connections>
                                     </barButtonItem>
-                                    <barButtonItem width="42" style="plain" systemItem="fixedSpace" id="0kb-3I-kl3"/>
-                                    <barButtonItem title="Filters" id="u5k-xP-67e">
+                                    <barButtonItem style="plain" systemItem="flexibleSpace" id="E8O-Hl-rxO"/>
+                                    <barButtonItem image="FilterRawIcon" id="u5k-xP-67e">
                                         <connections>
                                             <action selector="HandleModeButtonPressed:" destination="BYZ-38-t0r" id="I2Z-ld-7EI"/>
                                         </connections>
                                     </barButtonItem>
                                     <barButtonItem style="plain" systemItem="flexibleSpace" id="nH7-Uf-lNR"/>
-                                    <barButtonItem title="About" id="sdo-w2-IXK"/>
+                                    <barButtonItem image="GearRawIcon" id="sdo-w2-IXK"/>
                                 </items>
+                                <color key="tintColor" red="0.016804177310000001" green="0.19835099580000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                             </toolbar>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -64,7 +65,7 @@
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>
                     <connections>
-                        <outlet property="ApplyButton" destination="FPN-k2-0O9" id="pdr-lk-NpV"/>
+                        <outlet property="CameraSwitchButton" destination="FPN-k2-0O9" id="ciZ-kn-c4Y"/>
                         <outlet property="ModeButton" destination="u5k-xP-67e" id="TVj-bI-uLR"/>
                         <outlet property="OutputView" destination="gXS-fM-9Dk" id="64D-qV-gpP"/>
                         <outlet property="SaveButton" destination="If5-uR-elY" id="vR8-WF-zDN"/>
@@ -83,8 +84,9 @@
                         <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" preservesSuperviewLayoutMargins="YES" translatesAutoresizingMaskIntoConstraints="NO" id="stl-Hn-9x6">
+                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" preservesSuperviewLayoutMargins="YES" translatesAutoresizingMaskIntoConstraints="NO" id="stl-Hn-9x6">
                                 <rect key="frame" x="0.0" y="28" width="414" height="664"/>
+                                <color key="backgroundColor" red="0.19603956154155244" green="0.19603956154155244" blue="0.19603956154155244" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                                 <viewLayoutGuide key="safeArea" id="G9w-eq-RXy"/>
                             </imageView>
                             <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="UDp-s1-F6N">
@@ -129,4 +131,10 @@
             <point key="canvasLocation" x="1066.6666666666667" y="131.25"/>
         </scene>
     </scenes>
+    <resources>
+        <image name="CameraRawIcon" width="48" height="48"/>
+        <image name="FilterRawIcon" width="48" height="48"/>
+        <image name="GearRawIcon" width="48" height="48"/>
+        <image name="SwapRawIcon" width="48" height="48"/>
+    </resources>
 </document>

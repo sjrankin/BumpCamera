@@ -12,6 +12,10 @@ import CoreImage
 
 class ImageFilterer
 {
+    /// Run the Noir filter (stylized grayscale) on the passed image.
+    ///
+    /// - Parameter Source: The image to process.
+    /// - Returns: Image run with the noir filter. Rotated appropriately.
     public static func Noir(_ Source: UIImage) -> UIImage?
     {
         let NoirFilter = CIFilter(name: "CIPhotoEffectNoir")
@@ -66,6 +70,15 @@ class ImageFilterer
         return nil
     }
     
+    /// Merge the two passed images into one image. The operation used for merging the images is SourceAtop. Working on the assumption
+    /// the Top image is black and white, the colors of the Top image are inverted. Then, the Top image is run through the MaskToAlpha
+    /// filter (which changes white to transparent), then re-inverted (which leaves the transparent areas alone). The result is merged
+    /// with the Bottom image.
+    ///
+    /// - Parameters:
+    ///   - Top: The image on the top. Assumed to have some transparent areas (but it's not necessary that they do).
+    ///   - Bottom: The background image. Assumed to not have any transparent areas (but it may).
+    /// - Returns: Image resulting from the merger of the Top and Bottom images.
     private static func Merge(_ Top: CIImage, _ Bottom: CIImage) -> UIImage
     {
         var FinalTop: CIImage? = nil
@@ -83,7 +96,7 @@ class ImageFilterer
                 Invert?.setValue(MaskResult, forKey: kCIInputImageKey)
                 if let InvertedAgain = Invert?.value(forKey: kCIOutputImageKey) as? CIImage
                 {
-                FinalTop = InvertedAgain//MaskResult
+                FinalTop = InvertedAgain
                 }
                 else
                 {
