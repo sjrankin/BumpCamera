@@ -15,6 +15,9 @@
 		1739EACC21E7407600407556 /* ImagePreviewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1739EACB21E7407600407556 /* ImagePreviewController.swift */; };
 		1739EACE21E7411400407556 /* ImageViewProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1739EACD21E7411400407556 /* ImageViewProtocol.swift */; };
 		1739EAD021E7563300407556 /* ImageFilterer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1739EACF21E7563300407556 /* ImageFilterer.swift */; };
+		17F51B0121E9E44F00843092 /* BackgroundServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17F51B0021E9E44F00843092 /* BackgroundServer.swift */; };
+		17F51B0321E9E86F00843092 /* Times.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17F51B0221E9E86E00843092 /* Times.swift */; };
+		17F51B0521EA03EB00843092 /* Settings.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 17F51B0421EA03EB00843092 /* Settings.storyboard */; };
 		17FA09A621E863C800405B2D /* Pixelator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17FA09A521E863C800405B2D /* Pixelator.swift */; };
 		17FA09A821E8814700405B2D /* ExtensionMethods.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17FA09A721E8814700405B2D /* ExtensionMethods.swift */; };
 		17FA09AC21E8A6B700405B2D /* PixelatorKernel.metal in Sources */ = {isa = PBXBuildFile; fileRef = 17FA09AB21E8A6B700405B2D /* PixelatorKernel.metal */; };
@@ -32,6 +35,9 @@
 		1739EACB21E7407600407556 /* ImagePreviewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePreviewController.swift; sourceTree = "<group>"; };
 		1739EACD21E7411400407556 /* ImageViewProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageViewProtocol.swift; sourceTree = "<group>"; };
 		1739EACF21E7563300407556 /* ImageFilterer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageFilterer.swift; sourceTree = "<group>"; };
+		17F51B0021E9E44F00843092 /* BackgroundServer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundServer.swift; sourceTree = "<group>"; };
+		17F51B0221E9E86E00843092 /* Times.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Times.swift; sourceTree = "<group>"; };
+		17F51B0421EA03EB00843092 /* Settings.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Settings.storyboard; sourceTree = "<group>"; };
 		17FA09A521E863C800405B2D /* Pixelator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Pixelator.swift; sourceTree = "<group>"; };
 		17FA09A721E8814700405B2D /* ExtensionMethods.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExtensionMethods.swift; sourceTree = "<group>"; };
 		17FA09AB21E8A6B700405B2D /* PixelatorKernel.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = PixelatorKernel.metal; sourceTree = "<group>"; };
@@ -69,16 +75,18 @@
 			isa = PBXGroup;
 			children = (
 				171E542D21E44E180045ED77 /* Assets.xcassets */,
+				171E543221E44E180045ED77 /* Info.plist */,
 				171E542621E44E170045ED77 /* AppDelegate.swift */,
 				171E542821E44E170045ED77 /* MainUIViewer.swift */,
 				171E542A21E44E170045ED77 /* Main.storyboard */,
 				17FA09AF21E8A8E400405B2D /* PixelatorKernel */,
-				17FA09A521E863C800405B2D /* Pixelator.swift */,
 				1739EACF21E7563300407556 /* ImageFilterer.swift */,
 				171E542F21E44E180045ED77 /* LaunchScreen.storyboard */,
-				171E543221E44E180045ED77 /* Info.plist */,
+				17F51B0021E9E44F00843092 /* BackgroundServer.swift */,
+				17F51B0421EA03EB00843092 /* Settings.storyboard */,
 				1739EACB21E7407600407556 /* ImagePreviewController.swift */,
 				1739EACD21E7411400407556 /* ImageViewProtocol.swift */,
+				17F51B0221E9E86E00843092 /* Times.swift */,
 				17FA09A721E8814700405B2D /* ExtensionMethods.swift */,
 			);
 			path = BumpCamera;
@@ -87,6 +95,7 @@
 		17FA09AF21E8A8E400405B2D /* PixelatorKernel */ = {
 			isa = PBXGroup;
 			children = (
+				17FA09A521E863C800405B2D /* Pixelator.swift */,
 				17FA09AB21E8A6B700405B2D /* PixelatorKernel.metal */,
 				17FA09AD21E8A8DD00405B2D /* PixelatorKernel.swift */,
 			);
@@ -154,6 +163,7 @@
 				171E543121E44E180045ED77 /* LaunchScreen.storyboard in Resources */,
 				171E542E21E44E180045ED77 /* Assets.xcassets in Resources */,
 				171E542C21E44E170045ED77 /* Main.storyboard in Resources */,
+				17F51B0521EA03EB00843092 /* Settings.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -164,6 +174,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				17F51B0121E9E44F00843092 /* BackgroundServer.swift in Sources */,
 				171E542921E44E170045ED77 /* MainUIViewer.swift in Sources */,
 				171E542721E44E170045ED77 /* AppDelegate.swift in Sources */,
 				17FA09A821E8814700405B2D /* ExtensionMethods.swift in Sources */,
@@ -173,6 +184,7 @@
 				17FA09AE21E8A8DD00405B2D /* PixelatorKernel.swift in Sources */,
 				1739EACC21E7407600407556 /* ImagePreviewController.swift in Sources */,
 				17FA09AC21E8A6B700405B2D /* PixelatorKernel.metal in Sources */,
+				17F51B0321E9E86F00843092 /* Times.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
