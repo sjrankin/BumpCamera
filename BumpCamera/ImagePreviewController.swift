@@ -16,10 +16,16 @@ class ImagePreviewController: UIViewController, ImageViewProtocol
     override func viewDidLoad()
     {
         super.viewDidLoad()
+        setNeedsStatusBarAppearanceUpdate()
         if let TheImage = PreviewImage
         {
             PreviewImageOut.image = TheImage
         }
+    }
+    
+    override var preferredStatusBarStyle: UIStatusBarStyle
+    {
+        return .lightContent
     }
     
     func ImageToPreview(_ Image: UIImage)
