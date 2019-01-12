@@ -4,8 +4,6 @@
 <dict>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<true/>
-	<key>NSPhotoLibraryAddUsageDescription</key>
-	<string>BumpCamera would like to add processed images to your photo library.</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleExecutable</key>
@@ -40,6 +38,8 @@
 	</array>
 	<key>NSCameraUsageDescription</key>
 	<string>BumpCamera would like to use your camera to take still images and videos for the purpose of modifying them.</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>BumpCamera would like to add processed images to your photo library.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>BumpCamera would like to access your photo library to save modified images and videos.</string>
 	<key>UISupportedInterfaceOrientations~ipad</key>
