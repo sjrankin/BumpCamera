@@ -16,23 +16,59 @@ import AVFoundation
 
 class MainUIViewer: UIViewController, AVCapturePhotoCaptureDelegate
 {
+    let _Settings = UserDefaults.standard
+    
+    var MaskLineSize: Double = 5.0
+    var BlockSize: Double = 20.0
+    var SaveOriginalImage: Bool = true
+    
     override func viewDidLoad()
     {
         super.viewDidLoad()
-        //ApplyButton.title = "Still"
-        setNeedsStatusBarAppearanceUpdate()
+        CommonInitialization()
+    }
+    
+    override var preferredStatusBarStyle: UIStatusBarStyle
+    {
+        return .lightContent
     }
     
     override func viewWillDisappear(_ animated: Bool)
     {
         super.viewWillDisappear(animated)
-        self.CaptureSession?.stopRunning()
+        //self.CaptureSession?.stopRunning()
     }
     
     override func viewWillAppear(_ animated: Bool)
     {
         super.viewWillAppear(animated)
+        CommonInitialization()
         StartLiveView()
+        if !UsingRearCamera
+        {
+            print("Switching to front camera.")
+            SwitchToFrontCamera()
+        }
+        //StartLiveView()
+    }
+    
+    func CommonInitialization()
+    {
+        setNeedsStatusBarAppearanceUpdate()
+        #if false
+        GBackground = BackgroundServer(BackgroundView)
+        BGTimer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(UpdateBackground), userInfo: nil, repeats: true)
+        #endif
+    }
+    
+    var BGTimer: Timer!
+    
+    var GBackground: BackgroundServer!
+    
+    @objc func UpdateBackground()
+    {
+        print("Updating")
+        GBackground.UpdateBackgroundColors()
     }
     
     func StartLiveView()
@@ -69,9 +105,77 @@ class MainUIViewer: UIViewController, AVCapturePhotoCaptureDelegate
     
     var CaptureSession: AVCaptureSession? = nil
     var VideoPreviewLayer: AVCaptureVideoPreviewLayer? = nil
+    var UsingRearCamera: Bool = true
     
+    //https://stackoverflow.com/questions/39060171/switching-camera-with-a-button-in-swift
     @IBAction func HandleCameraSwitchButtonPressed(_ sender: Any)
     {
+        DoSwitchCameras()
+    }
+    
+    func SwitchToRearCamera()
+    {
+        if UsingRearCamera
+        {
+            return
+        }
+        DoSwitchCameras()
+    }
+    
+    func SwitchToFrontCamera()
+    {
+        if !UsingRearCamera
+        {
+            return
+        }
+        DoSwitchCameras()
+    }
+    
+    func DoSwitchCameras()
+    {
+        let OldSession = CaptureSession?.inputs[0]
+        CaptureSession?.removeInput(OldSession!)
+        var NewCamera: AVCaptureDevice!
+        NewCamera = AVCaptureDevice.default(for: AVMediaType.video)!
+        
+        if (OldSession as! AVCaptureDeviceInput).device.position == .back
+        {
+            UIView.transition(with: self.OutputView, duration: 0.35, options: .transitionCrossDissolve, animations:
+                {
+                    NewCamera = self.CameraWithPosition(.front)!
+            }, completion: nil)
+            UsingRearCamera = false
+        }
+        else
+        {
+            UIView.transition(with: self.OutputView, duration: 0.35, options: .transitionCrossDissolve, animations:
+                {
+                    NewCamera = self.CameraWithPosition(.back)!
+            }, completion: nil)
+            UsingRearCamera = true
+        }
+        do
+        {
+            try self.CaptureSession?.addInput(AVCaptureDeviceInput(device: NewCamera))
+        }
+        catch
+        {
+            print("Error swaping camera: \(error.localizedDescription)")
+        }
+    }
+    
+    func CameraWithPosition(_ Position: AVCaptureDevice.Position) -> AVCaptureDevice?
+    {
+        let DeviceDiscoverySession = AVCaptureDevice.DiscoverySession(deviceTypes: [AVCaptureDevice.DeviceType.builtInWideAngleCamera],
+                                                                      mediaType: AVMediaType.video, position: AVCaptureDevice.Position.unspecified)
+        for Device in DeviceDiscoverySession.devices
+        {
+            if Device.position == Position
+            {
+                return Device
+            }
+        }
+        return nil
     }
     
     @IBOutlet weak var CameraSwitchButton: UIBarButtonItem!
@@ -121,7 +225,7 @@ class MainUIViewer: UIViewController, AVCapturePhotoCaptureDelegate
         case 1:
             //TV lines
             let Center = CGPoint(x: To.size.width / 2.0, y: To.size.height / 2.0)
-            if let Final = ImageFilterer.TVLines(To, Center: Center, Width: 10.0)
+            if let Final = ImageFilterer.TVLines(To, Center: Center, Width: MaskLineSize)
             {
                 return Final
             }
@@ -130,7 +234,7 @@ class MainUIViewer: UIViewController, AVCapturePhotoCaptureDelegate
         case 5:
             //Merged TV lines
             let Center = CGPoint(x: To.size.width / 2.0, y: To.size.height / 2.0)
-            if let Final = ImageFilterer.TVLines(To, Center: Center, Width: 5.0, Merged: true)
+            if let Final = ImageFilterer.TVLines(To, Center: Center, Width: MaskLineSize, Merged: true)
             {
                 return Final
             }
@@ -139,7 +243,7 @@ class MainUIViewer: UIViewController, AVCapturePhotoCaptureDelegate
         case 2:
             //Circle lines
             let Center = CGPoint(x: To.size.width / 2.0, y: To.size.height / 2.0)
-            if let Final = ImageFilterer.RoundLines(To, Center: Center, Width: 10.0)
+            if let Final = ImageFilterer.RoundLines(To, Center: Center, Width: MaskLineSize)
             {
                 return Final
             }
@@ -148,7 +252,7 @@ class MainUIViewer: UIViewController, AVCapturePhotoCaptureDelegate
         case 6:
             //Merged Circle lines
             let Center = CGPoint(x: To.size.width / 2.0, y: To.size.height / 2.0)
-            if let Final = ImageFilterer.RoundLines(To, Center: Center, Width: 5.0, Merged: true)
+            if let Final = ImageFilterer.RoundLines(To, Center: Center, Width: MaskLineSize, Merged: true)
             {
                 return Final
             }
@@ -156,7 +260,7 @@ class MainUIViewer: UIViewController, AVCapturePhotoCaptureDelegate
             
         case 3:
             //Color blocks
-            if let Final = ImageFilterer.ColorBlocks(To, NodeWidth: 50.0)
+            if let Final = ImageFilterer.ColorBlocks(To, NodeWidth: BlockSize)
             {
                 return Final
             }
@@ -180,7 +284,7 @@ class MainUIViewer: UIViewController, AVCapturePhotoCaptureDelegate
             
         case 8:
             //Dot screen
-            if let Final = ImageFilterer.DotScreen(To, Width: 10.0)
+            if let Final = ImageFilterer.DotScreen(To, Width: MaskLineSize)
             {
                 return Final
             }
@@ -189,7 +293,7 @@ class MainUIViewer: UIViewController, AVCapturePhotoCaptureDelegate
         case 9:
             //TV and Round lines merged
             let Center = CGPoint(x: To.size.width / 2.0, y: To.size.height / 2.0)
-            if let Final = ImageFilterer.TVRound(To, Center: Center, Width: 10.0)
+            if let Final = ImageFilterer.TVRound(To, Center: Center, Width: MaskLineSize)
             {
                 return Final
             }
@@ -197,12 +301,27 @@ class MainUIViewer: UIViewController, AVCapturePhotoCaptureDelegate
             
         case 10:
             //Merged dot screen
-            //Dot screen
-            if let Final = ImageFilterer.DotScreen(To, Width: 5.0, Merged: true)
+            if let Final = ImageFilterer.DotScreen(To, Width: MaskLineSize, Merged: true)
             {
                 return Final
             }
             fatalError("Nil image returned by DotScreen")
+            
+        case 11:
+            //Hatched screen
+            if let Final = ImageFilterer.HatchedScreen(To, Width: MaskLineSize)
+            {
+                return Final
+            }
+            fatalError("Nil image returned by HatchedScreen")
+            
+        case 12:
+            //Merge hatched screen
+            if let Final = ImageFilterer.HatchedScreen(To, Width: MaskLineSize, Merged: true)
+            {
+                return Final
+            }
+            fatalError("Nil image returned by HatchedScreen")
             
         default:
             return To
@@ -219,23 +338,27 @@ class MainUIViewer: UIViewController, AVCapturePhotoCaptureDelegate
         }
         else
         {
-            let Alert = UIAlertController(title: "Saved", message: "Your image was saved to the photo album.", preferredStyle: UIAlertController.Style.alert)
-            let AlertAction = UIAlertAction(title: "OK", style: .default, handler: nil)
-            Alert.addAction(AlertAction)
-            present(Alert, animated: true)
+            if ShowNormalSaveAlert
+            {
+                let Alert = UIAlertController(title: "Saved", message: "Your image was saved to the photo album.", preferredStyle: UIAlertController.Style.alert)
+                let AlertAction = UIAlertAction(title: "OK", style: .default, handler: nil)
+                Alert.addAction(AlertAction)
+                present(Alert, animated: true)
+            }
+            else
+            {
+                print("Images saved to photo album successfully.")
+            }
         }
     }
+    
+    var ShowNormalSaveAlert: Bool = false
     
     @IBOutlet weak var SaveButton: UIBarButtonItem!
     
     func FinalizeImage(_ Source: UIImage) -> UIImage
     {
-        #if true
         let cimg = Source.ciImage
-        #else
-        var cimg = Source.ciImage
-        cimg = cimg?.oriented(CGImagePropertyOrientation.right)
-        #endif
         let Context = CIContext()
         let cgimg = Context.createCGImage(cimg!, from: cimg!.extent)
         let final = UIImage(cgImage: cgimg!)
@@ -245,8 +368,11 @@ class MainUIViewer: UIViewController, AVCapturePhotoCaptureDelegate
     //https://stackoverflow.com/questions/44864432/saving-to-user-photo-library-silently-fails
     func DoSaveImage()
     {
-        print("At DoSaveImage")
         let SaveMe = FinalizeImage(PreviewImage)
+        if SaveOriginalImage
+        {
+            UIImageWriteToSavedPhotosAlbum(OriginalImageToSave!, nil, nil, nil)
+        }
         UIImageWriteToSavedPhotosAlbum(SaveMe, self, #selector(image(_:didFinishSavingWithError:contextInfo:)), nil)
     }
     
@@ -271,6 +397,12 @@ class MainUIViewer: UIViewController, AVCapturePhotoCaptureDelegate
         Filters.addAction(Filter6)
         let Filter6A = UIAlertAction(title: TitleFor(10), style: .default, handler: FilterSelection)
         Filters.addAction(Filter6A)
+        
+        let Filter11 = UIAlertAction(title: TitleFor(11), style: .default, handler: FilterSelection)
+        Filters.addAction(Filter11)
+        let Filter12 = UIAlertAction(title: TitleFor(12), style: .default, handler: FilterSelection)
+        Filters.addAction(Filter12)
+        
         let Filter3 = UIAlertAction(title: TitleFor(3), style: .default, handler: FilterSelection)
         Filters.addAction(Filter3)
         let Filter4 = UIAlertAction(title: TitleFor(4), style: .default, handler: FilterSelection)
@@ -311,6 +443,8 @@ class MainUIViewer: UIViewController, AVCapturePhotoCaptureDelegate
             "Dot Screen": 8,
             "TV and Round Lines": 9,
             "Merged Dot Screen": 10,
+            "Hatched Screen": 11,
+            "Merged Hatched Screen": 12,
             ]
     
     var CurrentFilter: Int = 0
@@ -326,11 +460,6 @@ class MainUIViewer: UIViewController, AVCapturePhotoCaptureDelegate
         {
             print("Unknown filter \"\((Action.title)!)\" encountered.")
         }
-    }
-    
-    override var preferredStatusBarStyle: UIStatusBarStyle
-    {
-        return .default
     }
     
     @IBOutlet weak var OutputView: UIImageView!
@@ -358,5 +487,15 @@ class MainUIViewer: UIViewController, AVCapturePhotoCaptureDelegate
         
         super.prepare(for: segue, sender: self)
     }
+    
+    @IBOutlet weak var BackgroundView: UIView!
+    @IBOutlet var MainUIView: UIView!
+    
+    
+    @IBAction func HandlePhotoAlbumButtonPressed(_ sender: Any)
+    {
+    }
+    
+    @IBOutlet weak var PhotoAlbumButton: UIBarButtonItem!
 }
 
