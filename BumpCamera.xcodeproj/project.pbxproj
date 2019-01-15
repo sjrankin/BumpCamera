@@ -7,13 +7,27 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		171D625721ED974A004D3545 /* Renderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 171D625621ED974A004D3545 /* Renderer.swift */; };
+		171D625921ED98AE004D3545 /* Noir.swift in Sources */ = {isa = PBXBuildFile; fileRef = 171D625821ED98AE004D3545 /* Noir.swift */; };
+		171D625B21EDA5B6004D3545 /* PreviewMetalView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 171D625A21EDA5B6004D3545 /* PreviewMetalView.swift */; };
+		171D625E21EDB446004D3545 /* PassThrough.metal in Sources */ = {isa = PBXBuildFile; fileRef = 171D625D21EDB446004D3545 /* PassThrough.metal */; };
+		171D626021EDB46D004D3545 /* Mixer.metal in Sources */ = {isa = PBXBuildFile; fileRef = 171D625F21EDB46D004D3545 /* Mixer.metal */; };
+		171D626221EDB66F004D3545 /* DotScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 171D626121EDB66F004D3545 /* DotScreen.swift */; };
+		171D626421EDBE4B004D3545 /* RenderPacket.swift in Sources */ = {isa = PBXBuildFile; fileRef = 171D626321EDBE4B004D3545 /* RenderPacket.swift */; };
+		171D626621EDC409004D3545 /* FilterManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 171D626521EDC409004D3545 /* FilterManager.swift */; };
+		171D626821EDC45E004D3545 /* CameraFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 171D626721EDC45E004D3545 /* CameraFilter.swift */; };
+		171D626B21EDCE62004D3545 /* Pixellate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 171D626A21EDCE62004D3545 /* Pixellate.swift */; };
+		171D626D21EDCF6E004D3545 /* LineScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 171D626C21EDCF6D004D3545 /* LineScreen.swift */; };
+		171D626F21EDD143004D3545 /* CircularScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 171D626E21EDD143004D3545 /* CircularScreen.swift */; };
+		171D627121EDD1C2004D3545 /* HatchScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 171D627021EDD1C2004D3545 /* HatchScreen.swift */; };
+		171D627321EDD415004D3545 /* CMYKHalftone.swift in Sources */ = {isa = PBXBuildFile; fileRef = 171D627221EDD415004D3545 /* CMYKHalftone.swift */; };
+		171D627621EDD52D004D3545 /* CircleAndLines.swift in Sources */ = {isa = PBXBuildFile; fileRef = 171D627521EDD52D004D3545 /* CircleAndLines.swift */; };
+		171D627821EDF017004D3545 /* PassThrough.swift in Sources */ = {isa = PBXBuildFile; fileRef = 171D627721EDF017004D3545 /* PassThrough.swift */; };
 		171E542721E44E170045ED77 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 171E542621E44E170045ED77 /* AppDelegate.swift */; };
 		171E542921E44E170045ED77 /* MainUIViewer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 171E542821E44E170045ED77 /* MainUIViewer.swift */; };
 		171E542C21E44E170045ED77 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 171E542A21E44E170045ED77 /* Main.storyboard */; };
 		171E542E21E44E180045ED77 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 171E542D21E44E180045ED77 /* Assets.xcassets */; };
 		171E543121E44E180045ED77 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 171E542F21E44E180045ED77 /* LaunchScreen.storyboard */; };
-		1739EACC21E7407600407556 /* ImagePreviewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1739EACB21E7407600407556 /* ImagePreviewController.swift */; };
-		1739EACE21E7411400407556 /* ImageViewProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1739EACD21E7411400407556 /* ImageViewProtocol.swift */; };
 		1739EAD021E7563300407556 /* ImageFilterer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1739EACF21E7563300407556 /* ImageFilterer.swift */; };
 		17F51B0121E9E44F00843092 /* BackgroundServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17F51B0021E9E44F00843092 /* BackgroundServer.swift */; };
 		17F51B0321E9E86F00843092 /* Times.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17F51B0221E9E86E00843092 /* Times.swift */; };
@@ -25,6 +39,22 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		171D625621ED974A004D3545 /* Renderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Renderer.swift; sourceTree = "<group>"; };
+		171D625821ED98AE004D3545 /* Noir.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Noir.swift; sourceTree = "<group>"; };
+		171D625A21EDA5B6004D3545 /* PreviewMetalView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewMetalView.swift; sourceTree = "<group>"; };
+		171D625D21EDB446004D3545 /* PassThrough.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = PassThrough.metal; sourceTree = "<group>"; };
+		171D625F21EDB46D004D3545 /* Mixer.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = Mixer.metal; sourceTree = "<group>"; };
+		171D626121EDB66F004D3545 /* DotScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DotScreen.swift; sourceTree = "<group>"; };
+		171D626321EDBE4B004D3545 /* RenderPacket.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RenderPacket.swift; sourceTree = "<group>"; };
+		171D626521EDC409004D3545 /* FilterManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterManager.swift; sourceTree = "<group>"; };
+		171D626721EDC45E004D3545 /* CameraFilter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraFilter.swift; sourceTree = "<group>"; };
+		171D626A21EDCE62004D3545 /* Pixellate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Pixellate.swift; sourceTree = "<group>"; };
+		171D626C21EDCF6D004D3545 /* LineScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LineScreen.swift; sourceTree = "<group>"; };
+		171D626E21EDD143004D3545 /* CircularScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircularScreen.swift; sourceTree = "<group>"; };
+		171D627021EDD1C2004D3545 /* HatchScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HatchScreen.swift; sourceTree = "<group>"; };
+		171D627221EDD415004D3545 /* CMYKHalftone.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CMYKHalftone.swift; sourceTree = "<group>"; };
+		171D627521EDD52D004D3545 /* CircleAndLines.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircleAndLines.swift; sourceTree = "<group>"; };
+		171D627721EDF017004D3545 /* PassThrough.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PassThrough.swift; sourceTree = "<group>"; };
 		171E542321E44E170045ED77 /* BumpCamera.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BumpCamera.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		171E542621E44E170045ED77 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		171E542821E44E170045ED77 /* MainUIViewer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainUIViewer.swift; sourceTree = "<group>"; };
@@ -32,8 +62,6 @@
 		171E542D21E44E180045ED77 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		171E543021E44E180045ED77 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		171E543221E44E180045ED77 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		1739EACB21E7407600407556 /* ImagePreviewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePreviewController.swift; sourceTree = "<group>"; };
-		1739EACD21E7411400407556 /* ImageViewProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageViewProtocol.swift; sourceTree = "<group>"; };
 		1739EACF21E7563300407556 /* ImageFilterer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageFilterer.swift; sourceTree = "<group>"; };
 		17F51B0021E9E44F00843092 /* BackgroundServer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundServer.swift; sourceTree = "<group>"; };
 		17F51B0221E9E86E00843092 /* Times.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Times.swift; sourceTree = "<group>"; };
@@ -55,6 +83,51 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		171D625521ED971C004D3545 /* Filters */ = {
+			isa = PBXGroup;
+			children = (
+				171D626921EDCBAB004D3545 /* Manager */,
+				171D627421EDD4B2004D3545 /* Filters */,
+			);
+			path = Filters;
+			sourceTree = "<group>";
+		};
+		171D625C21EDB409004D3545 /* Shaders */ = {
+			isa = PBXGroup;
+			children = (
+				171D625D21EDB446004D3545 /* PassThrough.metal */,
+				171D625F21EDB46D004D3545 /* Mixer.metal */,
+			);
+			path = Shaders;
+			sourceTree = "<group>";
+		};
+		171D626921EDCBAB004D3545 /* Manager */ = {
+			isa = PBXGroup;
+			children = (
+				171D626321EDBE4B004D3545 /* RenderPacket.swift */,
+				171D626521EDC409004D3545 /* FilterManager.swift */,
+				171D626721EDC45E004D3545 /* CameraFilter.swift */,
+			);
+			path = Manager;
+			sourceTree = "<group>";
+		};
+		171D627421EDD4B2004D3545 /* Filters */ = {
+			isa = PBXGroup;
+			children = (
+				171D625621ED974A004D3545 /* Renderer.swift */,
+				171D627721EDF017004D3545 /* PassThrough.swift */,
+				171D625821ED98AE004D3545 /* Noir.swift */,
+				171D626A21EDCE62004D3545 /* Pixellate.swift */,
+				171D626121EDB66F004D3545 /* DotScreen.swift */,
+				171D626C21EDCF6D004D3545 /* LineScreen.swift */,
+				171D626E21EDD143004D3545 /* CircularScreen.swift */,
+				171D627521EDD52D004D3545 /* CircleAndLines.swift */,
+				171D627021EDD1C2004D3545 /* HatchScreen.swift */,
+				171D627221EDD415004D3545 /* CMYKHalftone.swift */,
+			);
+			path = Filters;
+			sourceTree = "<group>";
+		};
 		171E541A21E44E170045ED77 = {
 			isa = PBXGroup;
 			children = (
@@ -76,16 +149,17 @@
 			children = (
 				171E542D21E44E180045ED77 /* Assets.xcassets */,
 				171E543221E44E180045ED77 /* Info.plist */,
+				171D625521ED971C004D3545 /* Filters */,
+				171D625C21EDB409004D3545 /* Shaders */,
+				17FA09AF21E8A8E400405B2D /* PixelatorKernel */,
 				171E542621E44E170045ED77 /* AppDelegate.swift */,
 				171E542821E44E170045ED77 /* MainUIViewer.swift */,
 				171E542A21E44E170045ED77 /* Main.storyboard */,
-				17FA09AF21E8A8E400405B2D /* PixelatorKernel */,
 				1739EACF21E7563300407556 /* ImageFilterer.swift */,
 				171E542F21E44E180045ED77 /* LaunchScreen.storyboard */,
 				17F51B0021E9E44F00843092 /* BackgroundServer.swift */,
+				171D625A21EDA5B6004D3545 /* PreviewMetalView.swift */,
 				17F51B0421EA03EB00843092 /* Settings.storyboard */,
-				1739EACB21E7407600407556 /* ImagePreviewController.swift */,
-				1739EACD21E7411400407556 /* ImageViewProtocol.swift */,
 				17F51B0221E9E86E00843092 /* Times.swift */,
 				17FA09A721E8814700405B2D /* ExtensionMethods.swift */,
 			);
@@ -174,17 +248,31 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				171D627121EDD1C2004D3545 /* HatchScreen.swift in Sources */,
 				17F51B0121E9E44F00843092 /* BackgroundServer.swift in Sources */,
 				171E542921E44E170045ED77 /* MainUIViewer.swift in Sources */,
 				171E542721E44E170045ED77 /* AppDelegate.swift in Sources */,
 				17FA09A821E8814700405B2D /* ExtensionMethods.swift in Sources */,
+				171D625721ED974A004D3545 /* Renderer.swift in Sources */,
+				171D626421EDBE4B004D3545 /* RenderPacket.swift in Sources */,
+				171D626821EDC45E004D3545 /* CameraFilter.swift in Sources */,
+				171D625921ED98AE004D3545 /* Noir.swift in Sources */,
+				171D626B21EDCE62004D3545 /* Pixellate.swift in Sources */,
 				17FA09A621E863C800405B2D /* Pixelator.swift in Sources */,
-				1739EACE21E7411400407556 /* ImageViewProtocol.swift in Sources */,
+				171D625E21EDB446004D3545 /* PassThrough.metal in Sources */,
 				1739EAD021E7563300407556 /* ImageFilterer.swift in Sources */,
+				171D626221EDB66F004D3545 /* DotScreen.swift in Sources */,
+				171D627321EDD415004D3545 /* CMYKHalftone.swift in Sources */,
+				171D627821EDF017004D3545 /* PassThrough.swift in Sources */,
+				171D626021EDB46D004D3545 /* Mixer.metal in Sources */,
 				17FA09AE21E8A8DD00405B2D /* PixelatorKernel.swift in Sources */,
-				1739EACC21E7407600407556 /* ImagePreviewController.swift in Sources */,
+				171D626D21EDCF6E004D3545 /* LineScreen.swift in Sources */,
+				171D625B21EDA5B6004D3545 /* PreviewMetalView.swift in Sources */,
+				171D626621EDC409004D3545 /* FilterManager.swift in Sources */,
 				17FA09AC21E8A6B700405B2D /* PixelatorKernel.metal in Sources */,
 				17F51B0321E9E86F00843092 /* Times.swift in Sources */,
+				171D626F21EDD143004D3545 /* CircularScreen.swift in Sources */,
+				171D627621EDD52D004D3545 /* CircleAndLines.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
