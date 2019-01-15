@@ -9,9 +9,138 @@
 import Foundation
 import UIKit
 import CoreImage
+import AVFoundation
 
 class ImageFilterer
 {
+    #if false
+    public static func Initialize(WithDescription: CMFormatDescription, HintSize: Int)
+    {
+        CiContext = CIContext()
+        CreateBufferPool(From: WithDescription, BufferCountHint: HintSize)
+    }
+    
+    private static func CreateBufferPool(From: CMFormatDescription, BufferCountHint: Int) ->
+        (BufferPool: CVPixelBufferPool?, ColorSpace: CGColorSpace?, FormatDescription: CMFormatDescription?)
+    {
+        let InputSubType = CMFormatDescriptionGetMediaSubType(From)
+        if InputSubType != kCVPixelFormatType_32BGRA
+        {
+            print("Invalid pixel buffer type \(InputSubType)")
+            return (nil, nil, nil)
+        }
+        
+        let InputSize = CMVideoFormatDescriptionGetDimensions(From)
+        var PixelBufferAttrs: [String: Any] =
+        [
+            kCVPixelBufferPixelFormatTypeKey as String: UInt(InputSubType),
+            kCVPixelBufferWidthKey as String: Int(InputSize.width),
+            kCVPixelBufferHeightKey as String: Int(InputSize.height),
+            kCVPixelBufferIOSurfacePropertiesKey as String: [:]
+        ]
+        
+        var GColorSpace = CGColorSpaceCreateDeviceRGB()
+        if let FromEx = CMFormatDescriptionGetExtensions(From) as Dictionary?
+        {
+            let ColorPrimaries = FromEx[kCVImageBufferColorPrimariesKey]
+            if let ColorPrimaries = ColorPrimaries
+            {
+                var ColorSpaceProps: [String: AnyObject] = [kCVImageBufferColorPrimariesKey as String: ColorPrimaries]
+                if let YCbCrMatrix = FromEx[kCVImageBufferYCbCrMatrixKey]
+                {
+                    ColorSpaceProps[kCVImageBufferYCbCrMatrixKey as String] = YCbCrMatrix
+                }
+                if let XferFunc = FromEx[kCVImageBufferTransferFunctionKey]
+                {
+                    ColorSpaceProps[kCVImageBufferTransferFunctionKey as String] = XferFunc
+                }
+                PixelBufferAttrs[kCVBufferPropagatedAttachmentsKey as String] = ColorSpaceProps
+            }
+            if let CVColorSpace = FromEx[kCVImageBufferCGColorSpaceKey]
+            {
+                GColorSpace = CVColorSpace as! CGColorSpace
+            }
+            else
+            {
+                if (ColorPrimaries as? String) == (kCVImageBufferColorPrimaries_P3_D65 as String)
+                {
+                    GColorSpace = CGColorSpace(name: CGColorSpace.displayP3)!
+                }
+            }
+        }
+        
+        let PoolAttrs = [kCVPixelBufferPoolMinimumBufferCountKey as String: BufferCountHint]
+        var CVPixBufPool: CVPixelBufferPool?
+        CVPixelBufferPoolCreate(kCFAllocatorDefault, PoolAttrs as NSDictionary?,
+                                PixelBufferAttrs as NSDictionary?,
+                                &CVPixBufPool)
+        guard let BufferPool = CVPixBufPool else
+        {
+            print("Allocation failure - could not allocate pixel buffer pool.")
+            return (nil, nil, nil)
+        }
+        
+        PreAllocateBuffers(Pool: BufferPool, AllocationThreshold: BufferCountHint)
+        
+        var PixelBuffer: CVPixelBuffer?
+        var OutFormatDesc: CMFormatDescription?
+        let AuxAttrs = [kCVPixelBufferPoolAllocationThresholdKey as String: BufferCountHint] as NSDictionary
+        CVPixelBufferPoolCreatePixelBufferWithAuxAttributes(kCFAllocatorDefault, BufferPool, AuxAttrs, &PixelBuffer)
+        if let PixelBuffer = PixelBuffer
+        {
+            CMVideoFormatDescriptionCreateForImageBuffer(allocator: kCFAllocatorDefault, imageBuffer: PixelBuffer, formatDescriptionOut: &OutFormatDesc)
+        }
+        PixelBuffer = nil
+        
+        return(BufferPool, GColorSpace, OutFormatDesc)
+    }
+    
+    private static func PreAllocateBuffers(Pool: CVPixelBufferPool, AllocationThreshold: Int)
+    {
+        var PixelBuffers = [CVPixelBuffer]()
+        var Error: CVReturn = kCVReturnSuccess
+        let AuxAttributes = [kCVPixelBufferPoolAllocationThresholdKey as String: AllocationThreshold] as NSDictionary
+        var PixelBuffer: CVPixelBuffer?
+        while Error == kCVReturnSuccess
+        {
+            Error = CVPixelBufferPoolCreatePixelBufferWithAuxAttributes(kCFAllocatorDefault, Pool, AuxAttributes, &PixelBuffer)
+            if let PixelBuffer = PixelBuffer
+            {
+                PixelBuffers.append(PixelBuffer)
+            }
+            PixelBuffer = nil
+        }
+        PixelBuffers.removeAll()
+    }
+    
+    private static var CiContext: CIContext? = nil
+    
+    private static var OutputColorSpace: CGColorSpace? = nil
+    
+    private static var OutputPixelBufferPool: CVPixelBufferPool?
+    
+    public static func Noir(_ Source: CVPixelBuffer) -> CVPixelBuffer?
+    {
+        let SourceImage = CIImage(cvImageBuffer: Source)
+        let FilteredImage = Noir(SourceImage)
+        var PixBuf: CVPixelBuffer? = nil
+        CVPixelBufferPoolCreatePixelBuffer(kCFAllocatorDefault, OutputPixelBufferPool!, &PixBuf)
+        guard let OutputPixelBuffer = PixBuf else
+        {
+            print("Allocation failure")
+            return nil
+        }
+
+        CiContext!.render(FilteredImage!, to: OutputPixelBuffer, bounds: FilteredImage!.extent, colorSpace: OutputColorSpace!)
+        return OutputPixelBuffer
+    }
+    
+    public static func Noir(_ Source: CIImage) -> CIImage?
+    {
+        return nil
+    }
+    #endif
+    
     /// Run the Noir filter (stylized grayscale) on the passed image.
     ///
     /// - Parameter Source: The image to process.
@@ -133,7 +262,7 @@ class ImageFilterer
                 Invert?.setValue(MaskResult, forKey: kCIInputImageKey)
                 if let InvertedAgain = Invert?.value(forKey: kCIOutputImageKey) as? CIImage
                 {
-                FinalTop = InvertedAgain
+                    FinalTop = InvertedAgain
                 }
                 else
                 {
@@ -195,6 +324,54 @@ class ImageFilterer
         return nil
     }
     
+    public static func PrintOrientation(_ Current: UIDeviceOrientation)
+    {
+        switch Current
+        {
+        case .faceDown:
+            print("Face down")
+            
+        case .faceUp:
+            print("Face up")
+            
+        case .landscapeLeft:
+                print ("Landscape left")
+            
+        case .landscapeRight:
+            print("Landscape right")
+            
+        case .portrait:
+            print("Portrait")
+            
+        case .portraitUpsideDown:
+            print("Portrait upside down")
+            
+        case .unknown:
+            print("Unknown")
+        }
+    }
+    
+    public static func VPrintOrientation(_ Current: AVCaptureVideoOrientation)
+    {
+        switch Current
+        {
+        case AVCaptureVideoOrientation.landscapeRight:
+            print("Landscape right")
+            
+        case AVCaptureVideoOrientation.landscapeLeft:
+            print("Landscape left")
+            
+        case AVCaptureVideoOrientation.portrait:
+            print("Portrait")
+            
+        case AVCaptureVideoOrientation.portraitUpsideDown:
+            print("Portrait upside down")
+            
+        default:
+            print("Other")
+        }
+    }
+    
     public static func TVLines(_ Source: UIImage, Center: CGPoint? = nil, Angle: Double? = nil, Width: Double? = nil,
                                Merged: Bool = false, AdjustAngleIfInLandscape: Bool = true) -> UIImage?
     {
@@ -213,12 +390,15 @@ class ImageFilterer
         }
         if AdjustAngleIfInLandscape
         {
-        if UIDevice.current.orientation == .landscapeLeft || UIDevice.current.orientation == .landscapeRight
-        {
-            FinalAngle = FinalAngle + 90.0
+            let Rad90: Double = 90.0 * Double.pi / 180.0
+            //PrintOrientation(UIDevice.current.orientation)
+            if UIDevice.current.orientation == .landscapeLeft || UIDevice.current.orientation == .landscapeRight
+            {
+                print("Adjusting angle from \(FinalAngle) to \(FinalAngle + Rad90)")
+                FinalAngle = FinalAngle + Rad90
             }
         }
-            TV?.setValue(FinalAngle, forKey: kCIInputAngleKey)
+        TV?.setValue(FinalAngle, forKey: kCIInputAngleKey)
         if let Width = Width
         {
             TV?.setValue(Width, forKey: kCIInputWidthKey)
