@@ -14,18 +14,140 @@ import AVFoundation
 //https://medium.com/@rizwanm/https-medium-com-rizwanm-swift-camera-part-1-c38b8b773b2
 //https://github.com/codepath/ios_guides/wiki/Creating-a-Custom-Camera-View
 
-class MainUIViewer: UIViewController, AVCapturePhotoCaptureDelegate
+class MainUIViewer: UIViewController, AVCapturePhotoCaptureDelegate, AVCaptureVideoDataOutputSampleBufferDelegate
 {
     let _Settings = UserDefaults.standard
     
     var MaskLineSize: Double = 5.0
     var BlockSize: Double = 20.0
     var SaveOriginalImage: Bool = true
+    var OnSimulator = false
     
     override func viewDidLoad()
     {
         super.viewDidLoad()
+        #if targetEnvironment(simulator)
+        OnSimulator = true
+        #endif
+        AddGridOverlayLayer()
         CommonInitialization()
+        
+        //OutputView.layer.borderColor = UIColor.red.cgColor
+        //OutputView.layer.borderWidth = 20.0
+        
+        StatusLabel.layer.cornerRadius = 5.0
+        StatusLabel.layer.borderColor = UIColor.black.cgColor
+        StatusLabel.layer.borderWidth = 0.5
+        StatusLabel.textColor = UIColor.black
+        StatusLabel.backgroundColor = UIColor(red: 1.0, green: 1.0, blue: 1.0, alpha: 0.5)
+        StatusLabel.alpha = 0.0
+        
+        FilterLabel.textColor = UIColor.white
+        FilterLabel.layer.cornerRadius = 15.0
+        ShowFilter("Not filtered")
+        
+        //https://stackoverflow.com/questions/34883594/cant-make-uitoolbar-black-color-with-white-button-item-tint-ios-9-swift/34885377
+        MainBottomToolbar.barTintColor = UIColor.black
+        MainBottomToolbar.tintColor = UIColor.white
+        MainBottomToolbar.sizeToFit()
+        MainBottomToolbar.isTranslucent = false
+        //OutputView.addSubview(TestLabel)
+        //OutputView.bringSubviewToFront(TestLabel)
+    }
+    
+    func AddGridOverlayLayer()
+    {
+        SetGridVisibility(IsVisible: true)
+    }
+    
+    func SetGridVisibility(IsVisible: Bool)
+    {
+        if IsVisible
+        {
+            if GridLayerIsShowing
+            {
+                return
+            }
+            GridLayerIsShowing = true
+            GridLayer = MakeGrid()
+            OutputView.layer.addSublayer(GridLayer!)
+        }
+        else
+        {
+            if !GridLayerIsShowing
+            {
+                return
+            }
+            GridLayerIsShowing = false
+            OutputView.layer.sublayers!.forEach{if $0.name == "Grid Layer"
+            {
+                $0.removeFromSuperlayer()
+                }
+            }
+        }
+    }
+    
+    func MakeGrid() -> CAShapeLayer
+    {
+        #if true
+        return CAShapeLayer()
+        #else
+        let Layer = CAShapeLayer()
+        Layer.name = "Grid Layer"
+        Layer.zPosition = 2000
+        Layer.backgroundColor = UIColor.clear.cgColor
+        Layer.frame = MainOutputRect
+        let FinalSize = Layer.frame.size
+        Layer.lineWidth = 1.0
+        Layer.strokeColor = UIColor.yellow.cgColor
+        let Lines = UIBezierPath()
+        Lines.move(to: CGPoint(x: FinalSize.width / 2.0, y: 0))
+        Lines.addLine(to: CGPoint(x: FinalSize.width / 2.0, y: FinalSize.height))
+        Lines.move(to: CGPoint(x: 0, y: FinalSize.height / 2.0))
+        Lines.addLine(to: CGPoint(x: FinalSize.width, y: FinalSize.height / 2.0))
+        Layer.path = Lines.cgPath
+        return Layer
+        #endif
+    }
+    
+    var GridLayerIsShowing: Bool = false
+    var GridLayer: CAShapeLayer? = nil
+    
+    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator)
+    {
+        super.viewWillTransition(to: size, with: coordinator)
+        InLandscape = size.width > size.height
+        #if false
+        let CurrentOrientation = UIDevice.current.orientation
+        ImageFilterer.PrintOrientation(CurrentOrientation)
+        var VideoOrientation: AVCaptureVideoOrientation? = nil
+        switch CurrentOrientation
+        {
+        case .portraitUpsideDown:
+            VideoOrientation = AVCaptureVideoOrientation.portraitUpsideDown
+            
+        case .portrait:
+            VideoOrientation = AVCaptureVideoOrientation.portrait
+            
+        case .landscapeLeft:
+            VideoOrientation = AVCaptureVideoOrientation.landscapeLeft
+            
+        case .landscapeRight:
+            VideoOrientation = AVCaptureVideoOrientation.landscapeRight
+            
+        default:
+            break
+        }
+        if let VideoOrientation = VideoOrientation
+        {
+            VideoPreviewLayer?.connection?.videoOrientation = VideoOrientation
+        }
+        #endif
+    }
+    
+    override var supportedInterfaceOrientations: UIInterfaceOrientationMask
+    {
+        return UIInterfaceOrientationMask.all
     }
     
     override var preferredStatusBarStyle: UIStatusBarStyle
@@ -37,6 +159,7 @@ class MainUIViewer: UIViewController, AVCapturePhotoCaptureDelegate
     {
         super.viewWillDisappear(animated)
         //self.CaptureSession?.stopRunning()
+        NotificationCenter.default.removeObserver(self, name: UIDevice.orientationDidChangeNotification, object: nil)
     }
     
     override func viewWillAppear(_ animated: Bool)
@@ -51,6 +174,8 @@ class MainUIViewer: UIViewController, AVCapturePhotoCaptureDelegate
         }
         //StartLiveView()
     }
+    
+    var InLandscape: Bool = false
     
     func CommonInitialization()
     {
@@ -67,22 +192,79 @@ class MainUIViewer: UIViewController, AVCapturePhotoCaptureDelegate
     
     @objc func UpdateBackground()
     {
-        print("Updating")
         GBackground.UpdateBackgroundColors()
+    }
+    
+    private func UpdatePreviewLayer(Layer: AVCaptureConnection, Orientation: AVCaptureVideoOrientation)
+    {
+        Layer.videoOrientation = Orientation
+        VideoPreviewLayer!.frame = OutputView.bounds
+    }
+    
+    //https://stackoverflow.com/questions/15075300/avcapturevideopreviewlayer-orientation-need-landscape
+    override func viewDidLayoutSubviews()
+    {
+        if OnSimulator
+        {
+            return
+        }
+        
+        if let Connection = VideoPreviewLayer?.connection
+        {
+            let CurrentDevice = UIDevice.current
+            let Orientation = CurrentDevice.orientation
+            let PreviewLayerConnection = Connection
+            if PreviewLayerConnection.isVideoOrientationSupported
+            {
+                switch Orientation
+                {
+                case .portrait:
+                    print("Orientation: Portrait")
+                    UpdatePreviewLayer(Layer: PreviewLayerConnection, Orientation: .portrait)
+                    
+                case .landscapeLeft:
+                    print("Orientation: Landscape Left")
+                    UpdatePreviewLayer(Layer: PreviewLayerConnection, Orientation: .landscapeRight)
+                    
+                case .landscapeRight:
+                    print("Orientation: Landscape Right")
+                    UpdatePreviewLayer(Layer: PreviewLayerConnection, Orientation: .landscapeLeft)
+                    
+                case .portraitUpsideDown:
+                    print("Orientation: Portrait Upside Down")
+                    UpdatePreviewLayer(Layer: PreviewLayerConnection, Orientation: .portraitUpsideDown)
+                    
+                default:
+                    UpdatePreviewLayer(Layer: PreviewLayerConnection, Orientation: .portrait)
+                }
+            }
+        }
     }
     
     func StartLiveView()
     {
+        if OnSimulator
+        {
+            return
+        }
         let CaptureDevice = AVCaptureDevice.default(for: AVMediaType.video)
         do
         {
             let Input = try AVCaptureDeviceInput(device: CaptureDevice!)
             CaptureSession = AVCaptureSession()
             CaptureSession?.addInput(Input)
+            
             StillImageOut = AVCapturePhotoOutput()
+            StillImageOut.isHighResolutionCaptureEnabled = true
             CaptureSession?.addOutput(StillImageOut)
+            
+            CaptureSession?.addOutput(VideoOutput)
+            VideoOutput.videoSettings = [kCVPixelBufferPixelFormatTypeKey as String: Int(kCVPixelFormatType_32BGRA)]
+            VideoOutput.setSampleBufferDelegate(self, queue: DataOutputQueue)
+            
             VideoPreviewLayer = AVCaptureVideoPreviewLayer(session: CaptureSession!)
             VideoPreviewLayer?.videoGravity = AVLayerVideoGravity.resizeAspectFill
+            VideoPreviewLayer?.connection?.videoOrientation = AVCaptureVideoOrientation.portrait
             VideoPreviewLayer?.frame = view.layer.bounds
             OutputView.layer.addSublayer(VideoPreviewLayer!)
             #if true
@@ -102,7 +284,9 @@ class MainUIViewer: UIViewController, AVCapturePhotoCaptureDelegate
     
     var InStillMode = true
     var StillImageOut: AVCapturePhotoOutput!
-    
+    let DataOutputQueue = DispatchQueue(label: "VideoDataQueue", qos: .userInitiated, attributes: [],
+                                        autoreleaseFrequency: .workItem)
+    var VideoOutput = AVCaptureVideoDataOutput()
     var CaptureSession: AVCaptureSession? = nil
     var VideoPreviewLayer: AVCaptureVideoPreviewLayer? = nil
     var UsingRearCamera: Bool = true
@@ -133,6 +317,11 @@ class MainUIViewer: UIViewController, AVCapturePhotoCaptureDelegate
     
     func DoSwitchCameras()
     {
+        if OnSimulator
+        {
+            ShowMessage("Cannot Switch Cameras")
+            return
+        }
         let OldSession = CaptureSession?.inputs[0]
         CaptureSession?.removeInput(OldSession!)
         var NewCamera: AVCaptureDevice!
@@ -182,10 +371,50 @@ class MainUIViewer: UIViewController, AVCapturePhotoCaptureDelegate
     
     var CapturePhotoOutput: AVCapturePhotoOutput?
     
+    func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection)
+    {
+        ProcessLiveViewFrame(Buffer: sampleBuffer)
+    }
+    
+    var CurrentRenderer: Renderer? = nil
+    var Parameter: RenderPacket? = nil
+    
+    func ProcessLiveViewFrame(Buffer: CMSampleBuffer)
+    {
+        guard let VideoPixelBuffer = CMSampleBufferGetImageBuffer(Buffer),
+            let FormatDescription = CMSampleBufferGetFormatDescription(Buffer) else
+        {
+            print("Error getting format description.")
+            return
+        }
+        let FinalPixelBuffer = VideoPixelBuffer
+        if CurrentRenderer == nil
+        {
+            CurrentRenderer = Noir()
+            CurrentRenderer?.Initialize(With: FormatDescription, BufferCountHint: 3)
+        }
+        guard let FilteredBuffer = CurrentRenderer?.Render(PixelBuffer: FinalPixelBuffer, Parameters: Parameter) else
+        {
+            print("Renderer.Render returned error (nil result).")
+            return
+        }
+        OutputView2.pixelBuffer = FilteredBuffer
+    }
+    
     @IBAction func HandleSaveButtonPressed(_ sender: Any)
     {
+        if OnSimulator
+        {
+            ShowMessage("Cannot Save Image")
+            return
+        }
+        #if true
+        let Settings = AVCapturePhotoSettings(format: [kCVPixelBufferPixelFormatTypeKey as String: Int(kCVPixelFormatType_32BGRA)])
+        StillImageOut.capturePhoto(with: Settings, delegate: self)
+        #else
         let Settings = AVCapturePhotoSettings(format: [AVVideoCodecKey: AVVideoCodecType.jpeg])
         StillImageOut.capturePhoto(with: Settings, delegate: self)
+        #endif
     }
     
     func photoOutput(_ output: AVCapturePhotoOutput, didFinishProcessingPhoto photo: AVCapturePhoto, error: Error?)
@@ -204,7 +433,12 @@ class MainUIViewer: UIViewController, AVCapturePhotoCaptureDelegate
         if let Image = UIImage(data: ImageData)
         {
             OriginalImageToSave = Image
+            #if true
+            PreviewImage = ApplyFilter(To: Image)
+            DoSaveImage()
+            #else
             SetupSegue(ForImage: ApplyFilter(To: Image))
+            #endif
         }
         else
         {
@@ -347,9 +581,45 @@ class MainUIViewer: UIViewController, AVCapturePhotoCaptureDelegate
             }
             else
             {
+                ShowTransientSaveMessage("Image saved")
                 print("Images saved to photo album successfully.")
             }
         }
+    }
+    
+    func ShowTransientSaveMessage(_ Message: String)
+    {
+        StatusLabel.text = Message
+        StatusLabel.alpha = 1.0
+        StatusLabel.backgroundColor = UIColor(red: 1.0, green: 1.0, blue: 1.0, alpha: 0.5)
+        UIView.animate(withDuration: 0.5, delay: 1.5, options: [], animations: {
+            self.StatusLabel.alpha = 0.0
+        }, completion: nil)
+    }
+    
+    func ShowMessage(_ Message: String)
+    {
+        StatusLabel.text = Message
+        StatusLabel.alpha = 1.0
+        StatusLabel.backgroundColor = UIColor(red: 1.0, green: 1.0, blue: 0.0, alpha: 0.65)
+        UIView.animate(withDuration: 0.5, delay: 5.0, options: [], animations:
+            {
+                self.StatusLabel.alpha = 0.0
+        }, completion: nil)
+    }
+    
+    func ShowFilter(_ Message: String)
+    {
+        FilterLabel.text = "   " + Message
+        FilterLabel.alpha = 1.0
+        FilterLabel.textColor = UIColor.white
+        FilterLabel.backgroundColor = UIColor(red: 1.0, green: 1.0, blue: 1.0, alpha: 0.25)
+        UIView.animate(withDuration: 2.5, delay: 5.0, options: [], animations:
+            {
+                self.FilterLabel.alpha = 0.5
+                self.FilterLabel.textColor = UIColor.lightGray
+        }
+            , completion: nil)
     }
     
     var ShowNormalSaveAlert: Bool = false
@@ -358,11 +628,24 @@ class MainUIViewer: UIViewController, AVCapturePhotoCaptureDelegate
     
     func FinalizeImage(_ Source: UIImage) -> UIImage
     {
-        let cimg = Source.ciImage
+        #if true
+        let fred = Source.ciImage
         let Context = CIContext()
-        let cgimg = Context.createCGImage(cimg!, from: cimg!.extent)
-        let final = UIImage(cgImage: cgimg!)
-        return final
+        let cgimg = Context.createCGImage(fred!, from: fred!.extent)
+        return UIImage(cgImage: cgimg!)
+        #else
+        if let cimg = CIImage(image: Source)
+        {
+            let Context = CIContext()
+            if let cgimg = Context.createCGImage(cimg, from: cimg.extent)
+            {
+                let final = UIImage(cgImage: cgimg)
+                return final
+            }
+            fatalError("Error creating CG image from context.")
+        }
+        fatalError("Error converting UIImage to CIImage.")
+        #endif
     }
     
     //https://stackoverflow.com/questions/44864432/saving-to-user-photo-library-silently-fails
@@ -397,12 +680,10 @@ class MainUIViewer: UIViewController, AVCapturePhotoCaptureDelegate
         Filters.addAction(Filter6)
         let Filter6A = UIAlertAction(title: TitleFor(10), style: .default, handler: FilterSelection)
         Filters.addAction(Filter6A)
-        
         let Filter11 = UIAlertAction(title: TitleFor(11), style: .default, handler: FilterSelection)
         Filters.addAction(Filter11)
         let Filter12 = UIAlertAction(title: TitleFor(12), style: .default, handler: FilterSelection)
         Filters.addAction(Filter12)
-        
         let Filter3 = UIAlertAction(title: TitleFor(3), style: .default, handler: FilterSelection)
         Filters.addAction(Filter3)
         let Filter4 = UIAlertAction(title: TitleFor(4), style: .default, handler: FilterSelection)
@@ -455,6 +736,7 @@ class MainUIViewer: UIViewController, AVCapturePhotoCaptureDelegate
         {
             CurrentFilter = FilterID
             print("Current filter now \(TitleFor(CurrentFilter))")
+            ShowFilter(TitleFor(CurrentFilter))
         }
         else
         {
@@ -463,30 +745,9 @@ class MainUIViewer: UIViewController, AVCapturePhotoCaptureDelegate
     }
     
     @IBOutlet weak var OutputView: UIImageView!
-    
-    func SetupSegue(ForImage: UIImage)
-    {
-        PreviewImage = ForImage
-        performSegue(withIdentifier: "ToFilteredView", sender: self)
-    }
+    @IBOutlet weak var OutputView2: PreviewMetalView!
     
     var PreviewImage: UIImage!
-    
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?)
-    {
-        switch segue.identifier
-        {
-        case "ToFilteredView":
-            let Dest = segue.destination as? ImagePreviewController
-            Dest?.delegate = self
-            Dest?.ImageToPreview(PreviewImage)
-            
-        default:
-            break
-        }
-        
-        super.prepare(for: segue, sender: self)
-    }
     
     @IBOutlet weak var BackgroundView: UIView!
     @IBOutlet var MainUIView: UIView!
@@ -497,5 +758,11 @@ class MainUIViewer: UIViewController, AVCapturePhotoCaptureDelegate
     }
     
     @IBOutlet weak var PhotoAlbumButton: UIBarButtonItem!
+    
+    @IBOutlet weak var StatusLabel: UILabel!
+    
+    @IBOutlet weak var FilterLabel: UILabel!
+    
+    @IBOutlet weak var MainBottomToolbar: UIToolbar!
 }
 
