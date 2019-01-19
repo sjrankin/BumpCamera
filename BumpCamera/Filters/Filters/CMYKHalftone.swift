@@ -29,6 +29,8 @@ class CMYKHalftone: Renderer
     
     var Description: String = "CMYK Halftone"
     
+        var IconName: String = "CMYKHalftone"
+    
     var Initialized = false
     
     private var PrimaryFilter: CIFilter? = nil
@@ -195,5 +197,19 @@ class CMYKHalftone: Renderer
     func Merge(_ Top: CIImage, _ Bottom: CIImage) -> CIImage?
     {
       return nil
+    }
+    
+    func GetDefaultPacket() -> RenderPacket
+    {
+        let Packet = RenderPacket(ID: _ID)
+        Packet.Width = 5.0
+        Packet.Center = CGPoint(x: 0.0, y: 0.0)
+        Packet.Angle = 0.0
+        Packet.MergeWithBackground = true
+        Packet.SupportedFields.append(.Width)
+        Packet.SupportedFields.append(.Angle)
+        Packet.SupportedFields.append(.Center)
+        Packet.SupportedFields.append(.MergeWithBackground)
+        return Packet
     }
 }
