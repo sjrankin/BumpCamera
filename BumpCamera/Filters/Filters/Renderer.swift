@@ -16,6 +16,7 @@ protocol Renderer: class
 {
     var Description: String {get}
     var Initialized: Bool {get}
+    var IconName: String {get}
     
     func Initialize(With FormatDescription: CMFormatDescription, BufferCountHint: Int)
     
@@ -34,6 +35,8 @@ protocol Renderer: class
     func Render(Image: CIImage, Parameters: RenderPacket?) -> CIImage?
     
     func Merge(_ Top: CIImage, _ Bottom: CIImage) -> CIImage?
+    
+    func GetDefaultPacket() -> RenderPacket
 }
 
 func CreateBufferPool(From: CMFormatDescription, BufferCountHint: Int) ->
