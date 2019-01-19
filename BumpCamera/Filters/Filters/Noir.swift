@@ -27,6 +27,8 @@ class Noir: Renderer
         }
     }
     
+    var IconName: String = "Noir"
+    
     var Description: String = "Noir"
     
     var Initialized = false
@@ -146,5 +148,10 @@ class Noir: Renderer
     func Merge(_ Top: CIImage, _ Bottom: CIImage) -> CIImage?
     {
         return nil
+    }
+    
+    func GetDefaultPacket() -> RenderPacket
+    {
+        return RenderPacket(ID: _ID)
     }
 }
