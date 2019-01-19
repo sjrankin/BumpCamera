@@ -29,6 +29,8 @@ class PassThrough: Renderer
     
     var Description: String = "No Filter"
     
+    var IconName: String = "PassThrough"
+    
     var Initialized = false
     
     private var PrimaryFilter: CIFilter? = nil
@@ -88,5 +90,10 @@ class PassThrough: Renderer
     func Merge(_ Top: CIImage, _ Bottom: CIImage) -> CIImage?
     {
         return nil
+    }
+    
+    func GetDefaultPacket() -> RenderPacket
+    {
+        return RenderPacket(ID: _ID)
     }
 }
