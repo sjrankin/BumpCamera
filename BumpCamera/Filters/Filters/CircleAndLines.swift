@@ -29,6 +29,8 @@ class CircleAndLines: Renderer
     
     var Description: String = "Circular and Linear Screen"
     
+    var IconName: String = ""
+    
     var Initialized = false
     
     private var PrimaryFilter: CIFilter? = nil
@@ -276,5 +278,19 @@ class CircleAndLines: Renderer
             print("Error returned by call to image merge filter.")
             return nil
         }
+    }
+    
+    func GetDefaultPacket() -> RenderPacket
+    {
+        let Packet = RenderPacket(ID: _ID)
+        Packet.Width = 5.0
+        Packet.Center = CGPoint(x: 0.0, y: 0.0)
+        Packet.Angle = 0.0
+        Packet.MergeWithBackground = true
+        Packet.SupportedFields.append(.Width)
+        Packet.SupportedFields.append(.Angle)
+        Packet.SupportedFields.append(.Center)
+        Packet.SupportedFields.append(.MergeWithBackground)
+        return Packet
     }
 }
