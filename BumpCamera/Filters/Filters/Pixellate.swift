@@ -29,6 +29,8 @@ class Pixellate: Renderer
     
     var Description: String = "Pixellate"
     
+        var IconName: String = "Pixellate"
+    
     var Initialized = false
     
     private var PrimaryFilter: CIFilter? = nil
@@ -101,7 +103,7 @@ class Pixellate: Renderer
         CVPixelBufferPoolCreatePixelBuffer(kCFAllocatorDefault, BufferPool!, &PixBuf)
         guard let OutPixBuf = PixBuf else
         {
-            print("Allocation failure in.")
+            print("Allocation failure in Pixellate.")
             return nil
         }
         
@@ -140,6 +142,7 @@ class Pixellate: Renderer
             return nil
         }
         PrimaryFilter.setDefaults()
+        PrimaryFilter.setValue(Image, forKey: kCIInputImageKey)
         if let Result = PrimaryFilter.value(forKey: kCIOutputImageKey) as? CIImage
         {
             let Rotated = RotateImage(Result)
@@ -151,5 +154,13 @@ class Pixellate: Renderer
     func Merge(_ Top: CIImage, _ Bottom: CIImage) -> CIImage?
     {
         return nil
+    }
+    
+    func GetDefaultPacket() -> RenderPacket
+    {
+        let Packet = RenderPacket(ID: _ID)
+        Packet.Width = 20.0
+        Packet.SupportedFields.append(.Width)
+        return Packet
     }
 }
