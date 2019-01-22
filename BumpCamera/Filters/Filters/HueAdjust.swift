@@ -1,8 +1,8 @@
 //
-//  Noir.swift
+//  HueAdjust.swift
 //  BumpCamera
 //
-//  Created by Stuart Rankin on 1/15/19.
+//  Created by Stuart Rankin on 1/20/19.
 //  Copyright © 2019 Stuart Rankin. All rights reserved.
 //
 
@@ -12,9 +12,9 @@ import CoreMedia
 import CoreVideo
 import CoreImage
 
-class Noir: FilterParent, Renderer
+class HueAdjust: FilterParent, Renderer
 {
-    var _ID: UUID = UUID(uuidString: "7215048f-15ea-46a1-8b11-a03e104a568d")!
+    var _ID: UUID = UUID(uuidString: "dd8f30bf-e22b-4d8c-afa3-303c15eb1928")!
     var ID: UUID
     {
         get
@@ -32,9 +32,9 @@ class Noir: FilterParent, Renderer
         return UUID()
     }
     
-    var IconName: String = "Noir"
+    var Description: String = "Hue Adjust"
     
-    var Description: String = "Noir"
+    var IconName: String = "Hue Adjust"
     
     var Initialized = false
     
@@ -54,15 +54,16 @@ class Noir: FilterParent, Renderer
     
     func Initialize(With FormatDescription: CMFormatDescription, BufferCountHint: Int)
     {
-        Reset("Noir.Initialize")
+        Reset("HueAdjust.Initialize")
         (BufferPool, ColorSpace, OutputFormatDescription) = CreateBufferPool(From: FormatDescription, BufferCountHint: BufferCountHint)
         if BufferPool == nil
         {
+            print("BufferPool nil in HueAdjust.")
             return
         }
         InputFormatDescription = FormatDescription
         Context = CIContext()
-        PrimaryFilter = CIFilter(name: "CIPhotoEffectNoir")
+        PrimaryFilter = CIFilter(name: "CIHueAdjust")
         Initialized = true
     }
     
@@ -73,7 +74,7 @@ class Noir: FilterParent, Renderer
         Context = nil
         PrimaryFilter = nil
         ColorSpace = nil
-        //print("Setting BufferPool to nil in Noir, called by: \(CalledBy)")
+        //print("Setting BufferPool to nil in xray, called by \(CalledBy).")
         BufferPool = nil
         OutputFormatDescription = nil
         InputFormatDescription = nil
@@ -91,6 +92,11 @@ class Noir: FilterParent, Renderer
     {
         objc_sync_enter(AccessLock)
         defer{objc_sync_exit(AccessLock)}
+        if BufferPool == nil
+        {
+            print("BufferPool nil in HueAdjust.Render.")
+            return nil
+        }
         guard let PrimaryFilter = PrimaryFilter,
             let Context = Context,
             Initialized else
@@ -103,17 +109,28 @@ class Noir: FilterParent, Renderer
         PrimaryFilter.setDefaults()
         PrimaryFilter.setValue(SourceImage, forKey: kCIInputImageKey)
         
+        let AngleAsAny = ParameterManager.GetField(From: ID, Field: FilterManager.InputFields.Angle)
+        if let Angle = AngleAsAny as? Double
+        {
+            PrimaryFilter.setValue(Float(Angle), forKey: kCIInputAngleKey)
+        }
+        
         guard let FilteredImage = PrimaryFilter.value(forKey: kCIOutputImageKey) as? CIImage else
         {
             print("CIFilter failed to render image.")
             return nil
         }
         
+        if BufferPool == nil
+        {
+            print("BufferPool nil in HueAdjust after initial OK check.")
+            return nil
+        }
         var PixBuf: CVPixelBuffer?
         CVPixelBufferPoolCreatePixelBuffer(kCFAllocatorDefault, BufferPool!, &PixBuf)
         guard let OutPixBuf = PixBuf else
         {
-            print("Allocation failure in.")
+            print("Allocation failure in Hue Adjust.")
             return nil
         }
         
@@ -155,10 +172,14 @@ class Noir: FilterParent, Renderer
             return nil
         }
         #endif
-        PrimaryFilter = CIFilter(name: "CIPhotoEffectNoir")
+        PrimaryFilter = CIFilter(name: "CIHueAdjust")
         PrimaryFilter?.setDefaults()
         PrimaryFilter?.setValue(Image, forKey: kCIInputImageKey)
-        
+        let AngleAsAny = ParameterManager.GetField(From: ID, Field: FilterManager.InputFields.Angle)
+        if let Angle = AngleAsAny as? Double
+        {
+            PrimaryFilter?.setValue(Float(Angle), forKey: kCIInputAngleKey)
+        }
         if let Result = PrimaryFilter?.value(forKey: kCIOutputImageKey) as? CIImage
         {
             #if true
@@ -180,12 +201,21 @@ class Noir: FilterParent, Renderer
     
     func SupportedFields() -> [FilterManager.InputFields]
     {
-        return [FilterManager.InputFields]()
+        var Fields = [FilterManager.InputFields]()
+        Fields.append(.Angle)
+        return Fields
     }
     
     func DefaultFieldValue(Field: FilterManager.InputFields) -> (FilterManager.InputTypes, Any?)
     {
-        return (FilterManager.InputTypes.NoType, nil)
+        switch Field
+        {
+        case .Angle:
+            return (FilterManager.InputTypes.DoubleType, 0.5 as Any?)
+            
+        default:
+            fatalError("Unexpected field \(Field) encountered in DefaultFieldValue.")
+        }
     }
     
     func GetFieldLabel(ForField: FilterManager.InputFields) -> String?

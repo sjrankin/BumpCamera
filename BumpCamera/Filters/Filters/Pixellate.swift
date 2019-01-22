@@ -12,7 +12,7 @@ import CoreMedia
 import CoreVideo
 import CoreImage
 
-class Pixellate: Renderer
+class Pixellate: FilterParent, Renderer
 {
     var _ID: UUID = UUID(uuidString: "0f56b55b-0d77-4c3a-98eb-cadc62be7f4d")!
     var ID: UUID
@@ -27,9 +27,14 @@ class Pixellate: Renderer
         }
     }
     
+    var InstanceID: UUID
+    {
+        return UUID()
+    }
+    
     var Description: String = "Pixellate"
     
-        var IconName: String = "Pixellate"
+    var IconName: String = "Pixellate"
     
     var Initialized = false
     
@@ -49,7 +54,7 @@ class Pixellate: Renderer
     
     func Initialize(With FormatDescription: CMFormatDescription, BufferCountHint: Int)
     {
-        Reset()
+        Reset("Pixellate.Initialize")
         (BufferPool, ColorSpace, OutputFormatDescription) = CreateBufferPool(From: FormatDescription, BufferCountHint: BufferCountHint)
         if BufferPool == nil
         {
@@ -61,8 +66,10 @@ class Pixellate: Renderer
         Initialized = true
     }
     
-    func Reset()
+    func Reset(_ CalledBy: String = "")
     {
+        objc_sync_enter(AccessLock)
+        defer{objc_sync_exit(AccessLock)}
         Context = nil
         PrimaryFilter = nil
         ColorSpace = nil
@@ -72,8 +79,17 @@ class Pixellate: Renderer
         Initialized = false
     }
     
-    func Render(PixelBuffer: CVPixelBuffer, Parameters: RenderPacket? = nil) -> CVPixelBuffer?
+    func Reset()
     {
+        Reset("")
+    }
+    
+    var AccessLock = NSObject()
+    
+    func Render(PixelBuffer: CVPixelBuffer) -> CVPixelBuffer?
+    {
+        objc_sync_enter(AccessLock)
+        defer{objc_sync_exit(AccessLock)}
         guard let PrimaryFilter = PrimaryFilter,
             let Context = Context,
             Initialized else
@@ -85,12 +101,10 @@ class Pixellate: Renderer
         let SourceImage = CIImage(cvImageBuffer: PixelBuffer)
         PrimaryFilter.setDefaults()
         PrimaryFilter.setValue(SourceImage, forKey: kCIInputImageKey)
-        if let Parameters = Parameters
+        let SomeBlockSize = ParameterManager.GetField(From: ID, Field: FilterManager.InputFields.Width)
+        if let BlockSize = SomeBlockSize as? Double
         {
-            if let Width = Parameters.Width
-            {
-                PrimaryFilter.setValue(Width, forKey: kCIInputScaleKey)
-            }
+            PrimaryFilter.setValue(BlockSize, forKey: kCIInputScaleKey)
         }
         
         guard let FilteredImage = PrimaryFilter.value(forKey: kCIOutputImageKey) as? CIImage else
@@ -111,11 +125,11 @@ class Pixellate: Renderer
         return OutPixBuf
     }
     
-    func Render(Image: UIImage, Parameters: RenderPacket? = nil) -> UIImage?
+    func Render(Image: UIImage) -> UIImage?
     {
         if let CImage = CIImage(image: Image)
         {
-            if let Result = Render(Image: CImage, Parameters: Parameters)
+            if let Result = Render(Image: CImage)
             {
                 let Final = UIImage(ciImage: Result)
                 return Final
@@ -133,34 +147,85 @@ class Pixellate: Renderer
         }
     }
     
-    func Render(Image: CIImage, Parameters: RenderPacket? = nil) -> CIImage?
+    func Render(Image: CIImage) -> CIImage?
     {
+        objc_sync_enter(AccessLock)
+        defer{objc_sync_exit(AccessLock)}
+        #if false
         guard let PrimaryFilter = PrimaryFilter,
             Initialized else
         {
             print("Filter not initialized.")
             return nil
         }
-        PrimaryFilter.setDefaults()
-        PrimaryFilter.setValue(Image, forKey: kCIInputImageKey)
-        if let Result = PrimaryFilter.value(forKey: kCIOutputImageKey) as? CIImage
+        #endif
+        PrimaryFilter = CIFilter(name: "CIPixellate")
+        PrimaryFilter?.setDefaults()
+        PrimaryFilter?.setValue(Image, forKey: kCIInputImageKey)
+        let SomeBlockSize = ParameterManager.GetField(From: ID, Field: FilterManager.InputFields.Width)
+        if let BlockSize = SomeBlockSize as? Double
         {
+            PrimaryFilter?.setValue(BlockSize, forKey: kCIInputScaleKey)
+        }
+        if let Result = PrimaryFilter?.value(forKey: kCIOutputImageKey) as? CIImage
+        {
+            #if true
+            return Result
+            #else
             let Rotated = RotateImage(Result)
             return Rotated
+            #endif
         }
         return nil
     }
     
+    #if false
     func Merge(_ Top: CIImage, _ Bottom: CIImage) -> CIImage?
     {
         return nil
     }
+    #endif
     
-    func GetDefaultPacket() -> RenderPacket
+    func SupportedFields() -> [FilterManager.InputFields]
     {
-        let Packet = RenderPacket(ID: _ID)
-        Packet.Width = 20.0
-        Packet.SupportedFields.append(.Width)
-        return Packet
+        var Fields = [FilterManager.InputFields]()
+        Fields.append(.Width)
+        return Fields
+    }
+    
+    func DefaultFieldValue(Field: FilterManager.InputFields) -> (FilterManager.InputTypes, Any?)
+    {
+        switch Field
+        {
+        case .Width:
+            return (FilterManager.InputTypes.DoubleType, 20.0 as Any?)
+            
+        default:
+            fatalError("Unexpected field \(Field) encountered in DefaultFieldValue.")
+        }
+    }
+    
+    func GetFieldLabel(ForField: FilterManager.InputFields) -> String?
+    {
+        switch ForField
+        {
+        case .Width:
+            return "Pixel block size"
+            
+        default:
+            return nil
+        }
+    }
+    
+    func GetFieldDetails(ForField: FilterManager.InputFields) -> String?
+    {
+        switch ForField
+        {
+        case .Width:
+            return "Dimensions of the square region whose color is averaged to form the pixel."
+            
+        default:
+            return nil
+        }
     }
 }

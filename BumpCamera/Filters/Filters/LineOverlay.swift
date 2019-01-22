@@ -12,7 +12,7 @@ import CoreMedia
 import CoreVideo
 import CoreImage
 
-class LineOverlay: Renderer
+class LineOverlay: FilterParent, Renderer
 {
     var _ID: UUID = UUID(uuidString: "910d04a3-729d-4fdf-b19e-654904b0eeeb")!
     var ID: UUID
@@ -25,6 +25,11 @@ class LineOverlay: Renderer
         {
             _ID = newValue
         }
+    }
+    
+    var InstanceID: UUID
+    {
+        return UUID()
     }
     
     var Description: String = "Line Overlay"
@@ -55,7 +60,7 @@ class LineOverlay: Renderer
     
     func Initialize(With FormatDescription: CMFormatDescription, BufferCountHint: Int)
     {
-        Reset()
+        Reset("LineOverlay.Initialize")
         (BufferPool, ColorSpace, OutputFormatDescription) = CreateBufferPool(From: FormatDescription, BufferCountHint: BufferCountHint)
         if BufferPool == nil
         {
@@ -70,8 +75,10 @@ class LineOverlay: Renderer
         Initialized = true
     }
     
-    func Reset()
+    func Reset(_ CalledBy: String = "")
     {
+        objc_sync_enter(AccessLock)
+        defer{objc_sync_exit(AccessLock)}
         Context = nil
         PrimaryFilter = nil
         SecondaryFilter = nil
@@ -85,8 +92,17 @@ class LineOverlay: Renderer
         Initialized = false
     }
     
-    func Render(PixelBuffer: CVPixelBuffer, Parameters: RenderPacket? = nil) -> CVPixelBuffer?
+    func Reset()
     {
+        Reset("")
+    }
+    
+    var AccessLock = NSObject()
+    
+    func Render(PixelBuffer: CVPixelBuffer) -> CVPixelBuffer?
+    {
+        objc_sync_enter(AccessLock)
+        defer{objc_sync_exit(AccessLock)}
         guard let PrimaryFilter = PrimaryFilter,
             let Context = Context,
             Initialized else
@@ -98,20 +114,36 @@ class LineOverlay: Renderer
         let SourceImage = CIImage(cvImageBuffer: PixelBuffer)
         PrimaryFilter.setDefaults()
         PrimaryFilter.setValue(SourceImage, forKey: kCIInputImageKey)
-        if let Parameters = Parameters
+        let EdgeAsAny = ParameterManager.GetField(From: ID, Field: FilterManager.InputFields.EdgeIntensity)
+        if let EdgeInt = EdgeAsAny as? Double
         {
-            if let EdgeIntensity = Parameters.EdgeIntensity
-            {
-                PrimaryFilter.setValue(EdgeIntensity, forKey: "inputEdgeIntensity")
-            }
-            if let InputContrast = Parameters.InputContrast
-            {
-                PrimaryFilter.setValue(InputContrast, forKey: "inputContrast")
-            }
-            if let InputThreshold = Parameters.InputThreshold
-            {
-                PrimaryFilter.setValue(InputThreshold, forKey: "inputThreshold")
-            }
+            PrimaryFilter.setValue(EdgeInt, forKey: "inputEdgeIntensity")
+        }
+        let ContrastAsAny = ParameterManager.GetField(From: ID, Field: FilterManager.InputFields.InputContrast)
+        if let ContrastInt = ContrastAsAny as? Double
+        {
+            PrimaryFilter.setValue(ContrastInt, forKey: "inputContrast")
+        }
+        let ThreshAsAny = ParameterManager.GetField(From: ID, Field: FilterManager.InputFields.InputThreshold)
+        if let ThreshInt = ThreshAsAny as? Double
+        {
+            PrimaryFilter.setValue(ThreshInt, forKey: "inputThreshold")
+        }
+        let NRNoiseAsAny = ParameterManager.GetField(From: ID, Field: FilterManager.InputFields.NRNoiseLevel)
+        if let NoiseVal = NRNoiseAsAny as? Double
+        {
+            PrimaryFilter.setValue(NoiseVal, forKey: "inputNRNoiseLevel")
+        }
+        let NRSharpAsAny = ParameterManager.GetField(From: ID, Field: FilterManager.InputFields.NRSharpness)
+        if let SharpVal = NRSharpAsAny as? Double
+        {
+            PrimaryFilter.setValue(SharpVal, forKey: "inputNRSharpness")
+        }
+        var DoMerge = false
+        let MergeAsAny = ParameterManager.GetField(From: ID, Field: FilterManager.InputFields.MergeWithBackground)
+        if let MergeImages = MergeAsAny as? Bool
+        {
+            DoMerge = MergeImages
         }
         
         guard var FilteredImage = PrimaryFilter.value(forKey: kCIOutputImageKey) as? CIImage else
@@ -120,15 +152,18 @@ class LineOverlay: Renderer
             return nil
         }
         
-        let Background = CIImage(cvImageBuffer: PixelBuffer)
-        if let Merged = Merge(FilteredImage, Background)
+        if DoMerge
         {
-            FilteredImage = Merged
-        }
-        else
-        {
-            print("Error returned from merge operation.")
-            return nil
+            let Background = CIImage(cvImageBuffer: PixelBuffer)
+            if let Merged = Merge(FilteredImage, Background)
+            {
+                FilteredImage = Merged
+            }
+            else
+            {
+                print("Error returned from merge operation.")
+                return nil
+            }
         }
         
         var PixBuf: CVPixelBuffer?
@@ -143,11 +178,11 @@ class LineOverlay: Renderer
         return OutPixBuf
     }
     
-    func Render(Image: UIImage, Parameters: RenderPacket? = nil) -> UIImage?
+    func Render(Image: UIImage) -> UIImage?
     {
         if let CImage = CIImage(image: Image)
         {
-            if let Result = Render(Image: CImage, Parameters: Parameters)
+            if let Result = Render(Image: CImage)
             {
                 let Final = UIImage(ciImage: Result)
                 return Final
@@ -165,40 +200,60 @@ class LineOverlay: Renderer
         }
     }
     
-    func Render(Image: CIImage, Parameters: RenderPacket? = nil) -> CIImage?
+    func Render(Image: CIImage) -> CIImage?
     {
+        objc_sync_enter(AccessLock)
+        defer{objc_sync_exit(AccessLock)}
+        #if false
         guard let PrimaryFilter = PrimaryFilter,
             Initialized else
         {
             print("Filter not initialized.")
             return nil
         }
-        PrimaryFilter.setDefaults()
-        PrimaryFilter.setValue(Image, forKey: kCIInputImageKey)
-        if let Parameters = Parameters
+        #endif
+                PrimaryFilter = CIFilter(name: "CILineOverlay")
+        PrimaryFilter?.setDefaults()
+        PrimaryFilter?.setValue(Image, forKey: kCIInputImageKey)
+        let EdgeAsAny = ParameterManager.GetField(From: ID, Field: FilterManager.InputFields.EdgeIntensity)
+        if let EdgeInt = EdgeAsAny as? Double
         {
-            if let EdgeIntensity = Parameters.EdgeIntensity
-            {
-                PrimaryFilter.setValue(EdgeIntensity, forKey: "inputEdgeIntensity")
-            }
-            if let InputContrast = Parameters.InputContrast
-            {
-                PrimaryFilter.setValue(InputContrast, forKey: "inputContrast")
-            }
-            if let InputThreshold = Parameters.InputThreshold
-            {
-                PrimaryFilter.setValue(InputThreshold, forKey: "inputThreshold")
-            }
+            PrimaryFilter?.setValue(EdgeInt, forKey: "inputEdgeIntensity")
+        }
+        let ContrastAsAny = ParameterManager.GetField(From: ID, Field: FilterManager.InputFields.InputContrast)
+        if let ContrastInt = ContrastAsAny as? Double
+        {
+            PrimaryFilter?.setValue(ContrastInt, forKey: "inputContrast")
+        }
+        let ThreshAsAny = ParameterManager.GetField(From: ID, Field: FilterManager.InputFields.InputThreshold)
+        if let ThreshInt = ThreshAsAny as? Double
+        {
+            PrimaryFilter?.setValue(ThreshInt, forKey: "inputThreshold")
+        }
+        let NRNoiseAsAny = ParameterManager.GetField(From: ID, Field: FilterManager.InputFields.NRNoiseLevel)
+        if let NoiseVal = NRNoiseAsAny as? Double
+        {
+            PrimaryFilter?.setValue(NoiseVal, forKey: "inputNRNoiseLevel")
+        }
+        let NRSharpAsAny = ParameterManager.GetField(From: ID, Field: FilterManager.InputFields.NRSharpness)
+        if let SharpVal = NRSharpAsAny as? Double
+        {
+            PrimaryFilter?.setValue(SharpVal, forKey: "inputNRSharpness")
+        }
+        var DoMerge = false
+        let MergeAsAny = ParameterManager.GetField(From: ID, Field: FilterManager.InputFields.MergeWithBackground)
+        if let MergeImages = MergeAsAny as? Bool
+        {
+            DoMerge = MergeImages
         }
         
-        if let Result = PrimaryFilter.value(forKey: kCIOutputImageKey) as? CIImage
+        if let Result = PrimaryFilter?.value(forKey: kCIOutputImageKey) as? CIImage
         {
-            var DoMerge = false
-            if let MergeImages = Parameters?.MergeWithBackground
-            {
-                DoMerge = MergeImages
-            }
+            #if true
+            var Rotated = Result
+            #else
             var Rotated = RotateImage(Result)
+            #endif
             if DoMerge
             {
                 Rotated = Merge(Rotated, Image)!
@@ -208,66 +263,52 @@ class LineOverlay: Renderer
         return nil
     }
     
-    func Merge(_ Top: CIImage, _ Bottom: CIImage) -> CIImage?
+    func SupportedFields() -> [FilterManager.InputFields]
     {
-        var FinalTop: CIImage? = nil
-        InvertFilter?.setDefaults()
-        AlphaMaskFilter?.setDefaults()
-        
-        InvertFilter?.setValue(Top, forKey: kCIInputImageKey)
-        if let TopResult = InvertFilter?.value(forKey: kCIOutputImageKey) as? CIImage
+        var Fields = [FilterManager.InputFields]()
+        Fields.append(.InputContrast)
+        Fields.append(.InputThreshold)
+        Fields.append(.EdgeIntensity)
+        Fields.append(.NRNoiseLevel)
+        Fields.append(.NRSharpness)
+        Fields.append(.MergeWithBackground)
+        return Fields
+    }
+    
+    func DefaultFieldValue(Field: FilterManager.InputFields) -> (FilterManager.InputTypes, Any?)
+    {
+        switch Field
         {
-            AlphaMaskFilter?.setValue(TopResult, forKey: kCIInputImageKey)
-            if let MaskResult = AlphaMaskFilter?.value(forKey: kCIOutputImageKey) as? CIImage
-            {
-                InvertFilter?.setValue(MaskResult, forKey: kCIInputImageKey)
-                if let InvertedAgain = InvertFilter?.value(forKey: kCIOutputImageKey) as? CIImage
-                {
-                    FinalTop = InvertedAgain
-                }
-                else
-                {
-                    print("Error returned by second call to inversion filter.")
-                    return nil
-                }
-            }
-            else
-            {
-                print("Error returned by alpha mask filter.")
-                return nil
-            }
-        }
-        else
-        {
-            print("Error return by call to inversion filter.")
-            return nil
-        }
-        
-        MergeSourceAtop?.setDefaults()
-        MergeSourceAtop?.setValue(FinalTop, forKey: kCIInputImageKey)
-        MergeSourceAtop?.setValue(Bottom, forKey: kCIInputBackgroundImageKey)
-        if let Merged = MergeSourceAtop?.value(forKey: kCIOutputImageKey) as? CIImage
-        {
-            return Merged
-        }
-        else
-        {
-            print("Error returned by call to image merge filter.")
-            return nil
+        case .InputContrast:
+            return (FilterManager.InputTypes.DoubleType, 5.0 as Any?)
+            
+        case .InputThreshold:
+            return (FilterManager.InputTypes.DoubleType, 0.0 as Any?)
+            
+        case .EdgeIntensity:
+            return (FilterManager.InputTypes.DoubleType, 1.0 as Any?)
+            
+        case .MergeWithBackground:
+            return (FilterManager.InputTypes.BoolType, true as Any?)
+            
+        case .NRSharpness:
+            return (FilterManager.InputTypes.DoubleType, 0.71 as Any?)
+            
+        case .NRNoiseLevel:
+            return (FilterManager.InputTypes.DoubleType, 0.07 as Any?)
+            
+        default:
+            fatalError("Unexpected field \(Field) encountered in DefaultFieldValue.")
         }
     }
     
-    func GetDefaultPacket() -> RenderPacket
+    func GetFieldLabel(ForField: FilterManager.InputFields) -> String?
     {
-        let Packet = RenderPacket(ID: _ID)
-        Packet.EdgeIntensity = 1.0
-        Packet.InputThreshold = 0.0
-        Packet.InputContrast = 50.0
-        Packet.MergeWithBackground = true
-        Packet.SupportedFields.append(.InputContrast)
-        Packet.SupportedFields.append(.InputThreshold)
-        Packet.SupportedFields.append(.EdgeIntensity)
-        Packet.SupportedFields.append(.MergeWithBackground)
-        return Packet
+        return nil
+    }
+    
+    func GetFieldDetails(ForField: FilterManager.InputFields) -> String?
+    {
+        return nil
     }
 }

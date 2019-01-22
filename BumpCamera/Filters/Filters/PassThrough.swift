@@ -12,8 +12,10 @@ import CoreMedia
 import CoreVideo
 import CoreImage
 
-class PassThrough: Renderer
+class PassThrough: FilterParent, Renderer
 {
+    
+    
     var _ID: UUID = UUID(uuidString: "e18b32bf-e965-41c6-a1f5-4bb4ed6ba472")!
     var ID: UUID
     {
@@ -25,6 +27,11 @@ class PassThrough: Renderer
         {
             _ID = newValue
         }
+    }
+    
+    var InstanceID: UUID
+    {
+        return UUID()
     }
     
     var Description: String = "No Filter"
@@ -49,7 +56,7 @@ class PassThrough: Renderer
     
     func Initialize(With FormatDescription: CMFormatDescription, BufferCountHint: Int)
     {
-        Reset()
+        Reset("PassThrough.Initialize")
         (BufferPool, ColorSpace, OutputFormatDescription) = CreateBufferPool(From: FormatDescription, BufferCountHint: BufferCountHint)
         if BufferPool == nil
         {
@@ -61,8 +68,8 @@ class PassThrough: Renderer
         Initialized = true
     }
     
-    func Reset()
-    {
+    func Reset(_ CalledBy: String = "")
+    { 
         Context = nil
         PrimaryFilter = nil
         ColorSpace = nil
@@ -72,28 +79,43 @@ class PassThrough: Renderer
         Initialized = false
     }
     
-    func Render(PixelBuffer: CVPixelBuffer, Parameters: RenderPacket? = nil) -> CVPixelBuffer?
+    func Reset()
+    {
+        Reset("")
+    }
+    
+    func Render(PixelBuffer: CVPixelBuffer) -> CVPixelBuffer?
     {
         return PixelBuffer
     }
     
-    func Render(Image: UIImage, Parameters: RenderPacket? = nil) -> UIImage?
+    func Render(Image: UIImage) -> UIImage?
     {
         return Image
     }
     
-    func Render(Image: CIImage, Parameters: RenderPacket? = nil) -> CIImage?
+    func Render(Image: CIImage) -> CIImage?
     {
         return Image
     }
     
-    func Merge(_ Top: CIImage, _ Bottom: CIImage) -> CIImage?
+    func SupportedFields() -> [FilterManager.InputFields]
+    {
+        return [FilterManager.InputFields]()
+    }
+    
+    func DefaultFieldValue(Field: FilterManager.InputFields) -> (FilterManager.InputTypes, Any?)
+    {
+        return (FilterManager.InputTypes.NoType, nil)
+    }
+    
+    func GetFieldLabel(ForField: FilterManager.InputFields) -> String?
     {
         return nil
     }
     
-    func GetDefaultPacket() -> RenderPacket
+    func GetFieldDetails(ForField: FilterManager.InputFields) -> String?
     {
-        return RenderPacket(ID: _ID)
+        return nil
     }
 }

@@ -12,7 +12,7 @@ import CoreMedia
 import CoreVideo
 import CoreImage
 
-class XRay: Renderer
+class XRay: FilterParent, Renderer
 {
     var _ID: UUID = UUID(uuidString: "47d5ac1d-7878-4623-b3df-55559b9d7087")!
     var ID: UUID
@@ -25,6 +25,11 @@ class XRay: Renderer
         {
             _ID = newValue
         }
+    }
+    
+    var InstanceID: UUID
+    {
+        return UUID()
     }
     
     var Description: String = "X-Ray"
@@ -49,10 +54,11 @@ class XRay: Renderer
     
     func Initialize(With FormatDescription: CMFormatDescription, BufferCountHint: Int)
     {
-        Reset()
+        Reset("XRay.Initialize")
         (BufferPool, ColorSpace, OutputFormatDescription) = CreateBufferPool(From: FormatDescription, BufferCountHint: BufferCountHint)
         if BufferPool == nil
         {
+            print("BufferPool nil in XRay.Initialize.")
             return
         }
         InputFormatDescription = FormatDescription
@@ -61,19 +67,36 @@ class XRay: Renderer
         Initialized = true
     }
     
-    func Reset()
+    func Reset(_ CalledBy: String = "")
     {
+        objc_sync_enter(AccessLock)
+        defer{objc_sync_exit(AccessLock)}
         Context = nil
         PrimaryFilter = nil
         ColorSpace = nil
+        //print("Setting BufferPool to nil in xray, called by \(CalledBy).")
         BufferPool = nil
         OutputFormatDescription = nil
         InputFormatDescription = nil
         Initialized = false
     }
     
-    func Render(PixelBuffer: CVPixelBuffer, Parameters: RenderPacket? = nil) -> CVPixelBuffer?
+    func Reset()
     {
+        Reset("")
+    }
+    
+    var AccessLock = NSObject()
+    
+    func Render(PixelBuffer: CVPixelBuffer) -> CVPixelBuffer?
+    {
+        objc_sync_enter(AccessLock)
+        defer{objc_sync_exit(AccessLock)}
+        if BufferPool == nil
+        {
+            print("BufferPool nil in XRay.Render.")
+            return nil
+        }
         guard let PrimaryFilter = PrimaryFilter,
             let Context = Context,
             Initialized else
@@ -92,6 +115,10 @@ class XRay: Renderer
             return nil
         }
         
+        if BufferPool == nil
+        {
+            print("BufferPool nil in xray after initial OK check.")
+        }
         var PixBuf: CVPixelBuffer?
         CVPixelBufferPoolCreatePixelBuffer(kCFAllocatorDefault, BufferPool!, &PixBuf)
         guard let OutPixBuf = PixBuf else
@@ -104,11 +131,11 @@ class XRay: Renderer
         return OutPixBuf
     }
     
-    func Render(Image: UIImage, Parameters: RenderPacket? = nil) -> UIImage?
+    func Render(Image: UIImage) -> UIImage?
     {
         if let CImage = CIImage(image: Image)
         {
-            if let Result = Render(Image: CImage, Parameters: Parameters)
+            if let Result = Render(Image: CImage)
             {
                 let Final = UIImage(ciImage: Result)
                 return Final
@@ -126,32 +153,58 @@ class XRay: Renderer
         }
     }
     
-    func Render(Image: CIImage, Parameters: RenderPacket? = nil) -> CIImage?
+    func Render(Image: CIImage) -> CIImage?
     {
+        objc_sync_enter(AccessLock)
+        defer{objc_sync_exit(AccessLock)}
+        #if false
         guard let PrimaryFilter = PrimaryFilter,
             Initialized else
         {
             print("Filter not initialized.")
             return nil
         }
-        PrimaryFilter.setDefaults()
-        PrimaryFilter.setValue(Image, forKey: kCIInputImageKey)
-        if let Result = PrimaryFilter.value(forKey: kCIOutputImageKey) as? CIImage
+        #endif
+                PrimaryFilter = CIFilter(name: "CIXRay")
+        PrimaryFilter?.setDefaults()
+        PrimaryFilter?.setValue(Image, forKey: kCIInputImageKey)
+        if let Result = PrimaryFilter?.value(forKey: kCIOutputImageKey) as? CIImage
         {
+            #if true
+            return Result
+            #else
             let Rotated = RotateImage(Result)
             return Rotated
+            #endif
         }
         return nil
     }
     
+    #if false
     func Merge(_ Top: CIImage, _ Bottom: CIImage) -> CIImage?
     {
         return nil
     }
+    #endif
     
-    func GetDefaultPacket() -> RenderPacket
+    func SupportedFields() -> [FilterManager.InputFields]
     {
-        let Packet = RenderPacket(ID: _ID)
-        return Packet
+        let Fields = [FilterManager.InputFields]()
+        return Fields
+    }
+    
+    func DefaultFieldValue(Field: FilterManager.InputFields) -> (FilterManager.InputTypes, Any?)
+    {
+       return (FilterManager.InputTypes.NoType, nil)
+    }
+    
+    func GetFieldLabel(ForField: FilterManager.InputFields) -> String?
+    {
+        return nil
+    }
+    
+    func GetFieldDetails(ForField: FilterManager.InputFields) -> String?
+    {
+        return nil
     }
 }

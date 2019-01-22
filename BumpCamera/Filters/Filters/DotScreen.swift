@@ -12,7 +12,7 @@ import CoreMedia
 import CoreVideo
 import CoreImage
 
-class DotScreen: Renderer
+class DotScreen: FilterParent, Renderer
 {
     var _ID: UUID = UUID(uuidString: "48145942-f695-436a-a9bc-94158d3b469a")!
     var ID: UUID
@@ -27,9 +27,14 @@ class DotScreen: Renderer
         }
     }
     
+    var InstanceID: UUID
+    {
+        return UUID()
+    }
+    
     var Description: String = "Dot Screen"
     
-        var IconName: String = "DotScreenMerged" 
+    var IconName: String = "DotScreenMerged"
     
     var Initialized = false
     
@@ -55,7 +60,7 @@ class DotScreen: Renderer
     
     func Initialize(With FormatDescription: CMFormatDescription, BufferCountHint: Int)
     {
-        Reset()
+        Reset("DotScreen.Initialize")
         (BufferPool, ColorSpace, OutputFormatDescription) = CreateBufferPool(From: FormatDescription, BufferCountHint: BufferCountHint)
         if BufferPool == nil
         {
@@ -70,8 +75,10 @@ class DotScreen: Renderer
         Initialized = true
     }
     
-    func Reset()
+    func Reset(_ CalledBy: String = "")
     {
+        objc_sync_enter(AccessLock)
+        defer{objc_sync_exit(AccessLock)}
         Context = nil
         PrimaryFilter = nil
         SecondaryFilter = nil
@@ -85,8 +92,17 @@ class DotScreen: Renderer
         Initialized = false
     }
     
-    func Render(PixelBuffer: CVPixelBuffer, Parameters: RenderPacket? = nil) -> CVPixelBuffer?
+    func Reset()
     {
+        Reset("")
+    }
+    
+    var AccessLock = NSObject()
+    
+    func Render(PixelBuffer: CVPixelBuffer) -> CVPixelBuffer?
+    {
+        objc_sync_enter(AccessLock)
+        defer{objc_sync_exit(AccessLock)}
         guard let PrimaryFilter = PrimaryFilter,
             let Context = Context,
             Initialized else
@@ -99,25 +115,26 @@ class DotScreen: Renderer
         PrimaryFilter.setDefaults()
         PrimaryFilter.setValue(SourceImage, forKey: kCIInputImageKey)
         var DoMerge = false
-        if let Parameters = Parameters
+        let AngleAsAny = ParameterManager.GetField(From: ID, Field: FilterManager.InputFields.Angle)
+        if let Angle = AngleAsAny as? Double
         {
-            if let Angle = Parameters.Angle
-            {
-                PrimaryFilter.setValue(Angle, forKey: kCIInputAngleKey)
-            }
-            if let Width = Parameters.Width
-            {
-                PrimaryFilter.setValue(Width, forKey: kCIInputWidthKey)
-            }
-            if let Center = Parameters.Center
-            {
-                let CVCenter = CIVector(x: Center.x, y: Center.y)
-                PrimaryFilter.setValue(CVCenter, forKey: kCIInputCenterKey)
-            }
-            if let MergeImages = Parameters.MergeWithBackground
-            {
-                DoMerge = MergeImages
-            }
+            PrimaryFilter.setValue(Angle, forKey: kCIInputAngleKey)
+        }
+        let WidthAsAny = ParameterManager.GetField(From: ID, Field: FilterManager.InputFields.Width)
+        if let Width = WidthAsAny as? Double
+        {
+            PrimaryFilter.setValue(Width, forKey: kCIInputWidthKey)
+        }
+        let CenterAsAny = ParameterManager.GetField(From: ID, Field: FilterManager.InputFields.Center)
+        if let Center = CenterAsAny as? CGPoint
+        {
+            let CVCenter = CIVector(x: Center.x, y: Center.y)
+            PrimaryFilter.setValue(CVCenter, forKey: kCIInputCenterKey)
+        }
+        let MergeAsAny = ParameterManager.GetField(From: ID, Field: FilterManager.InputFields.MergeWithBackground)
+        if let MergeImages = MergeAsAny as? Bool
+        {
+            DoMerge = MergeImages
         }
         
         guard var FilteredImage = PrimaryFilter.value(forKey: kCIOutputImageKey) as? CIImage else
@@ -152,11 +169,11 @@ class DotScreen: Renderer
         return OutPixBuf
     }
     
-    func Render(Image: UIImage, Parameters: RenderPacket? = nil) -> UIImage?
+    func Render(Image: UIImage) -> UIImage?
     {
         if let CImage = CIImage(image: Image)
         {
-            if let Result = Render(Image: CImage, Parameters: Parameters)
+            if let Result = Render(Image: CImage)
             {
                 let Final = UIImage(ciImage: Result)
                 return Final
@@ -174,41 +191,51 @@ class DotScreen: Renderer
         }
     }
     
-    func Render(Image: CIImage, Parameters: RenderPacket? = nil) -> CIImage?
+    func Render(Image: CIImage) -> CIImage?
     {
+        objc_sync_enter(AccessLock)
+        defer{objc_sync_exit(AccessLock)}
+        #if false
         guard let PrimaryFilter = PrimaryFilter,
             Initialized else
         {
             print("Filter not initialized.")
             return nil
         }
-        PrimaryFilter.setDefaults()
-        PrimaryFilter.setValue(Image, forKey: kCIInputImageKey)
-        if let Parameters = Parameters
+        #endif
+        PrimaryFilter = CIFilter(name: "CIDotScreen")
+        PrimaryFilter?.setDefaults()
+        PrimaryFilter?.setValue(Image, forKey: kCIInputImageKey)
+        let AngleAsAny = ParameterManager.GetField(From: ID, Field: FilterManager.InputFields.Angle)
+        if let Angle = AngleAsAny as? Double
         {
-            if let Angle = Parameters.Angle
-            {
-                PrimaryFilter.setValue(Angle, forKey: kCIInputAngleKey)
-            }
-            if let Width = Parameters.Width
-            {
-                PrimaryFilter.setValue(Width, forKey: kCIInputWidthKey)
-            }
-            if let Center = Parameters.Center
-            {
-                let CVCenter = CIVector(x: Center.x, y: Center.y)
-                PrimaryFilter.setValue(CVCenter, forKey: kCIInputCenterKey)
-            }
+            PrimaryFilter?.setValue(Angle, forKey: kCIInputAngleKey)
+        }
+        let WidthAsAny = ParameterManager.GetField(From: ID, Field: FilterManager.InputFields.Width)
+        if let Width = WidthAsAny as? Double
+        {
+            PrimaryFilter?.setValue(Width, forKey: kCIInputWidthKey)
+        }
+        let CenterAsAny = ParameterManager.GetField(From: ID, Field: FilterManager.InputFields.Center)
+        if let Center = CenterAsAny as? CGPoint
+        {
+            let CVCenter = CIVector(x: Center.x, y: Center.y)
+            PrimaryFilter?.setValue(CVCenter, forKey: kCIInputCenterKey)
+        }
+        var DoMerge = false
+        let MergeAsAny = ParameterManager.GetField(From: ID, Field: FilterManager.InputFields.MergeWithBackground)
+        if let MergeImages = MergeAsAny as? Bool
+        {
+            DoMerge = MergeImages
         }
         
-        if let Result = PrimaryFilter.value(forKey: kCIOutputImageKey) as? CIImage
+        if let Result = PrimaryFilter?.value(forKey: kCIOutputImageKey) as? CIImage
         {
-            var DoMerge = false
-            if let MergeImages = Parameters?.MergeWithBackground
-            {
-                DoMerge = MergeImages
-            }
+            #if true
+            var Rotated = Result
+            #else
             var Rotated = RotateImage(Result)
+            #endif
             if DoMerge
             {
                 Rotated = Merge(Rotated, Image)!
@@ -218,6 +245,7 @@ class DotScreen: Renderer
         return nil
     }
     
+    #if false
     func Merge(_ Top: CIImage, _ Bottom: CIImage) -> CIImage?
     {
         var FinalTop: CIImage? = nil
@@ -266,18 +294,46 @@ class DotScreen: Renderer
             return nil
         }
     }
+    #endif
     
-    func GetDefaultPacket() -> RenderPacket
+    func SupportedFields() -> [FilterManager.InputFields]
     {
-        let Packet = RenderPacket(ID: _ID)
-        Packet.Width = 5.0
-        Packet.Center = CGPoint(x: 0.0, y: 0.0)
-        Packet.Angle = 0.0
-        Packet.MergeWithBackground = true
-        Packet.SupportedFields.append(.Width)
-        Packet.SupportedFields.append(.Angle)
-        Packet.SupportedFields.append(.Center)
-        Packet.SupportedFields.append(.MergeWithBackground)
-        return Packet
+        var Fields = [FilterManager.InputFields]()
+        Fields.append(.Width)
+        Fields.append(.Angle)
+        Fields.append(.Center)
+        Fields.append(.MergeWithBackground)
+        return Fields
+    }
+    
+    func DefaultFieldValue(Field: FilterManager.InputFields) -> (FilterManager.InputTypes, Any?)
+    {
+        switch Field
+        {
+        case .Width:
+            return (FilterManager.InputTypes.DoubleType, 5.0 as Any?)
+            
+        case .Angle:
+            return (FilterManager.InputTypes.DoubleType, nil as Any?)
+            
+        case .Center:
+            return (FilterManager.InputTypes.PointType, CGPoint(x: -1.0, y: -1.0) as Any?)
+            
+        case .MergeWithBackground:
+            return (FilterManager.InputTypes.BoolType, true as Any?)
+            
+        default:
+            fatalError("Unexpected field \(Field) encountered in DefaultFieldValue.")
+        }
+    }
+    
+    func GetFieldLabel(ForField: FilterManager.InputFields) -> String?
+    {
+        return nil
+    }
+    
+    func GetFieldDetails(ForField: FilterManager.InputFields) -> String?
+    {
+        return nil
     }
 }
