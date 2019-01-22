@@ -163,9 +163,9 @@ class RenderPacket
         }
     }
     
-    private var _SupportedTypes = [InputFields]()
+    private var _SupportedTypes = [FilterManager.InputFields]() 
     /// Get the list of supported input types.
-    public var SupportedFields: [InputFields]
+    public var SupportedFields: [FilterManager.InputFields]
     {
         get
         {
@@ -183,7 +183,7 @@ class RenderPacket
     ///
     /// - Parameter IType: Determines the input field to return.
     /// - Returns: Value of the input field cast to Any?
-    public func GetValueFor(_ IType: InputFields) -> Any?
+    public func GetValueFor(_ IType: FilterManager.InputFields) -> Any?
     {
         switch IType
         {
@@ -242,6 +242,9 @@ class RenderPacket
                 return Width as Any
             }
             return nil
+            
+        default:
+            return nil
         }
     }
     
@@ -249,7 +252,7 @@ class RenderPacket
     ///
     /// - Parameter IType: Determines the input field to set.
     /// - Parameter To: The value to set the field to.
-    public func SetValueFor(_ IType: InputFields, To: Any?)
+    public func SetValueFor(_ IType: FilterManager.InputFields, To: Any?)
     {
         switch IType
         {
@@ -340,6 +343,9 @@ class RenderPacket
             {
                 Width = (To as! Double)
             }
+            
+        default:
+            break
         }
     }
     
@@ -371,7 +377,7 @@ class RenderPacket
             let StrNum = String(SNum)
             if let Num = Int(StrNum)
             {
-                let ENum = InputFields(rawValue: Num)
+                let ENum = FilterManager.InputFields(rawValue: Num)
                 Packet.SupportedFields.append(ENum!)
             }
             else
@@ -390,11 +396,11 @@ class RenderPacket
             {
                 fatalError("Error converting field ID.")
             }
-            guard let TheField = InputFields(rawValue: FieldID) else
+            guard let TheField = FilterManager.InputFields(rawValue: FieldID) else
             {
                 fatalError("Error converting FieldID to actual enum.")
             }
-            let FieldType = FieldMap[TheField]
+            let FieldType = FilterManager.FieldMap[TheField]
             switch FieldType!
             {
             case .DoubleType:
@@ -438,15 +444,22 @@ class RenderPacket
                 }
                 let NewPoint = CGPoint(x: CGFloat(X), y: CGFloat(Y))
                 Packet.SetValueFor(TheField, To: NewPoint as Any?)
+                
+            default:
+                fatalError("Invalid field type encountered.")
             }
         }
         return Packet
     }
     
-    public static func Encode(_ Packet: RenderPacket) -> String
+    public static func Encode(_ Packet: RenderPacket) -> String?
     {
         var Final = ""
         
+        if Packet.SupportedFields.count < 1
+        {
+            return nil
+        }
         var Supported = "Supported="
         for InType in Packet.SupportedFields
         {
@@ -460,7 +473,7 @@ class RenderPacket
         for InType in Packet.SupportedFields
         {
             let Anything = Packet.GetValueFor(InType)
-            let AnyType = FieldMap[InType]
+            let AnyType = FilterManager.FieldMap[InType]
             var FinalValueString = ""
             if Anything != nil
             {
@@ -481,6 +494,9 @@ class RenderPacket
                 case .PointType:
                     let PVal = Anything as! CGPoint
                     FinalValueString = "\(PVal)"
+                    
+                default:
+                    fatalError("Invalid type encountered.")
                 }
             }
             let Line = "\(InType.rawValue)=\(FinalValueString)" + "\n"
@@ -516,7 +532,7 @@ class RenderPacket
         let Packet = Decode(ID: ID, Raw!)
         return Packet
     }
-    
+    #if false
     enum InputFields: Int
     {
         case InputThreshold = 0
@@ -535,9 +551,10 @@ class RenderPacket
         case IntType = 1
         case BoolType = 2
         case PointType = 3
+        case NoType = 1000
     }
     
-    static let FieldMap: [InputFields: InputTypes] =
+    public static let FieldMap: [InputFields: InputTypes] =
         [
             .InputThreshold: .DoubleType,
             .InputContrast: .DoubleType,
@@ -549,13 +566,26 @@ class RenderPacket
             .AdjustInLandscape: .BoolType
     ]
     
+    public static let FieldStorageMap: [InputFields: String] =
+    [
+        .InputThreshold: "_InputThreshold",
+        .InputContrast: "_InputContrast",
+        .EdgeIntensity: "_EdgeIntensity",
+        .Center: "_Center",
+        .Width: "_Width",
+        .Angle: "_Angle",
+        .MergeWithBackground: "_MergeWithBackground",
+        .AdjustInLandscape: "_AdjustInLandscape"
+    ]
+    #endif
+    
     /// Given a field type, return its data type.
     ///
     /// - Parameter For: The input field whose data type will be returned.
     /// - Returns: The data type for the specified field on success, fatal error on error.
-    public static func GetInputFieldType(For: InputFields) -> InputTypes
+    public static func GetInputFieldType(For: FilterManager.InputFields) -> FilterManager.InputTypes
     {
-        if let TheType = FieldMap[For]
+        if let TheType = FilterManager.FieldMap[For]
         {
             return TheType
         }
