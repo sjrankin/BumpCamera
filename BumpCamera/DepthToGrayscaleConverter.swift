@@ -58,7 +58,7 @@ class DepthToGrayscaleConverter
         }
         catch
         {
-            fatalError("Unable to create depth converter pipeline state. (\(error))")
+            fatalError("Unable to create depth converter pipeline state. (\(error.localizedDescription))")
         }
     }
     
