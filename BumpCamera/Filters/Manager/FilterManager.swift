@@ -9,64 +9,6 @@
 import Foundation
 import UIKit
 
-/// Types of filters that can be run on live views and static images.
-///
-/// - PassThrough: Filter that does nothing.
-/// - Noir: Noir (dramatic black and white) filter.
-/// - LineScreen: Line screen - makes images look like old CRT images.
-/// - CircularScreen: Circular screen.
-/// - DotScreen: Dot screen.
-/// - HatchScreen: Hatch screen.
-/// - Pixellate: Pixellate.
-/// - CircleAndLines: Combination of a line screen and a circular screen.
-/// - CMYKHalftone: CMYK halftone filter.
-/// - PaletteShifting: Reduce image (via Octree) colors then palette shift.
-/// - NotSet: Used to indicate no filter set.
-enum FilterNames: Int
-{
-    case PassThrough = 0
-    case Noir = 1
-    case LineScreen = 2
-    case CircularScreen = 3
-    case DotScreen = 4
-    case HatchScreen = 5
-    case Pixellate = 6
-    case CircleAndLines = 7
-    case CMYKHalftone = 8
-    case PaletteShifting = 9
-    case Comic = 10
-    case XRay = 11
-    case LineOverlay = 12
-    case BumpyPixels = 13
-    case BumpyTriangles = 14
-    case Embossed = 15
-    case ColorDelta = 16
-    case FilterDelta = 17
-    case PatternDelta = 18
-    case Mirror = 19
-    case NotSet = 1000
-}
-
-/// Logical groups of filters.
-///
-/// - Standard: Standard iOS filters.
-/// - Combined: Combination of standard filters.
-/// - Bumpy: Bumpy, eg, pseudo-3D filters.
-/// - Delta: Filters that show delta values between sequences (eg, videos).
-/// - Colors: Filters that show colors in unstandard ways.
-/// - Tiles: Filters related to distortions.
-/// - NotSet: Used to indicate no group set.
-enum FilterGroups: Int
-{
-    case Standard = 0
-    case Combined = 1
-    case Bumpy = 2
-    case Motion = 3
-    case Colors = 4
-    case Tiles = 5
-    case NotSet = 1000
-}
-
 /// Manages the set of filters for the camera and general image processing.
 class FilterManager
 {
@@ -76,7 +18,7 @@ class FilterManager
         PreloadFilters()
     }
     
-    init(_ StartingFilter: FilterNames)
+    init(_ StartingFilter: FilterTypes)
     {
         PreloadFilters()
         SetCurrentFilter(Name: StartingFilter)
@@ -85,7 +27,7 @@ class FilterManager
     init(_ StartingFilterValue: Int)
     {
         PreloadFilters()
-        if let Start: FilterNames = FilterNames.init(rawValue: StartingFilterValue)
+        if let Start: FilterTypes = FilterTypes.init(rawValue: StartingFilterValue)
         {
             SetCurrentFilter(Name: Start)
         }
@@ -94,71 +36,127 @@ class FilterManager
     /// Load all of the filter classes into the filter manager.
     private func PreloadFilters()
     {
-        for (FilterName, _) in FilterMap
+        for (FilterName, _) in FilterManager.FilterMap
         {
-        if let NewRenderer = CreateFilter(For: FilterName)
-        {
-            let NewCamera = CameraFilter(WithFilter: NewRenderer, AndType: FilterName, ID: FilterMap[FilterName]!)
-            FilterList.append(NewCamera)
-            NewCamera.Parameters = RenderPacket(ID: FilterMap[FilterName]!)
-        }
+            if !IsImplemented(FilterName)
+            {
+                #if false
+                let Raw = FilterName.rawValue
+                let Filtered = FilterTypes(rawValue: Raw)
+                print("\((Filtered)!) is not implemented.")
+                #endif
+                continue
+            }
+            if let NewRenderer = CreateFilter(For: FilterName)
+            {
+                let NewPhotoCamera = CameraFilter(WithFilter: NewRenderer, AndType: FilterName, ID: FilterManager.FilterMap[FilterName]!)
+                NewPhotoCamera.Parameters = RenderPacket(ID: FilterManager.FilterMap[FilterName]!)
+                PhotoFilterList.append(NewPhotoCamera)
+                let NewVideoCamera = CameraFilter(WithFilter: NewRenderer, AndType: FilterName, ID: FilterManager.FilterMap[FilterName]!)
+                NewVideoCamera.Parameters = RenderPacket(ID: FilterManager.FilterMap[FilterName]!)
+                VideoFilterList.append(NewVideoCamera)
+            }
+            else
+            {
+                fatalError("Error creating filter.")
+            }
         }
     }
     
-    /// Set the current filter to the specified filter type. Returns the filter (which can also be accessed via
-    /// the property CurrentFilter). If the filter hasn't been constructed yet, it will be constructed and added
-    /// to the filter list before being returned.
+    /// Set the current filter to the specified filter type. Calling this function sets both the current video and photo
+    /// filters. If the filter isn't in the appropriate filter list, it will be created and added.
     ///
     /// - Parameter Name: The type of filter to set as the current filter.
-    /// - Returns: The new current filter (which may be a pre-existing one). Nil returned on error.
-    @discardableResult public func SetCurrentFilter(Name: FilterNames) -> CameraFilter?
+    /// - Returns: True on success, false if the filter cannot be found or is not implemented.
+    @discardableResult public func SetCurrentFilter(Name: FilterTypes) -> Bool
     {
-        _CurrentFilter = GetFilter(Name: Name)
-        return CurrentFilter
+        if FilterManager.Implemented[Name] == nil
+        {
+            return false
+        }
+        if !FilterManager.Implemented[Name]!
+        {
+            return false
+        }
+        if let VF = _VideoFilter
+        {
+            VF.Filter?.Reset("Video: FilterManager.SetCurrentFilter")
+        }
+        if let PF = _PhotoFilter
+        {
+            PF.Filter?.Reset("Photo: FilterManager.SetCurrentFilter")
+        }
+        _VideoFilter = GetFilter(Name: Name, .Video)
+        _PhotoFilter = GetFilter(Name: Name, .Photo)
+        #if true
+        print("FilterManager.SetCurrentFilter(\((FilterManager.FilterTitles[Name])!))")
+        #endif
+        return true
     }
     
-    private var _CurrentFilter: CameraFilter?
-    /// Get the current filter. If nil, either no current filter set (see SetCurrentFilter) or an error occurred.
-    public var CurrentFilter: CameraFilter?
+    private var _VideoFilter: CameraFilter?
+    /// Get the current video filter. Set via the SetCurrentFilter function.
+    public var VideoFilter: CameraFilter?
     {
         get
         {
-            return _CurrentFilter
+            return _VideoFilter
+        }
+    }
+    
+    private var _PhotoFilter: CameraFilter?
+    /// Get the current photo filter. Set via the SetCurrentFilter function.
+    public var PhotoFilter: CameraFilter?
+    {
+        get
+        {
+            return _PhotoFilter
         }
     }
     
     /// Return the camera filter bundle for the specified filter type.
     ///
     /// - Parameter For: Determines the camera filter to return.
+    /// - Parameter Location: Where the filter will be applied.
     /// - Returns: The specified camera filter on success, nil if not found.
-    public func GetCameraFilter(For: FilterNames) -> CameraFilter?
+    public func GetCameraFilter(For: FilterTypes, Location: FilterLocations) -> CameraFilter?
     {
-        return GetFilter(Name: For)
+        return GetFilter(Name: For, Location)
     }
     
+    #if false
     /// Return the parameter block for the specified filter.
     ///
     /// - Parameter For: Determines the filter whose parameter block is returned.
+    /// - Parameter Location: Where the filter will be applied. Defaults to photo.
     /// - Returns: The parameter block for the specified filter on success, nil if not found or on error.
-    public func GetParameterBlock(For: FilterNames) -> RenderPacket?
+    public func GetParameterBlock(For: FilterTypes, Location: FilterLocations = .Photo) -> RenderPacket?
     {
-        if let Filter = GetCameraFilter(For: For)
+        if let Filter = GetCameraFilter(For: For, Location: Location)
         {
             return Filter.Parameters
         }
         return nil
     }
+    #endif
     
-    /// Get the type of the current filter. If no filter is set, .NotSet is returned.
-    public var CurrentFilterType: FilterNames
+    private var _CurrentPhotoFilterType: FilterTypes = .NotSet
+    /// Get the current photo filter type. It's intended to be the same as the current video filter.
+    public var CurrentPhotoFilterType: FilterTypes
     {
         get
         {
-            if let Filter = CurrentFilter
-            {
-                return Filter.FilterType
-            }
-            return .NotSet
+            return _CurrentPhotoFilterType
+        }
+    }
+    
+    private var _CurrentVideoFilterType: FilterTypes = .NotSet
+    /// Get the current video filter type. It's intended to be the same as the current photo filter.
+    public var CurrentVideoFilterType: FilterTypes
+    {
+        get
+        {
+            return _CurrentVideoFilterType
         }
     }
     
@@ -167,9 +165,9 @@ class FilterManager
     ///
     /// - Parameter Name: The type of filter to return.
     /// - Returns: The specified camera filter type on success, nil on error.
-    public func GetFilter(Name: FilterNames) -> CameraFilter?
+    public func GetFilter(Name: FilterTypes, _ For: FilterLocations) -> CameraFilter?
     {
-        for Camera in FilterList
+        for Camera in GetFilterList(For: For)
         {
             if Camera.FilterType == Name
             {
@@ -178,9 +176,17 @@ class FilterManager
         }
         if let NewRenderer = CreateFilter(For: Name)
         {
-            let NewCamera = CameraFilter(WithFilter: NewRenderer, AndType: Name, ID: FilterMap[Name]!)
-            FilterList.append(NewCamera)
-            NewCamera.Parameters = RenderPacket(ID: FilterMap[Name]!)
+            let NewCamera = CameraFilter(WithFilter: NewRenderer, AndType: Name,
+                                         ID: FilterManager.FilterMap[Name]!)
+            switch For
+            {
+            case .Photo:
+                PhotoFilterList.append(NewCamera)
+                
+            case .Video:
+                VideoFilterList.append(NewCamera)
+            }
+            NewCamera.Parameters = RenderPacket(ID: FilterManager.FilterMap[Name]!)
             return NewCamera
         }
         return nil
@@ -190,9 +196,9 @@ class FilterManager
     ///
     /// - Parameter For: The filter type whose parameters will be returned.
     /// - Returns: The current set of parameters for the specified filter type. Nil on error.
-    public func GetParameters(For: FilterNames) -> RenderPacket?
+    public func GetParameters(For: FilterTypes, _ Location: FilterLocations) -> RenderPacket?
     {
-        for Camera in FilterList
+        for Camera in GetFilterList(For: Location)
         {
             if Camera.FilterType == For
             {
@@ -202,11 +208,23 @@ class FilterManager
         return nil
     }
     
+    public func GetFilterList(For: FilterLocations) -> [CameraFilter]
+    {
+        switch For
+        {
+        case .Photo:
+            return PhotoFilterList
+            
+        case .Video:
+            return VideoFilterList
+        }
+    }
+    
     /// Creates a filter class for the specified filter type.
     ///
     /// - Parameter For: The type of filter class to create.
     /// - Returns: The newly-created filter class. Nil returned on error.
-    private func CreateFilter(For: FilterNames) -> Renderer?
+    public func CreateFilter(For: FilterTypes) -> Renderer?
     {
         switch For
         {
@@ -246,32 +264,62 @@ class FilterManager
         case .LineOverlay:
             return LineOverlay()
             
+        case .HueAdjust:
+            return HueAdjust()
+            
+        case .HSBAdjust:
+            return HSBAdjust()
+            
+        case .DesaturateColors:
+            return DesaturateColors()
+            
+        case .ChannelMixer:
+            return ChannelMixer()
+            
+        case .GrayscaleKernel:
+            return GrayscaleAdjust()
+            
         default:
             return nil
         }
     }
     
-    private var _FilterList = [CameraFilter]()
-    /// Get or set the list of filters.
-    public var FilterList: [CameraFilter]
+    private var _PhotoFilterList = [CameraFilter]()
+    /// Get or set the list of photo filters.
+    public var PhotoFilterList: [CameraFilter]
     {
         get
         {
-            return _FilterList
+            return _PhotoFilterList
         }
         set
         {
-            _FilterList = newValue
+            _PhotoFilterList = newValue
+        }
+    }
+    
+    private var _VideoFilterList = [CameraFilter]()
+    /// Get or set the list of video filters.
+    public var VideoFilterList: [CameraFilter]
+    {
+        get
+        {
+            return _VideoFilterList
+        }
+        set
+        {
+            _VideoFilterList = newValue
         }
     }
     
     /// Return the name of the icon for the specified filter type.
     ///
     /// - Parameter Name: The filter type whose icon name will be returned.
+    /// - Parameter For: The location of where the filter will be applied.
     /// - Returns: The name of the icon on success, empty string if no filter found.
-    public func FilterIconName(_ Name: FilterNames) -> String
+    public func FilterIconName(_ Name: FilterTypes, _ For: FilterLocations) -> String
     {
-        if let Camera = GetFilter(Name: Name)
+        if let Camera = GetFilter(Name: Name, For)
         {
             return (Camera.Filter?.IconName)!
         }
@@ -281,10 +329,11 @@ class FilterManager
     /// Return the human-readable title for the specified filter.
     ///
     /// - Parameter Name: The filter type whose title will be returned.
+    /// - Parameter For: The location of where the filter will be applied.
     /// - Returns: The title of the filter on success, empty string if no filter found.
-    public func FilterTitle(_ Name: FilterNames) -> String
+    public func FilterTitle(_ Name: FilterTypes, _ For: FilterLocations) -> String
     {
-        if let Camera = GetFilter(Name: Name)
+        if let Camera = GetFilter(Name: Name, For)
         {
             return (Camera.Filter?.Description)!
         }
@@ -295,18 +344,18 @@ class FilterManager
     ///
     /// - Parameter For: The the filter whose ID will be returned.
     /// - Returns: The ID of the passed filter on success, nil if not found.
-    public func GetFilterID(For: FilterNames) -> UUID?
+    public func GetFilterID(For: FilterTypes) -> UUID?
     {
-        return FilterMap[For]
+        return FilterManager.FilterMap[For]
     }
     
     /// Given a filter ID, return it's description.
     ///
     /// - Parameter ID: ID of the filter whose description will be returned.
     /// - Returns: Description of the filter with the passed ID on success, nil if not found.
-    public func GetFilterFrom(ID: UUID) -> FilterNames?
+    public func GetFilterFrom(ID: UUID) -> FilterTypes?
     {
-        for (Name, FilterID) in FilterMap
+        for (Name, FilterID) in FilterManager.FilterMap
         {
             if FilterID == ID
             {
@@ -317,7 +366,7 @@ class FilterManager
     }
     
     /// Map between filter types and filter IDs.
-    private let FilterMap: [FilterNames: UUID] =
+    static let FilterMap: [FilterTypes: UUID] =
         [
             .Noir: UUID(uuidString: "7215048f-15ea-46a1-8b11-a03e104a568d")!,
             .LineScreen: UUID(uuidString: "03d25ebe-1536-4088-9af6-150490262467")!,
@@ -338,29 +387,35 @@ class FilterManager
             .FilterDelta: UUID(uuidString: "fc913b9c-8567-4fb2-b2ff-4b1f6e849978")!,
             .PatternDelta: UUID(uuidString: "0ce80007-9d48-4a4f-95ae-0d059a1710c2")!,
             .Mirror: UUID(uuidString: "0ddca374-7a76-4f2e-ae0b-1bca602025a1")!,
+            .HueAdjust: UUID(uuidString: "dd8f30bf-e22b-4d8c-afa3-303c15eb1928")!,
+            .HSBAdjust: UUID(uuidString: "ff3679e7-a415-4562-8032-e07f51a63621")!,
+            .ChannelMixer: UUID(uuidString: "b49e8644-99be-4492-aecc-f9f4430012fd")!,
+            .DesaturateColors: UUID(uuidString: "e3f8071f-5ece-43b7-af06-5cba81d81693")!,
+            .GrayscaleKernel: UUID(uuidString: "6a76fc03-e4e4-4192-82b6-40cf8e520861")!,
             ]
     
     /// Map between group type and filters in the group.
-    private let GroupMap: [FilterGroups: [(FilterNames, Int)]] =
-    [
-        .Standard: [(.PassThrough, 0), (.Noir, 1), (.LineScreen, 4), (.DotScreen, 5), (.CircularScreen, 7),
-                    (.HatchScreen, 6), (.CMYKHalftone, 8), (.Pixellate, 9), (.Comic, 2), (.XRay, 3)],
-        .Combined: [(.CircleAndLines, 0)],
-        .Colors: [(.PaletteShifting, 0)],
-        .Bumpy: [(.BumpyPixels, 1), (.BumpyTriangles, 2), (.Embossed, 0)],
-        .Motion: [(.ColorDelta, 0), (.FilterDelta, 1), (.PatternDelta, 2)],
-        .Tiles: [(.Mirror, 0)],
-    ]
+    private let GroupMap: [FilterGroups: [(FilterTypes, Int)]] =
+        [
+            .Standard: [(.PassThrough, 0), (.Noir, 1), (.LineScreen, 4), (.DotScreen, 5), (.CircularScreen, 7),
+                        (.HatchScreen, 6), (.CMYKHalftone, 9), (.Pixellate, 10), (.Comic, 2), (.XRay, 3), (.LineOverlay, 8)],
+            .Combined: [(.CircleAndLines, 0)],
+            .Colors: [(.HueAdjust, 0), (.HSBAdjust, 1), (.ChannelMixer, 2), (.DesaturateColors, 3),
+                      (.GrayscaleKernel, 4), (.PaletteShifting, 5)],
+            .Bumpy: [(.BumpyPixels, 1), (.BumpyTriangles, 2), (.Embossed, 0)],
+            .Motion: [(.ColorDelta, 0), (.FilterDelta, 1), (.PatternDelta, 2)],
+            .Tiles: [(.Mirror, 0)],
+            ]
     
     /// Map from group descriptions to their respective IDs.
     private let GroupIDs: [FilterGroups: UUID] =
-    [
-        .Standard: UUID(uuidString: "ce79f6b5-dce4-4280-b291-2b5af6a7f617")!,
-        .Combined: UUID(uuidString: "99a6054e-8b60-4c7d-9a7a-3ea8ecacf874")!,
-        .Colors: UUID(uuidString: "28cae223-4e86-4d53-b8e9-419e08d9c823")!,
-        .Bumpy: UUID(uuidString: "68c21b65-17df-4e18-8231-cac6bb884b85")!,
-        .Motion: UUID(uuidString: "75d17717-6daf-4e69-b7f9-ed1a7e3214f0")!,
-        .Tiles: UUID(uuidString: "b641cbc9-7ad1-4bdf-9afe-bbf715020525")!
+        [
+            .Standard: UUID(uuidString: "ce79f6b5-dce4-4280-b291-2b5af6a7f617")!,
+            .Combined: UUID(uuidString: "99a6054e-8b60-4c7d-9a7a-3ea8ecacf874")!,
+            .Colors: UUID(uuidString: "28cae223-4e86-4d53-b8e9-419e08d9c823")!,
+            .Bumpy: UUID(uuidString: "68c21b65-17df-4e18-8231-cac6bb884b85")!,
+            .Motion: UUID(uuidString: "75d17717-6daf-4e69-b7f9-ed1a7e3214f0")!,
+            .Tiles: UUID(uuidString: "b641cbc9-7ad1-4bdf-9afe-bbf715020525")!
     ]
     
     /// Given a group description, return its ID.
@@ -390,25 +445,25 @@ class FilterManager
     
     /// Map between group type and group name and sort order.
     private let GroupNameMap: [FilterGroups: (String, Int)] =
-    [
-        .Standard: ("Standard", 0),
-        .Combined: ("Combined", 1),
-        .Colors: ("Colors", 2),
-        .Bumpy: ("3D", 4),
-        .Motion: ("Motion", 5),
-        .Tiles: ("Distortion", 3),
-    ]
+        [
+            .Standard: ("Standard", 0),
+            .Combined: ("Combined", 1),
+            .Colors: ("Colors", 2),
+            .Bumpy: ("3D", 4),
+            .Motion: ("Motion", 5),
+            .Tiles: ("Distortion", 3),
+            ]
     
     /// Map between group type and group color.
     private let GroupColors: [FilterGroups: UIColor] =
-    [
-        .Standard: UIColor(named: "HoneyDew")!,
-        .Combined: UIColor(named: "PastelYellow")!,
-        .Colors: UIColor(named: "GreenPastel")!,
-        .Tiles: UIColor(named: "LightBlue")!,
-        .Bumpy: UIColor(named: "Thistle")!,
-        .Motion: UIColor(named: "Gold")!,
-    ]
+        [
+            .Standard: UIColor(named: "HoneyDew")!,
+            .Combined: UIColor(named: "PastelYellow")!,
+            .Colors: UIColor(named: "GreenPastel")!,
+            .Tiles: UIColor(named: "LightBlue")!,
+            .Bumpy: UIColor(named: "Thistle")!,
+            .Motion: UIColor(named: "Gold")!,
+            ]
     
     /// Get the color for the specified group. Colors are used as a visual cue for the user to associate filters with given
     /// filter groups.
@@ -430,15 +485,15 @@ class FilterManager
     /// - Parameter InOrder: Flag that indicates the filter types will be returned in order (as defined internally in this class)
     ///                      or in whatever order the compiler decides when the code is compiled.
     /// - Returns: List of filters for the specified group. If no group found, an empty list is returned.
-    public func FiltersForGroup(_ Group: FilterGroups, InOrder: Bool = true) -> [FilterNames]
+    public func FiltersForGroup(_ Group: FilterGroups, InOrder: Bool = true) -> [FilterTypes]
     {
         if GroupMap[Group] == nil
         {
-            return [FilterNames]()
+            return [FilterTypes]()
         }
         if !InOrder
         {
-            var Final = [FilterNames]()
+            var Final = [FilterTypes]()
             for (Name, _) in GroupMap[Group]!
             {
                 Final.append(Name)
@@ -465,114 +520,132 @@ class FilterManager
         return Final
     }
     
+    /// Return a list of filters for a given group. Included in the returned list are titles, sort order, and implementation status.
+    ///
+    /// - Parameter ForGroup: The group whose filter data will be returned.
+    /// - Returns: List of filters for the specified group in order of: Title, Filter Type, Sort Order, Implementation Status.
+    public func GetFilterData(ForGroup: FilterGroups) -> [(String, FilterTypes, Int, Bool)]
+    {
+        var Final = [(String, FilterTypes, Int, Bool)]()
+        let FiltersInGroup = GroupMap[ForGroup]
+        for (GroupFilter, SortOrder) in FiltersInGroup!
+        {
+            let FilterTitle = FilterManager.FilterTitles[GroupFilter]
+            let ImplementationFlag = IsImplemented(GroupFilter)
+            Final.append((FilterTitle!, GroupFilter, SortOrder, ImplementationFlag))
+        }
+        return Final
+    }
+    
     /// Given a filter description, return its title.
     ///
     /// - Parameter Filter: Description of the filter.
     /// - Returns: Title of the filter on success, "No Title" if the filter description cannot be found.
-    public func GetFilterTitle(_ Filter: FilterNames) -> String
+    public func GetFilterTitle(_ Filter: FilterTypes) -> String
     {
-        if let Title = FilterTitles[Filter]
+        if let Title = FilterManager.GetFilterTitle(Filter)
         {
             return Title
         }
         return "No Title"
     }
     
+    /// Given a filter's ID, return its title.
+    ///
+    /// - Parameter FilterID: ID of the filter whose title will be returned.
+    /// - Returns: Title of the filter on success, "No Title" if the filter cannot be found.
+    public func GetFilterTitle(_ FilterID: UUID) -> String
+    {
+        if let FilterType = GetFilterFrom(ID: FilterID)
+        {
+            return GetFilterTitle(FilterType)
+        }
+        return "No Title"
+    }
+    
     /// Map between filter types and their titles.
-    private let FilterTitles: [FilterNames: String] =
-    [
-        .PassThrough: "No Filter",
-        .Noir: "Noir",
-        .LineScreen: "Line Screen",
-        .CircularScreen: "Circular Screen",
-        .DotScreen: "Dot Screen",
-        .HatchScreen: "Hatch Screen",
-        .Pixellate: "Pixelate",
-        .CircleAndLines: "Circle and Lines",
-        .CMYKHalftone: "CMYK Halftone",
-        .PaletteShifting: "Palette Shifting",
-        .Comic: "Comic",
-        .XRay: "X-Ray",
-        .LineOverlay: "Line Overlay",
-        .BumpyPixels: "3D Pixelate",
-        .BumpyTriangles: "3D Triangles",
-        .Embossed: "Embossed",
-        .ColorDelta: "Motion Delta",
-        .FilterDelta: "Filter Delta",
-        .PatternDelta: "Pattern Delta",
-        .Mirror: "Reflection"
-    ]
+    private static let FilterTitles: [FilterTypes: String] =
+        [
+            .PassThrough: "No Filter",
+            .Noir: "Noir",
+            .LineScreen: "Line Screen",
+            .CircularScreen: "Circular Screen",
+            .DotScreen: "Dot Screen",
+            .HatchScreen: "Hatch Screen",
+            .Pixellate: "Pixelate",
+            .CircleAndLines: "Circle and Lines",
+            .CMYKHalftone: "CMYK Halftone",
+            .PaletteShifting: "Palette Shifting",
+            .Comic: "Comic",
+            .XRay: "X-Ray",
+            .LineOverlay: "Line Overlay",
+            .BumpyPixels: "3D Pixelate",
+            .BumpyTriangles: "3D Triangles",
+            .Embossed: "Embossed",
+            .ColorDelta: "Motion Delta",
+            .FilterDelta: "Filter Delta",
+            .PatternDelta: "Pattern Delta",
+            .Mirror: "Reflection",
+            .HueAdjust: "Hue Adjustment",
+            .HSBAdjust: "Color Adjustment",
+            .ChannelMixer: "Channel Mixer",
+            .DesaturateColors: "Desaturate Colors",
+            .GrayscaleKernel: "Grayscale",
+            ]
+    
+    public static func GetFilterTitle(_ Filter: FilterTypes) -> String?
+    {
+        if let Title = FilterTitles[Filter]
+        {
+            return Title
+        }
+        return nil
+    }
     
     /// Implementation map for filter types.
-    private let Implemented: [FilterNames: Bool] =
-    [
-        .PassThrough: true,
-        .Noir: true,
-        .LineScreen: true,
-        .CircularScreen: true,
-        .DotScreen: true,
-        .HatchScreen: true,
-        .Pixellate: true,
-        .CircleAndLines: true,
-        .CMYKHalftone: true,
-        .PaletteShifting: false,
-        .Comic: true,
-        .XRay: true,
-        .LineOverlay: true,
-        .BumpyPixels: false,
-        .BumpyTriangles: false,
-        .Embossed: false,
-        .ColorDelta: false,
-        .FilterDelta: false,
-        .PatternDelta: false,
-        .Mirror: false
-    ]
+    private static let Implemented: [FilterTypes: Bool] =
+        [
+            .PassThrough: true,
+            .Noir: true,
+            .LineScreen: true,
+            .CircularScreen: true,
+            .DotScreen: true,
+            .HatchScreen: true,
+            .Pixellate: true,
+            .CircleAndLines: true,
+            .CMYKHalftone: true,
+            .PaletteShifting: false,
+            .Comic: true,
+            .XRay: true,
+            .LineOverlay: true,
+            .BumpyPixels: false,
+            .BumpyTriangles: false,
+            .Embossed: false,
+            .ColorDelta: false,
+            .FilterDelta: false,
+            .PatternDelta: false,
+            .Mirror: false,
+            .HueAdjust: true,
+            .HSBAdjust: true,
+            .ChannelMixer: true,
+            .DesaturateColors: true,
+            .GrayscaleKernel: true,
+            ]
     
-    /// Map of filter types to parameter existence. A false value means the filter can receive a parameter but it is ignored so
-    /// there is no need to pass it or update any of its values.
-    private let HasParametersMap: [FilterNames: Bool] =
-    [
-        .PassThrough: false,
-        .Noir: false,
-        .LineScreen: true,
-        .CircularScreen: true,
-        .DotScreen: true,
-        .HatchScreen: true,
-        .Pixellate: true,
-        .CircleAndLines: true,
-        .CMYKHalftone: true,
-        .PaletteShifting: false,
-        .Comic: false,
-        .XRay: false,
-        .LineOverlay: true,
-        .BumpyPixels: false,
-        .BumpyTriangles: false,
-        .Embossed: false,
-        .ColorDelta: false,
-        .FilterDelta: false,
-        .PatternDelta: false,
-        .Mirror: false
-    ]
-    
-    /// Returns a value indicating whether the passed filter has parameters or not. (Technically, all filters have parameters, but
-    /// some filters have parameters that are unused.)
+    /// Determines if the given filter type is implemented.
     ///
-    /// - Parameter Filter: The filter whose parameter existence will be returned.
-    /// - Returns: True if the filter has parameters, false if not or no filter found.
-    public func FilterHasParameters(_ Filter: FilterNames) -> Bool
+    /// - Parameter FilterType: The filter type to check for implementation status.
+    /// - Returns: True if the filter is implemented, false if not or cannot be found.
+    public func IsImplemented(_ FilterType: FilterTypes) -> Bool
     {
-        if let HasParameters = HasParametersMap[Filter]
-        {
-            return HasParameters
-        }
-        return false
+        return FilterManager.IsImplemented(FilterType)
     }
     
     /// Determines if the given filter type is implemented.
     ///
     /// - Parameter FilterType: The filter type to check for implementation status.
     /// - Returns: True if the filter is implemented, false if not or cannot be found.
-    public func IsImplemented(_ FilterType: FilterNames) -> Bool
+    public static func IsImplemented(_ FilterType: FilterTypes) -> Bool
     {
         if let ImplementedFlag = Implemented[FilterType]
         {
@@ -584,10 +657,10 @@ class FilterManager
     /// Returns a list of implemented filters (with each filter represented by its description).
     ///
     /// - Returns: List of implemented filters.
-    public func ImplementedFilters() -> [FilterNames]
+    public func ImplementedFilters() -> [FilterTypes]
     {
-        var Result = [FilterNames]()
-        for (Name, IsImp) in Implemented
+        var Result = [FilterTypes]()
+        for (Name, IsImp) in FilterManager.Implemented
         {
             if IsImp
             {
@@ -596,4 +669,82 @@ class FilterManager
         }
         return Result
     }
+    
+    public static let FieldMap: [InputFields: InputTypes] =
+        [
+            .InputThreshold: .DoubleType,
+            .InputContrast: .DoubleType,
+            .EdgeIntensity: .DoubleType,
+            .Center: .PointType,
+            .Width: .DoubleType,
+            .Angle: .DoubleType,
+            .MergeWithBackground: .BoolType,
+            .AdjustInLandscape: .BoolType,
+            .CenterInImage: .BoolType,
+            .NRSharpness: .DoubleType,
+            .NRNoiseLevel: .DoubleType,
+            .InputSaturation: .DoubleType,
+            .InputBrightness: .DoubleType,
+            .InputCContrast: .DoubleType,
+            .InputHue: .DoubleType,
+            .OutputColorSpace: .IntType,
+            .RGBMap: .StringType,
+            .HSBMap: .StringType,
+            .CMYKMap: .StringType,
+            .Normal: .Normal,
+            .ChannelOrder: .IntType,
+            .RedChannel: .IntType,
+            .GreenChannel: .IntType,
+            .BlueChannel: .IntType,
+            .HueChannel: .IntType,
+            .SaturationChannel: .IntType,
+            .BrightnessChannel: .IntType,
+            .CyanChannel: .IntType,
+            .MagentaChannel: .IntType,
+            .YellowChannel: .IntType,
+            .BlackChannel: .IntType,
+            .Command: .IntType,
+            .RAdjustment: .DoubleType,
+            .GAdjustment: .DoubleType,
+            .BAdjustment: .DoubleType,
+            ]
+    
+    public static let FieldStorageMap: [InputFields: String] =
+        [
+            .InputThreshold: "_InputThreshold",
+            .InputContrast: "_InputContrast",
+            .EdgeIntensity: "_EdgeIntensity",
+            .Center: "_Center",
+            .Width: "_Width",
+            .Angle: "_Angle",
+            .MergeWithBackground: "_MergeWithBackground",
+            .AdjustInLandscape: "_AdjustInLandscape",
+            .CenterInImage: "_CenterInImage",
+            .NRSharpness: "_NRSharpness",
+            .NRNoiseLevel: "_NRNoiseLevel",
+            .InputSaturation: "_InputSaturation",
+            .InputBrightness: "_InputBrightness",
+            .InputCContrast: "_InputColorContrast",
+            .InputHue: "_InputHue",
+            .OutputColorSpace: "_OutputColorSpace",
+            .RGBMap: "_RGBMap",
+            .HSBMap: "_HSBMap",
+            .CMYKMap: "_CMYKMap",
+            .Normal: "_Normal",
+            .ChannelOrder: "_ChannelOrder",
+            .RedChannel: "_RedChannel",
+            .GreenChannel: "_GreenChannel",
+            .BlueChannel: "_BlueChannel",
+            .HueChannel: "_HueChannel",
+            .SaturationChannel: "_SaturationChannel",
+            .BrightnessChannel: "_BrightnessChannel",
+            .CyanChannel: "_CyanChannel",
+            .MagentaChannel: "_MagentaChannel",
+            .YellowChannel: "_YellowChannel",
+            .BlackChannel: "_BlackChannel",
+            .Command: "_Command",
+            .RAdjustment: "_RAdjustment",
+            .GAdjustment: "_GAdjustment",
+            .BAdjustment: "_BAdjustment",
+            ]
 }
