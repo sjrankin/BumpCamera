@@ -177,6 +177,10 @@ class CircleAndLines: FilterParent, Renderer
         return OutPixBuf
     }
     
+    func InitializeForImage()
+    {
+    }
+    
     func Render(Image: UIImage) -> UIImage?
     {
         if let CImage = CIImage(image: Image)
@@ -292,12 +296,7 @@ class CircleAndLines: FilterParent, Renderer
         }
     }
     
-    func GetFieldLabel(ForField: FilterManager.InputFields) -> String?
-    {
-        return nil
-    }
-    
-    func GetFieldDetails(ForField: FilterManager.InputFields) -> String?
+    func SettingsStoryboard() -> String?
     {
         return nil
     }

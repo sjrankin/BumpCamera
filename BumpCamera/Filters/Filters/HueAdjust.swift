@@ -138,6 +138,10 @@ class HueAdjust: FilterParent, Renderer
         return OutPixBuf
     }
     
+    func InitializeForImage()
+    {
+    }
+    
     func Render(Image: UIImage) -> UIImage?
     {
         if let CImage = CIImage(image: Image)
@@ -182,22 +186,10 @@ class HueAdjust: FilterParent, Renderer
         }
         if let Result = PrimaryFilter?.value(forKey: kCIOutputImageKey) as? CIImage
         {
-            #if true
             return Result
-            #else
-            let Rotated = RotateImage(Result)
-            return Rotated
-            #endif
         }
         return nil
     }
-    
-    #if false
-    func Merge(_ Top: CIImage, _ Bottom: CIImage) -> CIImage?
-    {
-        return nil
-    }
-    #endif
     
     func SupportedFields() -> [FilterManager.InputFields]
     {
@@ -211,20 +203,15 @@ class HueAdjust: FilterParent, Renderer
         switch Field
         {
         case .Angle:
-            return (FilterManager.InputTypes.DoubleType, 0.5 as Any?)
+            return (FilterManager.InputTypes.DoubleType, 0.25 as Any?)
             
         default:
             fatalError("Unexpected field \(Field) encountered in DefaultFieldValue.")
         }
     }
     
-    func GetFieldLabel(ForField: FilterManager.InputFields) -> String?
+    func SettingsStoryboard() -> String?
     {
-        return nil
-    }
-    
-    func GetFieldDetails(ForField: FilterManager.InputFields) -> String?
-    {
-        return nil
+        return "HueAdjustTable"
     }
 }

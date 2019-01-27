@@ -1,8 +1,8 @@
 //
-//  Comic.swift
+//  HSB.swift
 //  BumpCamera
 //
-//  Created by Stuart Rankin on 1/17/19.
+//  Created by Stuart Rankin on 1/23/19.
 //  Copyright © 2019 Stuart Rankin. All rights reserved.
 //
 
@@ -12,9 +12,9 @@ import CoreMedia
 import CoreVideo
 import CoreImage
 
-class Comic: FilterParent, Renderer 
+class HSBAdjust: FilterParent, Renderer
 {
-    var _ID: UUID = UUID(uuidString: "e730f3ba-c4d7-4d06-8754-b878c92260aa")!
+    var _ID: UUID = UUID(uuidString: "ff3679e7-a415-4562-8032-e07f51a63621")!
     var ID: UUID
     {
         get
@@ -32,21 +32,15 @@ class Comic: FilterParent, Renderer
         return UUID()
     }
     
-    var Description: String = "Comic"
+    var Description: String = "Color Adjust"
     
-    var IconName: String = "Comic"
+    var IconName: String = "Color Adjust"
     
     var Initialized = false
     
     private var PrimaryFilter: CIFilter? = nil
     
     private var SecondaryFilter: CIFilter? = nil
-    
-    private var InvertFilter: CIFilter? = nil
-    
-    private var AlphaMaskFilter: CIFilter? = nil
-    
-    private var MergeSourceAtop: CIFilter? = nil
     
     private var Context: CIContext? = nil
     
@@ -60,18 +54,16 @@ class Comic: FilterParent, Renderer
     
     func Initialize(With FormatDescription: CMFormatDescription, BufferCountHint: Int)
     {
-        Reset("Comic.Initialize")
+        Reset("HueAdjust.Initialize")
         (BufferPool, ColorSpace, OutputFormatDescription) = CreateBufferPool(From: FormatDescription, BufferCountHint: BufferCountHint)
         if BufferPool == nil
         {
-            fatalError("Buffer pool not created in CreateBufferBool")
+            print("BufferPool nil in HSBAdjust.")
+            return
         }
         InputFormatDescription = FormatDescription
         Context = CIContext()
-        PrimaryFilter = CIFilter(name: "CIComicEffect")
-        InvertFilter = CIFilter(name: "CIColorInvert")
-        AlphaMaskFilter = CIFilter(name: "CIMaskToAlpha")
-        MergeSourceAtop = CIFilter(name: "CISourceAtopCompositing")
+        PrimaryFilter = CIFilter(name: "CIColorControls")
         Initialized = true
     }
     
@@ -82,6 +74,7 @@ class Comic: FilterParent, Renderer
         Context = nil
         PrimaryFilter = nil
         ColorSpace = nil
+        //print("Setting BufferPool to nil in xray, called by \(CalledBy).")
         BufferPool = nil
         OutputFormatDescription = nil
         InputFormatDescription = nil
@@ -99,6 +92,11 @@ class Comic: FilterParent, Renderer
     {
         objc_sync_enter(AccessLock)
         defer{objc_sync_exit(AccessLock)}
+        if BufferPool == nil
+        {
+            print("BufferPool nil in HSBAdjust.")
+            return nil
+        }
         guard let PrimaryFilter = PrimaryFilter,
             let Context = Context,
             Initialized else
@@ -111,42 +109,38 @@ class Comic: FilterParent, Renderer
         PrimaryFilter.setDefaults()
         PrimaryFilter.setValue(SourceImage, forKey: kCIInputImageKey)
         
-        var DoMerge = false
-        let MergeAsAny = ParameterManager.GetField(From: ID, Field: FilterManager.InputFields.MergeWithBackground)
-        if let MergeImages = MergeAsAny as? Bool
+        let SatAsAny = ParameterManager.GetField(From: ID, Field: FilterManager.InputFields.InputSaturation)
+        if let Sat = SatAsAny as? Double
         {
-            DoMerge = MergeImages
+            PrimaryFilter.setValue(Float(Sat), forKey: kCIInputSaturationKey)
+        }
+        let BriAsAny = ParameterManager.GetField(From: ID, Field: FilterManager.InputFields.InputBrightness)
+        if let Bri = BriAsAny as? Double
+        {
+            PrimaryFilter.setValue(Float(Bri), forKey: kCIInputBrightnessKey)
+        }
+        let ConAsAny = ParameterManager.GetField(From: ID, Field: FilterManager.InputFields.InputCContrast)
+        if let Con = ConAsAny as? Double
+        {
+            PrimaryFilter.setValue(Float(Con), forKey: kCIInputContrastKey)
         }
         
-        guard var FilteredImage = PrimaryFilter.value(forKey: kCIOutputImageKey) as? CIImage else
+        guard let FilteredImage = PrimaryFilter.value(forKey: kCIOutputImageKey) as? CIImage else
         {
             print("CIFilter failed to render image.")
             return nil
         }
         
-        let Background = CIImage(cvImageBuffer: PixelBuffer)
-        if DoMerge
-        {
-            if let Merged = Merge(FilteredImage, Background)
-            {
-                FilteredImage = Merged
-            }
-            else
-            {
-                print("Error returned from merge operation.")
-                return nil
-            }
-        }
-        
         if BufferPool == nil
         {
-            fatalError("BufferPool is nil in comic.")
+            print("BufferPool nil in HSBAdjust after initial OK check.")
+            return nil
         }
         var PixBuf: CVPixelBuffer?
         CVPixelBufferPoolCreatePixelBuffer(kCFAllocatorDefault, BufferPool!, &PixBuf)
         guard let OutPixBuf = PixBuf else
         {
-            print("Allocation failure in Comic.")
+            print("Allocation failure in HSB Adjust.")
             return nil
         }
         
@@ -192,32 +186,29 @@ class Comic: FilterParent, Renderer
             return nil
         }
         #endif
-        PrimaryFilter = CIFilter(name: "CIComicEffect")
-        InvertFilter = CIFilter(name: "CIColorInvert")
-        AlphaMaskFilter = CIFilter(name: "CIMaskToAlpha")
-        MergeSourceAtop = CIFilter(name: "CISourceAtopCompositing")
+        PrimaryFilter = CIFilter(name: "CIColorControls")
         PrimaryFilter?.setDefaults()
         PrimaryFilter?.setValue(Image, forKey: kCIInputImageKey)
         
-        var DoMerge = false
-        let MergeAsAny = ParameterManager.GetField(From: ID, Field: FilterManager.InputFields.MergeWithBackground)
-        if let MergeImages = MergeAsAny as? Bool
+        let SatAsAny = ParameterManager.GetField(From: ID, Field: FilterManager.InputFields.InputSaturation)
+        if let Sat = SatAsAny as? Double
         {
-            DoMerge = MergeImages
+            PrimaryFilter?.setValue(Float(Sat), forKey: kCIInputSaturationKey)
+        }
+        let BriAsAny = ParameterManager.GetField(From: ID, Field: FilterManager.InputFields.InputBrightness)
+        if let Bri = BriAsAny as? Double
+        {
+            PrimaryFilter?.setValue(Float(Bri), forKey: kCIInputBrightnessKey)
+        }
+        let ConAsAny = ParameterManager.GetField(From: ID, Field: FilterManager.InputFields.InputCContrast)
+        if let Con = ConAsAny as? Double
+        {
+            PrimaryFilter?.setValue(Float(Con), forKey: kCIInputContrastKey)
         }
         
         if let Result = PrimaryFilter?.value(forKey: kCIOutputImageKey) as? CIImage
         {
-            #if true
-            var Rotated = Result
-            #else
-            var Rotated = RotateImage(Result)
-            #endif
-            if DoMerge
-            {
-                Rotated = Merge(Rotated, Image)!
-            }
-            return Rotated
+            return Result
         }
         return nil
     }
@@ -225,7 +216,9 @@ class Comic: FilterParent, Renderer
     func SupportedFields() -> [FilterManager.InputFields]
     {
         var Fields = [FilterManager.InputFields]()
-        Fields.append(.MergeWithBackground)
+        Fields.append(.InputCContrast)
+        Fields.append(.InputBrightness)
+        Fields.append(.InputSaturation)
         return Fields
     }
     
@@ -233,8 +226,14 @@ class Comic: FilterParent, Renderer
     {
         switch Field
         {
-        case .MergeWithBackground:
-            return (FilterManager.InputTypes.BoolType, true as Any?)
+        case .InputCContrast:
+            return (FilterManager.InputTypes.DoubleType, 0.7 as Any?)
+            
+        case .InputBrightness:
+            return (FilterManager.InputTypes.DoubleType, 0.2 as Any?)
+            
+        case .InputSaturation:
+            return (FilterManager.InputTypes.DoubleType, 1.0 as Any?)
             
         default:
             fatalError("Unexpected field \(Field) encountered in DefaultFieldValue.")
@@ -243,6 +242,6 @@ class Comic: FilterParent, Renderer
     
     func SettingsStoryboard() -> String?
     {
-        return "ComicTable"
+        return "HSBAdjustTable"
     }
 }

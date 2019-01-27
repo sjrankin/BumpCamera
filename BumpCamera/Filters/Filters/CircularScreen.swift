@@ -12,7 +12,7 @@ import CoreMedia
 import CoreVideo
 import CoreImage
 
-class CircularScreen: FilterParent, Renderer
+class CircularScreen: FilterParent, Renderer 
 {
     var _ID: UUID = UUID(uuidString: "43a29cb4-4f85-40a7-b535-3cd659edd3cb")!
     var ID: UUID
@@ -164,6 +164,10 @@ class CircularScreen: FilterParent, Renderer
         return OutPixBuf
     }
     
+    func InitializeForImage()
+    {
+    }
+    
     func Render(Image: UIImage) -> UIImage?
     {
         if let CImage = CIImage(image: Image)
@@ -265,29 +269,7 @@ class CircularScreen: FilterParent, Renderer
         }
     }
     
-    func GetFieldLabel(ForField: FilterManager.InputFields) -> String?
-    {
-        switch ForField
-        {
-        case .Width:
-            return "Base width of lines"
-            
-        case .Center:
-            return "Center of circular screen"
-            
-        case .CenterInImage:
-            return "Always center in middle of image"
-            
-        case .MergeWithBackground:
-            return "Merge result with background"
-            
-        default:
-            break
-        }
-        return nil
-    }
-    
-    func GetFieldDetails(ForField: FilterManager.InputFields) -> String?
+    func SettingsStoryboard() -> String?
     {
         return nil
     }

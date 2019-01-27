@@ -89,6 +89,10 @@ class PassThrough: FilterParent, Renderer
         return PixelBuffer
     }
     
+    func InitializeForImage()
+    {
+    }
+    
     func Render(Image: UIImage) -> UIImage?
     {
         return Image
@@ -109,13 +113,8 @@ class PassThrough: FilterParent, Renderer
         return (FilterManager.InputTypes.NoType, nil)
     }
     
-    func GetFieldLabel(ForField: FilterManager.InputFields) -> String?
+    func SettingsStoryboard() -> String?
     {
-        return nil
-    }
-    
-    func GetFieldDetails(ForField: FilterManager.InputFields) -> String?
-    {
-        return nil
+        return "PassThroughTable"
     }
 }

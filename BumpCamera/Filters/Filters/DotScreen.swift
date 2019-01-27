@@ -12,7 +12,7 @@ import CoreMedia
 import CoreVideo
 import CoreImage
 
-class DotScreen: FilterParent, Renderer
+class DotScreen: FilterParent, Renderer 
 {
     var _ID: UUID = UUID(uuidString: "48145942-f695-436a-a9bc-94158d3b469a")!
     var ID: UUID
@@ -169,6 +169,10 @@ class DotScreen: FilterParent, Renderer
         return OutPixBuf
     }
     
+    func InitializeForImage()
+    {
+    }
+    
     func Render(Image: UIImage) -> UIImage?
     {
         if let CImage = CIImage(image: Image)
@@ -245,57 +249,6 @@ class DotScreen: FilterParent, Renderer
         return nil
     }
     
-    #if false
-    func Merge(_ Top: CIImage, _ Bottom: CIImage) -> CIImage?
-    {
-        var FinalTop: CIImage? = nil
-        InvertFilter?.setDefaults()
-        AlphaMaskFilter?.setDefaults()
-        
-        InvertFilter?.setValue(Top, forKey: kCIInputImageKey)
-        if let TopResult = InvertFilter?.value(forKey: kCIOutputImageKey) as? CIImage
-        {
-            AlphaMaskFilter?.setValue(TopResult, forKey: kCIInputImageKey)
-            if let MaskResult = AlphaMaskFilter?.value(forKey: kCIOutputImageKey) as? CIImage
-            {
-                InvertFilter?.setValue(MaskResult, forKey: kCIInputImageKey)
-                if let InvertedAgain = InvertFilter?.value(forKey: kCIOutputImageKey) as? CIImage
-                {
-                    FinalTop = InvertedAgain
-                }
-                else
-                {
-                    print("Error returned by second call to inversion filter.")
-                    return nil
-                }
-            }
-            else
-            {
-                print("Error returned by alpha mask filter.")
-                return nil
-            }
-        }
-        else
-        {
-            print("Error return by call to inversion filter.")
-            return nil
-        }
-        
-        MergeSourceAtop?.setDefaults()
-        MergeSourceAtop?.setValue(FinalTop, forKey: kCIInputImageKey)
-        MergeSourceAtop?.setValue(Bottom, forKey: kCIInputBackgroundImageKey)
-        if let Merged = MergeSourceAtop?.value(forKey: kCIOutputImageKey) as? CIImage
-        {
-            return Merged
-        }
-        else
-        {
-            print("Error returned by call to image merge filter.")
-            return nil
-        }
-    }
-    #endif
-    
     func SupportedFields() -> [FilterManager.InputFields]
     {
         var Fields = [FilterManager.InputFields]()
@@ -327,12 +280,7 @@ class DotScreen: FilterParent, Renderer
         }
     }
     
-    func GetFieldLabel(ForField: FilterManager.InputFields) -> String?
-    {
-        return nil
-    }
-    
-    func GetFieldDetails(ForField: FilterManager.InputFields) -> String?
+    func SettingsStoryboard() -> String?
     {
         return nil
     }

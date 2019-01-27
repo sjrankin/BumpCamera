@@ -125,6 +125,10 @@ class Pixellate: FilterParent, Renderer
         return OutPixBuf
     }
     
+    func InitializeForImage()
+    {
+    }
+    
     func Render(Image: UIImage) -> UIImage?
     {
         if let CImage = CIImage(image: Image)
@@ -179,13 +183,6 @@ class Pixellate: FilterParent, Renderer
         return nil
     }
     
-    #if false
-    func Merge(_ Top: CIImage, _ Bottom: CIImage) -> CIImage?
-    {
-        return nil
-    }
-    #endif
-    
     func SupportedFields() -> [FilterManager.InputFields]
     {
         var Fields = [FilterManager.InputFields]()
@@ -205,27 +202,8 @@ class Pixellate: FilterParent, Renderer
         }
     }
     
-    func GetFieldLabel(ForField: FilterManager.InputFields) -> String?
+    func SettingsStoryboard() -> String?
     {
-        switch ForField
-        {
-        case .Width:
-            return "Pixel block size"
-            
-        default:
-            return nil
-        }
-    }
-    
-    func GetFieldDetails(ForField: FilterManager.InputFields) -> String?
-    {
-        switch ForField
-        {
-        case .Width:
-            return "Dimensions of the square region whose color is averaged to form the pixel."
-            
-        default:
-            return nil
-        }
+        return "PixellateTable"
     }
 }

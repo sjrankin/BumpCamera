@@ -131,6 +131,10 @@ class XRay: FilterParent, Renderer
         return OutPixBuf
     }
     
+    func InitializeForImage()
+    {
+    }
+    
     func Render(Image: UIImage) -> UIImage?
     {
         if let CImage = CIImage(image: Image)
@@ -180,13 +184,6 @@ class XRay: FilterParent, Renderer
         return nil
     }
     
-    #if false
-    func Merge(_ Top: CIImage, _ Bottom: CIImage) -> CIImage?
-    {
-        return nil
-    }
-    #endif
-    
     func SupportedFields() -> [FilterManager.InputFields]
     {
         let Fields = [FilterManager.InputFields]()
@@ -198,13 +195,8 @@ class XRay: FilterParent, Renderer
        return (FilterManager.InputTypes.NoType, nil)
     }
     
-    func GetFieldLabel(ForField: FilterManager.InputFields) -> String?
+    func SettingsStoryboard() -> String?
     {
-        return nil
-    }
-    
-    func GetFieldDetails(ForField: FilterManager.InputFields) -> String?
-    {
-        return nil
+        return "XRayTable"
     }
 }

@@ -43,8 +43,8 @@ protocol Renderer: class
     
     func DefaultFieldValue(Field: FilterManager.InputFields) -> (FilterManager.InputTypes, Any?)
     
-    func GetFieldLabel(ForField: FilterManager.InputFields) -> String?
+    func InitializeForImage()
     
-    func GetFieldDetails(ForField: FilterManager.InputFields) -> String?
+    func SettingsStoryboard() -> String?
 }
 

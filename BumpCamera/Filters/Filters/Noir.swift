@@ -121,6 +121,10 @@ class Noir: FilterParent, Renderer
         return OutPixBuf
     }
     
+    func InitializeForImage()
+    {
+    }
+    
     func Render(Image: UIImage) -> UIImage?
     {
         if let CImage = CIImage(image: Image)
@@ -171,13 +175,6 @@ class Noir: FilterParent, Renderer
         return nil
     }
     
-    #if false
-    func Merge(_ Top: CIImage, _ Bottom: CIImage) -> CIImage?
-    {
-        return nil
-    }
-    #endif
-    
     func SupportedFields() -> [FilterManager.InputFields]
     {
         return [FilterManager.InputFields]()
@@ -188,13 +185,8 @@ class Noir: FilterParent, Renderer
         return (FilterManager.InputTypes.NoType, nil)
     }
     
-    func GetFieldLabel(ForField: FilterManager.InputFields) -> String?
+    func SettingsStoryboard() -> String?
     {
-        return nil
-    }
-    
-    func GetFieldDetails(ForField: FilterManager.InputFields) -> String?
-    {
-        return nil
+        return "NoirTable"
     }
 }
