@@ -12,6 +12,8 @@ import UIKit
 /// Encapsulates a filter and its parameters.
 class CameraFilter
 {
+    let _Settings = UserDefaults.standard
+    
     /// Initializer.
     ///
     /// - Parameter ID: ID of the filter.
@@ -26,16 +28,26 @@ class CameraFilter
     ///   - WithFilter: The filter renderer class for the camera filter encapsulation.
     ///   - AndType: The type description of the filter renderer.
     ///   - ID: ID of the filter.
-    init(WithFilter: Renderer, AndType: FilterNames, ID: UUID)
+    ///   - ReadParameters: If true, the filter's parameters are read and stored.
+    init(WithFilter: Renderer, AndType: FilterManager.FilterTypes, ID: UUID, ReadParameters: Bool = true)
     {
         _FilterType = AndType
         _Filter = WithFilter
         _ID = ID
+        if ReadParameters
+        {
+            let IDS = ID.uuidString
+            if let Raw = _Settings.string(forKey: IDS)
+            {
+                print("Filter=\((FilterManager.GetFilterTitle(AndType))!), Raw=\(Raw)")
+                Parameters = RenderPacket.Decode(ID: ID, Raw)
+            }
+        }
     }
     
-    private var _FilterType: FilterNames = FilterNames.NotSet
+    private var _FilterType: FilterManager.FilterTypes = FilterManager.FilterTypes.NotSet
     /// Get or set the type of filter to render.
-    public var FilterType: FilterNames
+    public var FilterType: FilterManager.FilterTypes
     {
         get
         {
