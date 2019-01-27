@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14460.31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina5_5" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14460.20"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--Desaturate Colors Table Code-->
+        <scene sceneID="YzB-5c-c9y">
+            <objects>
+                <tableViewController storyboardIdentifier="DesaturateColorsTable" id="lh7-zY-QqS" customClass="DesaturateColorsTableCode" customModule="BumpCamera" customModuleProvider="target" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="static" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" id="wed-Ef-mGX">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <sections>
+                            <tableViewSection id="0oe-Gp-ugP">
+                                <cells>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" rowHeight="130" id="12V-zm-S7A">
+                                        <rect key="frame" x="0.0" y="0.0" width="414" height="130"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="12V-zm-S7A" id="yY0-4h-xdR">
+                                            <rect key="frame" x="0.0" y="0.0" width="414" height="129.66666666666666"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" preservesSuperviewLayoutMargins="YES" text="Desaturate colors" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="IzW-bm-p3g">
+                                                    <rect key="frame" x="20" y="15" width="136" height="21"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="height" constant="21" id="AGq-1t-Ynh"/>
+                                                    </constraints>
+                                                    <viewLayoutGuide key="safeArea" id="bUk-cI-lea"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <textField opaque="NO" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="B6x-Je-HXG">
+                                                    <rect key="frame" x="297" y="11" width="97" height="29"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="width" constant="97" id="RXG-eZ-ERo"/>
+                                                    </constraints>
+                                                    <viewLayoutGuide key="safeArea" id="OZ2-m4-2N9"/>
+                                                    <nil key="textColor"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                                    <textInputTraits key="textInputTraits"/>
+                                                    <connections>
+                                                        <action selector="HandleDeSatChanged:" destination="lh7-zY-QqS" eventType="primaryActionTriggered" id="G7h-Lm-GSH"/>
+                                                    </connections>
+                                                </textField>
+                                                <slider opaque="NO" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="800" minValue="0.0" maxValue="1000" translatesAutoresizingMaskIntoConstraints="NO" id="3fu-CA-cte">
+                                                    <rect key="frame" x="18" y="44" width="376" height="30"/>
+                                                    <viewLayoutGuide key="safeArea" id="jXo-HN-886"/>
+                                                    <connections>
+                                                        <action selector="HandleSliderValueChanged:" destination="lh7-zY-QqS" eventType="primaryActionTriggered" id="vPc-nt-5rg"/>
+                                                    </connections>
+                                                </slider>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" preservesSuperviewLayoutMargins="YES" text="Desaturate the colors of the image. Set to 0.0 for no colors, and 1.0 for normal colors." textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="KE7-hq-CTq">
+                                                    <rect key="frame" x="20" y="82" width="372" height="39"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="height" constant="39" id="6Tz-sE-pYu"/>
+                                                    </constraints>
+                                                    <viewLayoutGuide key="safeArea" id="n60-kM-xzq"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                                    <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstItem="IzW-bm-p3g" firstAttribute="top" secondItem="yY0-4h-xdR" secondAttribute="topMargin" constant="4" id="SiE-pB-Kcr"/>
+                                                <constraint firstItem="KE7-hq-CTq" firstAttribute="leading" secondItem="yY0-4h-xdR" secondAttribute="leadingMargin" id="XBa-xa-2cf"/>
+                                                <constraint firstItem="3fu-CA-cte" firstAttribute="top" secondItem="B6x-Je-HXG" secondAttribute="bottom" constant="4" id="aAb-Hb-RTp"/>
+                                                <constraint firstItem="KE7-hq-CTq" firstAttribute="trailing" secondItem="3fu-CA-cte" secondAttribute="trailing" id="as0-nh-zCM"/>
+                                                <constraint firstItem="3fu-CA-cte" firstAttribute="top" secondItem="IzW-bm-p3g" secondAttribute="bottom" constant="8" id="dSU-D0-PMp"/>
+                                                <constraint firstItem="KE7-hq-CTq" firstAttribute="top" secondItem="3fu-CA-cte" secondAttribute="bottom" constant="9" id="eVb-Xi-NPy"/>
+                                                <constraint firstAttribute="trailingMargin" secondItem="KE7-hq-CTq" secondAttribute="trailing" constant="2" id="jJw-zm-Bq9"/>
+                                                <constraint firstItem="IzW-bm-p3g" firstAttribute="centerY" secondItem="B6x-Je-HXG" secondAttribute="centerY" id="sNw-Pl-Qah"/>
+                                                <constraint firstItem="KE7-hq-CTq" firstAttribute="leading" secondItem="IzW-bm-p3g" secondAttribute="leading" id="sOo-MC-9XI"/>
+                                                <constraint firstItem="KE7-hq-CTq" firstAttribute="leading" secondItem="3fu-CA-cte" secondAttribute="leading" id="u16-sL-xzk"/>
+                                                <constraint firstItem="B6x-Je-HXG" firstAttribute="trailing" secondItem="yY0-4h-xdR" secondAttribute="trailingMargin" id="vJz-cD-MHx"/>
+                                                <constraint firstAttribute="bottomMargin" secondItem="KE7-hq-CTq" secondAttribute="bottom" constant="-2" id="wDs-fW-xth"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
+                                </cells>
+                            </tableViewSection>
+                        </sections>
+                        <connections>
+                            <outlet property="dataSource" destination="lh7-zY-QqS" id="ZxN-i7-bWt"/>
+                            <outlet property="delegate" destination="lh7-zY-QqS" id="gra-9M-YNc"/>
+                        </connections>
+                    </tableView>
+                    <connections>
+                        <outlet property="DeSatInput" destination="B6x-Je-HXG" id="PLR-yr-qTP"/>
+                        <outlet property="DeSatSlider" destination="3fu-CA-cte" id="eHz-n6-955"/>
+                    </connections>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Ygx-kS-TX7" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-7.2000000000000002" y="186.65667166416793"/>
+        </scene>
+    </scenes>
+</document>

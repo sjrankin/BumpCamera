@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14460.31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14460.20"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--Pixellate Table Code-->
+        <scene sceneID="L9y-T6-voE">
+            <objects>
+                <tableViewController storyboardIdentifier="PixellateTable" id="DEV-b5-Lda" customClass="PixellateTableCode" customModule="BumpCamera" customModuleProvider="target" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="static" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" id="Dkm-QP-fsQ">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <sections>
+                            <tableViewSection id="ErS-7b-biv">
+                                <cells>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" rowHeight="180" id="l9w-T7-wED">
+                                        <rect key="frame" x="0.0" y="0.0" width="375" height="180"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="l9w-T7-wED" id="gpu-Qr-Lrt">
+                                            <rect key="frame" x="0.0" y="0.0" width="375" height="179.5"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" preservesSuperviewLayoutMargins="YES" text="Pixel block size" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="0Fr-X9-G1K">
+                                                    <rect key="frame" x="16" y="15" width="116.5" height="21"/>
+                                                    <viewLayoutGuide key="safeArea" id="44C-DB-Kmu"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <textField opaque="NO" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="gMR-ny-UD1">
+                                                    <rect key="frame" x="262" y="10" width="97" height="31"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="height" constant="31" id="XfR-EU-oTG"/>
+                                                        <constraint firstAttribute="width" constant="97" id="bCF-A0-0RM"/>
+                                                    </constraints>
+                                                    <viewLayoutGuide key="safeArea" id="g1D-HS-4Tq"/>
+                                                    <nil key="textColor"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                                    <textInputTraits key="textInputTraits" autocorrectionType="no" spellCheckingType="no" returnKeyType="done" smartDashesType="no" smartInsertDeleteType="no" smartQuotesType="no"/>
+                                                    <connections>
+                                                        <action selector="HandlePixelSizeTextBlockChanged:" destination="DEV-b5-Lda" eventType="primaryActionTriggered" id="Uia-mf-bhW"/>
+                                                    </connections>
+                                                </textField>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" preservesSuperviewLayoutMargins="YES" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="4" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="tSf-vK-Tvj">
+                                                    <rect key="frame" x="18" y="85" width="341" height="86"/>
+                                                    <viewLayoutGuide key="safeArea" id="4AD-QY-bLf"/>
+                                                    <string key="text">Pixellation takes the average of a square region of an image and replaces the entire square with the average value. Here you can set the size of the square region.</string>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                                                    <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <slider opaque="NO" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="900" minValue="0.0" maxValue="1000" translatesAutoresizingMaskIntoConstraints="NO" id="jrA-Oe-7nR">
+                                                    <rect key="frame" x="14" y="51" width="347" height="30"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="height" constant="29" id="1NR-cf-KyQ"/>
+                                                    </constraints>
+                                                    <viewLayoutGuide key="safeArea" id="B1X-SB-oee"/>
+                                                </slider>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstItem="jrA-Oe-7nR" firstAttribute="trailing" secondItem="gMR-ny-UD1" secondAttribute="trailing" id="7cw-Tt-d9Z"/>
+                                                <constraint firstItem="jrA-Oe-7nR" firstAttribute="trailing" secondItem="tSf-vK-Tvj" secondAttribute="trailing" id="Fm4-44-RKj"/>
+                                                <constraint firstItem="tSf-vK-Tvj" firstAttribute="top" secondItem="jrA-Oe-7nR" secondAttribute="bottom" constant="5" id="LbM-UO-29C"/>
+                                                <constraint firstItem="jrA-Oe-7nR" firstAttribute="leading" secondItem="tSf-vK-Tvj" secondAttribute="leading" constant="-2" id="XkG-A9-rVs"/>
+                                                <constraint firstAttribute="bottomMargin" secondItem="tSf-vK-Tvj" secondAttribute="bottom" constant="-2" id="a5M-Og-NFJ"/>
+                                                <constraint firstItem="gMR-ny-UD1" firstAttribute="top" secondItem="gpu-Qr-Lrt" secondAttribute="topMargin" constant="-1" id="bX9-3S-jtU"/>
+                                                <constraint firstItem="0Fr-X9-G1K" firstAttribute="leading" secondItem="gpu-Qr-Lrt" secondAttribute="leadingMargin" id="fNU-d1-o7c"/>
+                                                <constraint firstItem="jrA-Oe-7nR" firstAttribute="centerX" secondItem="gpu-Qr-Lrt" secondAttribute="centerX" id="g0R-kB-pCW"/>
+                                                <constraint firstItem="jrA-Oe-7nR" firstAttribute="top" secondItem="gMR-ny-UD1" secondAttribute="bottom" constant="10" id="mK5-Ax-zEH"/>
+                                                <constraint firstItem="gMR-ny-UD1" firstAttribute="centerY" secondItem="0Fr-X9-G1K" secondAttribute="centerY" id="o9P-78-KHs"/>
+                                                <constraint firstItem="jrA-Oe-7nR" firstAttribute="trailing" secondItem="gpu-Qr-Lrt" secondAttribute="trailingMargin" id="snx-RQ-fuA"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
+                                </cells>
+                            </tableViewSection>
+                        </sections>
+                        <connections>
+                            <outlet property="dataSource" destination="DEV-b5-Lda" id="LqB-mH-wUg"/>
+                            <outlet property="delegate" destination="DEV-b5-Lda" id="iKM-9o-8ih"/>
+                        </connections>
+                    </tableView>
+                    <connections>
+                        <outlet property="PixelSizeSlider" destination="jrA-Oe-7nR" id="Szw-wa-HcK"/>
+                        <outlet property="PixelSizeTextBlock" destination="gMR-ny-UD1" id="ZUd-rR-Abf"/>
+                    </connections>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="qh6-SU-t7e" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="348" y="126.38680659670166"/>
+        </scene>
+    </scenes>
+</document>

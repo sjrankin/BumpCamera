@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14460.31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14460.20"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--Hue Adjust Table Code-->
+        <scene sceneID="tDL-Ky-i35">
+            <objects>
+                <tableViewController storyboardIdentifier="HueAdjustTable" id="TBP-QI-pDf" customClass="HueAdjustTableCode" customModule="BumpCamera" customModuleProvider="target" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" alwaysBounceVertical="YES" showsHorizontalScrollIndicator="NO" dataMode="static" style="plain" separatorStyle="default" allowsSelection="NO" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" id="9Jo-1I-f1w">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <viewLayoutGuide key="safeArea" id="4as-lg-PdG"/>
+                        <sections>
+                            <tableViewSection id="zR3-zv-hIT">
+                                <cells>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" reuseIdentifier="ColorHueCell" rowHeight="126" id="5t7-gn-vUI">
+                                        <rect key="frame" x="0.0" y="0.0" width="375" height="126"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="5t7-gn-vUI" id="N8h-Lo-Ty7">
+                                            <rect key="frame" x="0.0" y="0.0" width="375" height="125.5"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" preservesSuperviewLayoutMargins="YES" text="Pixel hue" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="An3-Wb-2nc">
+                                                    <rect key="frame" x="16" y="9" width="130" height="34"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="height" constant="34" id="Maa-LK-RlK"/>
+                                                        <constraint firstAttribute="width" constant="130" id="r3Y-nT-tnC"/>
+                                                    </constraints>
+                                                    <viewLayoutGuide key="safeArea" id="j3b-SB-jg6"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <slider opaque="NO" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="1800" minValue="0.0" maxValue="3600" translatesAutoresizingMaskIntoConstraints="NO" id="SLN-Yr-m0H">
+                                                    <rect key="frame" x="15" y="49" width="345" height="31"/>
+                                                    <viewLayoutGuide key="safeArea" id="aqr-NJ-sMa"/>
+                                                </slider>
+                                                <textField opaque="NO" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="4ok-jW-FLm">
+                                                    <rect key="frame" x="262" y="11" width="97" height="30"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="width" constant="97" id="yAu-QS-I4j"/>
+                                                    </constraints>
+                                                    <viewLayoutGuide key="safeArea" id="v8O-gG-ALL"/>
+                                                    <nil key="textColor"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                                    <textInputTraits key="textInputTraits"/>
+                                                    <connections>
+                                                        <action selector="HandleHueInputChanged:" destination="TBP-QI-pDf" eventType="primaryActionTriggered" id="Jal-V9-IBP"/>
+                                                    </connections>
+                                                </textField>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" preservesSuperviewLayoutMargins="YES" text="Hue values range from 0° to 360°." textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="6u8-Ki-f5f">
+                                                    <rect key="frame" x="17" y="87" width="219.5" height="17"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="height" constant="17" id="CHa-gQ-yMA"/>
+                                                    </constraints>
+                                                    <viewLayoutGuide key="safeArea" id="JIp-b4-NDn"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                                    <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstItem="An3-Wb-2nc" firstAttribute="centerY" secondItem="4ok-jW-FLm" secondAttribute="centerY" id="Cbe-Rf-QAS"/>
+                                                <constraint firstAttribute="trailingMargin" secondItem="SLN-Yr-m0H" secondAttribute="trailing" constant="1" id="GCb-IA-Bxd"/>
+                                                <constraint firstItem="An3-Wb-2nc" firstAttribute="top" secondItem="N8h-Lo-Ty7" secondAttribute="topMargin" constant="-2" id="Hnx-Ji-q2E"/>
+                                                <constraint firstItem="An3-Wb-2nc" firstAttribute="leading" secondItem="N8h-Lo-Ty7" secondAttribute="leadingMargin" id="Mih-k2-AyE"/>
+                                                <constraint firstItem="6u8-Ki-f5f" firstAttribute="leading" secondItem="N8h-Lo-Ty7" secondAttribute="leadingMargin" constant="1" id="P0c-fu-W5z"/>
+                                                <constraint firstItem="SLN-Yr-m0H" firstAttribute="top" secondItem="An3-Wb-2nc" secondAttribute="bottom" constant="6" id="Yq7-jT-mu9"/>
+                                                <constraint firstItem="6u8-Ki-f5f" firstAttribute="leading" secondItem="SLN-Yr-m0H" secondAttribute="leading" id="fis-As-aGF"/>
+                                                <constraint firstItem="6u8-Ki-f5f" firstAttribute="top" secondItem="SLN-Yr-m0H" secondAttribute="bottom" constant="8" id="qEd-qs-Zmf"/>
+                                                <constraint firstAttribute="bottom" secondItem="6u8-Ki-f5f" secondAttribute="bottom" constant="21.5" id="uG8-In-5iO"/>
+                                                <constraint firstItem="4ok-jW-FLm" firstAttribute="trailing" secondItem="N8h-Lo-Ty7" secondAttribute="trailingMargin" id="urX-dN-8lq"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                        <viewLayoutGuide key="safeArea" id="OEf-Ee-Cxt"/>
+                                    </tableViewCell>
+                                </cells>
+                            </tableViewSection>
+                        </sections>
+                        <connections>
+                            <outlet property="dataSource" destination="TBP-QI-pDf" id="BZI-c3-hw0"/>
+                            <outlet property="delegate" destination="TBP-QI-pDf" id="CAr-e8-VSc"/>
+                        </connections>
+                    </tableView>
+                    <connections>
+                        <outlet property="HueInputTextBox" destination="4ok-jW-FLm" id="bct-VE-4Ah"/>
+                        <outlet property="HueSlider" destination="SLN-Yr-m0H" id="fOM-Ks-gan"/>
+                    </connections>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="OZj-Kp-IYS" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="661.60000000000002" y="11.244377811094454"/>
+        </scene>
+    </scenes>
+</document>
