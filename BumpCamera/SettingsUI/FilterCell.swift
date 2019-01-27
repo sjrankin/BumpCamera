@@ -24,15 +24,15 @@ class FilterCell: UITableViewCell
         super.init(style: Style, reuseIdentifier: ReuseIdentifier)
     }
     
-    public func SetData(_ LabelTitle: String? = nil, InputField: RenderPacket.InputFields, OldValue: String)
+    public func SetData(_ LabelTitle: String? = nil, InputField: FilterManager.InputFields, OldValue: String)
     {
         self.InputField = InputField
     }
     
-    private var InputField: RenderPacket.InputFields!
+    private var InputField: FilterManager.InputFields!
     
     private func HandleChange(_ NewRawValue: String)
     {
-        delegate?.NewRawValue(NewRawValue, Field: InputField)
+        delegate?.NewRawValue()
     }
 }
