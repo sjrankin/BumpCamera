@@ -14,7 +14,7 @@ class MainSettings: UITableViewController
     let _Settings = UserDefaults.standard
     var FilterName: String = ""
     let Filters = FilterManager()
-    var CurrentFilter: FilterNames? = FilterNames.NotSet
+    var CurrentFilter: FilterManager.FilterTypes? = FilterManager.FilterTypes.NotSet
     
     override func viewDidLoad()
     {
@@ -24,12 +24,15 @@ class MainSettings: UITableViewController
         CurrentFilter = Filters.GetFilterFrom(ID: FilterID!)
         if CurrentFilter == nil
         {
-            CurrentFilter = FilterNames.NotSet
+            CurrentFilter = FilterManager.FilterTypes.NotSet
         }
         FilterName = Filters.GetFilterTitle(CurrentFilter!)
+        #if true
+        FilterTitleLabel.text = "Settings for " + FilterName
+        #else
         if Filters.FilterHasParameters(CurrentFilter!)
         {
-            if CurrentFilter == FilterNames.NotSet
+            if CurrentFilter == FilterManager.FilterTypes.NotSet
             {
                 FilterTitleLabel.text = "Unknown Filter"
             }
@@ -43,9 +46,11 @@ class MainSettings: UITableViewController
             FilterTitleLabel.text = "\"" + FilterName + "\" has no settings"
             FilterTitleLabel.isEnabled = false
         }
+        #endif
         HideFilterNameSwitch.isOn = _Settings.bool(forKey: "HideFilterName")
         SaveOriginalSwitch.isOn = _Settings.bool(forKey: "SaveOriginalImage")
         ConfirmSaveSwitch.isOn = _Settings.bool(forKey: "ShowSaveAlert")
+        HideFiltersSwitch.isOn = _Settings.bool(forKey: "HideFilterSelectionUI")
     }
     
     @IBAction func HandleHideFilterNameChanged(_ sender: Any)
@@ -76,12 +81,15 @@ class MainSettings: UITableViewController
     
     @IBOutlet weak var FilterTitleLabel: UILabel!
     
+    @IBAction func HideFiltersChanged(_ sender: Any)
+    {
+        _Settings.set(HideFiltersSwitch.isOn, forKey: "HideFilterSelectionUI")
+    }
+    
+    @IBOutlet weak var HideFiltersSwitch: UISwitch!
+    
     override func shouldPerformSegue(withIdentifier identifier: String, sender: Any?) -> Bool
     {
-        if identifier == "ToFilterSettings"
-        {
-            return Filters.FilterHasParameters(CurrentFilter!)
-        }
         return true
     }
 }

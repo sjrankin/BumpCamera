@@ -9,13 +9,13 @@
 import Foundation
 import UIKit
 
-class FilterSettings: UIViewController, UITableViewDelegate, UITableViewDataSource, NewFieldSettingProtocol
+class FilterSettings: UIViewController, NewFieldSettingProtocol
 {
     let _Settings = UserDefaults.standard
     var FilterID: UUID? = nil
-    var FilterType: FilterNames? = nil
+    var FilterType: FilterManager.FilterTypes? = nil
     let Filters = FilterManager()
-    var ParameterBlock: RenderPacket? = nil
+    var SampleFilter: Renderer? = nil
     
     override func viewDidLoad()
     {
@@ -24,29 +24,49 @@ class FilterSettings: UIViewController, UITableViewDelegate, UITableViewDataSour
         FilterID = UUID(uuidString: FilterIDS!)
         FilterType = Filters.GetFilterFrom(ID: FilterID!)
         FilterTitle.text = Filters.GetFilterTitle(FilterType!)
-        ParameterBlock = Filters.GetParameterBlock(For: FilterType!)
-        if ParameterBlock == nil
-        {
-            fatalError("Nil parameter block returned in FilterSettings.viewDidLoad.")
-        }
-        CellCount = (ParameterBlock?.SupportedFields.count)!
-        FilterParameterTable.layer.borderColor = UIColor.black.cgColor
-        FilterParameterTable.layer.borderWidth = 0.5
-        FilterParameterTable.layer.cornerRadius = 5.0
+        title = FilterTitle.text! + " Settings"
+
+        ParameterHost.layer.borderColor = UIColor.black.cgColor
+        ParameterHost.layer.borderWidth = 0.25
+        ParameterHost.layer.cornerRadius = 5.0
+        ParameterHost.backgroundColor = UIColor.clear
         
-        FilterParameterTable.delegate = self
-        FilterParameterTable.dataSource = self
+        SampleFilter = Filters.CreateFilter(For: FilterType!)
+        SampleFilter?.InitializeForImage()
+        ShowSampleView()
+        CreateUI()
     }
     
-    var CellCount = 0
+    func ShowSampleView()
+    {
+        //SampleFilter = Filters.CreateFilter(For: FilterType!)
+        var SampleImage = UIImage(named: "Norio")
+        SampleImage = SampleFilter?.Render(Image: SampleImage!)
+        SampleView.image = SampleImage
+    }
     
     func CreateUI()
     {
-        let FilterIDString = _Settings.string(forKey: "CurrentFilter")
-        FilterID = UUID(uuidString: FilterIDString!)
+        if let TableName = SampleFilter?.SettingsStoryboard()
+        {
+            let Storyboard = UIStoryboard(name: TableName, bundle: nil)
+            Controller = Storyboard.instantiateViewController(withIdentifier: TableName) as? FilterTableBase
+            let HostFrame = ParameterHost.frame
+            ParameterHost.removeFromSuperview()
+            Controller.view.frame = HostFrame
+            self.view.addSubview(Controller.view)
+            Controller.view.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+            Controller.didMove(toParent: self)
+            Controller.view.layer.borderColor = UIColor.black.cgColor
+            Controller.view.layer.borderWidth = 0.5
+            Controller.view.layer.cornerRadius = 5.0
+            Controller.ParentDelegate = self
+        }
     }
     
-    func NewFieldSetting(InputField: RenderPacket.InputFields, NewValue: Any?)
+    var Controller: FilterTableBase!
+    
+    func NewFieldSetting(InputField: FilterManager.InputFields, NewValue: Any?)
     {
         
     }
@@ -55,26 +75,23 @@ class FilterSettings: UIViewController, UITableViewDelegate, UITableViewDataSour
     
     @IBOutlet weak var SampleView: UIImageView!
     
-    @IBOutlet weak var FilterParameterTable: UITableView!
-    
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat
     {
         return FilterCell.CellHeight
     }
     
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int
+    public func NewRawValue()
     {
-        return CellCount
+        ShowSampleView()
     }
     
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
+    @IBAction func HandleReturnToMainPressed(_ sender: Any)
     {
-        let Cell = FilterCell(style: UITableViewCell.CellStyle.default, reuseIdentifier: "ParameterCell")
-        return Cell as UITableViewCell
+        dismiss(animated: true, completion: nil)
+        //navigationController?.popViewController(animated: true)
     }
     
-    public func NewRawValue(_ Raw: String, Field: RenderPacket.InputFields)
-    {
-        
-    }
+    @IBOutlet weak var ParameterHost: UIView!
+    
+    @IBOutlet weak var BottomBar: UIToolbar!
 }
