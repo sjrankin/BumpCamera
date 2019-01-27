@@ -46,6 +46,10 @@ extension FilterManager
         case PatternDelta = 18
         case Mirror = 19
         case HueAdjust = 20
+        case HSBAdjust = 21
+        case ChannelMixer = 22
+        case DesaturateColors = 23
+        case GrayscaleKernel = 24
         case NotSet = 1000
     }
     
@@ -92,6 +96,30 @@ extension FilterManager
         case CenterInImage = 8
         case NRSharpness = 9
         case NRNoiseLevel = 10
+        case InputSaturation = 11
+        case InputBrightness = 12
+        case InputCContrast = 13
+        case InputHue = 14
+        case OutputColorSpace = 15
+        case CMYKMap = 16
+        case RGBMap = 17
+        case HSBMap = 18
+        case Normal = 19
+        case ChannelOrder = 20
+        case RedChannel = 21
+        case GreenChannel = 22
+        case BlueChannel = 23
+        case HueChannel = 25
+        case SaturationChannel = 26
+        case BrightnessChannel = 27
+        case CyanChannel = 28
+        case MagentaChannel = 29
+        case YellowChannel = 30
+        case BlackChannel = 24
+        case Command = 31
+        case RAdjustment = 32
+        case GAdjustment = 33
+        case BAdjustment = 34
         case NoField = 1000
     }
     
@@ -101,6 +129,8 @@ extension FilterManager
         case IntType = 1
         case BoolType = 2
         case PointType = 3
+        case StringType = 4
+        case Normal = 5
         case NoType = 1000
     }
 }
