@@ -80,28 +80,42 @@ class ParameterManager
             var StoredData = ""
             switch FieldType
             {
-            case FilterManager.InputTypes.BoolType:
+            case .StringType:
+                if let DefaultValue = AnyValue
+                {
+                    let SVal = DefaultValue as! String
+                    StoredData = SVal
+                }
+                
+            case .BoolType:
                 if let DefaultValue = AnyValue
                 {
                     let BVal = DefaultValue as! Bool
                     StoredData = String(BVal)
                 }
                 
-            case FilterManager.InputTypes.DoubleType:
+            case .DoubleType:
                 if let DefaultValue = AnyValue
                 {
                     let DVal = DefaultValue as! Double
                     StoredData = String(DVal)
                 }
                 
-            case FilterManager.InputTypes.IntType:
+            case .Normal:
+                if let DefaultValue = AnyValue
+                {
+                    let NVal = (DefaultValue as! Double).Clamp(0.0, 1.0)
+                    StoredData = String(NVal)
+                }
+                
+            case .IntType:
                 if let DefaultValue = AnyValue
                 {
                     let IVal = DefaultValue as! Int
                     StoredData = String(IVal)
                 }
                 
-            case FilterManager.InputTypes.PointType:
+            case .PointType:
                 if let DefaultValue = AnyValue
                 {
                     let PVal = DefaultValue as! CGPoint
@@ -124,7 +138,7 @@ class ParameterManager
     ///   - For: The ID of the filter.
     ///   - Field: The name of the field to create.
     /// - Returns: String in the form: ID_InputFieldName.
-    private static func MakeStorageName(For: UUID, Field: FilterManager.InputFields) -> String
+    public static func MakeStorageName(For: UUID, Field: FilterManager.InputFields) -> String
     {
         let Prefix = For.uuidString
         guard let Suffix = FilterManager.FieldStorageMap[Field] else
@@ -216,26 +230,36 @@ class ParameterManager
         }
         switch FromType
         {
+        case .StringType:
+            return Raw as Any?
+            
         case .BoolType:
             if let BVal = Bool(Raw)
             {
                 return BVal as Any?
             }
-            return "" as Any?
+            return nil
             
         case .DoubleType:
             if let DVal = Double(Raw)
             {
                 return DVal as Any?
             }
-            return "" as Any?
+            return nil
+            
+        case .Normal:
+            if let NVal = Double(Raw)
+            {
+                return NVal.Clamp(0.0, 1.0) as Any?
+            }
+            return nil
             
         case .IntType:
             if let IVal = Int(Raw)
             {
                 return IVal as Any?
             }
-            return "" as Any?
+            return nil
             
         case .PointType:
             let Parts = Raw.split(separator: ",")
@@ -262,7 +286,7 @@ class ParameterManager
             }
             else
             {
-                return "" as Any?
+                return nil
             }
             return CGPoint(x: FinalX, y: FinalY) as Any?
             
@@ -299,6 +323,13 @@ class ParameterManager
         }
         switch OfType
         {
+        case .StringType:
+            if let SVal = Raw as? String
+            {
+                return SVal
+            }
+            return ""
+            
         case .BoolType:
             if let BVal = Raw as? Bool
             {
@@ -328,6 +359,14 @@ class ParameterManager
             }
             return ""
             
+        case .Normal:
+            if var Norm = Raw as? Double
+            {
+                Norm = Norm.Clamp(0.0, 1.0)
+                return String(Norm)
+            }
+            return ""
+            
         default:
             fatalError("Unexpected type \(OfType) encountered.")
         }
@@ -335,3 +374,4 @@ class ParameterManager
         return ""
     }
 }
+
