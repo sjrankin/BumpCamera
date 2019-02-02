@@ -21,36 +21,28 @@ class MainSettings: UITableViewController
         super.viewDidLoad()
         let FilterIDString = _Settings.string(forKey: "CurrentFilter")
         let FilterID = UUID(uuidString: FilterIDString!)
-        CurrentFilter = Filters.GetFilterFrom(ID: FilterID!)
+        CurrentFilter = Filters.GetFilterTypeFrom(ID: FilterID!)
         if CurrentFilter == nil
         {
             CurrentFilter = FilterManager.FilterTypes.NotSet
         }
         FilterName = Filters.GetFilterTitle(CurrentFilter!)
-        #if true
-        FilterTitleLabel.text = "Settings for " + FilterName
-        #else
-        if Filters.FilterHasParameters(CurrentFilter!)
-        {
-            if CurrentFilter == FilterManager.FilterTypes.NotSet
-            {
-                FilterTitleLabel.text = "Unknown Filter"
-            }
-            else
-            {
-                FilterTitleLabel.text = "Settings for " + FilterName
-            }
-        }
-        else
-        {
-            FilterTitleLabel.text = "\"" + FilterName + "\" has no settings"
-            FilterTitleLabel.isEnabled = false
-        }
-        #endif
+        CurrentFilterLabel.text = "Current: " + FilterName
+
         HideFilterNameSwitch.isOn = _Settings.bool(forKey: "HideFilterName")
         SaveOriginalSwitch.isOn = _Settings.bool(forKey: "SaveOriginalImage")
         ConfirmSaveSwitch.isOn = _Settings.bool(forKey: "ShowSaveAlert")
         HideFiltersSwitch.isOn = _Settings.bool(forKey: "HideFilterSelectionUI")
+        
+        let Cells = tableView.visibleCells 
+        for Cell in Cells
+        {
+            if Cell.tag == 1010
+            {
+                Cell.selectionStyle = .none
+                break
+            }
+        }
     }
     
     @IBAction func HandleHideFilterNameChanged(_ sender: Any)
@@ -88,8 +80,27 @@ class MainSettings: UITableViewController
     
     @IBOutlet weak var HideFiltersSwitch: UISwitch!
     
+    @IBOutlet weak var CurrentFilterLabel: UILabel!
+    
     override func shouldPerformSegue(withIdentifier identifier: String, sender: Any?) -> Bool
     {
         return true
+    }
+    
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath)
+    {
+        let Cell = tableView.cellForRow(at: indexPath)
+        if Cell!.tag == 1010
+        {
+            if let StoryboardName = FilterManager.StoryboardFor(CurrentFilter!)
+            {
+                let Storyboard = UIStoryboard(name: StoryboardName, bundle: nil)
+                if let Controller = Storyboard.instantiateViewController(withIdentifier: StoryboardName) as? UINavigationController
+                {
+                    _Settings.set(CurrentFilter!.rawValue, forKey: "SetupForFilterType")
+                    self.present(Controller, animated: true, completion: nil)
+                }
+            }
+        }
     }
 }
