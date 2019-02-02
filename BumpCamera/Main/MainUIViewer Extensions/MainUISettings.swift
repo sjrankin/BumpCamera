@@ -31,6 +31,8 @@ extension MainUIViewer
         _Settings.set(false, forKey: "HideFilterSelectionUI")
         _Settings.set(30.0, forKey: "SelectionHideTime")
         _Settings.set(false, forKey: "EnableDepthData")
+        _Settings.set("Norio", forKey: "SampleImage")
+        _Settings.set(0, forKey: "SetupForFilterType")
         let InitialGroupID = Filters?.GetGroupID(ForGroup: .Standard)
         _Settings.set(InitialGroupID?.uuidString, forKey: "CurrentGroup")
         let InitialFilterID = Filters?.GetFilterID(For: .PassThrough)
