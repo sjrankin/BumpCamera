@@ -298,6 +298,7 @@
 		1712A85321FB23F4001E9D2B /* BumpyKernels */ = {
 			isa = PBXGroup;
 			children = (
+				171E5B0C2205D09D004E60F1 /* Generators */,
 				1799C89421FF15530069D5AC /* External */,
 				17FA09AF21E8A8E400405B2D /* PixelatorKernel */,
 				17020EE221FDDC1C006DE7ED /* Desaturation */,
@@ -418,6 +419,21 @@
 				17D7511A21F462CD0050A2B5 /* BumpCamera-Bridging-Header.h */,
 			);
 			path = BumpCamera;
+			sourceTree = "<group>";
+		};
+		171E5B0C2205D09D004E60F1 /* Generators */ = {
+			isa = PBXGroup;
+			children = (
+				171E5B0D2205D0A9004E60F1 /* Grid */,
+			);
+			path = Generators;
+			sourceTree = "<group>";
+		};
+		171E5B0D2205D0A9004E60F1 /* Grid */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Grid;
 			sourceTree = "<group>";
 		};
 		1726241321F840B100C7688C /* HueAdjust */ = {
