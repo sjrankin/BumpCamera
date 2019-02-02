@@ -11,8 +11,10 @@ import simd
 
 struct ChannelSwizzles
 {
-    //Values: 0 = r, 1 = g, 2 = b, 3 = h, 4 = s, 5 = L
-    let Channel1: simd_float1
-    let Channel2: simd_float1
-    let Channel3: simd_float1
+    //Values: 0 = r, 1 = g, 2 = b, 3 = h, 4 = s, 5 = L, 6 = c, 7 = m, 8 = y, 9 = k
+    let Channel1: simd_int1
+    let Channel2: simd_int1
+    let Channel3: simd_int1
+    let HasHSB: simd_int1
+    let HasCMYK: simd_int1
 }
