@@ -249,18 +249,6 @@ class LineScreen: FilterParent, Renderer
         return nil
     }
     
-    func SupportedFields() -> [FilterManager.InputFields]
-    {
-        var Fields = [FilterManager.InputFields]()
-        Fields.append(.Width)
-        Fields.append(.Angle)
-        Fields.append(.Center)
-        Fields.append(.CenterInImage)
-        Fields.append(.MergeWithBackground)
-        Fields.append(.AdjustInLandscape)
-        return Fields
-    }
-    
     func DefaultFieldValue(Field: FilterManager.InputFields) -> (FilterManager.InputTypes, Any?)
     {
         switch Field
@@ -269,7 +257,7 @@ class LineScreen: FilterParent, Renderer
             return (FilterManager.InputTypes.DoubleType, 5.0 as Any?)
             
         case .Angle:
-            return (FilterManager.InputTypes.DoubleType, nil as Any?)
+            return (FilterManager.InputTypes.DoubleType, 90.0 as Any?)
             
         case .Center:
             return (FilterManager.InputTypes.PointType, CGPoint(x: 0.0, y: 0.0) as Any?)
@@ -288,8 +276,40 @@ class LineScreen: FilterParent, Renderer
         }
     }
     
+    func SupportedFields() -> [FilterManager.InputFields]
+    {
+        return LineScreen.SupportedFields()
+    }
+    
+    public static func SupportedFields() -> [FilterManager.InputFields]
+    {
+        var Fields = [FilterManager.InputFields]()
+        Fields.append(.Width)
+        Fields.append(.Angle)
+        Fields.append(.Center)
+        Fields.append(.CenterInImage)
+        Fields.append(.AdjustInLandscape)
+        Fields.append(.MergeWithBackground)
+        return Fields
+    }
+    
     func SettingsStoryboard() -> String?
     {
-        return nil
+        return LineScreen.SettingsStoryboard()
+    }
+    
+    public static func SettingsStoryboard() -> String?
+    {
+        return "HalftoneSettingsUI"
+    }
+    
+    func IsSlow() -> Bool
+    {
+        return false
+    }
+    
+    func FilterTarget() -> [FilterTargets]
+    {
+        return [.LiveView, .Video, .Still]
     }
 }

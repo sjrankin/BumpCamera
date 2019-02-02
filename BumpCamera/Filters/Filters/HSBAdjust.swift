@@ -213,15 +213,6 @@ class HSBAdjust: FilterParent, Renderer
         return nil
     }
     
-    func SupportedFields() -> [FilterManager.InputFields]
-    {
-        var Fields = [FilterManager.InputFields]()
-        Fields.append(.InputCContrast)
-        Fields.append(.InputBrightness)
-        Fields.append(.InputSaturation)
-        return Fields
-    }
-    
     func DefaultFieldValue(Field: FilterManager.InputFields) -> (FilterManager.InputTypes, Any?)
     {
         switch Field
@@ -240,8 +231,37 @@ class HSBAdjust: FilterParent, Renderer
         }
     }
     
+    func SupportedFields() -> [FilterManager.InputFields]
+    {
+        return HSBAdjust.SupportedFields()
+    }
+    
+    public static func SupportedFields() -> [FilterManager.InputFields]
+    {
+        var Fields = [FilterManager.InputFields]()
+        Fields.append(.InputCContrast)
+        Fields.append(.InputBrightness)
+        Fields.append(.InputSaturation)
+        return Fields
+    }
+    
     func SettingsStoryboard() -> String?
     {
-        return "HSBAdjustTable"
+        return HSBAdjust.SettingsStoryboard()
+    }
+    
+    public static func SettingsStoryboard() -> String?
+    {
+        return "HSBFilterSettingsUI"
+    }
+    
+    func IsSlow() -> Bool
+    {
+        return false
+    }
+    
+    func FilterTarget() -> [FilterTargets]
+    {
+        return [.LiveView, .Video, .Still]
     }
 }

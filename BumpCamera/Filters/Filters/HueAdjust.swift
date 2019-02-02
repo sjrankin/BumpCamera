@@ -191,13 +191,6 @@ class HueAdjust: FilterParent, Renderer
         return nil
     }
     
-    func SupportedFields() -> [FilterManager.InputFields]
-    {
-        var Fields = [FilterManager.InputFields]()
-        Fields.append(.Angle)
-        return Fields
-    }
-    
     func DefaultFieldValue(Field: FilterManager.InputFields) -> (FilterManager.InputTypes, Any?)
     {
         switch Field
@@ -210,8 +203,35 @@ class HueAdjust: FilterParent, Renderer
         }
     }
     
+    func SupportedFields() -> [FilterManager.InputFields]
+    {
+        return HueAdjust.SupportedFields()
+    }
+    
+    public static func SupportedFields() -> [FilterManager.InputFields]
+    {
+        var Fields = [FilterManager.InputFields]()
+        Fields.append(.Angle)
+        return Fields
+    }
+    
     func SettingsStoryboard() -> String?
     {
+        return HueAdjust.SettingsStoryboard()
+    }
+    
+    public static func SettingsStoryboard() -> String?
+    {
         return "HueAdjustTable"
+    }
+    
+    func IsSlow() -> Bool
+    {
+        return false
+    }
+    
+    func FilterTarget() -> [FilterTargets]
+    {
+        return [.LiveView, .Video, .Still]
     }
 }

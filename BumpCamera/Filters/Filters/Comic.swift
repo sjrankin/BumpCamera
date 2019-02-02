@@ -222,13 +222,6 @@ class Comic: FilterParent, Renderer
         return nil
     }
     
-    func SupportedFields() -> [FilterManager.InputFields]
-    {
-        var Fields = [FilterManager.InputFields]()
-        Fields.append(.MergeWithBackground)
-        return Fields
-    }
-    
     func DefaultFieldValue(Field: FilterManager.InputFields) -> (FilterManager.InputTypes, Any?)
     {
         switch Field
@@ -241,8 +234,35 @@ class Comic: FilterParent, Renderer
         }
     }
     
+    func SupportedFields() -> [FilterManager.InputFields]
+    {
+        return Comic.SupportedFields()
+    }
+    
+    public static func SupportedFields() -> [FilterManager.InputFields]
+    {
+        var Fields = [FilterManager.InputFields]()
+        Fields.append(.MergeWithBackground)
+        return Fields
+    }
+    
     func SettingsStoryboard() -> String?
     {
-        return "ComicTable"
+        return Comic.SettingsStoryboard()
+    }
+    
+    public static func SettingsStoryboard() -> String?
+    {
+        return "NoParametersSettingsUI"
+    }
+    
+    func FilterTarget() -> [FilterTargets]
+    {
+        return [.LiveView, .Video, .Still]
+    }
+    
+    func IsSlow() -> Bool
+    {
+        return false
     }
 }

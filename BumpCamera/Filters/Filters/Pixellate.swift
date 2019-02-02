@@ -183,13 +183,6 @@ class Pixellate: FilterParent, Renderer
         return nil
     }
     
-    func SupportedFields() -> [FilterManager.InputFields]
-    {
-        var Fields = [FilterManager.InputFields]()
-        Fields.append(.Width)
-        return Fields
-    }
-    
     func DefaultFieldValue(Field: FilterManager.InputFields) -> (FilterManager.InputTypes, Any?)
     {
         switch Field
@@ -202,8 +195,35 @@ class Pixellate: FilterParent, Renderer
         }
     }
     
-    func SettingsStoryboard() -> String?
+    func SupportedFields() -> [FilterManager.InputFields]
+    {
+        return Pixellate.SupportedFields()
+    }
+    
+    public static func SupportedFields() -> [FilterManager.InputFields]
+    {
+        var Fields = [FilterManager.InputFields]()
+        Fields.append(.Width)
+        return Fields
+    }
+    
+    public func SettingsStoryboard() -> String?
+    {
+        return Pixellate.SettingsStoryboard()
+    }
+    
+    public static func SettingsStoryboard() -> String?
     {
         return "PixellateTable"
+    }
+    
+    func IsSlow() -> Bool
+    {
+        return false
+    }
+    
+    func FilterTarget() -> [FilterTargets]
+    {
+        return [.LiveView, .Video, .Still]
     }
 }

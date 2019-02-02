@@ -14,8 +14,6 @@ import CoreImage
 
 class PassThrough: FilterParent, Renderer
 {
-    
-    
     var _ID: UUID = UUID(uuidString: "e18b32bf-e965-41c6-a1f5-4bb4ed6ba472")!
     var ID: UUID
     {
@@ -103,18 +101,38 @@ class PassThrough: FilterParent, Renderer
         return Image
     }
     
-    func SupportedFields() -> [FilterManager.InputFields]
-    {
-        return [FilterManager.InputFields]()
-    }
-    
     func DefaultFieldValue(Field: FilterManager.InputFields) -> (FilterManager.InputTypes, Any?)
     {
         return (FilterManager.InputTypes.NoType, nil)
     }
     
+    func SupportedFields() -> [FilterManager.InputFields]
+    {
+        return PassThrough.SupportedFields()
+    }
+    
+    public static func SupportedFields() -> [FilterManager.InputFields]
+    {
+        return [FilterManager.InputFields]()
+    }
+    
     func SettingsStoryboard() -> String?
     {
-        return "PassThroughTable"
+        return PassThrough.SettingsStoryboard()
+    }
+    
+    public static func SettingsStoryboard() -> String?
+    {
+        return "NoParametersSettingsUI"
+    }
+    
+    func IsSlow() -> Bool
+    {
+        return false
+    }
+    
+    func FilterTarget() -> [FilterTargets]
+    {
+        return [.LiveView, .Video, .Still]
     }
 }

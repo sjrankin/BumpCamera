@@ -124,25 +124,7 @@ class ChannelMixer: FilterParent, Renderer
         }
         
         let DefaultLibrary = MetalDevice?.makeDefaultLibrary()
-        let RawOutCS = ParameterManager.GetField(From: ID, Field: FilterManager.InputFields.OutputColorSpace)
-        var OutCS = 0
-        if let CS = RawOutCS as? Int
-        {
-            OutCS = CS
-        }
-        var KernelName = ""
-        switch OutCS
-        {
-        case 0:
-            KernelName = "RGBSwizzling"
-            
-        case 1:
-            KernelName = "HSBSwizzling"
-            
-        default:
-            KernelName = "RGBSwizzling"
-        }
-        let KernelFunction = DefaultLibrary?.makeFunction(name: KernelName)
+        let KernelFunction = DefaultLibrary?.makeFunction(name: "HSBSwizzling")
         do
         {
             ComputePipelineState = try MetalDevice?.makeComputePipelineState(function: KernelFunction!)
@@ -152,8 +134,19 @@ class ChannelMixer: FilterParent, Renderer
             print("Unable to create pipeline state: \(error.localizedDescription)")
         }
         
-        let (C1, C2, C3) = GetSwizzleValues(OutCS)
-        let Parameter = ChannelSwizzles(Channel1: simd_float1(C1), Channel2: simd_float1(C2), Channel3: simd_float1(C3))
+        let (C1, C2, C3) = GetSwizzleValues()
+        var IsHSB = 0
+        if ChannelIsInHSB(Channel: C1) || ChannelIsInHSB(Channel: C2) || ChannelIsInHSB(Channel: C3)
+        {
+            IsHSB = 1
+        }
+        var IsCMYK = 0
+        if ChannelIsInCMYK(Channel: C1) || ChannelIsInCMYK(Channel: C2) || ChannelIsInCMYK(Channel: C3)
+        {
+            IsCMYK = 1
+        }
+        let Parameter = ChannelSwizzles(Channel1: simd_int1(C1), Channel2: simd_int1(C2), Channel3: simd_int1(C3),
+                                        HasHSB: simd_int1(IsHSB), HasCMYK: simd_int1(IsCMYK))
         let Parameters = [Parameter]
         ParameterBuffer = MetalDevice!.makeBuffer(length: MemoryLayout<ChannelSwizzles>.size, options: [])
         memcpy(ParameterBuffer.contents(), Parameters, MemoryLayout<ChannelSwizzles>.size)
@@ -223,27 +216,7 @@ class ChannelMixer: FilterParent, Renderer
         }
         
         let DefaultLibrary = MetalDevice?.makeDefaultLibrary()
-        
-        let RawOutCS = ParameterManager.GetField(From: ID, Field: FilterManager.InputFields.OutputColorSpace)
-        var OutCS = 0
-        if let CS = RawOutCS as? Int
-        {
-            OutCS = CS
-        }
-        var KernelName = ""
-        switch OutCS
-        {
-        case 0:
-            KernelName = "RGBSwizzling"
-            
-        case 1:
-            KernelName = "HSBSwizzling"
-            
-        default:
-            KernelName = "RGBSwizzling"
-        }
-        //print("Using kernel \(KernelName)")
-        let KernelFunction = DefaultLibrary?.makeFunction(name: KernelName)
+        let KernelFunction = DefaultLibrary?.makeFunction(name: "HSBSwizzling")
         do
         {
             ImageComputePipelineState = try MetalDevice?.makeComputePipelineState(function: KernelFunction!)
@@ -283,8 +256,19 @@ class ChannelMixer: FilterParent, Renderer
         CommandEncoder?.setTexture(Texture, index: 0)
         CommandEncoder?.setTexture(OutputTexture, index: 1)
         
-        let (C1, C2, C3) = GetSwizzleValues(OutCS)
-        let Parameter = ChannelSwizzles(Channel1: simd_float1(C1), Channel2: simd_float1(C2), Channel3: simd_float1(C3))
+        let (C1, C2, C3) = GetSwizzleValues()
+        var IsHSB = 0
+        if ChannelIsInHSB(Channel: C1) || ChannelIsInHSB(Channel: C2) || ChannelIsInHSB(Channel: C3)
+        {
+            IsHSB = 1
+        }
+        var IsCMYK = 0
+        if ChannelIsInCMYK(Channel: C1) || ChannelIsInCMYK(Channel: C2) || ChannelIsInCMYK(Channel: C3)
+        {
+            IsCMYK = 1
+        }
+        let Parameter = ChannelSwizzles(Channel1: simd_int1(C1), Channel2: simd_int1(C2), Channel3: simd_int1(C3),
+                                        HasHSB: simd_int1(IsHSB), HasCMYK: simd_int1(IsCMYK))
         let Parameters = [Parameter]
         ParameterBuffer = MetalDevice!.makeBuffer(length: MemoryLayout<ChannelSwizzles>.size, options: [])
         memcpy(ParameterBuffer.contents(), Parameters, MemoryLayout<ChannelSwizzles>.size)
@@ -342,46 +326,22 @@ class ChannelMixer: FilterParent, Renderer
         }
     }
     
-    func GetSwizzleValues(_ ColorSpaceIndex: Int) -> (Int, Int, Int)
+    func GetSwizzleValues() -> (Int, Int, Int)
     {
         var C1: Int = Channels.Red.rawValue
         var C2: Int = Channels.Green.rawValue
         var C3: Int = Channels.Blue.rawValue
-        #if false
-        var C4: Int = Channels.Black.rawValue
-        #endif
-        
-        var F1: FilterManager.InputFields!
-        var F2: FilterManager.InputFields!
-        var F3: FilterManager.InputFields!
-        
-        switch ColorSpaceIndex
-        {
-        case 0:
-            F1 = FilterManager.InputFields.RedChannel
-            F2 = FilterManager.InputFields.GreenChannel
-            F3 = FilterManager.InputFields.BlueChannel
-            
-        case 1:
-            F1 = FilterManager.InputFields.HueChannel
-            F2 = FilterManager.InputFields.SaturationChannel
-            F3 = FilterManager.InputFields.BrightnessChannel
-            
-        default:
-            fatalError("Unexpected color space encountered: \(ColorSpaceIndex).")
-        }
-        
-        let RawC1 = ParameterManager.GetField(From: ID, Field: F1)
+        let RawC1 = ParameterManager.GetField(From: ID, Field: FilterManager.InputFields.Channel1)
         if let C1Val = RawC1 as? Int
         {
             C1 = C1Val
         }
-        let RawC2 = ParameterManager.GetField(From: ID, Field: F2)
+        let RawC2 = ParameterManager.GetField(From: ID, Field: FilterManager.InputFields.Channel2)
         if let C2Val = RawC2 as? Int
         {
             C2 = C2Val
         }
-        let RawC3 = ParameterManager.GetField(From: ID, Field: F3)
+        let RawC3 = ParameterManager.GetField(From: ID, Field: FilterManager.InputFields.Channel3)
         if let C3Val = RawC3 as? Int
         {
             C3 = C3Val
@@ -389,30 +349,29 @@ class ChannelMixer: FilterParent, Renderer
         return (C1, C2, C3)
     }
     
-    func SupportedFields() -> [FilterManager.InputFields]
+    func ChannelIsInHSB(Channel: Int) -> Bool
     {
-        var Fields = [FilterManager.InputFields]()
-        Fields.append(.RedChannel)
-        Fields.append(.GreenChannel)
-        Fields.append(.BlueChannel)
-        Fields.append(.HueChannel)
-        Fields.append(.SaturationChannel)
-        Fields.append(.BrightnessChannel)
-        Fields.append(.CyanChannel)
-        Fields.append(.MagentaChannel)
-        Fields.append(.YellowChannel)
-        Fields.append(.BlackChannel)
-        Fields.append(.CMYKMap)
-        Fields.append(.RGBMap)
-        Fields.append(.HSBMap)
-        Fields.append(.OutputColorSpace)
-        return Fields
+        return Channel >= Channels.Hue.rawValue && Channel <= Channels.Brightness.rawValue
     }
     
+    func ChannelIsInCMYK(Channel: Int) -> Bool
+    {
+        return Channel >= Channels.Cyan.rawValue && Channel <= Channels.Black.rawValue
+    }
+
     func DefaultFieldValue(Field: FilterManager.InputFields) -> (FilterManager.InputTypes, Any?)
     {
         switch Field
         {
+        case .Channel1:
+            return (FilterManager.InputTypes.IntType, Channels.Red.rawValue as Any?)
+            
+        case .Channel2:
+            return (FilterManager.InputTypes.IntType, Channels.Green.rawValue as Any?)
+            
+        case .Channel3:
+            return (FilterManager.InputTypes.IntType, Channels.Blue.rawValue as Any?)
+            
         case .RedChannel:
             return (FilterManager.InputTypes.IntType, 0 as Any?)
             
@@ -460,9 +419,52 @@ class ChannelMixer: FilterParent, Renderer
         }
     }
     
+    func SupportedFields() -> [FilterManager.InputFields]
+    {
+        return ChannelMixer.SupportedFields()
+    }
+    
+    public static func SupportedFields() -> [FilterManager.InputFields]
+    {
+        var Fields = [FilterManager.InputFields]()
+        Fields.append(.Channel1)
+        Fields.append(.Channel2)
+        Fields.append(.Channel3)
+        Fields.append(.RedChannel)
+        Fields.append(.GreenChannel)
+        Fields.append(.BlueChannel)
+        Fields.append(.HueChannel)
+        Fields.append(.SaturationChannel)
+        Fields.append(.BrightnessChannel)
+        Fields.append(.CyanChannel)
+        Fields.append(.MagentaChannel)
+        Fields.append(.YellowChannel)
+        Fields.append(.BlackChannel)
+        Fields.append(.CMYKMap)
+        Fields.append(.RGBMap)
+        Fields.append(.HSBMap)
+        Fields.append(.OutputColorSpace)
+        return Fields
+    }
+    
     func SettingsStoryboard() -> String?
     {
-        return "ChannelMixerTable4"
+        return ChannelMixer.SettingsStoryboard()
+    }
+    
+    public static func SettingsStoryboard() -> String?
+    {
+        return "ChannelMixerSettingsUI"
+    }
+    
+    func IsSlow() -> Bool
+    {
+        return false
+    }
+    
+    func FilterTarget() -> [FilterTargets]
+    {
+        return [.LiveView, .Video, .Still]
     }
 }
 

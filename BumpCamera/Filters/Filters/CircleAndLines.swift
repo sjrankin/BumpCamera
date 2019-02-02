@@ -261,43 +261,67 @@ class CircleAndLines: FilterParent, Renderer
         return nil
     }
     
-    func SupportedFields() -> [FilterManager.InputFields]
-    {
-        var Fields = [FilterManager.InputFields]()
-        Fields.append(.Width)
-        Fields.append(.Angle)
-        Fields.append(.Center)
-        Fields.append(.CenterInImage)
-        Fields.append(.MergeWithBackground)
-        return Fields
-    }
-    
     func DefaultFieldValue(Field: FilterManager.InputFields) -> (FilterManager.InputTypes, Any?)
     {
         switch Field
         {
         case .Width:
-            return (FilterManager.InputTypes.DoubleType, 5.0 as Any?)
+            return (.DoubleType, 5.0 as Any?)
             
         case .Angle:
-            return (FilterManager.InputTypes.DoubleType, 0.0 as Any?)
+            return (.DoubleType, 0.0 as Any?)
             
         case .Center:
-            return (FilterManager.InputTypes.PointType, CGPoint(x: 0.0, y: 0.0) as Any?)
+            return (.PointType, CGPoint(x: 0.0, y: 0.0) as Any?)
             
         case .CenterInImage:
-            return (FilterManager.InputTypes.BoolType, true as Any?)
+            return (.BoolType, true as Any?)
             
         case .MergeWithBackground:
-            return (FilterManager.InputTypes.BoolType, true as Any?)
+            return (.BoolType, true as Any?)
+            
+        case .AdjustInLandscape:
+            return (.BoolType, true as Any?)
             
         default:
             fatalError("Unexpected field \(Field) encountered in DefaultFieldValue.")
         }
     }
     
+    func SupportedFields() -> [FilterManager.InputFields]
+    {
+        return CircleAndLines.SupportedFields()
+    }
+    
+    public static func SupportedFields() -> [FilterManager.InputFields]
+    {
+        var Fields = [FilterManager.InputFields]()
+        Fields.append(.Width)
+        Fields.append(.Angle)
+        Fields.append(.Center)
+        Fields.append(.CenterInImage)
+        Fields.append(.AdjustInLandscape)
+        Fields.append(.MergeWithBackground)
+        return Fields
+    }
+    
     func SettingsStoryboard() -> String?
     {
-        return nil
+        return CircleAndLines.SettingsStoryboard()
+    }
+    
+    public static func SettingsStoryboard() -> String?
+    {
+        return "HalftoneSettingsUI"
+    }
+    
+    func IsSlow() -> Bool
+    {
+        return false
+    }
+    
+    func FilterTarget() -> [FilterTargets]
+    {
+        return [.LiveView, .Video, .Still]
     }
 }

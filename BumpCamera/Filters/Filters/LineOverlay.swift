@@ -267,18 +267,6 @@ class LineOverlay: FilterParent, Renderer
         return nil
     }
     
-    func SupportedFields() -> [FilterManager.InputFields]
-    {
-        var Fields = [FilterManager.InputFields]()
-        Fields.append(.InputContrast)
-        Fields.append(.InputThreshold)
-        Fields.append(.EdgeIntensity)
-        Fields.append(.NRNoiseLevel)
-        Fields.append(.NRSharpness)
-        Fields.append(.MergeWithBackground)
-        return Fields
-    }
-    
     func DefaultFieldValue(Field: FilterManager.InputFields) -> (FilterManager.InputTypes, Any?)
     {
         switch Field
@@ -306,8 +294,40 @@ class LineOverlay: FilterParent, Renderer
         }
     }
     
+    func SupportedFields() -> [FilterManager.InputFields]
+    {
+        return LineOverlay.SupportedFields()
+    }
+    
+    public static func SupportedFields() -> [FilterManager.InputFields]
+    {
+        var Fields = [FilterManager.InputFields]()
+        Fields.append(.InputContrast)
+        Fields.append(.InputThreshold)
+        Fields.append(.EdgeIntensity)
+        Fields.append(.NRNoiseLevel)
+        Fields.append(.NRSharpness)
+        Fields.append(.MergeWithBackground)
+        return Fields
+    }
+    
     func SettingsStoryboard() -> String?
     {
+        return LineOverlay.SettingsStoryboard()
+    }
+    
+    public static func SettingsStoryboard() -> String?
+    {
         return nil
+    }
+    
+    func IsSlow() -> Bool
+    {
+        return false
+    }
+    
+    func FilterTarget() -> [FilterTargets]
+    {
+        return [.LiveView, .Video, .Still]
     }
 }

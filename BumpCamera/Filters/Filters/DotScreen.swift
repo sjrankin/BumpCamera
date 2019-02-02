@@ -249,9 +249,43 @@ class DotScreen: FilterParent, Renderer
         return nil
     }
     
+    func DefaultFieldValue(Field: FilterManager.InputFields) -> (FilterManager.InputTypes, Any?)
+    {
+        switch Field
+        {
+        case .Width:
+            return (.DoubleType, 5.0 as Any?)
+            
+        case .Angle:
+            return (.DoubleType, 90.0 as Any?)
+            
+        case .Center:
+            return (.PointType, CGPoint(x: -1.0, y: -1.0) as Any?)
+            
+        case .MergeWithBackground:
+            return (.BoolType, true as Any?)
+            
+        case .CenterInImage:
+            return (.BoolType, true as Any?)
+            
+        case .AdjustInLandscape:
+            return (.BoolType, true as Any?)
+            
+        default:
+            fatalError("Unexpected field \(Field) encountered in DefaultFieldValue.")
+        }
+    }
+    
     func SupportedFields() -> [FilterManager.InputFields]
     {
+        return DotScreen.SupportedFields()
+    }
+    
+    public static func SupportedFields() -> [FilterManager.InputFields]
+    {
         var Fields = [FilterManager.InputFields]()
+        Fields.append(.CenterInImage)
+        Fields.append(.AdjustInLandscape)
         Fields.append(.Width)
         Fields.append(.Angle)
         Fields.append(.Center)
@@ -259,29 +293,23 @@ class DotScreen: FilterParent, Renderer
         return Fields
     }
     
-    func DefaultFieldValue(Field: FilterManager.InputFields) -> (FilterManager.InputTypes, Any?)
-    {
-        switch Field
-        {
-        case .Width:
-            return (FilterManager.InputTypes.DoubleType, 5.0 as Any?)
-            
-        case .Angle:
-            return (FilterManager.InputTypes.DoubleType, nil as Any?)
-            
-        case .Center:
-            return (FilterManager.InputTypes.PointType, CGPoint(x: -1.0, y: -1.0) as Any?)
-            
-        case .MergeWithBackground:
-            return (FilterManager.InputTypes.BoolType, true as Any?)
-            
-        default:
-            fatalError("Unexpected field \(Field) encountered in DefaultFieldValue.")
-        }
-    }
-    
     func SettingsStoryboard() -> String?
     {
-        return nil
+        return DotScreen.SettingsStoryboard()
+    }
+    
+    public static func SettingsStoryboard() -> String?
+    {
+        return "HalftoneSettingsUI"
+    }
+    
+    func IsSlow() -> Bool
+    {
+        return false
+    }
+    
+    func FilterTarget() -> [FilterTargets]
+    {
+        return [.LiveView, .Video, .Still]
     }
 }

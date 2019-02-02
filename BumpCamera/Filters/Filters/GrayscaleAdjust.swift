@@ -124,7 +124,11 @@ class GrayscaleAdjust: FilterParent, Renderer
         {
             FinalCommand = RawInt
         }
-        let Parameter = GrayscaleParameters(Command: simd_int1(FinalCommand), RMultiplier: 0.3, GMultiplier: 0.5, BMultiplier: 0.2)
+        let RMul = ParameterManager.GetDouble(From: ID, Field: .RAdjustment, Default: 0.3)
+        let GMul = ParameterManager.GetDouble(From: ID, Field: .GAdjustment, Default: 0.5)
+        let BMul = ParameterManager.GetDouble(From: ID, Field: .BAdjustment, Default: 0.2)
+        let Parameter = GrayscaleParameters(Command: simd_int1(FinalCommand), RMultiplier: simd_float1(RMul),
+                                            GMultiplier: simd_float1(GMul), BMultiplier: simd_float1(BMul))
         let Parameters = [Parameter]
         ParameterBuffer = MetalDevice!.makeBuffer(length: MemoryLayout<GrayscaleParameters>.size, options: [])
         memcpy(ParameterBuffer.contents(), Parameters, MemoryLayout<GrayscaleParameters>.size)
@@ -240,7 +244,11 @@ class GrayscaleAdjust: FilterParent, Renderer
         {
             FinalCommand = RawInt
         }
-        let Parameter = GrayscaleParameters(Command: simd_int1(FinalCommand), RMultiplier: 0.3, GMultiplier: 0.5, BMultiplier: 0.2)
+        let RMul = ParameterManager.GetDouble(From: ID, Field: .RAdjustment, Default: 0.3)
+        let GMul = ParameterManager.GetDouble(From: ID, Field: .GAdjustment, Default: 0.5)
+        let BMul = ParameterManager.GetDouble(From: ID, Field: .BAdjustment, Default: 0.2)
+        let Parameter = GrayscaleParameters(Command: simd_int1(FinalCommand), RMultiplier: simd_float1(RMul),
+                                            GMultiplier: simd_float1(GMul), BMultiplier: simd_float1(BMul))
         let Parameters = [Parameter]
         ParameterBuffer = MetalDevice!.makeBuffer(length: MemoryLayout<GrayscaleParameters>.size, options: [])
         memcpy(ParameterBuffer.contents(), Parameters, MemoryLayout<GrayscaleParameters>.size)
@@ -298,16 +306,6 @@ class GrayscaleAdjust: FilterParent, Renderer
         }
     }
     
-    func SupportedFields() -> [FilterManager.InputFields]
-    {
-        var Fields = [FilterManager.InputFields]()
-        Fields.append(.Command)
-        Fields.append(.RAdjustment)
-        Fields.append(.GAdjustment)
-        Fields.append(.BAdjustment)
-        return Fields
-    }
-    
     func DefaultFieldValue(Field: FilterManager.InputFields) -> (FilterManager.InputTypes, Any?)
     {
         switch Field
@@ -329,9 +327,29 @@ class GrayscaleAdjust: FilterParent, Renderer
         }
     }
     
+    func SupportedFields() -> [FilterManager.InputFields]
+    {
+        return GrayscaleAdjust.SupportedFields()
+    }
+    
+    public static func SupportedFields() -> [FilterManager.InputFields]
+    {
+        var Fields = [FilterManager.InputFields]()
+        Fields.append(.Command)
+        Fields.append(.RAdjustment)
+        Fields.append(.GAdjustment)
+        Fields.append(.BAdjustment)
+        return Fields
+    }
+    
     func SettingsStoryboard() -> String?
     {
-        return "GrayscaleKernelTable"
+        return GrayscaleAdjust.SettingsStoryboard()
+    }
+    
+    public static func SettingsStoryboard() -> String?
+    {
+        return "GrayscaleSettingsUI"
     }
     
     public static func GrayscaleTypeTitle(For: GrayscaleTypes) -> String
@@ -376,6 +394,15 @@ class GrayscaleAdjust: FilterParent, Renderer
             
         case .Yellow:
             return "Yellow Channel"
+            
+        case .Hue:
+            return "Hue Channel"
+            
+        case .Saturation:
+            return "Saturation Channel"
+            
+        case .Brightness:
+            return "Brightness Channel"
             
         case .ByParameters:
             return "User Parameters"
@@ -425,6 +452,15 @@ class GrayscaleAdjust: FilterParent, Renderer
         case .Yellow:
             return "Mean of the yellow channels: gray = (red + green) / 2"
             
+        case .Hue:
+            return "The hue channel from the conversion to HSB."
+            
+        case .Saturation:
+            return "The saturation channel from the conversion to HSB."
+            
+        case .Brightness:
+            return "The brightness channel from the conversion to HSB. Also known as the brightness map."
+            
         case .ByParameters:
             return "Enter values below to multiply against the red, green, and blue channels. Values must add up to 1.0 or no action will be taken."
         }
@@ -433,12 +469,22 @@ class GrayscaleAdjust: FilterParent, Renderer
     public static func GrayscaleTypesInOrder() -> [GrayscaleTypes]
     {
         return [.Mean, .Luma, .Desaturation, .BT601, .BT709, .MaxDecomposition, .MinDecomposition,
-                .Red, .Green, .Blue, .Cyan, .Magenta, .Yellow, .ByParameters]
+                .Red, .Green, .Blue, .Cyan, .Magenta, .Yellow, .Hue, .Saturation, .Brightness, .ByParameters]
     }
     
     public static func GetGrayscaleTypeFromCommandIndex(_ Index: Int) -> GrayscaleTypes
     {
         return GrayscaleTypes(rawValue: Index)!
+    }
+    
+    func IsSlow() -> Bool
+    {
+        return false
+    }
+    
+    func FilterTarget() -> [FilterTargets]
+    {
+        return [.LiveView, .Video, .Still]
     }
 }
 
@@ -457,5 +503,8 @@ enum GrayscaleTypes: Int
     case Cyan = 10
     case Magenta = 11
     case Yellow = 12
+    case Hue = 13
+    case Saturation = 14
+    case Brightness = 15
     case ByParameters = 100
 }

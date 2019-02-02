@@ -12,7 +12,7 @@ import CoreMedia
 import CoreVideo
 import MetalKit
 
-class DesaturateColors: FilterParent, Renderer
+class DesaturateColors: FilterParent, Renderer 
 {
     required override init()
     {
@@ -302,20 +302,40 @@ class DesaturateColors: FilterParent, Renderer
         }
     }
     
+    func DefaultFieldValue(Field: FilterManager.InputFields) -> (FilterManager.InputTypes, Any?)
+    {
+        return (FilterManager.InputTypes.Normal, 1.0 as Any?)
+    }
+    
     func SupportedFields() -> [FilterManager.InputFields]
+    {
+        return DesaturateColors.SupportedFields()
+    }
+    
+    public static func SupportedFields() -> [FilterManager.InputFields]
     {
         var Fields = [FilterManager.InputFields]()
         Fields.append(FilterManager.InputFields.Normal)
         return Fields
     }
     
-    func DefaultFieldValue(Field: FilterManager.InputFields) -> (FilterManager.InputTypes, Any?)
-    {
-        return (FilterManager.InputTypes.Normal, 1.0 as Any?)
-    }
-    
     func SettingsStoryboard() -> String?
     {
-        return "DesaturateColorsTable"
+        return DesaturateColors.SettingsStoryboard()
+    }
+    
+    public static func SettingsStoryboard() -> String?
+    {
+        return "DesaturateSettingsUI"
+    }
+    
+    func IsSlow() -> Bool
+    {
+        return false
+    }
+    
+    func FilterTarget() -> [FilterTargets]
+    {
+        return [.LiveView, .Video, .Still]
     }
 }

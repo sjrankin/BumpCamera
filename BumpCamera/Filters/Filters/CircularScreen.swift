@@ -12,7 +12,7 @@ import CoreMedia
 import CoreVideo
 import CoreImage
 
-class CircularScreen: FilterParent, Renderer 
+class CircularScreen: FilterParent, Renderer  
 {
     var _ID: UUID = UUID(uuidString: "43a29cb4-4f85-40a7-b535-3cd659edd3cb")!
     var ID: UUID
@@ -239,38 +239,67 @@ class CircularScreen: FilterParent, Renderer
         return nil
     }
     
-    func SupportedFields() -> [FilterManager.InputFields]
-    {
-        var Fields = [FilterManager.InputFields]()
-        Fields.append(.Width)
-        Fields.append(.Center)
-        Fields.append(.MergeWithBackground)
-        return Fields
-    }
-    
     func DefaultFieldValue(Field: FilterManager.InputFields) -> (FilterManager.InputTypes, Any?)
     {
         switch Field
         {
         case .Width:
-            return (FilterManager.InputTypes.DoubleType, 5.0 as Any?)
+            return (.DoubleType, 5.0 as Any?)
             
         case .Center:
-            return (FilterManager.InputTypes.PointType, CGPoint(x: 0.0, y: 0.0) as Any?)
+            return (.PointType, CGPoint(x: 0.0, y: 0.0) as Any?)
             
         case .CenterInImage:
-            return (FilterManager.InputTypes.BoolType, true as Any?)
+            return (.BoolType, true as Any?)
             
         case .MergeWithBackground:
-            return (FilterManager.InputTypes.BoolType, true as Any?)
+            return (.BoolType, true as Any?)
+            
+        case .AdjustInLandscape:
+            return (.BoolType, true as Any?)
+            
+        case .Angle:
+            return (.DoubleType, 90.0 as Any?)
             
         default:
             fatalError("Unexpected field \(Field) encountered in DefaultFieldValue.")
         }
     }
     
+    func SupportedFields() -> [FilterManager.InputFields]
+    {
+        return CircularScreen.SupportedFields()
+    }
+    
+    public static func SupportedFields() -> [FilterManager.InputFields]
+    {
+        var Fields = [FilterManager.InputFields]()
+        Fields.append(.Width)
+        Fields.append(.Angle)
+        Fields.append(.Center)
+        Fields.append(.CenterInImage)
+        Fields.append(.AdjustInLandscape)
+        Fields.append(.MergeWithBackground)
+        return Fields
+    }
+    
     func SettingsStoryboard() -> String?
     {
-        return nil
+        return CircularScreen.SettingsStoryboard()
+    }
+    
+    public static func SettingsStoryboard() -> String?
+    {
+        return "HalftoneSettingsUI"
+    }
+    
+    func IsSlow() -> Bool
+    {
+        return false
+    }
+    
+    func FilterTarget() -> [FilterTargets]
+    {
+        return [.LiveView, .Video, .Still]
     }
 }

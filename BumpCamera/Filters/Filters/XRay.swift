@@ -184,19 +184,38 @@ class XRay: FilterParent, Renderer
         return nil
     }
     
-    func SupportedFields() -> [FilterManager.InputFields]
-    {
-        let Fields = [FilterManager.InputFields]()
-        return Fields
-    }
-    
     func DefaultFieldValue(Field: FilterManager.InputFields) -> (FilterManager.InputTypes, Any?)
     {
        return (FilterManager.InputTypes.NoType, nil)
     }
     
+    func SupportedFields() -> [FilterManager.InputFields]
+    {
+        return XRay.SupportedFields()
+    }
+    
+    public static func SupportedFields() -> [FilterManager.InputFields]
+    {
+        return [FilterManager.InputFields]()
+    }
+    
     func SettingsStoryboard() -> String?
     {
-        return "XRayTable"
+        return XRay.SettingsStoryboard()
+    }
+    
+    public static func SettingsStoryboard() -> String?
+    {
+        return "NoParametersSettingsUI"
+    }
+    
+    func IsSlow() -> Bool
+    {
+        return false
+    }
+    
+    func FilterTarget() -> [FilterTargets]
+    {
+        return [.LiveView, .Video, .Still]
     }
 }
