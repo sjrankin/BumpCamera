@@ -13,9 +13,14 @@ import UIKit
 class FilterManager
 {
     /// Initialize the class. All filters loaded.
-    init()
+    ///
+    /// - Parameter Preload: If true, preload all of the filters.
+    init(Preload: Bool = true)
     {
-        PreloadFilters()
+        if Preload
+        {
+            PreloadFilters()
+        }
     }
     
     init(_ StartingFilter: FilterTypes)
@@ -36,8 +41,10 @@ class FilterManager
     /// Load all of the filter classes into the filter manager.
     private func PreloadFilters()
     {
+        FilterSettingsMap = [FilterManager.FilterTypes: String?]()
         for (FilterName, _) in FilterManager.FilterMap
         {
+            FilterSettingsMap![FilterName] = nil
             if !IsImplemented(FilterName)
             {
                 #if false
@@ -55,6 +62,7 @@ class FilterManager
                 let NewVideoCamera = CameraFilter(WithFilter: NewRenderer, AndType: FilterName, ID: FilterManager.FilterMap[FilterName]!)
                 NewVideoCamera.Parameters = RenderPacket(ID: FilterManager.FilterMap[FilterName]!)
                 VideoFilterList.append(NewVideoCamera)
+                FilterSettingsMap![FilterName] = NewRenderer.SettingsStoryboard()
             }
             else
             {
@@ -62,6 +70,95 @@ class FilterManager
             }
         }
     }
+    
+    /// Returns the number of parameters for the passed filter type.
+    ///
+    /// - Parameter Filter: The filter whose number of parameters will be returned.
+    /// - Returns: Number of parameters used by the passed filter. 0 if no filter found. (0 may also be returned
+    ///            if the filter doesn't have any parameters.)
+    public static func ParameterCountFor(_ Filter: FilterManager.FilterTypes) -> Int
+    {
+        if ParameterCount == nil
+        {
+            FilterManager.LoadParameterCount()
+        }
+        if let Count = ParameterCount![Filter]
+        {
+            return Count
+        }
+        return 0
+    }
+    
+    /// Load the number of parameters per filter.
+    private static func LoadParameterCount()
+    {
+        ParameterCount = [FilterManager.FilterTypes: Int]()
+        
+        ParameterCount![.PassThrough] = PassThrough.SupportedFields().count
+        ParameterCount![.Noir] = Noir.SupportedFields().count
+        ParameterCount![.Pixellate] = Pixellate.SupportedFields().count
+        ParameterCount![.PixellateMetal] = Pixellate_Metal.SupportedFields().count
+        ParameterCount![.DotScreen] = DotScreen.SupportedFields().count
+        ParameterCount![.LineScreen] = LineScreen.SupportedFields().count
+        ParameterCount![.HatchScreen] = HatchScreen.SupportedFields().count
+        ParameterCount![.CircularScreen] = CircularScreen.SupportedFields().count
+        ParameterCount![.CircleAndLines] = CircleAndLines.SupportedFields().count
+        ParameterCount![.CMYKHalftone] = CMYKHalftone.SupportedFields().count
+        ParameterCount![.LineOverlay] = LineOverlay.SupportedFields().count
+        ParameterCount![.ChannelMixer] = ChannelMixer.SupportedFields().count
+        ParameterCount![.XRay] = ChannelMixer.SupportedFields().count
+        ParameterCount![.DesaturateColors] = DesaturateColors.SupportedFields().count
+        ParameterCount![.GrayscaleKernel] = GrayscaleAdjust.SupportedFields().count
+        ParameterCount![.Comic] = Comic.SupportedFields().count
+        ParameterCount![.Mirroring] = MirroringDistortion.SupportedFields().count
+    }
+    
+    private static var ParameterCount: [FilterManager.FilterTypes: Int]? = nil
+    
+    /// Given a filter type, return the associated settings storyboard.
+    ///
+    /// - Parameter Filter: The filter type whose storyboard name will be returned.
+    /// - Returns: The name of the storyboard on success, nil if not found (or none defined).
+    public static func StoryboardFor(_ Filter: FilterTypes) -> String?
+    {
+        if StoryboardList == nil
+        {
+            LoadStoryboardList()
+        }
+        if let ProvisionalName = StoryboardList![Filter]
+        {
+            return ProvisionalName
+        }
+        return nil
+    }
+    
+    /// Load all storyboard names into the storyboard list.
+    private static func LoadStoryboardList()
+    {
+        StoryboardList = [FilterManager.FilterTypes: String?]()
+        
+        StoryboardList![.PassThrough] = PassThrough.SettingsStoryboard()
+        StoryboardList![.Noir] = Noir.SettingsStoryboard()
+        StoryboardList![.Pixellate] = Pixellate.SettingsStoryboard()
+        StoryboardList![.PixellateMetal] = Pixellate_Metal.SettingsStoryboard()
+        StoryboardList![.DotScreen] = DotScreen.SettingsStoryboard()
+        StoryboardList![.LineScreen] = LineScreen.SettingsStoryboard()
+        StoryboardList![.HatchScreen] = HatchScreen.SettingsStoryboard()
+        StoryboardList![.CircularScreen] = CircularScreen.SettingsStoryboard()
+        StoryboardList![.CircleAndLines] = CircleAndLines.SettingsStoryboard()
+        StoryboardList![.CMYKHalftone] = CMYKHalftone.SettingsStoryboard()
+        StoryboardList![.LineOverlay] = LineOverlay.SettingsStoryboard()
+        StoryboardList![.ChannelMixer] = ChannelMixer.SettingsStoryboard()
+        StoryboardList![.XRay] = XRay.SettingsStoryboard()
+        StoryboardList![.DesaturateColors] = DesaturateColors.SettingsStoryboard()
+        StoryboardList![.GrayscaleKernel] = GrayscaleAdjust.SettingsStoryboard()
+        StoryboardList![.Comic] = Comic.SettingsStoryboard()
+        StoryboardList![.Mirroring] = MirroringDistortion.SettingsStoryboard()
+    }
+    
+    private static var StoryboardList: [FilterTypes: String?]? = nil
+    
+    public var FilterSettingsMap: [FilterManager.FilterTypes: String?]? = nil
     
     /// Set the current filter to the specified filter type. Calling this function sets both the current video and photo
     /// filters. If the filter isn't in the appropriate filter list, it will be created and added.
@@ -124,22 +221,6 @@ class FilterManager
         return GetFilter(Name: For, Location)
     }
     
-    #if false
-    /// Return the parameter block for the specified filter.
-    ///
-    /// - Parameter For: Determines the filter whose parameter block is returned.
-    /// - Parameter Location: Where the filter will be applied. Defaults to photo.
-    /// - Returns: The parameter block for the specified filter on success, nil if not found or on error.
-    public func GetParameterBlock(For: FilterTypes, Location: FilterLocations = .Photo) -> RenderPacket?
-    {
-        if let Filter = GetCameraFilter(For: For, Location: Location)
-        {
-            return Filter.Parameters
-        }
-        return nil
-    }
-    #endif
-    
     private var _CurrentPhotoFilterType: FilterTypes = .NotSet
     /// Get the current photo filter type. It's intended to be the same as the current video filter.
     public var CurrentPhotoFilterType: FilterTypes
@@ -192,6 +273,7 @@ class FilterManager
         return nil
     }
     
+    #if false
     /// Returns the parameter block for the specified camera type.
     ///
     /// - Parameter For: The filter type whose parameters will be returned.
@@ -207,6 +289,7 @@ class FilterManager
         }
         return nil
     }
+    #endif
     
     public func GetFilterList(For: FilterLocations) -> [CameraFilter]
     {
@@ -279,6 +362,15 @@ class FilterManager
         case .GrayscaleKernel:
             return GrayscaleAdjust()
             
+        case .Kuwahara:
+            return KuwaharaEffect()
+            
+        case .PixellateMetal:
+            return Pixellate_Metal()
+            
+        case .Mirroring:
+            return MirroringDistortion()
+            
         default:
             return nil
         }
@@ -349,11 +441,11 @@ class FilterManager
         return FilterManager.FilterMap[For]
     }
     
-    /// Given a filter ID, return it's description.
+    /// Given a filter ID, return it's type.
     ///
     /// - Parameter ID: ID of the filter whose description will be returned.
-    /// - Returns: Description of the filter with the passed ID on success, nil if not found.
-    public func GetFilterFrom(ID: UUID) -> FilterTypes?
+    /// - Returns: Type of the filter with the passed ID on success, nil if not found.
+    public func GetFilterTypeFrom(ID: UUID) -> FilterTypes?
     {
         for (Name, FilterID) in FilterManager.FilterMap
         {
@@ -386,12 +478,14 @@ class FilterManager
             .ColorDelta: UUID(uuidString: "7d35d31b-15bd-4953-a80d-38ef06fceee6")!,
             .FilterDelta: UUID(uuidString: "fc913b9c-8567-4fb2-b2ff-4b1f6e849978")!,
             .PatternDelta: UUID(uuidString: "0ce80007-9d48-4a4f-95ae-0d059a1710c2")!,
-            .Mirror: UUID(uuidString: "0ddca374-7a76-4f2e-ae0b-1bca602025a1")!,
             .HueAdjust: UUID(uuidString: "dd8f30bf-e22b-4d8c-afa3-303c15eb1928")!,
             .HSBAdjust: UUID(uuidString: "ff3679e7-a415-4562-8032-e07f51a63621")!,
             .ChannelMixer: UUID(uuidString: "b49e8644-99be-4492-aecc-f9f4430012fd")!,
             .DesaturateColors: UUID(uuidString: "e3f8071f-5ece-43b7-af06-5cba81d81693")!,
             .GrayscaleKernel: UUID(uuidString: "6a76fc03-e4e4-4192-82b6-40cf8e520861")!,
+            .Kuwahara: UUID(uuidString: "241c7331-bb81-4dbe-983f-bb73209eea85")!,
+            .PixellateMetal: UUID(uuidString: "ea2602d1-468e-4ff4-a1ea-1299af4b70aa")!,
+            .Mirroring: UUID(uuidString: "895f46c2-443d-4ffb-a3c3-bd3dacaf33b2")!,
             ]
     
     /// Map between group type and filters in the group.
@@ -400,11 +494,12 @@ class FilterManager
             .Standard: [(.PassThrough, 0), (.Noir, 1), (.LineScreen, 4), (.DotScreen, 5), (.CircularScreen, 7),
                         (.HatchScreen, 6), (.CMYKHalftone, 9), (.Pixellate, 10), (.Comic, 2), (.XRay, 3), (.LineOverlay, 8)],
             .Combined: [(.CircleAndLines, 0)],
+            .Effects: [(.PixellateMetal, 0), (.Kuwahara, 1)],
             .Colors: [(.HueAdjust, 0), (.HSBAdjust, 1), (.ChannelMixer, 2), (.DesaturateColors, 3),
                       (.GrayscaleKernel, 4), (.PaletteShifting, 5)],
             .Bumpy: [(.BumpyPixels, 1), (.BumpyTriangles, 2), (.Embossed, 0)],
             .Motion: [(.ColorDelta, 0), (.FilterDelta, 1), (.PatternDelta, 2)],
-            .Tiles: [(.Mirror, 0)],
+            .Tiles: [(.Mirroring, 0)],
             ]
     
     /// Map from group descriptions to their respective IDs.
@@ -449,9 +544,10 @@ class FilterManager
             .Standard: ("Standard", 0),
             .Combined: ("Combined", 1),
             .Colors: ("Colors", 2),
-            .Bumpy: ("3D", 4),
-            .Motion: ("Motion", 5),
-            .Tiles: ("Distortion", 3),
+            .Effects: ("Effects", 3),
+            .Bumpy: ("3D", 5),
+            .Motion: ("Motion", 6),
+            .Tiles: ("Distortion", 4),
             ]
     
     /// Map between group type and group color.
@@ -460,6 +556,7 @@ class FilterManager
             .Standard: UIColor(named: "HoneyDew")!,
             .Combined: UIColor(named: "PastelYellow")!,
             .Colors: UIColor(named: "GreenPastel")!,
+            .Effects: UIColor(named: "PinkPastel")!,
             .Tiles: UIColor(named: "LightBlue")!,
             .Bumpy: UIColor(named: "Thistle")!,
             .Motion: UIColor(named: "Gold")!,
@@ -556,7 +653,7 @@ class FilterManager
     /// - Returns: Title of the filter on success, "No Title" if the filter cannot be found.
     public func GetFilterTitle(_ FilterID: UUID) -> String
     {
-        if let FilterType = GetFilterFrom(ID: FilterID)
+        if let FilterType = GetFilterTypeFrom(ID: FilterID)
         {
             return GetFilterTitle(FilterType)
         }
@@ -566,7 +663,7 @@ class FilterManager
     /// Map between filter types and their titles.
     private static let FilterTitles: [FilterTypes: String] =
         [
-            .PassThrough: "No Filter",
+            .PassThrough: "Pass Through",
             .Noir: "Noir",
             .LineScreen: "Line Screen",
             .CircularScreen: "Circular Screen",
@@ -585,12 +682,14 @@ class FilterManager
             .ColorDelta: "Motion Delta",
             .FilterDelta: "Filter Delta",
             .PatternDelta: "Pattern Delta",
-            .Mirror: "Reflection",
+            .Mirroring: "Reflection",
             .HueAdjust: "Hue Adjustment",
             .HSBAdjust: "Color Adjustment",
             .ChannelMixer: "Channel Mixer",
             .DesaturateColors: "Desaturate Colors",
             .GrayscaleKernel: "Grayscale",
+            .Kuwahara: "Kuwahara",
+            .PixellateMetal: "Pixellate Metal",
             ]
     
     public static func GetFilterTitle(_ Filter: FilterTypes) -> String?
@@ -624,12 +723,14 @@ class FilterManager
             .ColorDelta: false,
             .FilterDelta: false,
             .PatternDelta: false,
-            .Mirror: false,
+            .Mirroring: true,
             .HueAdjust: true,
             .HSBAdjust: true,
             .ChannelMixer: true,
             .DesaturateColors: true,
             .GrayscaleKernel: true,
+            .Kuwahara: true,
+            .PixellateMetal: true,
             ]
     
     /// Determines if the given filter type is implemented.
@@ -707,6 +808,15 @@ class FilterManager
             .RAdjustment: .DoubleType,
             .GAdjustment: .DoubleType,
             .BAdjustment: .DoubleType,
+            .Channel1: .IntType,
+            .Channel2: .IntType,
+            .Channel3: .IntType,
+            .Radius: .DoubleType,
+            .BlockWidth: .IntType,
+            .BlockHeight: .IntType,
+            .HighlightColor: .BoolType,
+            .HighlightSaturation: .BoolType,
+            .HighlightBrightness: .BoolType,
             ]
     
     public static let FieldStorageMap: [InputFields: String] =
@@ -746,5 +856,14 @@ class FilterManager
             .RAdjustment: "_RAdjustment",
             .GAdjustment: "_GAdjustment",
             .BAdjustment: "_BAdjustment",
+            .Channel1: "_Channel1",
+            .Channel2: "_Channel2",
+            .Channel3: "_Channel3",
+            .Radius: "_Radius",
+            .BlockWidth: "_BlockWidth",
+            .BlockHeight: "_BlockHeight",
+            .HighlightColor: "_HighlightColor",
+            .HighlightSaturation: "_HighlightSaturation",
+            .HighlightBrightness: "_HighlightBrightness",
             ]
 }

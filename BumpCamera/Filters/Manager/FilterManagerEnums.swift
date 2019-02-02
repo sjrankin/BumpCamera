@@ -44,12 +44,14 @@ extension FilterManager
         case ColorDelta = 16
         case FilterDelta = 17
         case PatternDelta = 18
-        case Mirror = 19
         case HueAdjust = 20
         case HSBAdjust = 21
         case ChannelMixer = 22
         case DesaturateColors = 23
         case GrayscaleKernel = 24
+        case Kuwahara = 25
+        case PixellateMetal = 26
+        case Mirroring = 27
         case NotSet = 1000
     }
     
@@ -67,9 +69,10 @@ extension FilterManager
         case Standard = 0
         case Combined = 1
         case Bumpy = 2
-        case Motion = 3
-        case Colors = 4
-        case Tiles = 5
+        case Effects = 3
+        case Motion = 4
+        case Colors = 5
+        case Tiles = 6
         case NotSet = 1000
     }
     
@@ -120,6 +123,18 @@ extension FilterManager
         case RAdjustment = 32
         case GAdjustment = 33
         case BAdjustment = 34
+        case Channel1 = 35
+        case Channel2 = 36
+        case Channel3 = 37
+        case Radius = 38
+        case BlockWidth = 39
+        case BlockHeight = 40
+        case HighlightColor = 41
+        case HighlightSaturation = 42
+        case HighlightBrightness = 43
+        case MirroringDirection = 44
+        case HorizontalSide = 45
+        case VerticalSide = 46
         case NoField = 1000
     }
     
@@ -131,6 +146,7 @@ extension FilterManager
         case PointType = 3
         case StringType = 4
         case Normal = 5
+        case ColorType = 6
         case NoType = 1000
     }
 }
