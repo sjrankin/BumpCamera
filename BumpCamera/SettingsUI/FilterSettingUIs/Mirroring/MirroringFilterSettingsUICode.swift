@@ -29,6 +29,11 @@ class MirroringFilterSettingsUICode: FilterSettingUIBase
         HorizontalSourceSegment.selectedSegmentIndex = HSide
         let VSide = ParameterManager.GetInt(From: FilterID, Field: .VerticalSide, Default: 0)
         VerticalSourceSegment.selectedSegmentIndex = VSide
+        let IsHorizontal = DirectionSegment.selectedSegmentIndex == 0
+        VerticalSourceSegment.isEnabled = !IsHorizontal
+        VerticalSourceLabel.isEnabled = !IsHorizontal
+        HorizontalSourceSegment.isEnabled = IsHorizontal
+        HorizontalSourceLabel.isEnabled = IsHorizontal
     }
     
     override func viewWillDisappear(_ animated: Bool)
@@ -87,8 +92,15 @@ class MirroringFilterSettingsUICode: FilterSettingUIBase
     @IBAction func HandleDirectionChanged(_ sender: Any)
     {
         UpdateParameters()
+        let IsHorizontal = DirectionSegment.selectedSegmentIndex == 0
+        VerticalSourceSegment.isEnabled = !IsHorizontal
+        VerticalSourceLabel.isEnabled = !IsHorizontal
+        HorizontalSourceSegment.isEnabled = IsHorizontal
+        HorizontalSourceLabel.isEnabled = IsHorizontal
     }
     
+    @IBOutlet weak var VerticalSourceLabel: UILabel!
+    @IBOutlet weak var HorizontalSourceLabel: UILabel!
     @IBOutlet weak var VerticalSourceSegment: UISegmentedControl!
     @IBOutlet weak var HorizontalSourceSegment: UISegmentedControl!
     @IBOutlet weak var DirectionSegment: UISegmentedControl!
