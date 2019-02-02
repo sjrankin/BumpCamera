@@ -15,7 +15,9 @@ import CoreImage
 protocol Renderer: class
 {
     var Description: String {get}
+    
     var Initialized: Bool {get}
+    
     var IconName: String {get}
     
     func Initialize(With FormatDescription: CMFormatDescription, BufferCountHint: Int)
@@ -37,8 +39,6 @@ protocol Renderer: class
 
     func Render(Image: CIImage) -> CIImage?
     
-    //func Merge(_ Top: CIImage, _ Bottom: CIImage) -> CIImage?
-    
     func SupportedFields() -> [FilterManager.InputFields]
     
     func DefaultFieldValue(Field: FilterManager.InputFields) -> (FilterManager.InputTypes, Any?)
@@ -46,5 +46,22 @@ protocol Renderer: class
     func InitializeForImage()
     
     func SettingsStoryboard() -> String?
+    
+    func IsSlow() -> Bool
+    
+    func FilterTarget() -> [FilterTargets]
+}
+
+/// Valid targets for the various filters. A target is something the filter can reasonably process, where "reasonable" means
+/// won't take a long time.
+///
+/// - Still: Image files.
+/// - Video: Video files.
+/// - LiveView: Live view scene.
+enum FilterTargets
+{
+    case Still
+    case Video
+    case LiveView
 }
 
