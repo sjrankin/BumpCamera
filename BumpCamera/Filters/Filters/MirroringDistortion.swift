@@ -117,14 +117,19 @@ class MirroringDistortion: FilterParent, Renderer
             fatalError("MirrorDistortion not initialized at Render(CVPixelBuffer) call.")
         }
         
-        let ImageWidth = CVPixelBufferGetWidth(PixelBuffer) / 2
-        let ImageHeight = CVPixelBufferGetHeight(PixelBuffer) / 2
-        let MDirection = ParameterManager.GetInt(From: ID, Field: .MirroringDirection, Default: 0)
+        //Width and height are reversed...
+        let ImageWidth = CVPixelBufferGetWidth(PixelBuffer)
+        let ImageWidthHalf = ImageWidth / 2
+        let ImageHeight = CVPixelBufferGetHeight(PixelBuffer)
+        let ImageHeightHalf = ImageHeight / 2
+        let MDirection = 1 - ParameterManager.GetInt(From: ID, Field: .MirroringDirection, Default: 0)
         let HSide = ParameterManager.GetInt(From: ID, Field: .HorizontalSide, Default: 0)
         let VSide = ParameterManager.GetInt(From: ID, Field: .VerticalSide, Default: 0)
+        print("Live: MDirection=\(MDirection), HSide=\(HSide), VSide=\(VSide), HAxis: \(ImageWidthHalf), VAxis: \(ImageHeightHalf)")
         let Parameter = MirrorParameters(Direction: simd_uint1(MDirection), HorizontalSide: simd_uint1(HSide),
-                                         VerticalSide: simd_uint1(VSide), HorizontalAxis: simd_uint1(ImageWidth),
-                                         VerticalAxis: simd_uint1(ImageHeight))
+                                         VerticalSide: simd_uint1(VSide),
+                                         HorizontalAxis: simd_uint1(ImageWidthHalf),
+                                         VerticalAxis: simd_uint1(ImageHeightHalf))
         let Parameters = [Parameter]
         ParameterBuffer = MetalDevice!.makeBuffer(length: MemoryLayout<GrayscaleParameters>.size, options: [])
         memcpy(ParameterBuffer.contents(), Parameters, MemoryLayout<GrayscaleParameters>.size)
@@ -239,6 +244,7 @@ class MirroringDistortion: FilterParent, Renderer
         let MDirection = ParameterManager.GetInt(From: ID, Field: .MirroringDirection, Default: 0)
         let HSide = ParameterManager.GetInt(From: ID, Field: .HorizontalSide, Default: 0)
         let VSide = ParameterManager.GetInt(From: ID, Field: .VerticalSide, Default: 0)
+        print("Image: MDirection=\(MDirection), HSide=\(HSide), VSide=\(VSide), HAxis: \(ImageWidthHalf), VAxis: \(ImageHeightHalf)")
         let Parameter = MirrorParameters(Direction: simd_uint1(MDirection), HorizontalSide: simd_uint1(HSide),
                                          VerticalSide: simd_uint1(VSide), HorizontalAxis: simd_uint1(ImageWidthHalf),
                                          VerticalAxis: simd_uint1(ImageHeightHalf))
