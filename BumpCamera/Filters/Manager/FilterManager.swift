@@ -817,6 +817,9 @@ class FilterManager
             .HighlightColor: .BoolType,
             .HighlightSaturation: .BoolType,
             .HighlightBrightness: .BoolType,
+            .MirroringDirection: .IntType,
+            .HorizontalSide: .IntType,
+            .VerticalSide: .IntType,
             ]
     
     public static let FieldStorageMap: [InputFields: String] =
@@ -865,5 +868,8 @@ class FilterManager
             .HighlightColor: "_HighlightColor",
             .HighlightSaturation: "_HighlightSaturation",
             .HighlightBrightness: "_HighlightBrightness",
+            .MirroringDirection: "_MirrorDirection",
+            .HorizontalSide: "_HorizontalSide",
+            .VerticalSide: "_VerticalSide",
             ]
 }
