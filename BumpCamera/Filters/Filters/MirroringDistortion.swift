@@ -319,23 +319,21 @@ class MirroringDistortion: FilterParent, Renderer
     
     func SupportedFields() -> [FilterManager.InputFields]
     {
-        return GrayscaleAdjust.SupportedFields()
+        return MirroringDistortion.SupportedFields()
     }
     
     public static func SupportedFields() -> [FilterManager.InputFields]
     {
         var Fields = [FilterManager.InputFields]()
-        Fields.append(.Command)
         Fields.append(.MirroringDirection)
         Fields.append(.HorizontalSide)
         Fields.append(.VerticalSide)
-        Fields.append(.BAdjustment)
         return Fields
     }
     
     func SettingsStoryboard() -> String?
     {
-        return GrayscaleAdjust.SettingsStoryboard()
+        return MirroringDistortion.SettingsStoryboard()
     }
     
     public static func SettingsStoryboard() -> String?
