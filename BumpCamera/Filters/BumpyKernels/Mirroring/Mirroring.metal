@@ -24,71 +24,80 @@ struct MirrorParameters
     uint VerticalAxis;
 };
 
+constant const uint Top = 0;
+constant const uint Bottom = 1;
+constant const uint Left = 0;
+constant const uint Right = 1;
+constant const uint ReflectHorizontally = 0;
+constant const uint ReflectVertically = 1;
+
 kernel void MirroringKernel(texture2d<float, access::read> inTexture [[texture(0)]],
                             texture2d<float, access::write> outTexture [[texture(1)]],
                             constant MirrorParameters &Mirror [[buffer(0)]],
                             uint2 gid [[thread_position_in_grid]])
 {
     float4 InColor = inTexture.read(gid);
+    uint2 SourceLocation = gid;
     uint2 NewLocation;
     switch (Mirror.Direction)
     {
-    case 0:
+    case ReflectHorizontally:
     //horizontal mirroring
-    if (Mirror.HorizontalSide == 0)
+    if (Mirror.HorizontalSide == Left)
         {
         //Left-side mirroring
-        if (gid.x > Mirror.HorizontalAxis)
+        if (SourceLocation.x > Mirror.HorizontalAxis)
             {
             //The destination pixel has already been written and we don't care about the
             //source pixel on this side with mirroring.
             return;
             }
-        NewLocation.x = Mirror.HorizontalAxis + (Mirror.HorizontalAxis - gid.x);
-        NewLocation.y = gid.y;
+        NewLocation.x = Mirror.HorizontalAxis + (Mirror.HorizontalAxis - SourceLocation.x);
+        NewLocation.y = SourceLocation.y;
         outTexture.write(InColor, NewLocation);
         }
-    if (Mirror.HorizontalSide == 1)
+    if (Mirror.HorizontalSide == Right)
         {
         //Right-side mirroring
-        if (gid.x < Mirror.HorizontalAxis)
+        if (SourceLocation.x < Mirror.HorizontalAxis)
             {
             //The destination pixel has already been written and we don't care about the
             //source pixel on this side with mirroring.
             return;
             }
-        NewLocation.x = Mirror.HorizontalAxis - (Mirror.HorizontalAxis - gid.x);
-        NewLocation.y = gid.y;
+        NewLocation.x = Mirror.HorizontalAxis - (SourceLocation.x - Mirror.HorizontalAxis);
+        NewLocation.y = SourceLocation.y;
         outTexture.write(InColor, NewLocation);
         }
     break;
     
-    case 1:
+    case ReflectVertically:
     //vertical mirroring
-    if (Mirror.VerticalSide == 0)
+
+    if (Mirror.VerticalSide == Top)
         {
         //Top-side mirroring
-        if (gid.x > Mirror.HorizontalAxis)
+        if (SourceLocation.y > Mirror.VerticalAxis)
             {
             //The destination pixel has already been written and we don't care about the
             //source pixel on this side with mirroring.
             return;
             }
-        NewLocation.y = Mirror.VerticalAxis + (Mirror.VerticalAxis - gid.y);
-        NewLocation.x = gid.x;
+        NewLocation.y = Mirror.VerticalAxis + (Mirror.VerticalAxis - SourceLocation.y);
+        NewLocation.x = SourceLocation.x;
         outTexture.write(InColor, NewLocation);
         }
-    if (Mirror.VerticalSide == 1)
+    if (Mirror.VerticalSide == Bottom)
         {
-        //Right-side mirroring
-        if (gid.x < Mirror.VerticalAxis)
+        //Bottom-side mirroring
+        if (SourceLocation.y < Mirror.VerticalAxis)
             {
             //The destination pixel has already been written and we don't care about the
             //source pixel on this side with mirroring.
             return;
             }
-        NewLocation.y = Mirror.VerticalAxis - (Mirror.VerticalAxis - gid.y);
-        NewLocation.x = gid.x;
+        NewLocation.y = Mirror.VerticalAxis - (SourceLocation.y - Mirror.VerticalAxis);
+        NewLocation.x = SourceLocation.x;
         outTexture.write(InColor, NewLocation);
         }
     break;
