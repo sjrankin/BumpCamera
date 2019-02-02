@@ -19,6 +19,7 @@ class FilterSettingUIBase: UITableViewController
     var SampleFilter: Renderer? = nil
     var SampleImageName: String = "Norio"
     var SampleView: UIImageView!
+    var ShowingSample: Bool = true
     
     /// Initializes the base class.
     ///
@@ -29,19 +30,27 @@ class FilterSettingUIBase: UITableViewController
     {
         print("\(FilterType) start at \(CACurrentMediaTime())")
         let Start = CACurrentMediaTime()
+        ShowingSample = _Settings.bool(forKey: "ShowFilterSampleImages")
         DoEnableSelect = EnableSelectImage
+        if !ShowingSample
+        {
+            DoEnableSelect = false
+        }
         tableView.tableFooterView = UIView()
         Filter = FilterType
         FilterID = FilterManager.FilterMap[Filter]
         SampleFilter = Filters.CreateFilter(For: Filter)
         SampleFilter?.InitializeForImage()
-        SampleImageName = _Settings.string(forKey: "SampleImage")!
-        SampleView.image = UIImage(named: SampleImageName)
-        SampleView.isUserInteractionEnabled = true
-        if DoEnableSelect
+        if ShowingSample
         {
-            let Tap = UITapGestureRecognizer(target: self, action: #selector(HandleSampleSelection))
-            SampleView.addGestureRecognizer(Tap)
+            SampleImageName = _Settings.string(forKey: "SampleImage")!
+            SampleView.image = UIImage(named: SampleImageName)
+            SampleView.isUserInteractionEnabled = true
+            if DoEnableSelect
+            {
+                let Tap = UITapGestureRecognizer(target: self, action: #selector(HandleSampleSelection))
+                SampleView.addGestureRecognizer(Tap)
+            }
         }
         let End = CACurrentMediaTime()
         print("FilterSettingUIBase(Filter) start-up duration: \(End - Start) seconds")
@@ -102,6 +111,7 @@ class FilterSettingUIBase: UITableViewController
         Alert.addAction(UIAlertAction(title: "Black and White Portrait", style: UIAlertAction.Style.default, handler: HandleNewSampleImage))
         Alert.addAction(UIAlertAction(title: "Test Pattern", style: UIAlertAction.Style.default, handler: HandleNewSampleImage))
         Alert.addAction(UIAlertAction(title: "Select Your Own", style: UIAlertAction.Style.default, handler: HandleNewSampleImage))
+        Alert.addAction(UIAlertAction(title: "Save Sample Image", style: UIAlertAction.Style.default, handler: HandleNewSampleImage))
         Alert.addAction(UIAlertAction(title: "Cancel", style: UIAlertAction.Style.cancel, handler: nil))
         self.present(Alert, animated: true, completion: nil)
     }
@@ -116,6 +126,16 @@ class FilterSettingUIBase: UITableViewController
         var NewImageName: String? = nil
         switch Action.title
         {
+        case "Save Sample Image":
+            if let SaveMe = SampleView.image
+            {
+                SaveImage(SaveMe)
+            }
+            else
+            {
+                print("Error retrieving sample image from sample view for saving.")
+            }
+            
         case "Cat":
             NewImageName = "Norio"
             
@@ -143,6 +163,37 @@ class FilterSettingUIBase: UITableViewController
         if let NewImage = NewImageName
         {
             _Settings.set(NewImage, forKey: "SampleImage")
+        }
+    }
+    
+    /// Save the passed image to the photo roll. Assumes the user has permission to save images there.
+    ///
+    /// - Parameter Image: The image to save.
+    func SaveImage(_ Image: UIImage)
+    {
+        UIImageWriteToSavedPhotosAlbum(Image, self, #selector(image(_:didFinishSavingWithError:contextInfo:)), nil)
+    }
+    
+    /// Completion block for saving images to the photo roll. Will display an error message if the save was unsuccessful, and
+    /// a "saved OK" message if there was no error.
+    ///
+    /// - Parameters:
+    ///   - image: Not used.
+    ///   - error: Error information for when errors occur.
+    ///   - contextInfo: Not used.
+    @objc func image(_ image: UIImage, didFinishSavingWithError error: NSError?, contextInfo: UnsafeRawPointer)
+    {
+        if let SaveError = error
+        {
+            let Alert = UIAlertController(title: "Image Save Error", message: SaveError.localizedDescription, preferredStyle: .alert)
+            Alert.addAction(UIAlertAction(title: "OK", style: .default))
+            present(Alert, animated: true)
+        }
+        else
+        {
+            let Alert = UIAlertController(title: "Sample Image Saved", message: "The sample image with current effect parameters has been saved to the photo roll.", preferredStyle: .alert)
+            Alert.addAction(UIAlertAction(title: "OK", style: .default))
+            present(Alert, animated: true)
         }
     }
     
@@ -199,14 +250,14 @@ class FilterSettingUIBase: UITableViewController
         var DecPart = String(Parts[1])
         if ZeroFill
         {
-        if DecPart.count < ToPlace
-        {
-            let AddCount = ToPlace - DecPart.count
-           for _ in 0 ..< AddCount
-           {
-            DecPart = DecPart + "0"
+            if DecPart.count < ToPlace
+            {
+                let AddCount = ToPlace - DecPart.count
+                for _ in 0 ..< AddCount
+                {
+                    DecPart = DecPart + "0"
+                }
             }
-        }
         }
         return "\(IntPart).\(DecPart)"
     }
