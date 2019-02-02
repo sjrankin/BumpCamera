@@ -50,7 +50,7 @@ kernel void GrayscaleKernel(texture2d<float, access::read> inTexture [[texture(0
         //Blue
         gray = b;
         break;
-    
+        
         case 4:
         //Luma/luminance for eye
         gray = ((r * 0.3) + (g * 0.59) + (b * 0.11));
@@ -96,14 +96,66 @@ kernel void GrayscaleKernel(texture2d<float, access::read> inTexture [[texture(0
         gray = (r + g) /  2.0;
         break;
         
+        case 13:
+        case 14:
+        case 15:
+        {
+        float MinV = min(r, min(g, b));
+        float MaxV = max(r, max(g, b));
+        float Delta = MaxV - MinV;
+        float Hue = 0.0;
+        
+        if (Delta != 0)
+            {
+            if (r == MaxV)
+                {
+                Hue = (g - b) / Delta;
+                }
+            else
+                if (g == MaxV)
+                    {
+                    Hue = 2.0 + ((b - r) / Delta);
+                    }
+                else
+                    {
+                    Hue = 4.0 + ((r - g) / Delta);
+                    }
+            
+            Hue = Hue * 60.0;
+            if (Hue < 0)
+                {
+                Hue = Hue + 360.0;
+                }
+            }
+        
+        float Saturation = MaxV == 0.0 ? 0.0 : (Delta / MaxV);
+        float Brightness = MaxV;
+        
+        float H = Hue / 360.0;
+        float S = Saturation;
+        float L = Brightness;
+        if (Grayscale.Command == 13)
+            {
+            gray = H;
+            }
+        if (Grayscale.Command == 14)
+            {
+            gray = S;
+            }
+        if (Grayscale.Command == 15)
+            {
+            gray = L;
+            }
+        break;
+        }
+        
         case 100:
         //Multiply by parameters
-        if (Grayscale.RMultiplier + Grayscale.GMultiplier + Grayscale.BMultiplier != 1.0)
-            {
-            outTexture.write(InColor, gid);
-            return;
-            }
         gray = ((r * Grayscale.RMultiplier) + (g * Grayscale.GMultiplier) + (b * Grayscale.BMultiplier));
+        if (gray > 1.0)
+            {
+            gray = 1.0;
+            }
         break;
         
         default:
