@@ -22,7 +22,7 @@ class FilterSettings: UIViewController, NewFieldSettingProtocol
         super.viewDidLoad()
         let FilterIDS = _Settings.string(forKey: "CurrentFilter")
         FilterID = UUID(uuidString: FilterIDS!)
-        FilterType = Filters.GetFilterFrom(ID: FilterID!)
+        FilterType = Filters.GetFilterTypeFrom(ID: FilterID!)
         FilterTitle.text = Filters.GetFilterTitle(FilterType!)
         title = FilterTitle.text! + " Settings"
 
@@ -81,6 +81,11 @@ class FilterSettings: UIViewController, NewFieldSettingProtocol
     }
     
     public func NewRawValue()
+    {
+        ShowSampleView()
+    }
+    
+    func NewRawValue(For: FilterManager.InputFields)
     {
         ShowSampleView()
     }
