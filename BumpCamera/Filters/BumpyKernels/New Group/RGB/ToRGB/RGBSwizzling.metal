@@ -17,8 +17,8 @@ struct ChannelSwizzles
 };
 
 // Compute kernel
-kernel void RGBSwizzling(texture2d<half, access::read>  inputTexture  [[ texture(0) ]],
-                         texture2d<half, access::write> outputTexture [[ texture(1) ]],
+kernel void RGBSwizzling(texture2d<float, access::read>  inputTexture  [[ texture(0) ]],
+                         texture2d<float, access::write> outputTexture [[ texture(1) ]],
                          constant ChannelSwizzles &Swizzling [[buffer(0)]],
                          uint2 gid [[thread_position_in_grid]])
 {
@@ -28,7 +28,7 @@ kernel void RGBSwizzling(texture2d<half, access::read>  inputTexture  [[ texture
         return;
         }
     
-    half4 inputColor = inputTexture.read(gid);
+    float4 inputColor = inputTexture.read(gid);
     float r = inputColor.r;
     float g = inputColor.g;
     float b = inputColor.b;
@@ -96,7 +96,7 @@ kernel void RGBSwizzling(texture2d<half, access::read>  inputTexture  [[ texture
         break;
     }
     
-    half4 outputColor = half4(C1, C2, C3, 1.0);
+    float4 outputColor = float4(C1, C2, C3, 1.0);
     
     outputTexture.write(outputColor, gid);
 }
