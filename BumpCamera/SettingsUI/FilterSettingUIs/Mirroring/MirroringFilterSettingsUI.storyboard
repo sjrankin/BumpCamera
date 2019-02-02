@@ -150,7 +150,9 @@
                     <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
                     <connections>
                         <outlet property="DirectionSegment" destination="YhZ-rh-h3W" id="jea-Nv-Goq"/>
+                        <outlet property="HorizontalSourceLabel" destination="4hr-Li-IiK" id="U4o-xP-C9c"/>
                         <outlet property="HorizontalSourceSegment" destination="N2F-Bk-XEg" id="AwT-bA-Y0i"/>
+                        <outlet property="VerticalSourceLabel" destination="E93-6u-B3m" id="GDL-Pt-9qh"/>
                         <outlet property="VerticalSourceSegment" destination="RBB-9t-D8u" id="FAw-TC-Sq8"/>
                     </connections>
                 </tableViewController>
