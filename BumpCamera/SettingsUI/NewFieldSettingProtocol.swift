@@ -12,4 +12,5 @@ import UIKit
 protocol NewFieldSettingProtocol: class
 {
     func NewRawValue()
+    func NewRawValue(For: FilterManager.InputFields)
 }
