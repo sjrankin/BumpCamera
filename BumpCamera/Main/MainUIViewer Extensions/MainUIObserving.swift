@@ -79,10 +79,10 @@ extension MainUIViewer
         {
             self.SessionQueue.async
                 {
-            if self.IsSessionRunning
-            {
-                self.IsSessionRunning = self.CaptureSession.isRunning
-            }
+                    if self.IsSessionRunning
+                    {
+                        self.IsSessionRunning = self.CaptureSession.isRunning
+                    }
             }
         }
     }
@@ -93,17 +93,22 @@ extension MainUIViewer
             let ReasonIntValue = UserInfoValue.integerValue,
             let Reason = AVCaptureSession.InterruptionReason(rawValue: ReasonIntValue)
         {
-            print("Capture session was interrupted because \(Reason)")
-            if Reason == .videoDeviceInUseByAnotherClient
+            switch Reason
             {
-                //Someone else stole our video session!
-            }
-            else
-            {
-                if Reason == .videoDeviceNotAvailableWithMultipleForegroundApps
-                {
-                    //Someone else is on the screen at the same time!
-                }
+            case .videoDeviceInUseByAnotherClient:
+                print("Session interruped because video device not available due to being used by other client.")
+                
+            case .videoDeviceNotAvailableWithMultipleForegroundApps:
+                print("Session interruped because video device not available with multiple foreground apps.")
+                
+            case .videoDeviceNotAvailableInBackground:
+                print("Session interruped because video device not available when app in the background.")
+                
+            case .videoDeviceNotAvailableDueToSystemPressure:
+                print("Session interruped because video device not available due to system pressure.")
+                
+            case .audioDeviceInUseByAnotherClient:
+                print("Session interruped because audio in use by other client.")
             }
         }
     }
@@ -215,7 +220,7 @@ extension MainUIViewer
             }
             DispatchQueue.main.async
                 {
-            self.CameraSwitchButton.isEnabled = IsSessionRunning
+                    self.CameraSwitchButton.isEnabled = IsSessionRunning
             }
         }
         else
