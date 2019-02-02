@@ -72,7 +72,6 @@ class ParameterManager
         {
             return
         }
-        //print("Creating storage for ID: \(ID.uuidString): \(From.GetFilterTitle(Filter)).")
         for Field in (FilterInstance?.SupportedFields())!
         {
             let (FieldType, AnyValue) = (FilterInstance?.DefaultFieldValue(Field: Field))!
@@ -124,12 +123,29 @@ class ParameterManager
                     StoredData = "\(PValX),\(PValY)"
                 }
                 
+            case .ColorType:
+                if let DefaultValue = AnyValue
+                {
+                    let CValue = DefaultValue as! UIColor
+                    StoredData = ColorToString(CValue)
+                }
+                
             default:
                 fatalError("Unexpected field type \(FieldType) encountered in StoreInitialFilterFor.")
             }
             //print("  Creating field: \(Field) of type \(FieldType) and default value \(StoredData)")
             _Settings.set(StoredData, forKey: StorageName)
         }
+    }
+    
+    private static func ColorToString(_ Color: UIColor) -> String
+    {
+        var Red: CGFloat = 0.0
+        var Green: CGFloat = 0.0
+        var Blue: CGFloat = 0.0
+        var Alpha: CGFloat = 0.0
+        Color.getRed(&Red, green: &Green, blue: &Blue, alpha: &Alpha)
+        return "\(Red),\(Green),\(Blue),\(Alpha)"
     }
     
     /// Create a unique name for storing parameter information in user defaults.
@@ -209,11 +225,160 @@ class ParameterManager
     /// - Parameters:
     ///   - From: The ID of the filter.
     ///   - Field: The type of input field.
+    /// - Returns: Tuple in the form (input type, data) where input type is one of FilterManager.InputTypes and data is
+    ///            of type Any?. On error, the input type will be .NoType. If the data is nil but the input type is
+    ///            valid, that just means the user hasn't set a value for the given field.
+    public static func GetFieldDataEx(From: UUID, Field: FilterManager.InputFields) -> (FilterManager.InputTypes, Any?, String)
+    {
+        objc_sync_enter(CacheLock)
+        defer{objc_sync_exit(CacheLock)}
+        if !HasField(In: From, Field: Field)
+        {
+            return (FilterManager.InputTypes.NoType, nil, "")
+        }
+        guard let ExpectedType = FilterManager.FieldMap[Field] else
+        {
+            fatalError("Specified field has no associated type.")
+        }
+        let StorageName = MakeStorageName(For: From, Field: Field)
+        let RawValue = _Settings.string(forKey: StorageName)
+        let AnyValue = ConvertToAny(RawValue!, FromType: ExpectedType)
+        FieldCache[StorageName] = (ExpectedType, AnyValue)
+        return (ExpectedType, AnyValue, StorageName)
+    }
+    
+    /// Get field information for the filter/field type passed.
+    ///
+    /// - Parameters:
+    ///   - From: The ID of the filter.
+    ///   - Field: The type of input field.
     /// - Returns: The value of the field cast to Any?
     public static func GetField(From: UUID, Field: FilterManager.InputFields) -> Any?
     {
         let FieldData = GetFieldData(From: From, Field: Field)
         return FieldData.1
+    }
+    
+    private static func ConvertStringtoColor(_ Raw: String) -> UIColor
+    {
+            let Parts = Raw.split(separator: ",")
+            if Parts.count != 4
+            {
+                fatalError("Raw color \"\(Raw)\" does not have four parts.")
+            }
+            var Values = [CGFloat]()
+            for Part in Parts
+            {
+                let SPart = String(Part)
+                if let DVal = Double(SPart)
+                {
+                    Values.append(CGFloat(DVal))
+                }
+                else
+                {
+                    fatalError("Error converting \"\(SPart)\" to number.")
+                }
+            }
+            let Final = UIColor(red: Values[0], green: Values[1], blue: Values[2], alpha: Values[3])
+            return Final
+    }
+    
+    public static func GetColor(From: UUID, Field: FilterManager.InputFields, Default: UIColor) -> UIColor
+    {
+        let FieldData = GetFieldData(From: From, Field: Field)
+        if FieldData.0 == .NoType
+        {
+            fatalError("No data found for \(Field) in \(From).")
+        }
+        if let SVal = FieldData.1 as? String
+        {
+            return ConvertStringtoColor(SVal)
+        }
+        fatalError("Bad data found for \(Field) in \(From).")
+    }
+    
+    public static func GetDouble(From: UUID, Field: FilterManager.InputFields, Default: Double) -> Double
+    {
+        let FieldData = GetFieldData(From: From, Field: Field)
+        if FieldData.0 == .NoType
+        {
+            fatalError("No data found for \(Field) in \(From).")
+        }
+        if let DVal = FieldData.1 as? Double
+        {
+            return DVal
+        }
+        fatalError("Bad data found for \(Field) in \(From).")
+    }
+    
+    public static func GetInt(From: UUID, Field: FilterManager.InputFields, Default: Int) -> Int
+    {
+        let FieldData = GetFieldData(From: From, Field: Field)
+        if FieldData.0 == .NoType
+        {
+            fatalError("No data found for \(Field) in \(From).")
+        }
+        if let IVal = FieldData.1 as? Int
+        {
+            return IVal
+        }
+        fatalError("Bad data found for \(Field) in \(From).")
+    }
+    
+    public static func GetBool(From: UUID, Field: FilterManager.InputFields, Default: Bool) -> Bool
+    {
+        let FieldData = GetFieldData(From: From, Field: Field)
+        if FieldData.0 == .NoType
+        {
+            fatalError("No data found for \(Field) in \(From).")
+        }
+        if let BVal = FieldData.1 as? Bool
+        {
+            return BVal
+        }
+        fatalError("Bad data found for \(Field) in \(From).")
+    }
+    
+    public static func GetString(From: UUID, Field: FilterManager.InputFields, Default: String) -> String
+    {
+        let FieldData = GetFieldData(From: From, Field: Field)
+        if FieldData.0 == .NoType
+        {
+            fatalError("No data found for \(Field) in \(From).")
+        }
+        if let SVal = FieldData.1 as? String
+        {
+            return SVal
+        }
+        fatalError("Bad data found for \(Field) in \(From).")
+    }
+    
+    public static func GetNormal(From: UUID, Field: FilterManager.InputFields, Default: Double) -> Double
+    {
+        let FieldData = GetFieldData(From: From, Field: Field)
+        if FieldData.0 == .NoType
+        {
+            fatalError("No data found for \(Field) in \(From).")
+        }
+        if let NVal = FieldData.1 as? Double
+        {
+            return NVal
+        }
+        fatalError("Bad data found for \(Field) in \(From).")
+    }
+    
+    public static func GetPoint(From: UUID, Field: FilterManager.InputFields, Default: CGPoint) -> CGPoint
+    {
+        let FieldData = GetFieldData(From: From, Field: Field)
+        if FieldData.0 == .NoType
+        {
+            fatalError("No data found for \(Field) in \(From).")
+        }
+        if let PVal = FieldData.1 as? CGPoint
+        {
+            return PVal
+        }
+        fatalError("Bad data found for \(Field) in \(From).")
     }
     
     /// Converted the passed string into type Any? Values are converted to their specified types then cast to Any? when returned.
@@ -232,6 +397,10 @@ class ParameterManager
         {
         case .StringType:
             return Raw as Any?
+            
+        case .ColorType:
+            let RawColor = ConvertStringtoColor(Raw)
+            return RawColor as Any?
             
         case .BoolType:
             if let BVal = Bool(Raw)
@@ -323,6 +492,13 @@ class ParameterManager
         }
         switch OfType
         {
+        case .ColorType:
+            if let CVal = Raw as? UIColor
+            {
+                return ColorToString(CVal)
+            }
+            return ""
+            
         case .StringType:
             if let SVal = Raw as? String
             {
