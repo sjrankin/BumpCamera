@@ -34,13 +34,14 @@
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="YhZ-rh-h3W">
-                                                    <rect key="frame" x="20" y="39" width="216" height="29"/>
+                                                    <rect key="frame" x="20" y="39" width="277" height="29"/>
                                                     <constraints>
-                                                        <constraint firstAttribute="width" constant="216" id="6OZ-Hj-klY"/>
+                                                        <constraint firstAttribute="width" constant="277" id="6OZ-Hj-klY"/>
                                                     </constraints>
                                                     <segments>
                                                         <segment title="Horizontal"/>
                                                         <segment title="Vertical"/>
+                                                        <segment title="Quadrant"/>
                                                     </segments>
                                                     <connections>
                                                         <action selector="HandleDirectionChanged:" destination="xu7-Kf-qRY" eventType="primaryActionTriggered" id="ItJ-3V-eGB"/>
@@ -125,6 +126,78 @@
                                             </constraints>
                                         </tableViewCellContentView>
                                     </tableViewCell>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" rowHeight="190" id="u8u-Fh-zdK">
+                                        <rect key="frame" x="0.0" y="240" width="414" height="190"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="u8u-Fh-zdK" id="lM0-gg-5Js">
+                                            <rect key="frame" x="0.0" y="0.0" width="414" height="189.66666666666666"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Select quadrant to reflect" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="fH0-Lb-QRc">
+                                                    <rect key="frame" x="20" y="11" width="195" height="21"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <view clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="b4U-Rt-RaO">
+                                                    <rect key="frame" x="137" y="39" width="140" height="140"/>
+                                                    <subviews>
+                                                        <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="5CZ-Ys-8VX">
+                                                            <rect key="frame" x="0.0" y="0.0" width="70" height="70"/>
+                                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                            <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                            <fontDescription key="fontDescription" name="Avenir-Black" family="Avenir" pointSize="35"/>
+                                                            <state key="normal" title="1"/>
+                                                            <connections>
+                                                                <action selector="HandleQuadrant1Selected:" destination="xu7-Kf-qRY" eventType="primaryActionTriggered" id="QEb-wS-TeZ"/>
+                                                            </connections>
+                                                        </button>
+                                                        <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="gMJ-Bd-Xpx">
+                                                            <rect key="frame" x="70" y="0.0" width="70" height="70"/>
+                                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                            <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                            <fontDescription key="fontDescription" name="Avenir-Black" family="Avenir" pointSize="35"/>
+                                                            <state key="normal" title="2"/>
+                                                            <connections>
+                                                                <action selector="HandleQuadrant2Selected:" destination="xu7-Kf-qRY" eventType="primaryActionTriggered" id="xyz-QH-2tp"/>
+                                                            </connections>
+                                                        </button>
+                                                        <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="gCk-fI-6Xc">
+                                                            <rect key="frame" x="70" y="70" width="70" height="70"/>
+                                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                            <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                            <fontDescription key="fontDescription" name="Avenir-Black" family="Avenir" pointSize="35"/>
+                                                            <state key="normal" title="3"/>
+                                                            <connections>
+                                                                <action selector="HandleQuadrant3Selected:" destination="xu7-Kf-qRY" eventType="primaryActionTriggered" id="p7D-d4-bKZ"/>
+                                                            </connections>
+                                                        </button>
+                                                        <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="PXy-H2-owq">
+                                                            <rect key="frame" x="0.0" y="70" width="70" height="70"/>
+                                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                            <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                            <fontDescription key="fontDescription" name="Avenir-Black" family="Avenir" pointSize="35"/>
+                                                            <state key="normal" title="4"/>
+                                                            <connections>
+                                                                <action selector="HandleQuadrant4Selected:" destination="xu7-Kf-qRY" eventType="primaryActionTriggered" id="Ves-Cj-Gq5"/>
+                                                            </connections>
+                                                        </button>
+                                                    </subviews>
+                                                    <constraints>
+                                                        <constraint firstAttribute="width" constant="140" id="8Fc-V9-mdq"/>
+                                                    </constraints>
+                                                </view>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstItem="b4U-Rt-RaO" firstAttribute="centerX" secondItem="lM0-gg-5Js" secondAttribute="centerX" id="M55-HE-Hzh"/>
+                                                <constraint firstItem="b4U-Rt-RaO" firstAttribute="top" secondItem="fH0-Lb-QRc" secondAttribute="bottom" constant="7" id="OFv-eU-ygc"/>
+                                                <constraint firstItem="b4U-Rt-RaO" firstAttribute="top" secondItem="lM0-gg-5Js" secondAttribute="top" constant="39" id="V0y-wK-VBD"/>
+                                                <constraint firstItem="b4U-Rt-RaO" firstAttribute="bottom" secondItem="lM0-gg-5Js" secondAttribute="bottomMargin" id="lwv-CT-7cY"/>
+                                                <constraint firstItem="fH0-Lb-QRc" firstAttribute="leading" secondItem="lM0-gg-5Js" secondAttribute="leadingMargin" id="rP9-w9-yVx"/>
+                                                <constraint firstItem="fH0-Lb-QRc" firstAttribute="top" secondItem="lM0-gg-5Js" secondAttribute="topMargin" id="vyU-K9-aSv"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
                                 </cells>
                             </tableViewSection>
                         </sections>
@@ -152,13 +225,19 @@
                         <outlet property="DirectionSegment" destination="YhZ-rh-h3W" id="jea-Nv-Goq"/>
                         <outlet property="HorizontalSourceLabel" destination="4hr-Li-IiK" id="U4o-xP-C9c"/>
                         <outlet property="HorizontalSourceSegment" destination="N2F-Bk-XEg" id="AwT-bA-Y0i"/>
+                        <outlet property="Q1Button" destination="5CZ-Ys-8VX" id="QaE-14-loE"/>
+                        <outlet property="Q2Button" destination="gMJ-Bd-Xpx" id="CpB-2c-xVJ"/>
+                        <outlet property="Q3Button" destination="gCk-fI-6Xc" id="Gdi-XL-rfm"/>
+                        <outlet property="Q4Button" destination="PXy-H2-owq" id="iGI-t3-O2r"/>
+                        <outlet property="QuadrantContainer" destination="b4U-Rt-RaO" id="GG2-ru-Qpd"/>
+                        <outlet property="QuadrantLabel" destination="fH0-Lb-QRc" id="XN6-1n-KD5"/>
                         <outlet property="VerticalSourceLabel" destination="E93-6u-B3m" id="GDL-Pt-9qh"/>
                         <outlet property="VerticalSourceSegment" destination="RBB-9t-D8u" id="FAw-TC-Sq8"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="e55-ro-UEj" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-175.19999999999999" y="287.40629685157421"/>
+            <point key="canvasLocation" x="-175.36231884057972" y="286.95652173913044"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="Ook-kd-n4p">
