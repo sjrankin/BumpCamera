@@ -152,7 +152,7 @@ class FilterSettingsUICode: UITableViewController, CollapsibleTableViewHeaderDel
         }
         else
         {
-            print("No storyboard name availabe for \(TypeOfFilter)")
+            print("No storyboard name available for \(TypeOfFilter)")
         }
     }
     
