@@ -109,6 +109,7 @@ class MirroringDistortion: FilterParent, Renderer
     var AccessLock = NSObject()
     
     var ParameterBuffer: MTLBuffer! = nil
+    var PreviousDebug = ""
     
     func Render(PixelBuffer: CVPixelBuffer) -> CVPixelBuffer?
     {
@@ -117,22 +118,76 @@ class MirroringDistortion: FilterParent, Renderer
             fatalError("MirrorDistortion not initialized at Render(CVPixelBuffer) call.")
         }
         
-        //Width and height are reversed...
-        let ImageWidth = CVPixelBufferGetWidth(PixelBuffer)
-        let ImageWidthHalf = ImageWidth / 2
-        let ImageHeight = CVPixelBufferGetHeight(PixelBuffer)
-        let ImageHeightHalf = ImageHeight / 2
-        let MDirection = 1 - ParameterManager.GetInt(From: ID, Field: .MirroringDirection, Default: 0)
-        let HSide = ParameterManager.GetInt(From: ID, Field: .HorizontalSide, Default: 0)
-        let VSide = ParameterManager.GetInt(From: ID, Field: .VerticalSide, Default: 0)
-        print("Live: MDirection=\(MDirection), HSide=\(HSide), VSide=\(VSide), HAxis: \(ImageWidthHalf), VAxis: \(ImageHeightHalf)")
-        let Parameter = MirrorParameters(Direction: simd_uint1(MDirection), HorizontalSide: simd_uint1(HSide),
+        var MDirection = ParameterManager.GetInt(From: ID, Field: .MirroringDirection, Default: 0)
+        //Because AV-based images seem to be rotated either 90 or 270 degrees, we need to changed
+        //the direction orientation if necessary.
+        MDirection = [0: 1, 1: 0, 2: 2][MDirection]!
+        let HSide = 1 - ParameterManager.GetInt(From: ID, Field: .HorizontalSide, Default: 0)
+        let VSide = 1 - ParameterManager.GetInt(From: ID, Field: .VerticalSide, Default: 0)
+        var Quadrant = ParameterManager.GetInt(From: ID, Field: .Quadrant, Default: 1)
+        //Because AV-based images are rotated right, we need to rotate the quadrant number for quandrant reflections...
+        Quadrant = [2: 1, 3: 2, 4: 3, 1: 4][Quadrant]!
+        var MName = ""
+        switch MDirection
+        {
+        case 0:
+            MName = "Vertical*"
+            
+        case 1:
+            MName = "Horizontal*"
+            
+        case 2:
+            MName = "Quadrant"
+            
+        default:
+            MName = "Unknown"
+        }
+        var Dbg = ""
+        if MDirection >= 2
+        {
+            Dbg = "Live: MDirection=\(MName), Quadrant: \(Quadrant)*"
+        }
+        else
+        {
+            var HName = ""
+            switch HSide
+            {
+            case 0:
+                HName = "Left"
+                
+            case 1:
+                HName = "Right"
+                
+            default:
+                HName = "Unknown"
+            }
+            var VName = ""
+            switch VSide
+            {
+            case 0:
+                VName = "Top"
+                
+            case 1:
+                VName = "Bottom"
+                
+            default:
+                VName = "Unknown"
+            }
+            Dbg = "Live: MDirection=\(MName), HSide=\(HName), VSide=\(VName)"
+        }
+        if Dbg != PreviousDebug
+        {
+            print(Dbg)
+            PreviousDebug = Dbg
+        }
+        let Parameter = MirrorParameters(Direction: simd_uint1(MDirection),
+                                         HorizontalSide: simd_uint1(HSide),
                                          VerticalSide: simd_uint1(VSide),
-                                         HorizontalAxis: simd_uint1(ImageWidthHalf),
-                                         VerticalAxis: simd_uint1(ImageHeightHalf))
+                                         Quadrant: simd_uint1(Quadrant),
+                                         IsAVRotated: simd_bool(true))
         let Parameters = [Parameter]
-        ParameterBuffer = MetalDevice!.makeBuffer(length: MemoryLayout<GrayscaleParameters>.size, options: [])
-        memcpy(ParameterBuffer.contents(), Parameters, MemoryLayout<GrayscaleParameters>.size)
+        ParameterBuffer = MetalDevice!.makeBuffer(length: MemoryLayout<MirrorParameters>.size, options: [])
+        memcpy(ParameterBuffer.contents(), Parameters, MemoryLayout<MirrorParameters>.size)
         
         var NewPixelBuffer: CVPixelBuffer? = nil
         CVPixelBufferPoolCreatePixelBuffer(kCFAllocatorDefault, BufferPool!, &NewPixelBuffer)
@@ -239,18 +294,19 @@ class MirroringDistortion: FilterParent, Renderer
         CommandEncoder?.setTexture(Texture, index: 0)
         CommandEncoder?.setTexture(OutputTexture, index: 1)
         
-        let ImageWidthHalf = ImageWidth / 2
-        let ImageHeightHalf = ImageHeight / 2
         let MDirection = ParameterManager.GetInt(From: ID, Field: .MirroringDirection, Default: 0)
         let HSide = ParameterManager.GetInt(From: ID, Field: .HorizontalSide, Default: 0)
         let VSide = ParameterManager.GetInt(From: ID, Field: .VerticalSide, Default: 0)
-        print("Image: MDirection=\(MDirection), HSide=\(HSide), VSide=\(VSide), HAxis: \(ImageWidthHalf), VAxis: \(ImageHeightHalf)")
-        let Parameter = MirrorParameters(Direction: simd_uint1(MDirection), HorizontalSide: simd_uint1(HSide),
-                                         VerticalSide: simd_uint1(VSide), HorizontalAxis: simd_uint1(ImageWidthHalf),
-                                         VerticalAxis: simd_uint1(ImageHeightHalf))
+        let Quadrant = ParameterManager.GetInt(From: ID, Field: .Quadrant, Default: 1)
+        print("Image: MDirection=\(MDirection), HSide=\(HSide), VSide=\(VSide), Quadrant: \(Quadrant)")
+        let Parameter = MirrorParameters(Direction: simd_uint1(MDirection),
+                                         HorizontalSide: simd_uint1(HSide),
+                                         VerticalSide: simd_uint1(VSide),
+                                         Quadrant: simd_uint1(Quadrant),
+                                         IsAVRotated: simd_bool(false))
         let Parameters = [Parameter]
-        ParameterBuffer = MetalDevice!.makeBuffer(length: MemoryLayout<GrayscaleParameters>.size, options: [])
-        memcpy(ParameterBuffer.contents(), Parameters, MemoryLayout<GrayscaleParameters>.size)
+        ParameterBuffer = MetalDevice!.makeBuffer(length: MemoryLayout<MirrorParameters>.size, options: [])
+        memcpy(ParameterBuffer.contents(), Parameters, MemoryLayout<MirrorParameters>.size)
         CommandEncoder!.setBuffer(ParameterBuffer, offset: 0, index: 0)
         
         let ThreadGroupCount  = MTLSizeMake(8, 8, 1)
@@ -318,6 +374,9 @@ class MirroringDistortion: FilterParent, Renderer
         case .VerticalSide:
             return (.IntType, 0 as Any?)
             
+        case .Quadrant:
+            return (.IntType, 1 as Any?)
+            
         default:
             return (.NoType, nil)
         }
@@ -334,6 +393,7 @@ class MirroringDistortion: FilterParent, Renderer
         Fields.append(.MirroringDirection)
         Fields.append(.HorizontalSide)
         Fields.append(.VerticalSide)
+        Fields.append(.Quadrant)
         return Fields
     }
     
