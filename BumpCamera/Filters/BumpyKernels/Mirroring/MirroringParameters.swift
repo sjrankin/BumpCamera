@@ -11,14 +11,14 @@ import simd
 
 struct MirrorParameters
 {
-    //0 = horizontal (left to right), 1 = vertical (top to bottom)
+    //0 = horizontal (left to right), 1 = vertical (top to bottom), 2 = quadrant
     let Direction: simd_uint1
     //0 = left, 1 = right
     let HorizontalSide: simd_uint1
     //0 = top, 1 = bottom
     let VerticalSide: simd_uint1
-    //location of the center horizontal axis
-    let HorizontalAxis: simd_uint1
-    //location of the center vertical axis
-    let VerticalAxis: simd_uint1
+    //quadrant to reflect
+    let Quadrant: simd_uint1
+    //set to true if image source is AV foundation
+    let IsAVRotated: simd_bool
 }
