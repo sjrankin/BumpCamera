@@ -52,6 +52,7 @@ extension FilterManager
         case Kuwahara = 25
         case PixellateMetal = 26
         case Mirroring = 27
+        case Grid = 28
         case NotSet = 1000
     }
     
@@ -73,6 +74,7 @@ extension FilterManager
         case Motion = 4
         case Colors = 5
         case Tiles = 6
+        case Generator = 7
         case NotSet = 1000
     }
     
@@ -136,6 +138,10 @@ extension FilterManager
         case HorizontalSide = 45
         case VerticalSide = 46
         case Quadrant = 47
+        case GridX = 48
+        case GridY = 49
+        case GridColor = 50
+        case GridBackground = 51
         case NoField = 1000
     }
     
