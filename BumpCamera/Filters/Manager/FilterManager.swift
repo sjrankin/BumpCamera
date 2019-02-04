@@ -500,6 +500,7 @@ class FilterManager
             .Kuwahara: UUID(uuidString: "241c7331-bb81-4dbe-983f-bb73209eea85")!,
             .PixellateMetal: UUID(uuidString: "ea2602d1-468e-4ff4-a1ea-1299af4b70aa")!,
             .Mirroring: UUID(uuidString: "895f46c2-443d-4ffb-a3c3-bd3dacaf33b2")!,
+            .Grid: UUID(uuidString: "e6e4941f-cc45-4e68-ad15-f2a06d9477f7")!,
             ]
     
     /// Map between group type and filters in the group.
@@ -514,6 +515,7 @@ class FilterManager
             .Bumpy: [(.BumpyPixels, 1), (.BumpyTriangles, 2), (.Embossed, 0)],
             .Motion: [(.ColorDelta, 0), (.FilterDelta, 1), (.PatternDelta, 2)],
             .Tiles: [(.Mirroring, 0)],
+            .Generator: [(.Grid, 0)]
             ]
     
     /// Map from group descriptions to their respective IDs.
@@ -526,6 +528,7 @@ class FilterManager
             .Motion: UUID(uuidString: "75d17717-6daf-4e69-b7f9-ed1a7e3214f0")!,
             .Tiles: UUID(uuidString: "b641cbc9-7ad1-4bdf-9afe-bbf715020525")!,
             .Effects: UUID(uuidString: "fae8b7f3-db91-47c9-8599-7227ef0d9fdb")!,
+            .Generator: UUID(uuidString: "fc757ea9-8300-47a9-9fa0-0855d86100bb")!,
     ]
     
     /// Given a group description, return its ID.
@@ -597,6 +600,7 @@ class FilterManager
             .Bumpy: ("3D", 5),
             .Motion: ("Motion", 6),
             .Tiles: ("Distortion", 4),
+            .Generator: ("Generators", 7),
             ]
     
     /// Map between group type and group color.
@@ -609,6 +613,7 @@ class FilterManager
             .Tiles: UIColor(named: "LightBlue")!,
             .Bumpy: UIColor(named: "Thistle")!,
             .Motion: UIColor(named: "Gold")!,
+            .Generator: UIColor(named: "Mauve")!,
             ]
     
     public func ColorForGroup(_ Group: FilterGroups) -> UIColor
@@ -754,6 +759,7 @@ class FilterManager
             .GrayscaleKernel: "Grayscale",
             .Kuwahara: "Kuwahara",
             .PixellateMetal: "Pixellate Metal",
+            .Grid: "Grid Generator",
             ]
     
     public static func GetFilterTitle(_ Filter: FilterTypes) -> String?
@@ -795,6 +801,7 @@ class FilterManager
             .GrayscaleKernel: true,
             .Kuwahara: true,
             .PixellateMetal: true,
+            .Grid: false,
             ]
     
     /// Determines if the given filter type is implemented.
@@ -885,6 +892,10 @@ class FilterManager
             .HorizontalSide: .IntType,
             .VerticalSide: .IntType,
             .Quadrant: .IntType,
+            .GridX: .IntType,
+            .GridY: .IntType,
+            .GridColor: .ColorType,
+            .GridBackground: .ColorType,
             ]
     
     public static let FieldStorageMap: [InputFields: String] =
@@ -937,5 +948,9 @@ class FilterManager
             .HorizontalSide: "_HorizontalSide",
             .VerticalSide: "_VerticalSide",
             .Quadrant: "_Quadrant",
+            .GridX: "_GridX",
+            .GridY: "_GridY",
+            .GridColor: "_GridColor",
+            .GridBackground: "_GridBackground",
             ]
 }
