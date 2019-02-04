@@ -377,7 +377,7 @@ extension MainUIViewer
         if Filters?.VideoFilter == nil
         {
             print("Setting filter to NotSet")
-            Filters?.SetCurrentFilter(Name: .NotSet)
+            Filters?.SetCurrentFilter(FilterType: .NotSet)
         }
         //let Current = Filters?.VideoFilter?.FilterType
         //print("Current video filter: \((Filters?.GetFilterTitle(Current!))!), Raw=\(Current!.rawValue)")
@@ -388,7 +388,7 @@ extension MainUIViewer
         
         guard let FilteredBuffer = Filters?.VideoFilter?.Filter?.Render(PixelBuffer: FinalPixelBuffer) else
         {
-            print("Render for current filter returned nil.")
+            print("Render for current filter returned nil - skipping frame. (Did you just change filters?)")
             return
         }
         
