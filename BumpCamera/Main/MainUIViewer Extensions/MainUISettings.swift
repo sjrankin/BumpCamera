@@ -34,6 +34,7 @@ extension MainUIViewer
         _Settings.set("Norio", forKey: "SampleImage")
         _Settings.set(0, forKey: "SetupForFilterType")
         _Settings.set(true, forKey: "ShowFilterSampleImages")
+        _Settings.set(true, forKey: "StartWithLastFilter")
         let InitialGroupID = Filters?.GetGroupID(ForGroup: .Standard)
         _Settings.set(InitialGroupID?.uuidString, forKey: "CurrentGroup")
         let InitialFilterID = Filters?.GetFilterID(For: .PassThrough)
