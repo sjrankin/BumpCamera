@@ -135,6 +135,7 @@ extension FilterManager
         case MirroringDirection = 44
         case HorizontalSide = 45
         case VerticalSide = 46
+        case Quadrant = 47
         case NoField = 1000
     }
     

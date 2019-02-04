@@ -26,7 +26,7 @@ class FilterManager
     init(_ StartingFilter: FilterTypes)
     {
         PreloadFilters()
-        SetCurrentFilter(Name: StartingFilter)
+        SetCurrentFilter(FilterType: StartingFilter)
     }
     
     init(_ StartingFilterValue: Int)
@@ -34,7 +34,7 @@ class FilterManager
         PreloadFilters()
         if let Start: FilterTypes = FilterTypes.init(rawValue: StartingFilterValue)
         {
-            SetCurrentFilter(Name: Start)
+            SetCurrentFilter(FilterType: Start)
         }
     }
     
@@ -163,15 +163,15 @@ class FilterManager
     /// Set the current filter to the specified filter type. Calling this function sets both the current video and photo
     /// filters. If the filter isn't in the appropriate filter list, it will be created and added.
     ///
-    /// - Parameter Name: The type of filter to set as the current filter.
+    /// - Parameter FilterType: The type of filter to set as the current filter.
     /// - Returns: True on success, false if the filter cannot be found or is not implemented.
-    @discardableResult public func SetCurrentFilter(Name: FilterTypes) -> Bool
+    @discardableResult public func SetCurrentFilter(FilterType: FilterTypes) -> Bool
     {
-        if FilterManager.Implemented[Name] == nil
+        if FilterManager.Implemented[FilterType] == nil
         {
             return false
         }
-        if !FilterManager.Implemented[Name]!
+        if !FilterManager.Implemented[FilterType]!
         {
             return false
         }
@@ -183,10 +183,10 @@ class FilterManager
         {
             PF.Filter?.Reset("Photo: FilterManager.SetCurrentFilter")
         }
-        _VideoFilter = GetFilter(Name: Name, .Video)
-        _PhotoFilter = GetFilter(Name: Name, .Photo)
+        _VideoFilter = GetFilter(Name: FilterType, .Video)
+        _PhotoFilter = GetFilter(Name: FilterType, .Photo)
         #if true
-        print("FilterManager.SetCurrentFilter(\((FilterManager.FilterTitles[Name])!))")
+        print("FilterManager.SetCurrentFilter(\((FilterManager.FilterTitles[FilterType])!))")
         #endif
         return true
     }
@@ -441,11 +441,25 @@ class FilterManager
         return FilterManager.FilterMap[For]
     }
     
-    /// Given a filter ID, return it's type.
+    public static func GetFilterID(For: FilterTypes) -> UUID?
+    {
+        return FilterManager.FilterMap[For]
+    }
+    
+    /// Given a filter ID, return it's type. Instance version.
     ///
     /// - Parameter ID: ID of the filter whose description will be returned.
     /// - Returns: Type of the filter with the passed ID on success, nil if not found.
     public func GetFilterTypeFrom(ID: UUID) -> FilterTypes?
+    {
+        return FilterManager.GetFilterTypeFrom(ID: ID)
+    }
+    
+    /// Given a filter ID, return it's type. Static version.
+    ///
+    /// - Parameter ID: ID of the filter whose description will be returned.
+    /// - Returns: Type of the filter with the passed ID on success, nil if not found.
+    public static func GetFilterTypeFrom(ID: UUID) -> FilterTypes?
     {
         for (Name, FilterID) in FilterManager.FilterMap
         {
@@ -489,7 +503,7 @@ class FilterManager
             ]
     
     /// Map between group type and filters in the group.
-    private let GroupMap: [FilterGroups: [(FilterTypes, Int)]] =
+    private static let GroupMap: [FilterGroups: [(FilterTypes, Int)]] =
         [
             .Standard: [(.PassThrough, 0), (.Noir, 1), (.LineScreen, 4), (.DotScreen, 5), (.CircularScreen, 7),
                         (.HatchScreen, 6), (.CMYKHalftone, 9), (.Pixellate, 10), (.Comic, 2), (.XRay, 3), (.LineOverlay, 8)],
@@ -503,14 +517,15 @@ class FilterManager
             ]
     
     /// Map from group descriptions to their respective IDs.
-    private let GroupIDs: [FilterGroups: UUID] =
+    static let GroupIDs: [FilterGroups: UUID] =
         [
             .Standard: UUID(uuidString: "ce79f6b5-dce4-4280-b291-2b5af6a7f617")!,
             .Combined: UUID(uuidString: "99a6054e-8b60-4c7d-9a7a-3ea8ecacf874")!,
             .Colors: UUID(uuidString: "28cae223-4e86-4d53-b8e9-419e08d9c823")!,
             .Bumpy: UUID(uuidString: "68c21b65-17df-4e18-8231-cac6bb884b85")!,
             .Motion: UUID(uuidString: "75d17717-6daf-4e69-b7f9-ed1a7e3214f0")!,
-            .Tiles: UUID(uuidString: "b641cbc9-7ad1-4bdf-9afe-bbf715020525")!
+            .Tiles: UUID(uuidString: "b641cbc9-7ad1-4bdf-9afe-bbf715020525")!,
+            .Effects: UUID(uuidString: "fae8b7f3-db91-47c9-8599-7227ef0d9fdb")!,
     ]
     
     /// Given a group description, return its ID.
@@ -519,16 +534,21 @@ class FilterManager
     /// - Returns: The ID of the passed group on success, nil on failure.
     public func GetGroupID(ForGroup: FilterGroups) -> UUID?
     {
+        return FilterManager.GroupIDs[ForGroup]
+    }
+    
+    public static func GetGroupID(ForGroup: FilterGroups) -> UUID?
+    {
         return GroupIDs[ForGroup]
     }
     
-    /// Given an ID, return the associated group description.
+    /// Given a group ID, return the associated group description.
     ///
     /// - Parameter ID: ID of the group whose description will be returned.
     /// - Returns: The group associated with the passed ID. Nil if not found.
-    public func GetGroupFrom(ID: UUID) -> FilterGroups?
+    public static func GetGroupFrom(ID: UUID) -> FilterGroups?
     {
-        for (Group, GroupID) in GroupIDs
+        for (Group, GroupID) in FilterManager.GroupIDs
         {
             if GroupID == ID
             {
@@ -538,8 +558,37 @@ class FilterManager
         return nil
     }
     
+    public func GetGroupFrom(ID: UUID) -> FilterGroups?
+    {
+        return FilterManager.GetGroupFrom(ID: ID)
+    }
+    
+    public static func GroupFromFilter(Type: FilterTypes) -> FilterGroups?
+    {
+        for (GroupType, FiltersInGroup) in GroupMap
+        {
+            for (FilterType, _) in FiltersInGroup
+            {
+                if FilterType == Type
+                {
+                    return GroupType
+                }
+            }
+        }
+        return nil
+    }
+    
+    public static func GroupFromFilter(ID: UUID) -> FilterGroups?
+    {
+        if let FilterType = GetFilterTypeFrom(ID: ID)
+        {
+            return GroupFromFilter(Type: FilterType)
+        }
+        return nil
+    }
+    
     /// Map between group type and group name and sort order.
-    private let GroupNameMap: [FilterGroups: (String, Int)] =
+    private static let GroupNameMap: [FilterGroups: (String, Int)] =
         [
             .Standard: ("Standard", 0),
             .Combined: ("Combined", 1),
@@ -551,7 +600,7 @@ class FilterManager
             ]
     
     /// Map between group type and group color.
-    private let GroupColors: [FilterGroups: UIColor] =
+    private static let GroupColors: [FilterGroups: UIColor] =
         [
             .Standard: UIColor(named: "HoneyDew")!,
             .Combined: UIColor(named: "PastelYellow")!,
@@ -562,12 +611,17 @@ class FilterManager
             .Motion: UIColor(named: "Gold")!,
             ]
     
+    public func ColorForGroup(_ Group: FilterGroups) -> UIColor
+    {
+        return FilterManager.ColorForGroup(Group)
+    }
+    
     /// Get the color for the specified group. Colors are used as a visual cue for the user to associate filters with given
     /// filter groups.
     ///
     /// - Parameter Group: The group whose color will be returned.
     /// - Returns: The color for the group on success, UIColor.red if the group cannot be found.
-    public func ColorForGroup(_ Group: FilterGroups) -> UIColor
+    public static func ColorForGroup(_ Group: FilterGroups) -> UIColor
     {
         if let GroupColor = GroupColors[Group]
         {
@@ -582,37 +636,47 @@ class FilterManager
     /// - Parameter InOrder: Flag that indicates the filter types will be returned in order (as defined internally in this class)
     ///                      or in whatever order the compiler decides when the code is compiled.
     /// - Returns: List of filters for the specified group. If no group found, an empty list is returned.
-    public func FiltersForGroup(_ Group: FilterGroups, InOrder: Bool = true) -> [FilterTypes]
+    public static func FiltersForGroup(_ Group: FilterGroups, InOrder: Bool = true) -> [FilterTypes]
     {
-        if GroupMap[Group] == nil
+        if FilterManager.GroupMap[Group] == nil
         {
             return [FilterTypes]()
         }
         if !InOrder
         {
             var Final = [FilterTypes]()
-            for (Name, _) in GroupMap[Group]!
+            for (Name, _) in FilterManager.GroupMap[Group]!
             {
                 Final.append(Name)
             }
             return Final
         }
-        var Filters = GroupMap[Group]!
+        var Filters = FilterManager.GroupMap[Group]!
         Filters.sort{$0.1 < $1.1}
         let Final = Array(Filters.map{$0.0})
         return Final
     }
     
+    public func FiltersForGroup(_ Group: FilterGroups, InOrder: Bool = true) -> [FilterTypes]
+    {
+        return FilterManager.FiltersForGroup(Group, InOrder: InOrder)
+    }
+    
     /// Return a list of group names (and associated meta data).
     ///
-    /// - Returns: List of group names. The data is returned in a tuple in the following order: Group title, Filter group enum,
+    /// - Returns: List of group names. The data is returned in a tuple in the following order: Group title, Filter group type,
     ///            sort order.
     public func GetGroupNames() -> [(String, FilterGroups, Int)]
     {
+        return FilterManager.GetGroupNames()
+    }
+    
+    public static func GetGroupNames() -> [(String, FilterGroups, Int)]
+    {
         var Final = [(String, FilterGroups, Int)]()
-        for (GroupEnum, (GroupName, SortOrder)) in GroupNameMap
+        for (GroupType, (GroupName, SortOrder)) in GroupNameMap
         {
-            Final.append((GroupName, GroupEnum, SortOrder))
+            Final.append((GroupName, GroupType, SortOrder))
         }
         return Final
     }
@@ -624,7 +688,7 @@ class FilterManager
     public func GetFilterData(ForGroup: FilterGroups) -> [(String, FilterTypes, Int, Bool)]
     {
         var Final = [(String, FilterTypes, Int, Bool)]()
-        let FiltersInGroup = GroupMap[ForGroup]
+        let FiltersInGroup = FilterManager.GroupMap[ForGroup]
         for (GroupFilter, SortOrder) in FiltersInGroup!
         {
             let FilterTitle = FilterManager.FilterTitles[GroupFilter]
@@ -820,6 +884,7 @@ class FilterManager
             .MirroringDirection: .IntType,
             .HorizontalSide: .IntType,
             .VerticalSide: .IntType,
+            .Quadrant: .IntType,
             ]
     
     public static let FieldStorageMap: [InputFields: String] =
@@ -871,5 +936,6 @@ class FilterManager
             .MirroringDirection: "_MirrorDirection",
             .HorizontalSide: "_HorizontalSide",
             .VerticalSide: "_VerticalSide",
+            .Quadrant: "_Quadrant",
             ]
 }
