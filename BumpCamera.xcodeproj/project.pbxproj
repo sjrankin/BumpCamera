@@ -31,6 +31,9 @@
 		171E542C21E44E170045ED77 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 171E542A21E44E170045ED77 /* Main.storyboard */; };
 		171E542E21E44E180045ED77 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 171E542D21E44E180045ED77 /* Assets.xcassets */; };
 		171E543121E44E180045ED77 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 171E542F21E44E180045ED77 /* LaunchScreen.storyboard */; };
+		171F3CEF220861800098E2B7 /* GridGenerator.metal in Sources */ = {isa = PBXBuildFile; fileRef = 171F3CEE220861800098E2B7 /* GridGenerator.metal */; };
+		171F3CF1220862B80098E2B7 /* GridParameters.swift in Sources */ = {isa = PBXBuildFile; fileRef = 171F3CF0220862B70098E2B7 /* GridParameters.swift */; };
+		171F3CF4220863760098E2B7 /* GridGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 171F3CF3220863760098E2B7 /* GridGenerator.swift */; };
 		1726241521F840D200C7688C /* PixellateTableCode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1726241421F840D200C7688C /* PixellateTableCode.swift */; };
 		1726241721F840E500C7688C /* PixellateTable.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1726241621F840E500C7688C /* PixellateTable.storyboard */; };
 		1726241A21F844DF00C7688C /* FilterTableBase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1726241921F844DF00C7688C /* FilterTableBase.swift */; };
@@ -164,6 +167,9 @@
 		171E542D21E44E180045ED77 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		171E543021E44E180045ED77 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		171E543221E44E180045ED77 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		171F3CEE220861800098E2B7 /* GridGenerator.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = GridGenerator.metal; sourceTree = "<group>"; };
+		171F3CF0220862B70098E2B7 /* GridParameters.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GridParameters.swift; sourceTree = "<group>"; };
+		171F3CF3220863760098E2B7 /* GridGenerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GridGenerator.swift; sourceTree = "<group>"; };
 		1726241421F840D200C7688C /* PixellateTableCode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PixellateTableCode.swift; sourceTree = "<group>"; };
 		1726241621F840E500C7688C /* PixellateTable.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = PixellateTable.storyboard; sourceTree = "<group>"; };
 		1726241921F844DF00C7688C /* FilterTableBase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterTableBase.swift; sourceTree = "<group>"; };
@@ -352,6 +358,7 @@
 		171D627421EDD4B2004D3545 /* Filters */ = {
 			isa = PBXGroup;
 			children = (
+				171F3CF22208634F0098E2B7 /* Generators */,
 				171D625621ED974A004D3545 /* Renderer.swift */,
 				171D627721EDF017004D3545 /* PassThrough.swift */,
 				171D625821ED98AE004D3545 /* Noir.swift */,
@@ -438,8 +445,18 @@
 		171E5B0D2205D0A9004E60F1 /* Grid */ = {
 			isa = PBXGroup;
 			children = (
+				171F3CEE220861800098E2B7 /* GridGenerator.metal */,
+				171F3CF0220862B70098E2B7 /* GridParameters.swift */,
 			);
 			path = Grid;
+			sourceTree = "<group>";
+		};
+		171F3CF22208634F0098E2B7 /* Generators */ = {
+			isa = PBXGroup;
+			children = (
+				171F3CF3220863760098E2B7 /* GridGenerator.swift */,
+			);
+			path = Generators;
 			sourceTree = "<group>";
 		};
 		1726241321F840B100C7688C /* HueAdjust */ = {
@@ -844,6 +861,7 @@
 				178C75BE21F337C100844FFF /* AVCaptureVideoOrientationExtension.swift in Sources */,
 				1756CE1221FD874800C4E638 /* ChannelSwizzleParameters.swift in Sources */,
 				1726241A21F844DF00C7688C /* FilterTableBase.swift in Sources */,
+				171F3CEF220861800098E2B7 /* GridGenerator.metal in Sources */,
 				173F6331220001FD006CB67C /* PixellateMetalTableCode.swift in Sources */,
 				171E542921E44E170045ED77 /* MainUIViewer.swift in Sources */,
 				1756CDFE21FD63D800C4E638 /* RGBtoBGR.metal in Sources */,
@@ -895,6 +913,7 @@
 				17477A0022048C6600FD64EF /* FilterSectionData.swift in Sources */,
 				17E15FF122057E5E0037B35F /* Mirroring.metal in Sources */,
 				17D7510821F410BF0050A2B5 /* MainUIFilterSelection.swift in Sources */,
+				171F3CF1220862B80098E2B7 /* GridParameters.swift in Sources */,
 				171D626D21EDCF6E004D3545 /* LineScreen.swift in Sources */,
 				174D6D5B220803E70066AE93 /* GroupNodeManager.swift in Sources */,
 				179B599421EF0AC200905058 /* FilterCollectionCell.swift in Sources */,
@@ -912,6 +931,7 @@
 				17EC44CE21F0245100197804 /* XRay.swift in Sources */,
 				1799C8A221FF2F9C0069D5AC /* Pixellate_Metal.swift in Sources */,
 				17D7512221F466CF0050A2B5 /* DepthToGrayscale.metal in Sources */,
+				171F3CF4220863760098E2B7 /* GridGenerator.swift in Sources */,
 				17F51B0321E9E86F00843092 /* Times.swift in Sources */,
 				17D7510A21F414390050A2B5 /* MainUILabelManagement.swift in Sources */,
 				1799C89621FF15750069D5AC /* Pixellatekernel.metal in Sources */,
