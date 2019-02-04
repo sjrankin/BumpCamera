@@ -17,6 +17,10 @@ DerivedData/
 !default.perspectivev3
 xcuserdata/
 
+# Stuart
+.DS_Store
+*.psd
+
 ## Other
 *.moved-aside
 *.xccheckout
