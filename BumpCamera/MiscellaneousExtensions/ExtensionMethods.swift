@@ -9,6 +9,7 @@
 import Foundation
 import UIKit
 import VideoToolbox
+import simd
 
 extension UIImage
 {
@@ -47,5 +48,38 @@ extension UIImage
         guard let CGImage = self.cgImage else { return nil }
         Context?.draw(CGImage, in: CGRect(x: 0, y: 0, width: Size.width, height: Size.height))
         return PixelData
+    }
+}
+
+extension UIColor
+{
+    /// Convert an instance of a UIColor to a SIMD float4 structure.
+    ///
+    /// - Returns: SIMD float4 equivalent of the instance color.
+    func ToFloat4() -> simd_float4
+    {
+        var FVals = [Float]()
+        var Red: CGFloat = 0.0
+        var Green: CGFloat = 0.0
+        var Blue: CGFloat = 0.0
+        var Alpha: CGFloat = 1.0
+        self.getRed(&Red, green: &Green, blue: &Blue, alpha: &Alpha)
+        FVals.append(Float(Red))
+        FVals.append(Float(Green))
+        FVals.append(Float(Blue))
+        FVals.append(Float(Alpha))
+        let Result = simd_float4(FVals)
+        return Result
+    }
+    
+    /// Convert a SIMD float4 structure into a UIColor.
+    ///
+    /// - Parameter Float4: The SIMD float4 structure whose values will be converted into a UIColor.
+    /// - Returns: UIColor equivalent of the passed SIMD float4 set of values.
+    static func From(Float4: simd_float4) -> UIColor
+    {
+        let NewColor = UIColor(red: CGFloat(Float4.w), green: CGFloat(Float4.x),
+                               blue: CGFloat(Float4.y), alpha: CGFloat(Float4.z))
+        return NewColor
     }
 }
