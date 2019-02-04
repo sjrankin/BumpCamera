@@ -16,6 +16,39 @@ extension MainUIViewer
 {
     // MARK: Filter collection view code.
     
+    /// Initialize the filter UI data structure. Load the initial filter and set it for use. If no existing filter is in place, or
+    /// the user specified to not use the last filter, start with the pass-through filter.
+    func InitializeFilterUIData()
+    {
+        var InitialGroup = FilterManager.FilterGroups.NotSet
+        var InitialFilter = FilterManager.FilterTypes.NotSet
+        if _Settings.bool(forKey: "StartWithLastFilter")
+        {
+            let InitialFilterIDS = _Settings.string(forKey: "CurrentFilter")
+            let InitialFilterID = UUID(uuidString: InitialFilterIDS!)
+            InitialFilter = FilterManager.GetFilterTypeFrom(ID: InitialFilterID!)!
+            InitialGroup = FilterManager.GroupFromFilter(ID: InitialFilterID!)!
+            print("Loading last used group:filter \(InitialGroup):\(InitialFilter)")
+            Filters!.SetCurrentFilter(FilterType: InitialFilter)
+        }
+        else
+        {
+            InitialGroup = FilterManager.FilterGroups.Standard
+            InitialFilter = FilterManager.FilterTypes.PassThrough
+            var IDS = ""
+            if let InitialFilterID = FilterManager.GetFilterID(For: InitialFilter)
+            {
+                IDS = InitialFilterID.uuidString
+            }
+            else
+            {
+                IDS = "e18b32bf-e965-41c6-a1f5-4bb4ed6ba472"
+            }
+            _Settings.set(IDS, forKey: "CurrentFilter")
+        }
+        GroupData = GroupNodeManager(InitialGroup: InitialGroup, InitialFilter: InitialFilter)
+    }
+    
     /// Update the visibility of the filter selection UI. This is essentially a toggle function.
     ///
     /// - Parameters:
@@ -95,18 +128,26 @@ extension MainUIViewer
         GroupCollectionView.layer.cornerRadius = 5.0
         GroupCollectionView.clipsToBounds = true
         GroupCollectionView.backgroundColor = UIColor(red: 1.0, green: 1.0, blue: 1.0, alpha: 0.35)
-        
-        let InitialFilterIDS = _Settings.string(forKey: "CurrentFilter")
-        let InitialFilterID = UUID(uuidString: InitialFilterIDS!)
-        print("Initial filter: \(Filters!.GetFilterTitle(InitialFilterID!))")
-        
-        GroupTitles = Filters!.GetGroupNames()
-        GroupTitles!.sort{$0.2 < $1.2}
-        MakeGroupData(GroupTitles!)
-        CurrentGroupFilters = (Filters?.FiltersForGroup(GroupNodes[0].GroupType))!
-        GroupNodes[0].IsSelected = true
-        let FilterDataForGroup = Filters?.GetFilterData(ForGroup: (GroupTitles?.first!.1)!)
-        MakeFilterData(FilterDataForGroup!, (GroupTitles?.first!.1)!)
+    }
+    
+    /// Programmatically select a filter and show the UI.
+    /// - Note: Does not yet show the UI on command.
+    /// - Parameters:
+    ///   - ID: ID of the filter to select.
+    ///   - ShowUI: If true, the filter selection UI will be made visible if it isn't already.
+    func SelectFilter(ID: UUID, ShowUI: Bool)
+    {
+        GroupData.SelectFilter(ID)
+    }
+    
+    /// Programmatically select a filter and show the UI.
+    /// - Note: Does not yet show the UI on command.
+    /// - Parameters:
+    ///   - FilterType: The type of the filter to select.
+    ///   - ShowUI: If true, the filter selection UI will be made visible if it isn't already.
+    func SelectFilter(FilterType: FilterManager.FilterTypes, ShowUI: Bool)
+    {
+        GroupData.SelectFilter(FilterType)
     }
     
     /// Make a list of groups for filters.
@@ -133,35 +174,6 @@ extension MainUIViewer
         }
     }
     
-    /// Make a list of filter nodes.
-    ///
-    /// - Parameters:
-    ///   - FilterDataList: Filter node data for a given filter group.
-    ///   - ForGroup: The group to which the filters belongs.
-    func MakeFilterData(_ FilterDataList: [(String, FilterManager.FilterTypes, Int, Bool)], _ ForGroup: FilterManager.FilterGroups)
-    {
-        FilterNodes = [FilterSelectorBlock]()
-        FilterCount = FilterDataList.count
-        let AScalar = "A".unicodeScalars.last!
-        let CharIndex = AScalar.value
-        for Index in 0 ..< FilterCount
-        {
-            let FilterNode = FilterSelectorBlock()
-            let TheFilter = FilterDataList[Index].1
-            FilterNode.Color = (Filters?.ColorForGroup(ForGroup))!
-            FilterNode.FilterType = TheFilter
-            let NewScalar = CharIndex + UInt32(Index)
-            FilterNode.Title = FilterDataList[Index].0
-            FilterNode.Prefix = String(Character(UnicodeScalar(NewScalar)!))
-            FilterNode.ID = Index
-            FilterNode.FilterID = Filters!.GetFilterID(For: FilterDataList[Index].1)
-            FilterNode.IsSelected = false
-            FilterNode.SortOrder = FilterDataList[Index].2
-            FilterNodes.append(FilterNode)
-        }
-        FilterNodes.sort{$0.SortOrder < $1.SortOrder}
-    }
-
     /// Returns the number of items for the UICollectionView. The quanity varies depending on which group
     /// is selected. This function handles both group counts and filter counts.
     ///
@@ -177,12 +189,11 @@ extension MainUIViewer
             {
                 return 0
             }
-            let FilterCount: Int = (Filters?.FiltersForGroup(GroupNodes[LastSelectedGroup].GroupType).count)!
-            return FilterCount
+            return GroupData.FiltersInGroup(LastSelectedGroup)
         }
         if collectionView == GroupCollectionView
         {
-            return GroupCount
+            return GroupData!.GroupCount
         }
         return 0
     }
@@ -198,22 +209,26 @@ extension MainUIViewer
     {
         if collectionView == FilterCollectionView
         {
+            //Add filters to the filter row.
             let Cell = collectionView.dequeueReusableCell(withReuseIdentifier: "FilterItem", for: indexPath) as UICollectionViewCell
             var FilterCell: FilterCollectionCell!
             FilterCell = Cell as? FilterCollectionCell
-            FilterCell.SetCellValue(Title: FilterNodes[indexPath.row].Title, IsSelected: false, ID: indexPath.row, IsGroup: false,
-                                    Color:GroupNodes[LastSelectedGroup].Color)
-            FilterCell.SetSelectionState(Selected: FilterNodes[indexPath.row].IsSelected)
+            let Node = GroupData!.GetFilterNode(LastSelectedGroup, indexPath.row)
+            FilterCell.SetCellValue(Title: Node!.Title, IsSelected: false, ID: indexPath.row, IsGroup: false,
+                                    Color: Node!.Color)
+            FilterCell.SetSelectionState(Selected: Node!.IsSelected)
             return FilterCell
         }
         else
         {
+            //Add groups to the group row.
             let Cell = collectionView.dequeueReusableCell(withReuseIdentifier: "GroupCell", for: indexPath) as UICollectionViewCell
             var GroupCell: FilterCollectionCell!
             GroupCell = Cell as? FilterCollectionCell
-            GroupCell.SetCellValue(Title: GroupNodes[indexPath.row].Title, IsSelected: false, ID: indexPath.row,
-                                   IsGroup: true, Color: GroupNodes[indexPath.row].Color)
-            GroupCell.SetSelectionState(Selected: GroupNodes[indexPath.row].IsSelected)
+            let Node = GroupData!.GroupNodeByOrdinal(indexPath.row)
+            GroupCell.SetCellValue(Title: Node!.Title, IsSelected: false, ID: indexPath.row,
+                                   IsGroup: true, Color: Node!.Color)
+            GroupCell.SetSelectionState(Selected: Node!.IsSelected)
             return GroupCell
         }
     }
@@ -228,41 +243,44 @@ extension MainUIViewer
     {
         if collectionView == FilterCollectionView
         {
+            //Handle filter selections. If the selected group is different from the selected filter, the proper
+            //group will be selected here as well.
+            collectionView.scrollToItem(at: indexPath, at: UICollectionView.ScrollPosition.centeredHorizontally, animated: true)
             LastSelectedItem = indexPath.row
-            FilterNodes.forEach{$0.IsSelected = false}
-            FilterNodes[indexPath.row].IsSelected = true
+            GroupData!.SelectFilterAt(GroupIndex: LastSelectedGroup, FilterIndex: LastSelectedItem)
             FilterCollectionView.reloadData()
-            let Current = FilterNodes[indexPath.row].FilterType
-            if Filters!.GetFilterID(For: Current) == LastSelectedFilterID
+            let Current = GroupData!.CurrentFilter()
+            if FilterManager.GetFilterID(For: Current!) == LastSelectedFilterID
             {
                 print("Tried to select the same filter two times in a row.")
                 return
             }
-            let FilterTitle = Filters!.GetFilterTitle(Current)
-            ShowFilter(FilterTitle)
-            Filters!.SetCurrentFilter(Name: Current)
-            LastSelectedFilterID = Filters!.GetFilterID(For: Current)
+            LastSelectedFilterID = FilterManager.GetFilterID(For: Current!)
+            let FilterTitle = FilterManager.GetFilterTitle(Current!)
+            ShowFilter(FilterTitle!)
+            //The next line actually switches the filters being used.
+            Filters!.SetCurrentFilter(FilterType: Current!)
             _Settings.set(LastSelectedFilterID?.uuidString, forKey: "CurrentFilter")
+            //See if the currently selected group is where the newly selected filter lives. If not, select the proper group.
+            let NewFiltersGroup = FilterManager.GroupFromFilter(ID: LastSelectedFilterID!)
+            if GroupData!.CurrentGroup() != NewFiltersGroup
+            {
+                GroupData!.SelectGroup(NewFiltersGroup!)
+                if let GroupIndex = GroupData!.OrdinalOfGroup(NewFiltersGroup!)
+                {
+                    let IP = IndexPath(row: GroupIndex, section: 0)
+                    GroupCollectionView.scrollToItem(at: IP, at: UICollectionView.ScrollPosition.centeredHorizontally, animated: true)
+                }
+            }
             StopHideTimer()
             StartHidingTimer()
         }
         if collectionView == GroupCollectionView
         {
+            //Handle group selections. Update the filters shown in the UI when new groups are selected.
+            collectionView.scrollToItem(at: indexPath, at: UICollectionView.ScrollPosition.centeredHorizontally, animated: true)
             LastSelectedGroup = indexPath.row
-            let FilterData = Filters?.GetFilterData(ForGroup: GroupNodes[LastSelectedGroup].GroupType)
-            MakeFilterData(FilterData!, GroupNodes[LastSelectedGroup].GroupType)
-            CurrentGroupFilters = (Filters?.FiltersForGroup(GroupNodes[LastSelectedGroup].GroupType))!
-            FilterNodes.forEach{if $0.FilterID == LastSelectedFilterID
-            {
-                $0.IsSelected = true
-                }
-                else
-            {
-                $0.IsSelected = false
-                }
-            }
-            GroupNodes.forEach{$0.IsSelected = false}
-            GroupNodes[indexPath.row].IsSelected = true
+            GroupData!.SelectGroup(LastSelectedGroup)
             GroupCollectionView.reloadData()
             FilterCollectionView.reloadData()
             StopHideTimer()
@@ -288,6 +306,7 @@ extension MainUIViewer
         }
     }
     
+    /// Start the hide UI timer.
     func StartHidingTimer()
     {
         if !_Settings.bool(forKey: "HideFilterSelectionUI")
@@ -299,6 +318,7 @@ extension MainUIViewer
         HideTimer = Timer.scheduledTimer(timeInterval: Interval, target: self, selector: #selector(AutoHideUI), userInfo: nil, repeats: false)
     }
     
+    /// Stop the hide UI timer.
     func StopHideTimer()
     {
         if !_Settings.bool(forKey: "HideFilterSelectionUI")
@@ -310,6 +330,7 @@ extension MainUIViewer
         HideTimer = nil
     }
     
+    /// Called when the hide UI timer fires. Hides the UI automatically so it doesn't clutter up the screen.
     @objc func AutoHideUI()
     {
         HideTimer?.invalidate()
@@ -317,6 +338,9 @@ extension MainUIViewer
         UpdateFilterSelectionVisibility()
     }
     
+    /// Event triggered when the scroll view started moving (via the user). When this happens, stop the hide UI timer.
+    ///
+    /// - Parameter scrollView: The scroll view control (or control with this protocol) that started moving.
     func scrollViewWillBeginDragging(_ scrollView: UIScrollView)
     {
         if scrollView != GroupCollectionView && scrollView != FilterCollectionView
@@ -326,6 +350,9 @@ extension MainUIViewer
         StopHideTimer()
     }
     
+    /// Event triggered when the scroll view stopped moving (via the user). When this happens, start the hide UI timer.
+    ///
+    /// - Parameter scrollView: The scroll view control (or control with this protocol) that stopped moving.
     func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool)
     {
         if scrollView != GroupCollectionView && scrollView != FilterCollectionView
