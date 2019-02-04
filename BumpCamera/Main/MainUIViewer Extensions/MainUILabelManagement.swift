@@ -119,8 +119,8 @@ extension MainUIViewer
         FilterLabel.backgroundColor = UIColor(red: 1.0, green: 1.0, blue: 1.0, alpha: 0.25)
         UIView.animate(withDuration: AnimationDuration, delay: AnimationDelay, options: [], animations:
             {
-                self.FilterLabel.alpha = 0.5
-                self.FilterLabel.textColor = UIColor.black
+                self.FilterLabel.alpha = 0.75
+                self.FilterLabel.textColor = UIColor.lightGray
         }
             , completion: nil)
     }
