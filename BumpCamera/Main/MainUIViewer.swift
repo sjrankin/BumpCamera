@@ -28,9 +28,13 @@ import MobileCoreServices
 ///     - *MainUIJpegDataClass*: Code for the JpegData class used for saving images.
 ///     - *MainUIDebug*: Debug code and visual debug code.
 ///     - *MainUILabelManagement*: Code related to showing and animating the visibility of transient labels on the main UI.
-class MainUIViewer: UIViewController, AVCapturePhotoCaptureDelegate, AVCaptureVideoDataOutputSampleBufferDelegate,
-    AVCaptureDepthDataOutputDelegate, AVCaptureDataOutputSynchronizerDelegate,
-    UICollectionViewDelegate, UICollectionViewDataSource
+class MainUIViewer: UIViewController,
+    AVCapturePhotoCaptureDelegate,
+    AVCaptureVideoDataOutputSampleBufferDelegate,
+    AVCaptureDepthDataOutputDelegate,
+    AVCaptureDataOutputSynchronizerDelegate,
+    UICollectionViewDelegate,
+    UICollectionViewDataSource
 {
     let _Settings = UserDefaults.standard
     
@@ -45,11 +49,13 @@ class MainUIViewer: UIViewController, AVCapturePhotoCaptureDelegate, AVCaptureVi
     {
         super.viewDidLoad()
         VideoIsAuthorized = CheckAuthorization()
-        Filters = FilterManager(FilterManager.FilterTypes.Noir)
+        //Filters must be created before checking for settings.
+        Filters = FilterManager(FilterManager.FilterTypes.PassThrough)
         if !_Settings.bool(forKey: "SettingsInstalled")
         {
             InitializeSettings()
         }
+        InitializeFilterUIData()
         ParameterManager.Initialize(Filters: Filters!, Preload: true)
         DepthDataSupported = PhotoOutput.isDepthDataDeliverySupported
         print("DepthDataSupported = \(DepthDataSupported)")
@@ -252,7 +258,7 @@ class MainUIViewer: UIViewController, AVCapturePhotoCaptureDelegate, AVCaptureVi
     var VideoOutput = AVCaptureVideoDataOutput()
     var CaptureSession: AVCaptureSession = AVCaptureSession()
     var VideoPreviewLayer: AVCaptureVideoPreviewLayer? = nil
-        var CapturePhotoOutput: AVCapturePhotoOutput?
+    var CapturePhotoOutput: AVCapturePhotoOutput?
     var OutputSynchronizer: AVCaptureDataOutputSynchronizer? = nil
     var DepthDataOutput = AVCaptureDepthDataOutput()
     var CurrentDepthPixelBuffer: CVPixelBuffer? = nil
@@ -276,8 +282,8 @@ class MainUIViewer: UIViewController, AVCapturePhotoCaptureDelegate, AVCaptureVi
         }
         SessionQueue.async
             {
-        let Settings = AVCapturePhotoSettings(format: [kCVPixelBufferPixelFormatTypeKey as String: Int(kCVPixelFormatType_32BGRA)])
-        self.PhotoOutput.capturePhoto(with: Settings, delegate: self)
+                let Settings = AVCapturePhotoSettings(format: [kCVPixelBufferPixelFormatTypeKey as String: Int(kCVPixelFormatType_32BGRA)])
+                self.PhotoOutput.capturePhoto(with: Settings, delegate: self)
         }
     }
     
@@ -297,12 +303,51 @@ class MainUIViewer: UIViewController, AVCapturePhotoCaptureDelegate, AVCaptureVi
     @IBOutlet weak var BackgroundView: UIView!
     @IBOutlet var MainUIView: UIView!
     
-    
-    @IBAction func HandlePhotoAlbumButtonPressed(_ sender: Any)
+    @IBAction func HandleCurrentFilterSettingsPressed(_ sender: Any)
     {
+        if let RawID = _Settings.string(forKey: "CurrentFilter")
+        {
+            if let FilterID = UUID(uuidString: RawID)
+            {
+                let TypeOfFilter = FilterManager.GetFilterTypeFrom(ID: FilterID)
+                if TypeOfFilter == nil
+                {
+                    print("Error getting filter type.")
+                    return
+                }
+                _Settings.set(TypeOfFilter!.rawValue, forKey: "SetupForFilterType")
+                if let StoryboardName = FilterManager.StoryboardFor(TypeOfFilter!)
+                {
+                    print("Filter \((TypeOfFilter)!) storyboard name is \(StoryboardName) at \(CACurrentMediaTime())")
+                    let Storyboard = UIStoryboard(name: StoryboardName, bundle: nil)
+                    if let Controller = Storyboard.instantiateViewController(withIdentifier: StoryboardName) as? UINavigationController
+                    {
+                        print("Filter \((TypeOfFilter)!) after instantiation at \(CACurrentMediaTime())")
+                        DispatchQueue.main.async
+                            {
+                                self.present(Controller, animated: true, completion: nil)
+                        }
+                    }
+                    else
+                    {
+                        print("Error instantiating storyboard \(StoryboardName)")
+                    }
+                }
+                else
+                {
+                    print("No storyboard name available for \((TypeOfFilter)!)")
+                }
+            }
+            else
+            {
+                print("Error parsing current filter ID.")
+            }
+        }
+        else
+        {
+            print("Error getting ID of current filter.")
+        }
     }
-    
-    @IBOutlet weak var PhotoAlbumButton: UIBarButtonItem!
     
     @IBAction func HandleSettingsButtonPressed(_ sender: Any)
     {
@@ -330,8 +375,9 @@ class MainUIViewer: UIViewController, AVCapturePhotoCaptureDelegate, AVCaptureVi
     var GroupNodes = [FilterSelectorBlock]()
     var FilterNodes = [FilterSelectorBlock]()
     var GroupTitles: [(String, FilterManager.FilterGroups, Int)]? = nil
-        var HideTimer: Timer? = nil
+    var HideTimer: Timer? = nil
     var LastSelectedFilterID: UUID? = nil
+    var GroupData: GroupNodeManager!
     
     @IBOutlet weak var GroupCollectionView: UICollectionView!
     @IBOutlet weak var FilterCollectionView: UICollectionView!
