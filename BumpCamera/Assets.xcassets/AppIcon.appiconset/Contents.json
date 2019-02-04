@@ -3,109 +3,109 @@
     {
       "size" : "20x20",
       "idiom" : "iphone",
-      "filename" : "Camera20x20@2x.png",
+      "filename" : "Red Icon 20x20@2x.png",
       "scale" : "2x"
     },
     {
       "size" : "20x20",
       "idiom" : "iphone",
-      "filename" : "Camera20x20@3x.png",
+      "filename" : "Red Icon 20x20@3x.png",
       "scale" : "3x"
     },
     {
       "size" : "29x29",
       "idiom" : "iphone",
-      "filename" : "Camera29x29@2x.png",
+      "filename" : "Red Icon 29x29@2x.png",
       "scale" : "2x"
     },
     {
       "size" : "29x29",
       "idiom" : "iphone",
-      "filename" : "Camera29x29@3x.png",
+      "filename" : "Red Icon 29x29@3x.png",
       "scale" : "3x"
     },
     {
       "size" : "40x40",
       "idiom" : "iphone",
-      "filename" : "Camera40x40@2x.png",
+      "filename" : "Red Icon 40x40@2x.png",
       "scale" : "2x"
     },
     {
       "size" : "40x40",
       "idiom" : "iphone",
-      "filename" : "Camera40x40@3x.png",
+      "filename" : "Red Icon 40x40@3x.png",
       "scale" : "3x"
     },
     {
       "size" : "60x60",
       "idiom" : "iphone",
-      "filename" : "Camera60x60@2x.png",
+      "filename" : "Red Icon 60x60@2x.png",
       "scale" : "2x"
     },
     {
       "size" : "60x60",
       "idiom" : "iphone",
-      "filename" : "Camera60x60@3x.png",
+      "filename" : "Red Icon 60x60@3x.png",
       "scale" : "3x"
     },
     {
       "size" : "20x20",
       "idiom" : "ipad",
-      "filename" : "Camera20x20@1x.png",
+      "filename" : "Red Icon 20x20@1x.png",
       "scale" : "1x"
     },
     {
       "size" : "20x20",
       "idiom" : "ipad",
-      "filename" : "Camera20x20@2x-1.png",
+      "filename" : "Red Icon 20x20@2x-1.png",
       "scale" : "2x"
     },
     {
       "size" : "29x29",
       "idiom" : "ipad",
-      "filename" : "Camera29x29@1x.png",
+      "filename" : "Red Icon 29x29@1.png",
       "scale" : "1x"
     },
     {
       "size" : "29x29",
       "idiom" : "ipad",
-      "filename" : "Camera29x29@2x-1.png",
+      "filename" : "Red Icon 29x29@2x-1.png",
       "scale" : "2x"
     },
     {
       "size" : "40x40",
       "idiom" : "ipad",
-      "filename" : "Camera40x40@1x.png",
+      "filename" : "Red Icon 40x40@1x.png",
       "scale" : "1x"
     },
     {
       "size" : "40x40",
       "idiom" : "ipad",
-      "filename" : "Camera40x40@2x-1.png",
+      "filename" : "Red Icon 40x40@2x-1.png",
       "scale" : "2x"
     },
     {
       "size" : "76x76",
       "idiom" : "ipad",
-      "filename" : "Camera76x76@1x.png",
+      "filename" : "Red Icon 76x76@1x.png",
       "scale" : "1x"
     },
     {
       "size" : "76x76",
       "idiom" : "ipad",
-      "filename" : "Camera76x76@2x.png",
+      "filename" : "Red Icon 76x76@2x.png",
       "scale" : "2x"
     },
     {
       "size" : "83.5x83.5",
       "idiom" : "ipad",
-      "filename" : "Camera83.5x83.5@2x.png",
+      "filename" : "Red Icon 83.5x83.5@2x.png",
       "scale" : "2x"
     },
     {
       "size" : "1024x1024",
       "idiom" : "ios-marketing",
-      "filename" : "Red Camera Icon 3.png",
+      "filename" : "Red Icon 1024.png",
       "scale" : "1x"
     }
   ],
