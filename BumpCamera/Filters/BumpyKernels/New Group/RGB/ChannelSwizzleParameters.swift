@@ -15,6 +15,9 @@ struct ChannelSwizzles
     let Channel1: simd_int1
     let Channel2: simd_int1
     let Channel3: simd_int1
-    let HasHSB: simd_int1
-    let HasCMYK: simd_int1
+    let HasHSB: simd_bool
+    let HasCMYK: simd_bool
+    let InvertRed: simd_bool
+    let InvertGreen: simd_bool
+    let InvertBlue: simd_bool
 }
