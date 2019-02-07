@@ -13,6 +13,9 @@ struct GridParameters
 {
     let GridX: simd_uint1
     let GridY: simd_uint1
+    let Width: simd_uint1
     let GridColor: simd_float4
     let BackgroundColor: simd_float4
+    let InvertGridColor: simd_bool
+    let InvertBackgroundColor: simd_bool
 }
