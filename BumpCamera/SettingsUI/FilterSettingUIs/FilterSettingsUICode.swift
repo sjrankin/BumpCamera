@@ -135,7 +135,7 @@ class FilterSettingsUICode: UITableViewController, CollapsibleTableViewHeaderDel
         _Settings.set(TypeOfFilter.rawValue, forKey: "SetupForFilterType")
         if let StoryboardName = FilterManager.StoryboardFor(TypeOfFilter)
         {
-            print("Filter \(TypeOfFilter) storyboard name is \(StoryboardName) at \(CACurrentMediaTime())")
+            print("Filter \(TypeOfFilter) storyboard name is \"\(StoryboardName)\" at start time \(CACurrentMediaTime())")
             let Storyboard = UIStoryboard(name: StoryboardName, bundle: nil)
             if let Controller = Storyboard.instantiateViewController(withIdentifier: StoryboardName) as? UINavigationController
             {
