@@ -14,13 +14,7 @@ class KuwaharaFilterSettingsCode: FilterSettingUIBase
     override func viewDidLoad()
     {
         super.viewDidLoad()
-        
-        SampleView = UIImageView(image: UIImage(named: "Norio"))
-        SampleView.contentMode = .scaleAspectFit
-        
-        NotificationCenter.default.addObserver(self, selector: #selector(DefaultsChanged),
-                                               name: UserDefaults.didChangeNotification,
-                                               object: nil)
+
         Initialize(FilterType: FilterManager.FilterTypes.Kuwahara)
         WarningLabel.layer.borderColor = UIColor.red.cgColor
         WarningLabel.layer.borderWidth = 2.0
@@ -31,58 +25,13 @@ class KuwaharaFilterSettingsCode: FilterSettingUIBase
         let Radius = ParameterManager.GetDouble(From: FilterID, Field: .Radius, Default: 1.0)
         RadialValueLabel.text = "\(Radius.Round(To: 2))"
         RadiusSlider.value = Float(Radius) * 50.0
+        /*
         let _ = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: false, block:
         {
             Tmr in
             self.ShowSampleView()
         })
-    }
-    
-    override func viewWillDisappear(_ animated: Bool)
-    {
-        NotificationCenter.default.removeObserver(self, name: UserDefaults.didChangeNotification, object: nil)
-        super.viewWillDisappear(animated)
-    }
-    
-    @objc func DefaultsChanged(notification: NSNotification)
-    {
-        if let Defaults = notification.object as? UserDefaults
-        {
-            let NewName = Defaults.value(forKey: "SampleImage") as? String
-            if NewName != PreviousImage
-            {
-                PreviousImage = NewName!
-                ShowSampleView()
-            }
-        }
-    }
-    
-    var PreviousImage = ""
-    
-    let ViewLock = NSObject()
-    
-    func ShowSampleView()
-    {
-        objc_sync_enter(ViewLock)
-        defer{objc_sync_exit(ViewLock)}
-        
-        RenderTimeLabel.text = "now rendering"
-        RadiusSlider.isEnabled = false
-        let ImageName = _Settings.string(forKey: "SampleImage")
-        let Start = CACurrentMediaTime()
-        SampleView.image = nil
-        BusyIndicator.isHidden = false
-        BusyIndicator.startAnimating()
-        var SampleImage = UIImage(named: ImageName!)
-        SampleImage = SampleFilter?.Render(Image: SampleImage!)
-        SampleView.image = SampleImage
-        BusyIndicator.stopAnimating()
-        BusyIndicator.isHidden = true
-        let End = CACurrentMediaTime()
-        let Duration = End - Start
-        print("Kuwahara render duration: \(Duration) seconds.")
-        RenderTimeLabel.text = "\(Duration.Round(To: 3)) seconds"
-        RadiusSlider.isEnabled = true
+ */
     }
     
     @IBAction func HandleRadiusSliderChanged(_ sender: Any)

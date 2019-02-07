@@ -14,13 +14,7 @@ class HSBFilterSettingsUICode: FilterSettingUIBase
     override func viewDidLoad()
     {
         super.viewDidLoad()
-        
-        SampleView = UIImageView(image: UIImage(named: "Norio"))
-        SampleView.contentMode = .scaleAspectFit
-        
-        NotificationCenter.default.addObserver(self, selector: #selector(DefaultsChanged),
-                                               name: UserDefaults.didChangeNotification,
-                                               object: nil)
+
         Initialize(FilterType: FilterManager.FilterTypes.HSBAdjust)
         
         SatSlider.addTarget(self, action: #selector(SatDoneSliding), for: [.touchUpInside, .touchUpOutside])
@@ -41,47 +35,6 @@ class HSBFilterSettingsUICode: FilterSettingUIBase
         SaturationInput.inputAccessoryView = MakeToolbarForKeyboard(ActionSelection: #selector(SatInputDone))
         ContrastInput.inputAccessoryView = MakeToolbarForKeyboard(ActionSelection: #selector(ConInputDone))
         BrightnessInput.inputAccessoryView = MakeToolbarForKeyboard(ActionSelection: #selector(BriInputDone))
-        
-        let _ = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: false, block:
-        {
-            Tmr in
-            self.ShowSampleView()
-        })
-    }
-    
-    override func viewWillDisappear(_ animated: Bool)
-    {
-        NotificationCenter.default.removeObserver(self, name: UserDefaults.didChangeNotification, object: nil)
-        super.viewWillDisappear(animated)
-    }
-    
-    @objc func DefaultsChanged(notification: NSNotification)
-    {
-        if let Defaults = notification.object as? UserDefaults
-        {
-            let NewName = Defaults.value(forKey: "SampleImage") as? String
-            if NewName != PreviousImage
-            {
-                PreviousImage = NewName!
-                ShowSampleView()
-            }
-        }
-    }
-    
-    var PreviousImage = ""
-    
-    let ViewLock = NSObject()
-    
-    func ShowSampleView()
-    {
-        objc_sync_enter(ViewLock)
-        defer{objc_sync_exit(ViewLock)}
-        
-        let ImageName = _Settings.string(forKey: "SampleImage")
-        SampleView.image = nil
-        var SampleImage = UIImage(named: ImageName!)
-        SampleImage = SampleFilter?.Render(Image: SampleImage!)
-        SampleView.image = SampleImage
     }
     
     @objc func SatInputDone()

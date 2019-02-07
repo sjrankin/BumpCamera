@@ -14,58 +14,14 @@ class ChannelMixerSettingsUICode: FilterSettingUIBase
     override func viewDidLoad()
     {
         super.viewDidLoad()
-        
-        SampleView = UIImageView(image: UIImage(named: "Norio"))
-        SampleView.contentMode = .scaleAspectFit
-        
-        NotificationCenter.default.addObserver(self, selector: #selector(DefaultsChanged),
-                                               name: UserDefaults.didChangeNotification,
-                                               object: nil)
+
         Initialize(FilterType: FilterManager.FilterTypes.ChannelMixer)
         
         let (C1Val, C2Val, C3Val) = GetSwizzleValues()
         SetChannels(Channel1: C1Val, Channel2: C2Val, Channel3: C3Val)
-    
-        let _ = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: false, block:
-        {
-            Tmr in
-            self.ShowSampleView()
-        })
-    }
-    
-    override func viewWillDisappear(_ animated: Bool)
-    {
-        NotificationCenter.default.removeObserver(self, name: UserDefaults.didChangeNotification, object: nil)
-        super.viewWillDisappear(animated)
-    }
-    
-    @objc func DefaultsChanged(notification: NSNotification)
-    {
-        if let Defaults = notification.object as? UserDefaults
-        {
-            let NewName = Defaults.value(forKey: "SampleImage") as? String
-            if NewName != PreviousImage
-            {
-                PreviousImage = NewName!
-                ShowSampleView()
-            }
-        }
-    }
-    
-    var PreviousImage = ""
-    
-    let ViewLock = NSObject()
-    
-    func ShowSampleView()
-    {
-        objc_sync_enter(ViewLock)
-        defer{objc_sync_exit(ViewLock)}
-        
-        let ImageName = _Settings.string(forKey: "SampleImage")
-        SampleView.image = nil
-        var SampleImage = UIImage(named: ImageName!)
-        SampleImage = SampleFilter?.Render(Image: SampleImage!)
-        SampleView.image = SampleImage
+        InvertRedSwitch.isOn = ParameterManager.GetBool(From: FilterID, Field: .InvertRed, Default: false)
+        InvertGreenSwitch.isOn = ParameterManager.GetBool(From: FilterID, Field: .InvertGreen, Default: false)
+        InvertBlueSwitch.isOn = ParameterManager.GetBool(From: FilterID, Field: .InvertBlue, Default: false)
     }
     
     var Channel1Value: Channels = .Red
@@ -354,6 +310,24 @@ class ChannelMixerSettingsUICode: FilterSettingUIBase
         ShowSampleView()
     }
     
+    @IBAction func HandleInvertRed(_ sender: Any)
+    {
+        UpdateValue(WithValue: InvertRedSwitch.isOn, ToField: .InvertRed)
+        ShowSampleView()
+    }
+    
+    @IBAction func HandleInvertGreen(_ sender: Any)
+    {
+        UpdateValue(WithValue: InvertGreenSwitch.isOn, ToField: .InvertGreen)
+        ShowSampleView()
+    }
+    
+    @IBAction func HandleInvertBlue(_ sender: Any)
+    {
+        UpdateValue(WithValue: InvertBlueSwitch.isOn, ToField: .InvertBlue)
+        ShowSampleView()
+    }
+    
     @IBAction func HandleCameraHomePressed(_ sender: Any)
     {
         navigationController?.popViewController(animated: true)
@@ -364,6 +338,9 @@ class ChannelMixerSettingsUICode: FilterSettingUIBase
         dismiss(animated: true, completion: nil)
     }
     
+    @IBOutlet weak var InvertRedSwitch: UISwitch!
+    @IBOutlet weak var InvertGreenSwitch: UISwitch!
+    @IBOutlet weak var InvertBlueSwitch: UISwitch!
     @IBOutlet weak var Channel1RGB: UISegmentedControl!
     @IBOutlet weak var Channel1HSB: UISegmentedControl!
     @IBOutlet weak var Channel2RGB: UISegmentedControl!
