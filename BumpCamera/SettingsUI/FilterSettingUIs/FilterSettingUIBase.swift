@@ -8,9 +8,10 @@
 
 import Foundation
 import UIKit
+import Photos
 
 /// Base class for filter setting UIs.
-class FilterSettingUIBase: UITableViewController
+class FilterSettingUIBase: UITableViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate
 {
     let _Settings = UserDefaults.standard
     var Filter = FilterManager.FilterTypes.PassThrough
@@ -20,6 +21,7 @@ class FilterSettingUIBase: UITableViewController
     var SampleImageName: String = "Norio"
     var SampleView: UIImageView!
     var ShowingSample: Bool = true
+    var ImagePicker: UIImagePickerController? = nil
     
     /// Initializes the base class.
     ///
@@ -30,6 +32,13 @@ class FilterSettingUIBase: UITableViewController
     {
         print("\(FilterType) start at \(CACurrentMediaTime())")
         let Start = CACurrentMediaTime()
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(DefaultsChanged),
+                                               name: UserDefaults.didChangeNotification,
+                                               object: nil)
+        
+        SampleView = UIImageView(image: UIImage(named: "Norio"))
+        SampleView.contentMode = .scaleAspectFit
         ShowingSample = _Settings.bool(forKey: "ShowFilterSampleImages")
         DoEnableSelect = EnableSelectImage
         if !ShowingSample
@@ -43,14 +52,18 @@ class FilterSettingUIBase: UITableViewController
         SampleFilter?.InitializeForImage()
         if ShowingSample
         {
+            ImagePicker = UIImagePickerController()
+            ImagePicker!.delegate = self
             SampleImageName = _Settings.string(forKey: "SampleImage")!
             SampleView.image = UIImage(named: SampleImageName)
+            SampleView.backgroundColor = UIColor.darkGray
             SampleView.isUserInteractionEnabled = true
             if DoEnableSelect
             {
                 let Tap = UITapGestureRecognizer(target: self, action: #selector(HandleSampleSelection))
                 SampleView.addGestureRecognizer(Tap)
             }
+            ShowSampleView()
         }
         let End = CACurrentMediaTime()
         print("FilterSettingUIBase(Filter) start-up duration: \(End - Start) seconds")
@@ -85,6 +98,93 @@ class FilterSettingUIBase: UITableViewController
         return 180
     }
     
+    /// When the view disappears, remove the notification observer.
+    ///
+    /// - Parameter animated: Passed unchanged to super.viewWillDisappear.
+    override func viewWillDisappear(_ animated: Bool)
+    {
+        NotificationCenter.default.removeObserver(self, name: UserDefaults.didChangeNotification, object: nil)
+        super.viewWillDisappear(animated)
+    }
+    
+    /// Handle changes in the settings. Specifically, we look for changes to "SampleImage" and update the sample
+    /// image as appropriate. Selecting the same image twice in a row results in no action taken.
+    ///
+    /// - Parameter notification: Notification information.
+    @objc func DefaultsChanged(notification: NSNotification)
+    {
+        if let Defaults = notification.object as? UserDefaults
+        {
+            if let NewName = Defaults.value(forKey: "SampleImage") as? String
+            {
+                print("SampleImage set with name \"\(NewName)\"")
+                ShowSampleView()
+            }
+            /*
+             if NewName != PreviousSampleImage
+             {
+             PreviousSampleImage = NewName!
+             ShowSampleView()
+             }
+             */
+        }
+    }
+    
+    /// Object used to lock the sample viewer.
+    let SampleViewLock = NSObject()
+    /// Previous image name.
+    var PreviousSampleImage = ""
+    
+    /// Show the sample. Two types of sample image are supported. On error, the default "Norio" image is used. The current filter
+    /// and settings are applied before the image is displayed.
+    /// - Supported image types:
+    ///     - **Stock image** Image compiled into the binary and referred to by name. The user can select these via the tap handler on
+    ///       the sample image.
+    ///     - **User customizable** Image selected by the user. This image is copied to a special directory. When this option is selected,
+    ///       it is loaded everytime it is selected as the sample image so some performance issues may occur.
+    func ShowSampleView()
+    {
+        objc_sync_enter(SampleViewLock)
+        defer{objc_sync_exit(SampleViewLock)}
+        
+        SampleView.image = nil
+        var SampleImage: UIImage!
+        if let ImageName = _Settings.string(forKey: "SampleImage")
+        {
+            if ImageName == "custom image"
+            {
+                print("Looking for custom image.")
+                if let UserSample = FileHandler.GetSampleImage()
+                {
+                    SampleImage = UserSample
+                    print("Found custom image.")
+                }
+                else
+                {
+                    SampleImage = UIImage(named: "Norio")
+                    _Settings.set("Norio", forKey: "SampleImage")
+                }
+            }
+            else
+            {
+                print("Loading sample image \(ImageName)")
+                SampleImage = UIImage(named: ImageName)
+            }
+        }
+        else
+        {
+            print("Sample image name invalid - loading default Norio image.")
+            SampleImage = UIImage(named: "Norio")
+            _Settings.set("Norio", forKey: "SampleImage")
+        }
+        let FinalImage = SampleFilter?.Render(Image: SampleImage)
+        SampleView.image = FinalImage
+        LastSampleImage = FinalImage
+    }
+    
+    var LastSampleImage: UIImage? = nil
+    
+    /// Flag that lets the user select various sample images.
     private var DoEnableSelect: Bool = true
     
     /// Handle tap events on the sample image.
@@ -110,7 +210,9 @@ class FilterSettingUIBase: UITableViewController
         Alert.addAction(UIAlertAction(title: "Painted Portrait", style: UIAlertAction.Style.default, handler: HandleNewSampleImage))
         Alert.addAction(UIAlertAction(title: "Black and White Portrait", style: UIAlertAction.Style.default, handler: HandleNewSampleImage))
         Alert.addAction(UIAlertAction(title: "Test Pattern", style: UIAlertAction.Style.default, handler: HandleNewSampleImage))
-        Alert.addAction(UIAlertAction(title: "Select Your Own", style: UIAlertAction.Style.default, handler: HandleNewSampleImage))
+        Alert.addAction(UIAlertAction(title: "The Programmer", style: UIAlertAction.Style.default, handler: HandleNewSampleImage))
+        Alert.addAction(UIAlertAction(title: "Use Custom Image", style: UIAlertAction.Style.default, handler: HandleNewSampleImage))
+        Alert.addAction(UIAlertAction(title: "Select Custom Image", style: UIAlertAction.Style.default, handler: HandleNewSampleImage))
         Alert.addAction(UIAlertAction(title: "Save Sample Image", style: UIAlertAction.Style.default, handler: HandleNewSampleImage))
         Alert.addAction(UIAlertAction(title: "Cancel", style: UIAlertAction.Style.cancel, handler: nil))
         self.present(Alert, animated: true, completion: nil)
@@ -127,17 +229,13 @@ class FilterSettingUIBase: UITableViewController
         switch Action.title
         {
         case "Save Sample Image":
-            if let SaveMe = SampleView.image
-            {
-                SaveImage(SaveMe)
-            }
-            else
-            {
-                print("Error retrieving sample image from sample view for saving.")
-            }
+            SaveSampleImage()
             
         case "Cat":
             NewImageName = "Norio"
+            
+        case "The Programmer":
+            NewImageName = "TheProgrammer"
             
         case "Rose":
             NewImageName = "HamanasuSample"
@@ -154,8 +252,11 @@ class FilterSettingUIBase: UITableViewController
         case "Test Pattern":
             NewImageName = "TestPattern"
             
-        case "Select Your Own":
-            break
+        case "Use Custom Image":
+            NewImageName = "custom image"
+            
+        case "Select Custom Image":
+            GetUserSelectedImage()
             
         default:
             break
@@ -166,12 +267,48 @@ class FilterSettingUIBase: UITableViewController
         }
     }
     
-    /// Save the passed image to the photo roll. Assumes the user has permission to save images there.
-    ///
-    /// - Parameter Image: The image to save.
-    func SaveImage(_ Image: UIImage)
+    /// Run the image picker to let the user select a custom image to use for the sample image.
+    /// - Links:
+    ///    - [Choosing images with UIImagePickerControl in Swift](https://www.codingexplorer.com/choosing-images-with-uiimagepickercontroller-in-swift/)
+    ///    - [Swift Using the UIImagePickerController for a Camera and Photo Library](https://makeapppie.com/2014/12/04/swift-swift-using-the-uiimagepickercontroller-for-a-camera-and-photo-library/)
+    func GetUserSelectedImage()
     {
-        UIImageWriteToSavedPhotosAlbum(Image, self, #selector(image(_:didFinishSavingWithError:contextInfo:)), nil)
+        ImagePicker?.allowsEditing = false
+        ImagePicker?.sourceType = .photoLibrary
+        present(ImagePicker!, animated: true, completion: nil)
+    }
+    
+    /// Save the passed image to the photo roll. Assumes the user has permission to save images there. See [Saving to User Photo Libary Silently Fails](https://stackoverflow.com/questions/44864432/saving-to-user-photo-library-silently-fails)
+    /// - Note: The image is internally converted to different types until it is CGImage-backed to ensure
+    ///         UIImageWriteToSavedPhotosAlbum won't silently fail.
+    func SaveSampleImage()
+    {
+        if let SaveMe = LastSampleImage
+        {
+            var Final: UIImage!
+            //Have to make sure the image to save is "CGImage-backed" or UIImageWriteToSavedPhotosAlbum will silently fail.
+            if let ciimg = CIImage(image: SaveMe)
+            {
+                //If we're here, the image is well-behaved and we can convert it to CGImage backed easily.
+                let Context = CIContext()
+                let cgimg = Context.createCGImage(ciimg, from: ciimg.extent)
+                print("ciimage.extent=\(ciimg.extent)")
+                Final = UIImage(cgImage: cgimg!)
+            }
+            else
+            {
+                let ciimg = SampleFilter?.LastImageRendered(AsUIImage: false) as! CIImage
+                let Context = CIContext()
+                print("ciiage.extentX=\(ciimg.extent)")
+                let cgimg = Context.createCGImage(ciimg, from: ciimg.extent)
+                Final = UIImage(cgImage: cgimg!)
+            }
+            UIImageWriteToSavedPhotosAlbum(Final, self, #selector(image(_:didFinishSavingWithError:contextInfo:)), nil)
+        }
+        else
+        {
+            print("Error saving image.")
+        }
     }
     
     /// Completion block for saving images to the photo roll. Will display an error message if the save was unsuccessful, and
@@ -195,6 +332,38 @@ class FilterSettingUIBase: UITableViewController
             Alert.addAction(UIAlertAction(title: "OK", style: .default))
             present(Alert, animated: true)
         }
+    }
+    
+    /// Handle the image picker completion. On successful selection of a new image, the image will be saved to a special
+    /// directory where it can be retrieved at will. The image will also be immediately used for the sample image. On error,
+    /// an alert is shown to let the user know there was an issue.
+    ///
+    /// - Parameters:
+    ///   - picker: The UIImagePickerController. Will be dismissed at end of function.
+    ///   - info: Dictionary that contains the image (or not, if the user canceled).
+    @objc func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any])
+    {
+        if let PickedImage = info[UIImagePickerController.InfoKey.originalImage] as? UIImage
+        {
+            SampleView.image = PickedImage
+            let OK = FileHandler.SaveSampleImage(PickedImage)
+            if OK
+            {
+                print("Sample image saved successfully.")
+                ShowSampleView()
+            }
+            else
+            {
+                let Alert = UIAlertController(title: "Error Saving", message: "There was an error saving your image to BumpCamera's data directory.", preferredStyle: UIAlertController.Style.alert)
+                Alert.addAction(UIAlertAction(title: "OK", style: UIAlertAction.Style.default, handler: nil))
+                present(Alert, animated: true, completion: nil)
+            }
+        }
+        else
+        {
+            print("User canceled image picker.")
+        }
+        picker.dismiss(animated: true, completion: nil)
     }
     
     /// Create a keyboard that contains a "Done" button to help the user close the keyboard.
@@ -231,6 +400,7 @@ class FilterSettingUIBase: UITableViewController
         Keyboards?.append(DoneBar)
     }
     
+    /// Holds various keyboards.
     var Keyboards: [UIToolbar]? = nil
     
     /// Rounds the passed value to the specified number of decimal places and returns a string value of the result,
@@ -366,27 +536,62 @@ class FilterSettingUIBase: UITableViewController
         }
     }
     
+    /// Save a filter settings double value to user settings.
+    ///
+    /// - Parameters:
+    ///   - WithValue: Value to save.
+    ///   - ToField: Indicates the field where the value will be saved.
     func UpdateValue(WithValue: Double, ToField: FilterManager.InputFields)
     {
         ParameterManager.SetField(To: FilterID, Field: ToField, Value: WithValue as Any?)
     }
     
+    /// Save a filter settings integer value to user settings.
+    ///
+    /// - Parameters:
+    ///   - WithValue: Value to save.
+    ///   - ToField: Indicates the field where the value will be saved.
     func UpdateValue(WithValue: Int, ToField: FilterManager.InputFields)
     {
         ParameterManager.SetField(To: FilterID, Field: ToField, Value: WithValue as Any?)
     }
     
+    /// Save a filter settings boolean value to user settings.
+    ///
+    /// - Parameters:
+    ///   - WithValue: Value to save.
+    ///   - ToField: Indicates the field where the value will be saved.
     func UpdateValue(WithValue: Bool, ToField: FilterManager.InputFields)
     {
         ParameterManager.SetField(To: FilterID, Field: ToField, Value: WithValue as Any?)
     }
     
+    /// Save a filter settings string value to user settings.
+    ///
+    /// - Parameters:
+    ///   - WithValue: Value to save.
+    ///   - ToField: Indicates the field where the value will be saved.
     func UpdateValue(WithValue: String, ToField: FilterManager.InputFields)
     {
         ParameterManager.SetField(To: FilterID, Field: ToField, Value: WithValue as Any?)
     }
     
+    /// Save a filter settings CGPoint to user settings.
+    ///
+    /// - Parameters:
+    ///   - WithValue: Value to save.
+    ///   - ToField: Indicates the field where the value will be saved.
     func UpdateValue(WithValue: CGPoint, ToField: FilterManager.InputFields)
+    {
+        ParameterManager.SetField(To: FilterID, Field: ToField, Value: WithValue as Any?)
+    }
+    
+    /// Save a filter settings UIColor value to user settings.
+    ///
+    /// - Parameters:
+    ///   - WithValue: Value to save.
+    ///   - ToField: Indicates the field where the value will be saved.
+    func UpdateValue(WithValue: UIColor, ToField: FilterManager.InputFields)
     {
         ParameterManager.SetField(To: FilterID, Field: ToField, Value: WithValue as Any?)
     }
