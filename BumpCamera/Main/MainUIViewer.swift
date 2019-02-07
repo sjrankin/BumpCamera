@@ -72,6 +72,20 @@ class MainUIViewer: UIViewController,
         
         InitializeLabels()
         
+        //Make sure the file structure is OK...
+        if FileHandler.DirectoryExists(DirectoryName: FileHandler.SampleDirectory)
+        {
+            print("\(FileHandler.SampleDirectory) already exists.")
+        }
+        else
+        {
+            let SampleURL = FileHandler.CreateDirectory(DirectoryName: FileHandler.SampleDirectory)
+            if SampleURL == nil
+            {
+                print("Error creating \(FileHandler.SampleDirectory)")
+            }
+        }
+        
         //https://stackoverflow.com/questions/34883594/cant-make-uitoolbar-black-color-with-white-button-item-tint-ios-9-swift/34885377
         MainBottomToolbar.barTintColor = UIColor.black
         MainBottomToolbar.tintColor = UIColor.white
