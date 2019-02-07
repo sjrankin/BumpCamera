@@ -14,17 +14,16 @@ import CoreImage
 
 class Pixellate: FilterParent, Renderer
 {
-    var _ID: UUID = UUID(uuidString: "0f56b55b-0d77-4c3a-98eb-cadc62be7f4d")!
-    var ID: UUID
+    static let _ID: UUID = UUID(uuidString: "0f56b55b-0d77-4c3a-98eb-cadc62be7f4d")!
+    
+    func ID() -> UUID
     {
-        get
-        {
-            return _ID
-        }
-        set
-        {
-            _ID = newValue
-        }
+        return Pixellate._ID
+    }
+    
+    static func ID() -> UUID
+    {
+        return _ID
     }
     
     var InstanceID: UUID
@@ -101,7 +100,7 @@ class Pixellate: FilterParent, Renderer
         let SourceImage = CIImage(cvImageBuffer: PixelBuffer)
         PrimaryFilter.setDefaults()
         PrimaryFilter.setValue(SourceImage, forKey: kCIInputImageKey)
-        let SomeBlockSize = ParameterManager.GetField(From: ID, Field: FilterManager.InputFields.Width)
+        let SomeBlockSize = ParameterManager.GetField(From: ID(), Field: FilterManager.InputFields.Width)
         if let BlockSize = SomeBlockSize as? Double
         {
             PrimaryFilter.setValue(BlockSize, forKey: kCIInputScaleKey)
@@ -135,7 +134,9 @@ class Pixellate: FilterParent, Renderer
         {
             if let Result = Render(Image: CImage)
             {
+                LastCIImage = Result
                 let Final = UIImage(ciImage: Result)
+                LastUIImage = Final
                 return Final
             }
             else
@@ -155,18 +156,11 @@ class Pixellate: FilterParent, Renderer
     {
         objc_sync_enter(AccessLock)
         defer{objc_sync_exit(AccessLock)}
-        #if false
-        guard let PrimaryFilter = PrimaryFilter,
-            Initialized else
-        {
-            print("Filter not initialized.")
-            return nil
-        }
-        #endif
+
         PrimaryFilter = CIFilter(name: "CIPixellate")
         PrimaryFilter?.setDefaults()
         PrimaryFilter?.setValue(Image, forKey: kCIInputImageKey)
-        let SomeBlockSize = ParameterManager.GetField(From: ID, Field: FilterManager.InputFields.Width)
+        let SomeBlockSize = ParameterManager.GetField(From: ID(), Field: FilterManager.InputFields.Width)
         if let BlockSize = SomeBlockSize as? Double
         {
             PrimaryFilter?.setValue(BlockSize, forKey: kCIInputScaleKey)
@@ -177,10 +171,26 @@ class Pixellate: FilterParent, Renderer
             return Result
             #else
             let Rotated = RotateImage(Result)
+            LastCIImage = Rotated
             return Rotated
             #endif
         }
         return nil
+    }
+    
+    var LastUIImage: UIImage? = nil
+    var LastCIImage: CIImage? = nil
+    
+    func LastImageRendered(AsUIImage: Bool) -> Any?
+    {
+        if AsUIImage
+        {
+            return LastUIImage as Any?
+        }
+        else
+        {
+            return LastCIImage as Any?
+        }
     }
     
     func DefaultFieldValue(Field: FilterManager.InputFields) -> (FilterManager.InputTypes, Any?)

@@ -14,17 +14,16 @@ import CoreImage
 
 class LineOverlay: FilterParent, Renderer
 {
-    var _ID: UUID = UUID(uuidString: "910d04a3-729d-4fdf-b19e-654904b0eeeb")!
-    var ID: UUID
+    static let _ID: UUID = UUID(uuidString: "910d04a3-729d-4fdf-b19e-654904b0eeeb")!
+    
+    func ID() -> UUID
     {
-        get
-        {
-            return _ID
-        }
-        set
-        {
-            _ID = newValue
-        }
+        return LineOverlay._ID
+    }
+    
+    static func ID() -> UUID
+    {
+        return _ID
     }
     
     var InstanceID: UUID
@@ -114,37 +113,13 @@ class LineOverlay: FilterParent, Renderer
         let SourceImage = CIImage(cvImageBuffer: PixelBuffer)
         PrimaryFilter.setDefaults()
         PrimaryFilter.setValue(SourceImage, forKey: kCIInputImageKey)
-        let EdgeAsAny = ParameterManager.GetField(From: ID, Field: FilterManager.InputFields.EdgeIntensity)
-        if let EdgeInt = EdgeAsAny as? Double
-        {
-            PrimaryFilter.setValue(EdgeInt, forKey: "inputEdgeIntensity")
-        }
-        let ContrastAsAny = ParameterManager.GetField(From: ID, Field: FilterManager.InputFields.InputContrast)
-        if let ContrastInt = ContrastAsAny as? Double
-        {
-            PrimaryFilter.setValue(ContrastInt, forKey: "inputContrast")
-        }
-        let ThreshAsAny = ParameterManager.GetField(From: ID, Field: FilterManager.InputFields.InputThreshold)
-        if let ThreshInt = ThreshAsAny as? Double
-        {
-            PrimaryFilter.setValue(ThreshInt, forKey: "inputThreshold")
-        }
-        let NRNoiseAsAny = ParameterManager.GetField(From: ID, Field: FilterManager.InputFields.NRNoiseLevel)
-        if let NoiseVal = NRNoiseAsAny as? Double
-        {
-            PrimaryFilter.setValue(NoiseVal, forKey: "inputNRNoiseLevel")
-        }
-        let NRSharpAsAny = ParameterManager.GetField(From: ID, Field: FilterManager.InputFields.NRSharpness)
-        if let SharpVal = NRSharpAsAny as? Double
-        {
-            PrimaryFilter.setValue(SharpVal, forKey: "inputNRSharpness")
-        }
-        var DoMerge = false
-        let MergeAsAny = ParameterManager.GetField(From: ID, Field: FilterManager.InputFields.MergeWithBackground)
-        if let MergeImages = MergeAsAny as? Bool
-        {
-            DoMerge = MergeImages
-        }
+        
+        let DoMerge = ParameterManager.GetBool(From: ID(), Field: .MergeWithBackground, Default: true)
+        PrimaryFilter.setValue(ParameterManager.GetDouble(From: ID(), Field: .EdgeIntensity, Default: 1.0), forKey: "inputEdgeIntensity")
+        PrimaryFilter.setValue(ParameterManager.GetDouble(From: ID(), Field: .InputContrast, Default: 50.0), forKey: "inputContrast")
+        PrimaryFilter.setValue(ParameterManager.GetDouble(From: ID(), Field: .InputThreshold, Default: 0.0), forKey: "inputThreshold")
+        PrimaryFilter.setValue(ParameterManager.GetDouble(From: ID(), Field: .NRNoiseLevel, Default: 0.07), forKey: "inputNRNoiseLevel")
+        PrimaryFilter.setValue(ParameterManager.GetDouble(From: ID(), Field: .NRSharpness, Default: 0.71), forKey: "inputNRSharpness")
         
         guard var FilteredImage = PrimaryFilter.value(forKey: kCIOutputImageKey) as? CIImage else
         {
@@ -188,7 +163,13 @@ class LineOverlay: FilterParent, Renderer
         {
             if let Result = Render(Image: CImage)
             {
-                let Final = UIImage(ciImage: Result)
+                LastCIImage = Result
+                var Final = UIImage(ciImage: Result)
+                if let cgimg = Final.cgImage
+                {
+                    Final = UIImage(cgImage: cgimg)
+                }
+                LastUIImage = Final
                 return Final
             }
             else
@@ -208,48 +189,17 @@ class LineOverlay: FilterParent, Renderer
     {
         objc_sync_enter(AccessLock)
         defer{objc_sync_exit(AccessLock)}
-        #if false
-        guard let PrimaryFilter = PrimaryFilter,
-            Initialized else
-        {
-            print("Filter not initialized.")
-            return nil
-        }
-        #endif
-                PrimaryFilter = CIFilter(name: "CILineOverlay")
+
+        PrimaryFilter = CIFilter(name: "CILineOverlay")
         PrimaryFilter?.setDefaults()
         PrimaryFilter?.setValue(Image, forKey: kCIInputImageKey)
-        let EdgeAsAny = ParameterManager.GetField(From: ID, Field: FilterManager.InputFields.EdgeIntensity)
-        if let EdgeInt = EdgeAsAny as? Double
-        {
-            PrimaryFilter?.setValue(EdgeInt, forKey: "inputEdgeIntensity")
-        }
-        let ContrastAsAny = ParameterManager.GetField(From: ID, Field: FilterManager.InputFields.InputContrast)
-        if let ContrastInt = ContrastAsAny as? Double
-        {
-            PrimaryFilter?.setValue(ContrastInt, forKey: "inputContrast")
-        }
-        let ThreshAsAny = ParameterManager.GetField(From: ID, Field: FilterManager.InputFields.InputThreshold)
-        if let ThreshInt = ThreshAsAny as? Double
-        {
-            PrimaryFilter?.setValue(ThreshInt, forKey: "inputThreshold")
-        }
-        let NRNoiseAsAny = ParameterManager.GetField(From: ID, Field: FilterManager.InputFields.NRNoiseLevel)
-        if let NoiseVal = NRNoiseAsAny as? Double
-        {
-            PrimaryFilter?.setValue(NoiseVal, forKey: "inputNRNoiseLevel")
-        }
-        let NRSharpAsAny = ParameterManager.GetField(From: ID, Field: FilterManager.InputFields.NRSharpness)
-        if let SharpVal = NRSharpAsAny as? Double
-        {
-            PrimaryFilter?.setValue(SharpVal, forKey: "inputNRSharpness")
-        }
-        var DoMerge = false
-        let MergeAsAny = ParameterManager.GetField(From: ID, Field: FilterManager.InputFields.MergeWithBackground)
-        if let MergeImages = MergeAsAny as? Bool
-        {
-            DoMerge = MergeImages
-        }
+        
+        let DoMerge = ParameterManager.GetBool(From: ID(), Field: .MergeWithBackground, Default: true)
+        PrimaryFilter?.setValue(ParameterManager.GetDouble(From: ID(), Field: .EdgeIntensity, Default: 1.0), forKey: "inputEdgeIntensity")
+        PrimaryFilter?.setValue(ParameterManager.GetDouble(From: ID(), Field: .InputContrast, Default: 50.0), forKey: "inputContrast")
+        PrimaryFilter?.setValue(ParameterManager.GetDouble(From: ID(), Field: .InputThreshold, Default: 0.0), forKey: "inputThreshold")
+        PrimaryFilter?.setValue(ParameterManager.GetDouble(From: ID(), Field: .NRNoiseLevel, Default: 0.07), forKey: "inputNRNoiseLevel")
+        PrimaryFilter?.setValue(ParameterManager.GetDouble(From: ID(), Field: .NRSharpness, Default: 0.71), forKey: "inputNRSharpness")
         
         if let Result = PrimaryFilter?.value(forKey: kCIOutputImageKey) as? CIImage
         {
@@ -262,9 +212,25 @@ class LineOverlay: FilterParent, Renderer
             {
                 Rotated = Merge(Rotated, Image)!
             }
+            LastCIImage = Rotated
             return Rotated
         }
         return nil
+    }
+    
+    var LastUIImage: UIImage? = nil
+    var LastCIImage: CIImage? = nil
+    
+    func LastImageRendered(AsUIImage: Bool) -> Any?
+    {
+        if AsUIImage
+        {
+            return LastUIImage as Any?
+        }
+        else
+        {
+            return LastCIImage as Any?
+        }
     }
     
     func DefaultFieldValue(Field: FilterManager.InputFields) -> (FilterManager.InputTypes, Any?)
@@ -318,7 +284,7 @@ class LineOverlay: FilterParent, Renderer
     
     public static func SettingsStoryboard() -> String?
     {
-        return nil
+        return "LineOverlaySettingsUI"
     }
     
     func IsSlow() -> Bool

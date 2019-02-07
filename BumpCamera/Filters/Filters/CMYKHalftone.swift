@@ -14,17 +14,16 @@ import CoreImage
 
 class CMYKHalftone: FilterParent, Renderer
 {
-    var _ID: UUID = UUID(uuidString: "13c40f19-3d54-492c-92bc-2680f4cf2a2f")!
-    var ID: UUID
+    static let _ID: UUID = UUID(uuidString: "13c40f19-3d54-492c-92bc-2680f4cf2a2f")!
+    
+    func ID() -> UUID
     {
-        get
-        {
-            return _ID
-        }
-        set
-        {
-            _ID = newValue
-        }
+        return CMYKHalftone._ID
+    }
+    
+    static func ID() -> UUID
+    {
+        return _ID
     }
     
     var InstanceID: UUID
@@ -107,17 +106,17 @@ class CMYKHalftone: FilterParent, Renderer
         let SourceImage = CIImage(cvImageBuffer: PixelBuffer)
         PrimaryFilter.setDefaults()
         PrimaryFilter.setValue(SourceImage, forKey: kCIInputImageKey)
-        let AngleAsAny = ParameterManager.GetField(From: ID, Field: FilterManager.InputFields.Angle)
+        let AngleAsAny = ParameterManager.GetField(From: ID(), Field: FilterManager.InputFields.Angle)
         if let Angle = AngleAsAny as? Double
         {
             PrimaryFilter.setValue(Angle, forKey: kCIInputAngleKey)
         }
-        let WidthAsAny = ParameterManager.GetField(From: ID, Field: FilterManager.InputFields.Width)
+        let WidthAsAny = ParameterManager.GetField(From: ID(), Field: FilterManager.InputFields.Width)
         if let Width = WidthAsAny as? Double
         {
             PrimaryFilter.setValue(Width, forKey: kCIInputWidthKey)
         }
-        let CenterAsAny = ParameterManager.GetField(From: ID, Field: FilterManager.InputFields.Center)
+        let CenterAsAny = ParameterManager.GetField(From: ID(), Field: FilterManager.InputFields.Center)
         if let Center = CenterAsAny as? CGPoint
         {
             let CVCenter = CIVector(x: Center.x, y: Center.y)
@@ -152,7 +151,9 @@ class CMYKHalftone: FilterParent, Renderer
         {
             if let Result = Render(Image: CImage)
             {
+                LastCIImage = Result
                 let Final = UIImage(ciImage: Result)
+                LastUIImage = Final
                 return Final
             }
             else
@@ -172,28 +173,21 @@ class CMYKHalftone: FilterParent, Renderer
     {
         objc_sync_enter(AccessLock)
         defer{objc_sync_exit(AccessLock)}
-        #if false
-        guard let PrimaryFilter = PrimaryFilter,
-            Initialized else
-        {
-            print("Filter not initialized.")
-            return nil
-        }
-        #endif
+
         PrimaryFilter = CIFilter(name: "CICMYKHalftone")
         PrimaryFilter?.setDefaults()
         PrimaryFilter?.setValue(Image, forKey: kCIInputImageKey)
-        let AngleAsAny = ParameterManager.GetField(From: ID, Field: FilterManager.InputFields.Angle)
+        let AngleAsAny = ParameterManager.GetField(From: ID(), Field: FilterManager.InputFields.Angle)
         if let Angle = AngleAsAny as? Double
         {
             PrimaryFilter?.setValue(Angle, forKey: kCIInputAngleKey)
         }
-        let WidthAsAny = ParameterManager.GetField(From: ID, Field: FilterManager.InputFields.Width)
+        let WidthAsAny = ParameterManager.GetField(From: ID(), Field: FilterManager.InputFields.Width)
         if let Width = WidthAsAny as? Double
         {
             PrimaryFilter?.setValue(Width, forKey: kCIInputWidthKey)
         }
-        let CenterAsAny = ParameterManager.GetField(From: ID, Field: FilterManager.InputFields.Center)
+        let CenterAsAny = ParameterManager.GetField(From: ID(), Field: FilterManager.InputFields.Center)
         if let Center = CenterAsAny as? CGPoint
         {
             let CVCenter = CIVector(x: Center.x, y: Center.y)
@@ -203,6 +197,7 @@ class CMYKHalftone: FilterParent, Renderer
         if let Result = PrimaryFilter?.value(forKey: kCIOutputImageKey) as? CIImage
         {
             #if true
+            LastCIImage = Result
             return Result
             #else
             let Rotated = RotateImage(Result)
@@ -210,6 +205,21 @@ class CMYKHalftone: FilterParent, Renderer
             #endif
         }
         return nil
+    }
+    
+    var LastUIImage: UIImage? = nil
+    var LastCIImage: CIImage? = nil
+    
+    func LastImageRendered(AsUIImage: Bool) -> Any?
+    {
+        if AsUIImage
+        {
+            return LastUIImage as Any?
+        }
+        else
+        {
+            return LastCIImage as Any?
+        }
     }
     
     func DefaultFieldValue(Field: FilterManager.InputFields) -> (FilterManager.InputTypes, Any?)

@@ -27,45 +27,44 @@ class KuwaharaEffect: FilterParent, Renderer
             print("Unable to create pipeline state: \(error.localizedDescription)")
         }
     }
-        
-        var _ID: UUID = UUID(uuidString: "241c7331-bb81-4dbe-983f-bb73209eea85")!
-        var ID: UUID
-        {
-            get
-            {
-                return _ID
-            }
-            set
-            {
-                _ID = newValue
-            }
-        }
-        
-        var InstanceID: UUID
-        {
-            return UUID()
-        }
-        
-        var Description: String = "Kuwahara"
-        
-        var IconName: String = "Kuwahara"
-        
-        private let MetalDevice = MTLCreateSystemDefaultDevice()
-        
-        private var ComputePipelineState: MTLComputePipelineState? = nil
-        
-        private lazy var CommandQueue: MTLCommandQueue? =
-        {
-            return self.MetalDevice?.makeCommandQueue()
-        }()
-        
-        private(set) var OutputFormatDescription: CMFormatDescription? = nil
-        
-        private(set) var InputFormatDescription: CMFormatDescription? = nil
-        
-        private var BufferPool: CVPixelBufferPool? = nil
-        
-        var Initialized = false
+    
+    static let _ID: UUID = UUID(uuidString: "241c7331-bb81-4dbe-983f-bb73209eea85")!
+    
+    func ID() -> UUID
+    {
+        return KuwaharaEffect._ID
+    }
+    
+    static func ID() -> UUID
+    {
+        return _ID
+    }
+    
+    var InstanceID: UUID
+    {
+        return UUID()
+    }
+    
+    var Description: String = "Kuwahara"
+    
+    var IconName: String = "Kuwahara"
+    
+    private let MetalDevice = MTLCreateSystemDefaultDevice()
+    
+    private var ComputePipelineState: MTLComputePipelineState? = nil
+    
+    private lazy var CommandQueue: MTLCommandQueue? =
+    {
+        return self.MetalDevice?.makeCommandQueue()
+    }()
+    
+    private(set) var OutputFormatDescription: CMFormatDescription? = nil
+    
+    private(set) var InputFormatDescription: CMFormatDescription? = nil
+    
+    private var BufferPool: CVPixelBufferPool? = nil
+    
+    var Initialized = false
     
     func Initialize(With FormatDescription: CMFormatDescription, BufferCountHint: Int)
     {
@@ -107,7 +106,7 @@ class KuwaharaEffect: FilterParent, Renderer
         Reset("")
     }
     
-        var AccessLock = NSObject()
+    var AccessLock = NSObject()
     
     func Render(PixelBuffer: CVPixelBuffer) -> CVPixelBuffer?
     {
@@ -117,7 +116,7 @@ class KuwaharaEffect: FilterParent, Renderer
         }
         
         var FinalRadius: Float = 20.0
-        if let RawDS = ParameterManager.GetField(From: ID, Field: FilterManager.InputFields.Radius)
+        if let RawDS = ParameterManager.GetField(From: ID(), Field: FilterManager.InputFields.Radius)
         {
             if let DS = RawDS as? Double
             {
@@ -234,7 +233,7 @@ class KuwaharaEffect: FilterParent, Renderer
         CommandEncoder?.setTexture(OutputTexture, index: 1)
         
         var FinalRadius: Float = 20.0
-        if let RawDS = ParameterManager.GetField(From: ID, Field: FilterManager.InputFields.Radius)
+        if let RawDS = ParameterManager.GetField(From: ID(), Field: FilterManager.InputFields.Radius)
         {
             if let DS = RawDS as? Double
             {
@@ -273,6 +272,7 @@ class KuwaharaEffect: FilterParent, Renderer
                                  bitsPerComponent: (CgImage?.bitsPerComponent)!, bitsPerPixel: (CgImage?.bitsPerPixel)!,
                                  bytesPerRow: BytesPerRow!, space: RGBColorSpace, bitmapInfo: OBitmapInfo, provider: Provider!,
                                  decode: nil, shouldInterpolate: false, intent: RenderingIntent)
+        LastUIImage = UIImage(cgImage: FinalImage!)
         return UIImage(cgImage: FinalImage!)
     }
     
@@ -283,6 +283,7 @@ class KuwaharaEffect: FilterParent, Renderer
         {
             if let CFinal = IFinal.ciImage
             {
+                LastCIImage = CFinal
                 return CFinal
             }
             else
@@ -297,7 +298,22 @@ class KuwaharaEffect: FilterParent, Renderer
             return nil
         }
     }
-
+    
+    var LastUIImage: UIImage? = nil
+    var LastCIImage: CIImage? = nil
+    
+    func LastImageRendered(AsUIImage: Bool) -> Any?
+    {
+        if AsUIImage
+        {
+            return LastUIImage as Any?
+        }
+        else
+        {
+            return LastCIImage as Any?
+        }
+    }
+    
     func DefaultFieldValue(Field: FilterManager.InputFields) -> (FilterManager.InputTypes, Any?)
     {
         return (FilterManager.InputTypes.DoubleType, 10.0 as Any?)

@@ -14,17 +14,16 @@ import CoreImage
 
 class HSBAdjust: FilterParent, Renderer
 {
-    var _ID: UUID = UUID(uuidString: "ff3679e7-a415-4562-8032-e07f51a63621")!
-    var ID: UUID
+    static let _ID: UUID = UUID(uuidString: "ff3679e7-a415-4562-8032-e07f51a63621")!
+    
+    func ID() -> UUID
     {
-        get
-        {
-            return _ID
-        }
-        set
-        {
-            _ID = newValue
-        }
+        return HSBAdjust._ID
+    }
+    
+    static func ID() -> UUID
+    {
+        return _ID
     }
     
     var InstanceID: UUID
@@ -109,17 +108,17 @@ class HSBAdjust: FilterParent, Renderer
         PrimaryFilter.setDefaults()
         PrimaryFilter.setValue(SourceImage, forKey: kCIInputImageKey)
         
-        let SatAsAny = ParameterManager.GetField(From: ID, Field: FilterManager.InputFields.InputSaturation)
+        let SatAsAny = ParameterManager.GetField(From: ID(), Field: FilterManager.InputFields.InputSaturation)
         if let Sat = SatAsAny as? Double
         {
             PrimaryFilter.setValue(Float(Sat), forKey: kCIInputSaturationKey)
         }
-        let BriAsAny = ParameterManager.GetField(From: ID, Field: FilterManager.InputFields.InputBrightness)
+        let BriAsAny = ParameterManager.GetField(From: ID(), Field: FilterManager.InputFields.InputBrightness)
         if let Bri = BriAsAny as? Double
         {
             PrimaryFilter.setValue(Float(Bri), forKey: kCIInputBrightnessKey)
         }
-        let ConAsAny = ParameterManager.GetField(From: ID, Field: FilterManager.InputFields.InputCContrast)
+        let ConAsAny = ParameterManager.GetField(From: ID(), Field: FilterManager.InputFields.InputCContrast)
         if let Con = ConAsAny as? Double
         {
             PrimaryFilter.setValue(Float(Con), forKey: kCIInputContrastKey)
@@ -158,7 +157,9 @@ class HSBAdjust: FilterParent, Renderer
         {
             if let Result = Render(Image: CImage)
             {
+                LastCIImage = Result
                 let Final = UIImage(ciImage: Result)
+                LastUIImage = Final
                 return Final
             }
             else
@@ -178,29 +179,22 @@ class HSBAdjust: FilterParent, Renderer
     {
         objc_sync_enter(AccessLock)
         defer{objc_sync_exit(AccessLock)}
-        #if false
-        guard let PrimaryFilter = PrimaryFilter,
-            Initialized else
-        {
-            print("Filter not initialized.")
-            return nil
-        }
-        #endif
+
         PrimaryFilter = CIFilter(name: "CIColorControls")
         PrimaryFilter?.setDefaults()
         PrimaryFilter?.setValue(Image, forKey: kCIInputImageKey)
         
-        let SatAsAny = ParameterManager.GetField(From: ID, Field: FilterManager.InputFields.InputSaturation)
+        let SatAsAny = ParameterManager.GetField(From: ID(), Field: FilterManager.InputFields.InputSaturation)
         if let Sat = SatAsAny as? Double
         {
             PrimaryFilter?.setValue(Float(Sat), forKey: kCIInputSaturationKey)
         }
-        let BriAsAny = ParameterManager.GetField(From: ID, Field: FilterManager.InputFields.InputBrightness)
+        let BriAsAny = ParameterManager.GetField(From: ID(), Field: FilterManager.InputFields.InputBrightness)
         if let Bri = BriAsAny as? Double
         {
             PrimaryFilter?.setValue(Float(Bri), forKey: kCIInputBrightnessKey)
         }
-        let ConAsAny = ParameterManager.GetField(From: ID, Field: FilterManager.InputFields.InputCContrast)
+        let ConAsAny = ParameterManager.GetField(From: ID(), Field: FilterManager.InputFields.InputCContrast)
         if let Con = ConAsAny as? Double
         {
             PrimaryFilter?.setValue(Float(Con), forKey: kCIInputContrastKey)
@@ -208,9 +202,25 @@ class HSBAdjust: FilterParent, Renderer
         
         if let Result = PrimaryFilter?.value(forKey: kCIOutputImageKey) as? CIImage
         {
+            LastCIImage = Result
             return Result
         }
         return nil
+    }
+    
+    var LastUIImage: UIImage? = nil
+    var LastCIImage: CIImage? = nil
+    
+    func LastImageRendered(AsUIImage: Bool) -> Any?
+    {
+        if AsUIImage
+        {
+            return LastUIImage as Any?
+        }
+        else
+        {
+            return LastCIImage as Any?
+        }
     }
     
     func DefaultFieldValue(Field: FilterManager.InputFields) -> (FilterManager.InputTypes, Any?)

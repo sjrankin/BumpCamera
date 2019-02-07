@@ -1,8 +1,8 @@
 //
-//  Pixellate_Metal.swift
+//  Threshold.swift
 //  BumpCamera
 //
-//  Created by Stuart Rankin on 1/28/19.
+//  Created by Stuart Rankin on 2/6/19.
 //  Copyright © 2019 Stuart Rankin. All rights reserved.
 //
 
@@ -12,12 +12,12 @@ import CoreMedia
 import CoreVideo
 import MetalKit
 
-class Pixellate_Metal: FilterParent, Renderer
+class Threshold: FilterParent, Renderer
 {
     required override init()
     {
         let DefaultLibrary = MetalDevice?.makeDefaultLibrary()
-        let KernelFunction = DefaultLibrary?.makeFunction(name: "PixellateKernel")
+        let KernelFunction = DefaultLibrary?.makeFunction(name: "ThresholdKernel")
         do
         {
             ComputePipelineState = try MetalDevice?.makeComputePipelineState(function: KernelFunction!)
@@ -28,11 +28,11 @@ class Pixellate_Metal: FilterParent, Renderer
         }
     }
     
-    static let _ID: UUID = UUID(uuidString: "ea2602d1-468e-4ff4-a1ea-1299af4b70aa")!
+    static let _ID: UUID = UUID(uuidString: "ab5d654e-93a7-4cd1-a7bc-a48d0800efce")!
     
     func ID() -> UUID
     {
-        return Pixellate_Metal._ID
+        return Threshold._ID
     }
     
     static func ID() -> UUID
@@ -45,9 +45,9 @@ class Pixellate_Metal: FilterParent, Renderer
         return UUID()
     }
     
-    var Description: String = "Metal Pixellate"
+    var Description: String = "Threshold"
     
-    var IconName: String = "Metal Pixellate"
+    var IconName: String = "Threshold"
     
     private let MetalDevice = MTLCreateSystemDefaultDevice()
     
@@ -68,11 +68,11 @@ class Pixellate_Metal: FilterParent, Renderer
     
     func Initialize(With FormatDescription: CMFormatDescription, BufferCountHint: Int)
     {
-        Reset("Pixellate_Metal.Initialize")
+        Reset("Threshold.Initialize")
         (BufferPool, _, OutputFormatDescription) = CreateBufferPool(From: FormatDescription, BufferCountHint: BufferCountHint)
         if BufferPool == nil
         {
-            print("BufferPool nil in Pixellate_Metal.Initialize.")
+            print("BufferPool nil in Threshold.Initialize.")
             return
         }
         InputFormatDescription = FormatDescription
@@ -82,7 +82,7 @@ class Pixellate_Metal: FilterParent, Renderer
         var MetalTextureCache: CVMetalTextureCache? = nil
         if CVMetalTextureCacheCreate(kCFAllocatorDefault, nil, MetalDevice!, nil, &MetalTextureCache) != kCVReturnSuccess
         {
-            fatalError("Unable to allocation texture cache in Pixellate_Metal.")
+            fatalError("Unable to allocation texture cache in Threshold.")
         }
         else
         {
@@ -108,48 +108,47 @@ class Pixellate_Metal: FilterParent, Renderer
     
     var AccessLock = NSObject()
     
-    var ParameterBuffer: MTLBuffer? = nil
+    var ParameterBuffer: MTLBuffer! = nil
+    var PreviousDebug = ""
     
     func Render(PixelBuffer: CVPixelBuffer) -> CVPixelBuffer?
     {
         if !Initialized
         {
-            fatalError("Pixellate_Metal not initialized at Render(CVPixelBuffer) call.")
+            fatalError("Threshold not initialized at Render(CVPixelBuffer) call.")
+        }
+     
+        if BufferPool == nil
+        {
+            return nil
         }
         
-        var FinalWidth: Int = 20
-        if let RawWidth = ParameterManager.GetField(From: ID(), Field: FilterManager.InputFields.BlockWidth)
-        {
-            if let DS = RawWidth as? Int
-            {
-                FinalWidth = DS
-            }
-        }
-        var FinalHeight: Int = 20
-        if let RawHeight = ParameterManager.GetField(From: ID(), Field: FilterManager.InputFields.BlockHeight)
-        {
-            if let DS = RawHeight as? Int
-            {
-                FinalHeight = DS
-            }
-        }
-        let Buffer0 = BlockInfoParameters(Width: uint(FinalWidth), Height: uint(FinalHeight))
-        let Buffers = [Buffer0]
-        ParameterBuffer = MetalDevice!.makeBuffer(length: MemoryLayout<BlockInfoParameters>.size, options: [])
-        memcpy(ParameterBuffer?.contents(), Buffers, MemoryLayout<BlockInfoParameters>.size)
+        let TValue = ParameterManager.GetDouble(From: ID(), Field: .ThresholdValue, Default: 0.5)
+        let TInput = ParameterManager.GetInt(From: ID(), Field: .ThresholdInput, Default: 0)
+        let ApplyIfBig = ParameterManager.GetBool(From: ID(), Field: .ApplyThresholdIfHigher, Default: false)
+        let LowColor = ParameterManager.GetColor(From: ID(), Field: .LowThresholdColor, Default: UIColor.black)
+        let HighColor = ParameterManager.GetColor(From: ID(), Field: .HighThresholdColor, Default: UIColor.white)
+        let Parameter = ThresholdParameters(ThresholdValue: simd_float1(TValue),
+                                            ThresholdInput: simd_uint1(TInput),
+                                            ApplyIfHigher: simd_bool(ApplyIfBig),
+                                            LowColor: LowColor.ToFloat4(),
+                                            HighColor: HighColor.ToFloat4())
+        let Parameters = [Parameter]
+        ParameterBuffer = MetalDevice!.makeBuffer(length: MemoryLayout<ThresholdParameters>.size, options: [])
+        memcpy(ParameterBuffer.contents(), Parameters, MemoryLayout<ThresholdParameters>.size)
         
         var NewPixelBuffer: CVPixelBuffer? = nil
         CVPixelBufferPoolCreatePixelBuffer(kCFAllocatorDefault, BufferPool!, &NewPixelBuffer)
         guard let OutputBuffer = NewPixelBuffer else
         {
-            print("Allocation failure for new pixel buffer pool in Pixellate_Metal.")
+            print("Allocation failure for new pixel buffer pool in Threshold.")
             return nil
         }
         
         guard let InputTexture = MakeTextureFromCVPixelBuffer(pixelBuffer: PixelBuffer, textureFormat: .bgra8Unorm),
             let OutputTexture = MakeTextureFromCVPixelBuffer(pixelBuffer: OutputBuffer, textureFormat: .bgra8Unorm) else
         {
-            print("Error creating textures in Pixellate_Metal.")
+            print("Error creating textures in Threshold.")
             return nil
         }
         
@@ -162,7 +161,7 @@ class Pixellate_Metal: FilterParent, Renderer
             return nil
         }
         
-        CommandEncoder.label = "Pixellate Metal"
+        CommandEncoder.label = "Threshold Kernel"
         CommandEncoder.setComputePipelineState(ComputePipelineState!)
         CommandEncoder.setTexture(InputTexture, index: 0)
         CommandEncoder.setTexture(OutputTexture, index: 1)
@@ -193,10 +192,10 @@ class Pixellate_Metal: FilterParent, Renderer
     {
         ImageDevice = MTLCreateSystemDefaultDevice()
         let DefaultLibrary = ImageDevice?.makeDefaultLibrary()
-        let KernelFunction = DefaultLibrary?.makeFunction(name: "PixellateKernel")
+        let KernelFunction = DefaultLibrary?.makeFunction(name: "ThresholdKernel")
         do
         {
-            ImageComputePipelineState = try MetalDevice!.makeComputePipelineState(function: KernelFunction!)
+            ImageComputePipelineState = try MetalDevice?.makeComputePipelineState(function: KernelFunction!)
         }
         catch
         {
@@ -205,8 +204,6 @@ class Pixellate_Metal: FilterParent, Renderer
         
         InitializedForImage = true
     }
-    
-        var ImageParameterBuffer: MTLBuffer? = nil
     
     //http://flexmonkey.blogspot.com/2014/10/metal-kernel-functions-compute-shaders.html
     func Render(Image: UIImage) -> UIImage?
@@ -228,7 +225,7 @@ class Pixellate_Metal: FilterParent, Renderer
                                                                          width: Int(ImageWidth), height: Int(ImageHeight), mipmapped: true)
         guard let Texture = ImageDevice?.makeTexture(descriptor: TextureDescriptor) else
         {
-            print("Error creating input texture in Pixellate_Metal.Render.")
+            print("Error creating input texture in Threshold.Render.")
             return nil
         }
         
@@ -245,28 +242,21 @@ class Pixellate_Metal: FilterParent, Renderer
         CommandEncoder?.setTexture(Texture, index: 0)
         CommandEncoder?.setTexture(OutputTexture, index: 1)
         
-        var FinalWidth: Int = 20
-        if let RawWidth = ParameterManager.GetField(From: ID(), Field: .BlockWidth)
-        {
-            if let DS = RawWidth as? Int
-            {
-                FinalWidth = DS
-            }
-        }
-        var FinalHeight: Int = 20
-        if let RawHeight = ParameterManager.GetField(From: ID(), Field: .BlockHeight)
-        {
-            if let DS = RawHeight as? Int
-            {
-                FinalHeight = DS
-            }
-        }
-        print("Block height in Pixellate_Metal: \(FinalWidth)x\(FinalHeight)")
-        let Buffer0 = BlockInfoParameters(Width: uint(FinalWidth), Height: uint(FinalHeight))
-        let Buffers = [Buffer0]
-        ImageParameterBuffer = MetalDevice!.makeBuffer(length: MemoryLayout<BlockInfoParameters>.size, options: [])
-        memcpy(ImageParameterBuffer?.contents(), Buffers, MemoryLayout<BlockInfoParameters>.size)
-        CommandEncoder!.setBuffer(ImageParameterBuffer, offset: 0, index: 0)
+        
+        let TValue = ParameterManager.GetDouble(From: ID(), Field: .ThresholdValue, Default: 0.5)
+        let TInput = ParameterManager.GetInt(From: ID(), Field: .ThresholdInput, Default: 0)
+        let ApplyIfBig = ParameterManager.GetBool(From: ID(), Field: .ApplyThresholdIfHigher, Default: false)
+        let LowColor = ParameterManager.GetColor(From: ID(), Field: .LowThresholdColor, Default: UIColor.black)
+        let HighColor = ParameterManager.GetColor(From: ID(), Field: .HighThresholdColor, Default: UIColor.white)
+        let Parameter = ThresholdParameters(ThresholdValue: simd_float1(TValue),
+                                            ThresholdInput: simd_uint1(TInput),
+                                            ApplyIfHigher: simd_bool(ApplyIfBig),
+                                            LowColor: LowColor.ToFloat4(),
+                                            HighColor: HighColor.ToFloat4())
+        let Parameters = [Parameter]
+        ParameterBuffer = MetalDevice!.makeBuffer(length: MemoryLayout<ThresholdParameters>.size, options: [])
+        memcpy(ParameterBuffer.contents(), Parameters, MemoryLayout<ThresholdParameters>.size)
+        CommandEncoder!.setBuffer(ParameterBuffer, offset: 0, index: 0)
         
         let ThreadGroupCount  = MTLSizeMake(8, 8, 1)
         let ThreadGroups = MTLSizeMake(Texture.width / ThreadGroupCount.width,
@@ -311,13 +301,13 @@ class Pixellate_Metal: FilterParent, Renderer
             }
             else
             {
-                print("Error converting UIImage to CIImage in Pixellate_Metal.Render(CIImage)")
+                print("Error converting UIImage to CIImage in Threshold.Render(CIImage)")
                 return nil
             }
         }
         else
         {
-            print("Error returned from Render(UIImage) in Pixellate_Metal.Render(CIImage)")
+            print("Error returned from Render(UIImage) in Threshold.Render(CIImage)")
             return nil
         }
     }
@@ -341,60 +331,55 @@ class Pixellate_Metal: FilterParent, Renderer
     {
         switch Field
         {
-        case .BlockWidth:
-            return (.IntType, 20 as Any?)
+        case .ThresholdValue:
+            return (.DoubleType, 0.5 as Any?)
             
-        case .BlockHeight:
-            return (.IntType, 20 as Any?)
+        case .ThresholdInput:
+            return (.IntType, 0 as Any?)
             
-        case .HighlightColor:
+        case .ApplyThresholdIfHigher:
             return (.BoolType, false as Any?)
             
-        case .HighlightSaturation:
-            return (.BoolType, false as Any?)
+        case .LowThresholdColor:
+            return (.ColorType, UIColor.black as Any?)
             
-        case .HighlightBrightness:
-            return (.BoolType, false as Any?)
-            
-        case .MergeWithBackground:
-            return (.BoolType, false as Any?)
+        case .HighThresholdColor:
+            return (.ColorType, UIColor.white as Any?)
             
         default:
-            break
+            return (.NoType, nil)
         }
-        return (FilterManager.InputTypes.NoType, nil)
     }
     
     func SupportedFields() -> [FilterManager.InputFields]
     {
-        return Pixellate_Metal.SupportedFields()
+        return Threshold.SupportedFields()
     }
     
     public static func SupportedFields() -> [FilterManager.InputFields]
     {
         var Fields = [FilterManager.InputFields]()
-        Fields.append(.BlockWidth)
-        Fields.append(.BlockHeight)
-        Fields.append(.HighlightColor)
-        Fields.append(.HighlightSaturation)
-        Fields.append(.HighlightBrightness)
-        Fields.append(.MergeWithBackground)
+        Fields.append(.ThresholdValue)
+        Fields.append(.ThresholdInput)
+        Fields.append(.ApplyThresholdIfHigher)
+        Fields.append(.LowThresholdColor)
+        Fields.append(.HighThresholdColor)
         return Fields
     }
     
     func SettingsStoryboard() -> String?
     {
-        return Pixellate_Metal.SettingsStoryboard()
+        return Threshold.SettingsStoryboard()
     }
     
     public static func SettingsStoryboard() -> String?
     {
-        return "Pixellate2Table"
+        return "ThresholdSettingsUI"
     }
     
     func IsSlow() -> Bool
     {
-        return true
+        return false
     }
     
     func FilterTarget() -> [FilterTargets]

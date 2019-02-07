@@ -14,17 +14,16 @@ import CoreImage
 
 class CircleAndLines: FilterParent, Renderer 
 {
-    var _ID: UUID = UUID(uuidString: "0c84fc21-e06a-4b49-ae0e-90594abeeb4a")!
-    var ID: UUID
+    static let _ID: UUID = UUID(uuidString: "0c84fc21-e06a-4b49-ae0e-90594abeeb4a")!
+    
+    func ID() -> UUID
     {
-        get
-        {
-            return _ID
-        }
-        set
-        {
-            _ID = newValue
-        }
+        return CircleAndLines._ID
+    }
+    
+    static func ID() -> UUID
+    {
+        return _ID
     }
     
     var InstanceID: UUID
@@ -117,23 +116,23 @@ class CircleAndLines: FilterParent, Renderer
         PrimaryFilter.setDefaults()
         PrimaryFilter.setValue(SourceImage, forKey: kCIInputImageKey)
         var DoMerge = false
-        let AngleAsAny = ParameterManager.GetField(From: ID, Field: FilterManager.InputFields.Angle)
+        let AngleAsAny = ParameterManager.GetField(From: ID(), Field: FilterManager.InputFields.Angle)
         if let Angle = AngleAsAny as? Double
         {
             PrimaryFilter.setValue(Angle, forKey: kCIInputAngleKey)
         }
-        let WidthAsAny = ParameterManager.GetField(From: ID, Field: FilterManager.InputFields.Width)
+        let WidthAsAny = ParameterManager.GetField(From: ID(), Field: FilterManager.InputFields.Width)
         if let Width = WidthAsAny as? Double
         {
             PrimaryFilter.setValue(Width, forKey: kCIInputWidthKey)
         }
-        let CenterAsAny = ParameterManager.GetField(From: ID, Field: FilterManager.InputFields.Center)
+        let CenterAsAny = ParameterManager.GetField(From: ID(), Field: FilterManager.InputFields.Center)
         if let Center = CenterAsAny as? CGPoint
         {
             let CVCenter = CIVector(x: Center.x, y: Center.y)
             PrimaryFilter.setValue(CVCenter, forKey: kCIInputCenterKey)
         }
-        let MergeAsAny = ParameterManager.GetField(From: ID, Field: FilterManager.InputFields.MergeWithBackground)
+        let MergeAsAny = ParameterManager.GetField(From: ID(), Field: FilterManager.InputFields.MergeWithBackground)
         if let MergeImages = MergeAsAny as? Bool
         {
             DoMerge = MergeImages
@@ -187,7 +186,9 @@ class CircleAndLines: FilterParent, Renderer
         {
             if let Result = Render(Image: CImage)
             {
+                LastCIImage = Result
                 let Final = UIImage(ciImage: Result)
+                LastUIImage = Final
                 return Final
             }
             else
@@ -207,37 +208,29 @@ class CircleAndLines: FilterParent, Renderer
     {
         objc_sync_enter(AccessLock)
         defer{objc_sync_exit(AccessLock)}
-        #if false
-        guard let PrimaryFilter = PrimaryFilter,
-            let SecondaryFilter = SecondaryFilter,
-            Initialized else
-        {
-            print("Filter not initialized.")
-            return nil
-        }
-        #endif
+
         PrimaryFilter = CIFilter(name: "CILineScreen")
         SecondaryFilter = CIFilter(name: "CICircularScreen")
         PrimaryFilter?.setDefaults()
         PrimaryFilter?.setValue(Image, forKey: kCIInputImageKey)
-        let AngleAsAny = ParameterManager.GetField(From: ID, Field: FilterManager.InputFields.Angle)
+        let AngleAsAny = ParameterManager.GetField(From: ID(), Field: FilterManager.InputFields.Angle)
         if let Angle = AngleAsAny as? Double
         {
             PrimaryFilter?.setValue(Angle, forKey: kCIInputAngleKey)
         }
-        let WidthAsAny = ParameterManager.GetField(From: ID, Field: FilterManager.InputFields.Width)
+        let WidthAsAny = ParameterManager.GetField(From: ID(), Field: FilterManager.InputFields.Width)
         if let Width = WidthAsAny as? Double
         {
             PrimaryFilter?.setValue(Width, forKey: kCIInputWidthKey)
         }
-        let CenterAsAny = ParameterManager.GetField(From: ID, Field: FilterManager.InputFields.Center)
+        let CenterAsAny = ParameterManager.GetField(From: ID(), Field: FilterManager.InputFields.Center)
         if let Center = CenterAsAny as? CGPoint
         {
             let CVCenter = CIVector(x: Center.x, y: Center.y)
             PrimaryFilter?.setValue(CVCenter, forKey: kCIInputCenterKey)
         }
         var DoMerge = false
-        let MergeAsAny = ParameterManager.GetField(From: ID, Field: FilterManager.InputFields.MergeWithBackground)
+        let MergeAsAny = ParameterManager.GetField(From: ID(), Field: FilterManager.InputFields.MergeWithBackground)
         if let MergeImages = MergeAsAny as? Bool
         {
             DoMerge = MergeImages
@@ -256,9 +249,25 @@ class CircleAndLines: FilterParent, Renderer
             {
                 Rotated = Merge(Rotated, Image)!
             }
+            LastCIImage = Rotated
             return Rotated
         }
         return nil
+    }
+    
+    var LastUIImage: UIImage? = nil
+    var LastCIImage: CIImage? = nil
+    
+    func LastImageRendered(AsUIImage: Bool) -> Any?
+    {
+        if AsUIImage
+        {
+            return LastUIImage as Any?
+        }
+        else
+        {
+            return LastCIImage as Any?
+        }
     }
     
     func DefaultFieldValue(Field: FilterManager.InputFields) -> (FilterManager.InputTypes, Any?)

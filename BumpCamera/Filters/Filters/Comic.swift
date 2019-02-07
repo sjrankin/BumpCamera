@@ -14,17 +14,16 @@ import CoreImage
 
 class Comic: FilterParent, Renderer 
 {
-    var _ID: UUID = UUID(uuidString: "e730f3ba-c4d7-4d06-8754-b878c92260aa")!
-    var ID: UUID
+    static let _ID: UUID = UUID(uuidString: "e730f3ba-c4d7-4d06-8754-b878c92260aa")!
+    
+    func ID() -> UUID
     {
-        get
-        {
-            return _ID
-        }
-        set
-        {
-            _ID = newValue
-        }
+        return Comic._ID
+    }
+    
+    static func ID() -> UUID
+    {
+        return _ID
     }
     
     var InstanceID: UUID
@@ -112,7 +111,7 @@ class Comic: FilterParent, Renderer
         PrimaryFilter.setValue(SourceImage, forKey: kCIInputImageKey)
         
         var DoMerge = false
-        let MergeAsAny = ParameterManager.GetField(From: ID, Field: FilterManager.InputFields.MergeWithBackground)
+        let MergeAsAny = ParameterManager.GetField(From: ID(), Field: FilterManager.InputFields.MergeWithBackground)
         if let MergeImages = MergeAsAny as? Bool
         {
             DoMerge = MergeImages
@@ -164,7 +163,9 @@ class Comic: FilterParent, Renderer
         {
             if let Result = Render(Image: CImage)
             {
+                LastCIImage = Result
                 let Final = UIImage(ciImage: Result)
+                LastUIImage = Final
                 return Final
             }
             else
@@ -184,14 +185,7 @@ class Comic: FilterParent, Renderer
     {
         objc_sync_enter(AccessLock)
         defer{objc_sync_exit(AccessLock)}
-        #if false
-        guard let PrimaryFilter = PrimaryFilter,
-            Initialized else
-        {
-            print("Filter not initialized.")
-            return nil
-        }
-        #endif
+
         PrimaryFilter = CIFilter(name: "CIComicEffect")
         InvertFilter = CIFilter(name: "CIColorInvert")
         AlphaMaskFilter = CIFilter(name: "CIMaskToAlpha")
@@ -200,7 +194,7 @@ class Comic: FilterParent, Renderer
         PrimaryFilter?.setValue(Image, forKey: kCIInputImageKey)
         
         var DoMerge = false
-        let MergeAsAny = ParameterManager.GetField(From: ID, Field: FilterManager.InputFields.MergeWithBackground)
+        let MergeAsAny = ParameterManager.GetField(From: ID(), Field: FilterManager.InputFields.MergeWithBackground)
         if let MergeImages = MergeAsAny as? Bool
         {
             DoMerge = MergeImages
@@ -217,9 +211,25 @@ class Comic: FilterParent, Renderer
             {
                 Rotated = Merge(Rotated, Image)!
             }
+            LastCIImage = Rotated
             return Rotated
         }
         return nil
+    }
+    
+    var LastUIImage: UIImage? = nil
+    var LastCIImage: CIImage? = nil
+    
+    func LastImageRendered(AsUIImage: Bool) -> Any?
+    {
+        if AsUIImage
+        {
+            return LastUIImage as Any?
+        }
+        else
+        {
+            return LastCIImage as Any?
+        }
     }
     
     func DefaultFieldValue(Field: FilterManager.InputFields) -> (FilterManager.InputTypes, Any?)

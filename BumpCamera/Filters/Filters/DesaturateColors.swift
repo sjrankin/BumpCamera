@@ -28,17 +28,16 @@ class DesaturateColors: FilterParent, Renderer
         }
     }
     
-    var _ID: UUID = UUID(uuidString: "e3f8071f-5ece-43b7-af06-5cba81d81693")!
-    var ID: UUID
+    static let _ID: UUID = UUID(uuidString: "e3f8071f-5ece-43b7-af06-5cba81d81693")!
+    
+    func ID() -> UUID
     {
-        get
-        {
-            return _ID
-        }
-        set
-        {
-            _ID = newValue
-        }
+        return DesaturateColors._ID
+    }
+    
+    static func ID() -> UUID
+    {
+        return _ID
     }
     
     var InstanceID: UUID
@@ -119,7 +118,7 @@ class DesaturateColors: FilterParent, Renderer
         }
         
         var FinalDesat: Float = 0.4
-        if let RawDS = ParameterManager.GetField(From: ID, Field: FilterManager.InputFields.Normal)
+        if let RawDS = ParameterManager.GetField(From: ID(), Field: FilterManager.InputFields.Normal)
         {
             if let DS = RawDS as? Double
             {
@@ -237,7 +236,7 @@ class DesaturateColors: FilterParent, Renderer
         CommandEncoder?.setTexture(OutputTexture, index: 1)
         
         var FinalDesat: Float = 0.4
-        if let RawDS = ParameterManager.GetField(From: ID, Field: FilterManager.InputFields.Normal)
+        if let RawDS = ParameterManager.GetField(From: ID(), Field: FilterManager.InputFields.Normal)
         {
             if let DS = RawDS as? Double
             {
@@ -277,6 +276,7 @@ class DesaturateColors: FilterParent, Renderer
                                  bitsPerComponent: (CgImage?.bitsPerComponent)!, bitsPerPixel: (CgImage?.bitsPerPixel)!,
                                  bytesPerRow: BytesPerRow!, space: RGBColorSpace, bitmapInfo: OBitmapInfo, provider: Provider!,
                                  decode: nil, shouldInterpolate: false, intent: RenderingIntent)
+        LastUIImage = UIImage(cgImage: FinalImage!)
         return UIImage(cgImage: FinalImage!)
     }
     
@@ -287,6 +287,7 @@ class DesaturateColors: FilterParent, Renderer
         {
             if let CFinal = IFinal.ciImage
             {
+                LastCIImage = CFinal
                 return CFinal
             }
             else
@@ -299,6 +300,21 @@ class DesaturateColors: FilterParent, Renderer
         {
             print("Error returned from Render(UIImage) in DesaturateColors.Render(CIImage)")
             return nil
+        }
+    }
+    
+    var LastUIImage: UIImage? = nil
+    var LastCIImage: CIImage? = nil
+    
+    func LastImageRendered(AsUIImage: Bool) -> Any?
+    {
+        if AsUIImage
+        {
+            return LastUIImage as Any?
+        }
+        else
+        {
+            return LastCIImage as Any?
         }
     }
     

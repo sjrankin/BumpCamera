@@ -25,7 +25,7 @@ protocol Renderer: class
     func Reset(_ CalledBy: String)
     func Reset()
     
-    var ID: UUID {get set}
+    func ID() -> UUID
     
     var InstanceID: UUID {get}
     
@@ -38,6 +38,8 @@ protocol Renderer: class
     func Render(Image: UIImage) -> UIImage?
 
     func Render(Image: CIImage) -> CIImage?
+    
+    func LastImageRendered(AsUIImage: Bool) -> Any?
     
     func SupportedFields() -> [FilterManager.InputFields]
     

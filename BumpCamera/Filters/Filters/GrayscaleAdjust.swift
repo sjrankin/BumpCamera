@@ -28,17 +28,16 @@ class GrayscaleAdjust: FilterParent, Renderer
         }
     }
     
-    var _ID: UUID = UUID(uuidString: "6a76fc03-e4e4-4192-82b6-40cf8e520861")!
-    var ID: UUID
+    static let _ID: UUID = UUID(uuidString: "6a76fc03-e4e4-4192-82b6-40cf8e520861")!
+    
+    func ID() -> UUID
     {
-        get
-        {
-            return _ID
-        }
-        set
-        {
-            _ID = newValue
-        }
+        return GrayscaleAdjust._ID
+    }
+    
+    static func ID() -> UUID
+    {
+        return _ID
     }
     
     var InstanceID: UUID
@@ -118,15 +117,10 @@ class GrayscaleAdjust: FilterParent, Renderer
             fatalError("GrayscaleAdjust not initialized at Render(CVPixelBuffer) call.")
         }
         
-        var FinalCommand = 0
-        let RawCommand = ParameterManager.GetField(From: ID, Field: FilterManager.InputFields.Command)
-        if let RawInt = RawCommand as? Int
-        {
-            FinalCommand = RawInt
-        }
-        let RMul = ParameterManager.GetDouble(From: ID, Field: .RAdjustment, Default: 0.3)
-        let GMul = ParameterManager.GetDouble(From: ID, Field: .GAdjustment, Default: 0.5)
-        let BMul = ParameterManager.GetDouble(From: ID, Field: .BAdjustment, Default: 0.2)
+        let FinalCommand = ParameterManager.GetInt(From: ID(), Field: .Command, Default: 0)
+        let RMul = ParameterManager.GetDouble(From: ID(), Field: .RAdjustment, Default: 0.3)
+        let GMul = ParameterManager.GetDouble(From: ID(), Field: .GAdjustment, Default: 0.5)
+        let BMul = ParameterManager.GetDouble(From: ID(), Field: .BAdjustment, Default: 0.2)
         let Parameter = GrayscaleParameters(Command: simd_int1(FinalCommand), RMultiplier: simd_float1(RMul),
                                             GMultiplier: simd_float1(GMul), BMultiplier: simd_float1(BMul))
         let Parameters = [Parameter]
@@ -162,7 +156,13 @@ class GrayscaleAdjust: FilterParent, Renderer
         CommandEncoder.setTexture(InputTexture, index: 0)
         CommandEncoder.setTexture(OutputTexture, index: 1)
         CommandEncoder.setBuffer(ParameterBuffer, offset: 0, index: 0)
-        
+        /*
+        let ReturnBufferCount = 10
+        let ReturnBufferData = [Float](repeating: 0, count: ReturnBufferCount)
+        let ReturnBufferLength = ReturnBufferCount * MemoryLayout<Float>.stride
+        let ReturnBuffer = MetalDevice?.makeBuffer(bytes: ReturnBufferData, length: ReturnBufferLength, options: [])
+        CommandEncoder.setBuffer(ReturnBuffer, offset: 0, index: 1)
+        */
         let w = ComputePipelineState!.threadExecutionWidth
         let h = ComputePipelineState!.maxTotalThreadsPerThreadgroup / w
         let ThreadsPerThreadGroup = MTLSize(width: w, height: h, depth: 1)
@@ -172,7 +172,15 @@ class GrayscaleAdjust: FilterParent, Renderer
         CommandEncoder.dispatchThreadgroups(ThreadGroupsPerGrid, threadsPerThreadgroup: ThreadsPerThreadGroup)
         CommandEncoder.endEncoding()
         CommandBuffer.commit()
-        
+        CommandBuffer.waitUntilCompleted()
+        /*
+        let Result = ReturnBuffer?.contents().bindMemory(to: Float.self, capacity: ReturnBufferCount)
+        var Values = [Float](repeating: 0, count: ReturnBufferCount)
+        for i in 0 ..< ReturnBufferCount
+        {
+            Values[i] = Result![i]
+        }
+        */
         return OutputBuffer
     }
     
@@ -238,22 +246,23 @@ class GrayscaleAdjust: FilterParent, Renderer
         CommandEncoder?.setTexture(Texture, index: 0)
         CommandEncoder?.setTexture(OutputTexture, index: 1)
         
-        var FinalCommand = 0
-        let RawCommand = ParameterManager.GetField(From: ID, Field: FilterManager.InputFields.Command)
-        if let RawInt = RawCommand as? Int
-        {
-            FinalCommand = RawInt
-        }
-        let RMul = ParameterManager.GetDouble(From: ID, Field: .RAdjustment, Default: 0.3)
-        let GMul = ParameterManager.GetDouble(From: ID, Field: .GAdjustment, Default: 0.5)
-        let BMul = ParameterManager.GetDouble(From: ID, Field: .BAdjustment, Default: 0.2)
+        let FinalCommand = ParameterManager.GetInt(From: ID(), Field: .Command, Default: 0)
+        let RMul = ParameterManager.GetDouble(From: ID(), Field: .RAdjustment, Default: 0.3)
+        let GMul = ParameterManager.GetDouble(From: ID(), Field: .GAdjustment, Default: 0.5)
+        let BMul = ParameterManager.GetDouble(From: ID(), Field: .BAdjustment, Default: 0.2)
         let Parameter = GrayscaleParameters(Command: simd_int1(FinalCommand), RMultiplier: simd_float1(RMul),
                                             GMultiplier: simd_float1(GMul), BMultiplier: simd_float1(BMul))
         let Parameters = [Parameter]
         ParameterBuffer = MetalDevice!.makeBuffer(length: MemoryLayout<GrayscaleParameters>.size, options: [])
         memcpy(ParameterBuffer.contents(), Parameters, MemoryLayout<GrayscaleParameters>.size)
         CommandEncoder!.setBuffer(ParameterBuffer, offset: 0, index: 0)
-        
+        /*
+        let ReturnBufferCount = 10
+        let ReturnBufferData = [Float](repeating: 0, count: ReturnBufferCount)
+        let ReturnBufferLength = ReturnBufferCount * MemoryLayout<Float>.stride
+        let ReturnBuffer = ImageDevice?.makeBuffer(bytes: ReturnBufferData, length: ReturnBufferLength, options: [])
+        CommandEncoder?.setBuffer(ReturnBuffer, offset: 0, index: 1)
+        */
         let ThreadGroupCount  = MTLSizeMake(8, 8, 1)
         let ThreadGroups = MTLSizeMake(Texture.width / ThreadGroupCount.width,
                                        Texture.height / ThreadGroupCount.height,
@@ -265,7 +274,15 @@ class GrayscaleAdjust: FilterParent, Renderer
         CommandEncoder!.endEncoding()
         CommandBuffer?.commit()
         CommandBuffer?.waitUntilCompleted()
-        
+        /*
+        let Result = ReturnBuffer?.contents().bindMemory(to: Float.self, capacity: ReturnBufferCount)
+        var Values = [Float](repeating: 0, count: ReturnBufferCount)
+        for i in 0 ..< 10
+        {
+            Values[i] = Result![i]
+            print("\(i): \(Values[i])")
+        }
+        */
         let ImageSize = CGSize(width: Texture.width, height: Texture.height)
         let ImageByteCount = Int(ImageSize.width * ImageSize.height * 4)
         let BytesPerRow = CgImage?.bytesPerRow
@@ -281,6 +298,7 @@ class GrayscaleAdjust: FilterParent, Renderer
                                  bitsPerComponent: (CgImage?.bitsPerComponent)!, bitsPerPixel: (CgImage?.bitsPerPixel)!,
                                  bytesPerRow: BytesPerRow!, space: RGBColorSpace, bitmapInfo: OBitmapInfo, provider: Provider!,
                                  decode: nil, shouldInterpolate: false, intent: RenderingIntent)
+        LastUIImage = UIImage(cgImage: FinalImage!)
         return UIImage(cgImage: FinalImage!)
     }
     
@@ -291,6 +309,7 @@ class GrayscaleAdjust: FilterParent, Renderer
         {
             if let CFinal = IFinal.ciImage
             {
+                LastCIImage = CFinal
                 return CFinal
             }
             else
@@ -303,6 +322,21 @@ class GrayscaleAdjust: FilterParent, Renderer
         {
             print("Error returned from Render(UIImage) in GrayscaleAdjust.Render(CIImage)")
             return nil
+        }
+    }
+    
+    var LastUIImage: UIImage? = nil
+    var LastCIImage: CIImage? = nil
+    
+    func LastImageRendered(AsUIImage: Bool) -> Any?
+    {
+        if AsUIImage
+        {
+            return LastUIImage as Any?
+        }
+        else
+        {
+            return LastCIImage as Any?
         }
     }
     

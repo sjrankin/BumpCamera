@@ -14,17 +14,16 @@ import CoreImage
 
 class PassThrough: FilterParent, Renderer
 {
-    var _ID: UUID = UUID(uuidString: "e18b32bf-e965-41c6-a1f5-4bb4ed6ba472")!
-    var ID: UUID
+    static let _ID: UUID = UUID(uuidString: "e18b32bf-e965-41c6-a1f5-4bb4ed6ba472")!
+    
+    public static func ID() -> UUID
     {
-        get
-        {
-            return _ID
-        }
-        set
-        {
-            _ID = newValue
-        }
+        return _ID
+    }
+    
+    func ID() -> UUID
+    {
+        return PassThrough._ID
     }
     
     var InstanceID: UUID
@@ -93,12 +92,29 @@ class PassThrough: FilterParent, Renderer
     
     func Render(Image: UIImage) -> UIImage?
     {
+        LastUIImage = Image
         return Image
     }
     
     func Render(Image: CIImage) -> CIImage?
     {
+        LastCIImage = Image
         return Image
+    }
+    
+    var LastUIImage: UIImage? = nil
+    var LastCIImage: CIImage? = nil
+    
+    func LastImageRendered(AsUIImage: Bool) -> Any?
+    {
+        if AsUIImage
+        {
+            return LastUIImage as Any?
+        }
+        else
+        {
+            return LastCIImage as Any?
+        }
     }
     
     func DefaultFieldValue(Field: FilterManager.InputFields) -> (FilterManager.InputTypes, Any?)

@@ -27,17 +27,16 @@ class MirroringDistortion: FilterParent, Renderer
         }
     }
     
-    var _ID: UUID = UUID(uuidString: "895f46c2-443d-4ffb-a3c3-bd3dacaf33b2")!
-    var ID: UUID
+    static let _ID: UUID = UUID(uuidString: "895f46c2-443d-4ffb-a3c3-bd3dacaf33b2")!
+    
+    func ID() -> UUID
     {
-        get
-        {
-            return _ID
-        }
-        set
-        {
-            _ID = newValue
-        }
+        return MirroringDistortion._ID
+    }
+    
+    static func ID() -> UUID
+    {
+        return _ID
     }
     
     var InstanceID: UUID
@@ -118,13 +117,13 @@ class MirroringDistortion: FilterParent, Renderer
             fatalError("MirrorDistortion not initialized at Render(CVPixelBuffer) call.")
         }
         
-        var MDirection = ParameterManager.GetInt(From: ID, Field: .MirroringDirection, Default: 0)
+        var MDirection = ParameterManager.GetInt(From: ID(), Field: .MirroringDirection, Default: 0)
         //Because AV-based images seem to be rotated either 90 or 270 degrees, we need to changed
         //the direction orientation if necessary.
         MDirection = [0: 1, 1: 0, 2: 2][MDirection]!
-        let HSide = 1 - ParameterManager.GetInt(From: ID, Field: .HorizontalSide, Default: 0)
-        let VSide = 1 - ParameterManager.GetInt(From: ID, Field: .VerticalSide, Default: 0)
-        var Quadrant = ParameterManager.GetInt(From: ID, Field: .Quadrant, Default: 1)
+        let HSide = 1 - ParameterManager.GetInt(From: ID(), Field: .HorizontalSide, Default: 0)
+        let VSide = 1 - ParameterManager.GetInt(From: ID(), Field: .VerticalSide, Default: 0)
+        var Quadrant = ParameterManager.GetInt(From: ID(), Field: .Quadrant, Default: 1)
         //Because AV-based images are rotated right, we need to rotate the quadrant number for quandrant reflections...
         Quadrant = [2: 1, 3: 2, 4: 3, 1: 4][Quadrant]!
         var MName = ""
@@ -294,10 +293,10 @@ class MirroringDistortion: FilterParent, Renderer
         CommandEncoder?.setTexture(Texture, index: 0)
         CommandEncoder?.setTexture(OutputTexture, index: 1)
         
-        let MDirection = ParameterManager.GetInt(From: ID, Field: .MirroringDirection, Default: 0)
-        let HSide = ParameterManager.GetInt(From: ID, Field: .HorizontalSide, Default: 0)
-        let VSide = ParameterManager.GetInt(From: ID, Field: .VerticalSide, Default: 0)
-        let Quadrant = ParameterManager.GetInt(From: ID, Field: .Quadrant, Default: 1)
+        let MDirection = ParameterManager.GetInt(From: ID(), Field: .MirroringDirection, Default: 0)
+        let HSide = ParameterManager.GetInt(From: ID(), Field: .HorizontalSide, Default: 0)
+        let VSide = ParameterManager.GetInt(From: ID(), Field: .VerticalSide, Default: 0)
+        let Quadrant = ParameterManager.GetInt(From: ID(), Field: .Quadrant, Default: 1)
         print("Image: MDirection=\(MDirection), HSide=\(HSide), VSide=\(VSide), Quadrant: \(Quadrant)")
         let Parameter = MirrorParameters(Direction: simd_uint1(MDirection),
                                          HorizontalSide: simd_uint1(HSide),
@@ -336,6 +335,7 @@ class MirroringDistortion: FilterParent, Renderer
                                  bitsPerComponent: (CgImage?.bitsPerComponent)!, bitsPerPixel: (CgImage?.bitsPerPixel)!,
                                  bytesPerRow: BytesPerRow!, space: RGBColorSpace, bitmapInfo: OBitmapInfo, provider: Provider!,
                                  decode: nil, shouldInterpolate: false, intent: RenderingIntent)
+        LastUIImage = UIImage(cgImage: FinalImage!)
         return UIImage(cgImage: FinalImage!)
     }
     
@@ -346,6 +346,7 @@ class MirroringDistortion: FilterParent, Renderer
         {
             if let CFinal = IFinal.ciImage
             {
+                LastCIImage = CFinal
                 return CFinal
             }
             else
@@ -358,6 +359,21 @@ class MirroringDistortion: FilterParent, Renderer
         {
             print("Error returned from Render(UIImage) in MirrorDistortion.Render(CIImage)")
             return nil
+        }
+    }
+    
+    var LastUIImage: UIImage? = nil
+    var LastCIImage: CIImage? = nil
+    
+    func LastImageRendered(AsUIImage: Bool) -> Any?
+    {
+        if AsUIImage
+        {
+            return LastUIImage as Any?
+        }
+        else
+        {
+            return LastCIImage as Any?
         }
     }
     

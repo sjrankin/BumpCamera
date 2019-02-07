@@ -28,17 +28,16 @@ class GridGenerator: FilterParent, Renderer
         }
     }
     
-    var _ID: UUID = UUID(uuidString: "e6e4941f-cc45-4e68-ad15-f2a06d9477f7")!
-    var ID: UUID
+    static let _ID: UUID = UUID(uuidString: "e6e4941f-cc45-4e68-ad15-f2a06d9477f7")!
+    
+    static func ID() -> UUID
     {
-        get
-        {
-            return _ID
-        }
-        set
-        {
-            _ID = newValue
-        }
+        return _ID
+    }
+    
+    func ID() -> UUID
+    {
+        return GridGenerator._ID
     }
     
     var InstanceID: UUID
@@ -118,12 +117,19 @@ class GridGenerator: FilterParent, Renderer
             fatalError("GridGenerator not initialized at Render(CVPixelBuffer) call.")
         }
         
-        let GX = ParameterManager.GetInt(From: ID, Field: .GridX, Default: 10)
-        let GY = ParameterManager.GetInt(From: ID, Field: .GridY, Default: 10)
-        let GColor = ParameterManager.GetColor(From: ID, Field: .GridColor, Default: UIColor.black)
-        let GBG = ParameterManager.GetColor(From: ID, Field: .GridBackground, Default: UIColor.clear)
-        let Parameter = GridParameters(GridX: simd_uint1(GX), GridY: simd_uint1(GY),
-                                       GridColor: GColor.ToFloat4(), BackgroundColor: GBG.ToFloat4())
+        let GX = ParameterManager.GetInt(From: ID(), Field: .GridX, Default: 10)
+        let GY = ParameterManager.GetInt(From: ID(), Field: .GridY, Default: 10)
+        let GColor = ParameterManager.GetColor(From: ID(), Field: .GridColor, Default: UIColor.black)
+        let GBG = ParameterManager.GetColor(From: ID(), Field: .GridBackground, Default: UIColor.clear)
+        let InvertGColor = ParameterManager.GetBool(From: ID(), Field: .InvertColor, Default: false)
+        let InvertBGColor = ParameterManager.GetBool(From: ID(), Field: .InvertBackgroundColor, Default: false)
+        let Parameter = GridParameters(GridX: simd_uint1(GX),
+                                       GridY: simd_uint1(GY),
+                                       Width: simd_uint1(1),
+                                       GridColor: GColor.ToFloat4(),
+                                       BackgroundColor: GBG.ToFloat4(),
+                                       InvertGridColor: simd_bool(InvertGColor),
+                                       InvertBackgroundColor: simd_bool(InvertBGColor))
         let Parameters = [Parameter]
         ParameterBuffer = MetalDevice!.makeBuffer(length: MemoryLayout<GridParameters>.size, options: [])
         memcpy(ParameterBuffer.contents(), Parameters, MemoryLayout<GridParameters>.size)
@@ -235,12 +241,19 @@ class GridGenerator: FilterParent, Renderer
         CommandEncoder?.setTexture(Texture, index: 0)
         CommandEncoder?.setTexture(OutputTexture, index: 1)
         
-        let GX = ParameterManager.GetInt(From: ID, Field: .GridX, Default: 10)
-        let GY = ParameterManager.GetInt(From: ID, Field: .GridY, Default: 10)
-        let GColor = ParameterManager.GetColor(From: ID, Field: .GridColor, Default: UIColor.black)
-        let GBG = ParameterManager.GetColor(From: ID, Field: .GridBackground, Default: UIColor.clear)
-        let Parameter = GridParameters(GridX: simd_uint1(GX), GridY: simd_uint1(GY),
-                                       GridColor: GColor.ToFloat4(), BackgroundColor: GBG.ToFloat4())
+        let GX = ParameterManager.GetInt(From: ID(), Field: .GridX, Default: 10)
+        let GY = ParameterManager.GetInt(From: ID(), Field: .GridY, Default: 10)
+        let GColor = ParameterManager.GetColor(From: ID(), Field: .GridColor, Default: UIColor.black)
+        let GBG = ParameterManager.GetColor(From: ID(), Field: .GridBackground, Default: UIColor.clear)
+        let InvertGColor = ParameterManager.GetBool(From: ID(), Field: .InvertColor, Default: false)
+        let InvertBGColor = ParameterManager.GetBool(From: ID(), Field: .InvertBackgroundColor, Default: false)
+        let Parameter = GridParameters(GridX: simd_uint1(GX),
+                                       GridY: simd_uint1(GY),
+                                       Width: simd_uint1(1),
+                                       GridColor: GColor.ToFloat4(),
+                                       BackgroundColor: GBG.ToFloat4(),
+                                       InvertGridColor: simd_bool(InvertGColor),
+                                       InvertBackgroundColor: simd_bool(InvertBGColor))
         let Parameters = [Parameter]
         InputParameterBuffer = MetalDevice!.makeBuffer(length: MemoryLayout<GridParameters>.size, options: [])
         memcpy(InputParameterBuffer.contents(), Parameters, MemoryLayout<GridParameters>.size)
@@ -273,6 +286,7 @@ class GridGenerator: FilterParent, Renderer
                                  bitsPerComponent: (CgImage?.bitsPerComponent)!, bitsPerPixel: (CgImage?.bitsPerPixel)!,
                                  bytesPerRow: BytesPerRow!, space: RGBColorSpace, bitmapInfo: OBitmapInfo, provider: Provider!,
                                  decode: nil, shouldInterpolate: false, intent: RenderingIntent)
+        LastUIImage = UIImage(cgImage: FinalImage!)
         return UIImage(cgImage: FinalImage!)
     }
     
@@ -283,6 +297,7 @@ class GridGenerator: FilterParent, Renderer
         {
             if let CFinal = IFinal.ciImage
             {
+                LastCIImage = CFinal;
                 return CFinal
             }
             else
@@ -298,6 +313,21 @@ class GridGenerator: FilterParent, Renderer
         }
     }
     
+    var LastUIImage: UIImage? = nil
+    var LastCIImage: CIImage? = nil
+    
+    func LastImageRendered(AsUIImage: Bool) -> Any?
+    {
+        if AsUIImage
+        {
+            return LastUIImage as Any?
+        }
+        else
+        {
+            return LastCIImage as Any?
+        }
+    }
+    
     func DefaultFieldValue(Field: FilterManager.InputFields) -> (FilterManager.InputTypes, Any?)
     {
         switch Field
@@ -308,11 +338,20 @@ class GridGenerator: FilterParent, Renderer
         case .GridY:
             return (.IntType, 10 as Any?)
             
+        case .LineWidth:
+            return (.IntType, 1 as Any?)
+            
         case .GridColor:
             return (.ColorType, UIColor.black as Any?)
             
         case .GridBackground:
             return (.ColorType, UIColor.clear as Any?)
+            
+        case .InvertColor:
+            return (.BoolType, false as Any?)
+            
+        case .InvertBackgroundColor:
+            return (.BoolType, false as Any?)
             
         default:
             return (.NoType, nil)
@@ -327,10 +366,13 @@ class GridGenerator: FilterParent, Renderer
     public static func SupportedFields() -> [FilterManager.InputFields]
     {
         var Fields = [FilterManager.InputFields]()
+        Fields.append(FilterManager.InputFields.LineWidth)
         Fields.append(FilterManager.InputFields.GridX)
         Fields.append(FilterManager.InputFields.GridY)
         Fields.append(FilterManager.InputFields.GridColor)
         Fields.append(FilterManager.InputFields.GridBackground)
+        Fields.append(FilterManager.InputFields.InvertColor)
+        Fields.append(FilterManager.InputFields.InvertBackgroundColor)
         return Fields
     }
     
@@ -341,7 +383,7 @@ class GridGenerator: FilterParent, Renderer
     
     public static func SettingsStoryboard() -> String?
     {
-        return "GridGeneratorSettingsUI"
+        return "GridSettingsUI"
     }
     
     func IsSlow() -> Bool

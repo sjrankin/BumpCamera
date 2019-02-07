@@ -14,17 +14,16 @@ import CoreImage
 
 class Noir: FilterParent, Renderer
 {
-    var _ID: UUID = UUID(uuidString: "7215048f-15ea-46a1-8b11-a03e104a568d")!
-    var ID: UUID
+    static let _ID: UUID = UUID(uuidString: "7215048f-15ea-46a1-8b11-a03e104a568d")!
+    
+    func ID() -> UUID
     {
-        get
-        {
-            return _ID
-        }
-        set
-        {
-            _ID = newValue
-        }
+        return Noir._ID
+    }
+    
+    static func ID() -> UUID
+    {
+        return _ID
     }
     
     var InstanceID: UUID
@@ -131,7 +130,9 @@ class Noir: FilterParent, Renderer
         {
             if let Result = Render(Image: CImage)
             {
+                LastCIImage = Result
                 let Final = UIImage(ciImage: Result)
+                LastUIImage = Final
                 return Final
             }
             else
@@ -169,10 +170,26 @@ class Noir: FilterParent, Renderer
             return Result
             #else
             let Rotated = RotateImage(Result)
+            LastCIImage = Rotated
             return Rotated
             #endif
         }
         return nil
+    }
+    
+    var LastUIImage: UIImage? = nil
+    var LastCIImage: CIImage? = nil
+    
+    func LastImageRendered(AsUIImage: Bool) -> Any?
+    {
+        if AsUIImage
+        {
+            return LastUIImage as Any?
+        }
+        else
+        {
+            return LastCIImage as Any?
+        }
     }
     
     func DefaultFieldValue(Field: FilterManager.InputFields) -> (FilterManager.InputTypes, Any?)

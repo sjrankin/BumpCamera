@@ -31,17 +31,16 @@ class ChannelMixer: FilterParent, Renderer
          */
     }
     
-    var _ID: UUID = UUID(uuidString: "b49e8644-99be-4492-aecc-f9f4430012fd")!
-    var ID: UUID
+    static let _ID: UUID = UUID(uuidString: "b49e8644-99be-4492-aecc-f9f4430012fd")!
+    
+    func ID() -> UUID
     {
-        get
-        {
-            return _ID
-        }
-        set
-        {
-            _ID = newValue
-        }
+        return ChannelMixer._ID
+    }
+    
+    static func ID() -> UUID
+    {
+        return _ID
     }
     
     var InstanceID: UUID
@@ -135,18 +134,23 @@ class ChannelMixer: FilterParent, Renderer
         }
         
         let (C1, C2, C3) = GetSwizzleValues()
-        var IsHSB = 0
+        var IsHSB = false
         if ChannelIsInHSB(Channel: C1) || ChannelIsInHSB(Channel: C2) || ChannelIsInHSB(Channel: C3)
         {
-            IsHSB = 1
+            IsHSB = true
         }
-        var IsCMYK = 0
+        var IsCMYK = false
         if ChannelIsInCMYK(Channel: C1) || ChannelIsInCMYK(Channel: C2) || ChannelIsInCMYK(Channel: C3)
         {
-            IsCMYK = 1
+            IsCMYK = true
         }
+        let InvertRed = ParameterManager.GetBool(From: ID(), Field: .InvertRed, Default: false)
+        let InvertGreen = ParameterManager.GetBool(From: ID(), Field: .InvertGreen, Default: false)
+        let InvertBlue = ParameterManager.GetBool(From: ID(), Field: .InvertBlue, Default: false)
         let Parameter = ChannelSwizzles(Channel1: simd_int1(C1), Channel2: simd_int1(C2), Channel3: simd_int1(C3),
-                                        HasHSB: simd_int1(IsHSB), HasCMYK: simd_int1(IsCMYK))
+                                        HasHSB: simd_bool(IsHSB), HasCMYK: simd_bool(IsCMYK),
+                                        InvertRed: simd_bool(InvertRed), InvertGreen: simd_bool(InvertGreen),
+                                        InvertBlue: simd_bool(InvertBlue))
         let Parameters = [Parameter]
         ParameterBuffer = MetalDevice!.makeBuffer(length: MemoryLayout<ChannelSwizzles>.size, options: [])
         memcpy(ParameterBuffer.contents(), Parameters, MemoryLayout<ChannelSwizzles>.size)
@@ -257,18 +261,23 @@ class ChannelMixer: FilterParent, Renderer
         CommandEncoder?.setTexture(OutputTexture, index: 1)
         
         let (C1, C2, C3) = GetSwizzleValues()
-        var IsHSB = 0
+        var IsHSB = false
         if ChannelIsInHSB(Channel: C1) || ChannelIsInHSB(Channel: C2) || ChannelIsInHSB(Channel: C3)
         {
-            IsHSB = 1
+            IsHSB = true
         }
-        var IsCMYK = 0
+        var IsCMYK = false
         if ChannelIsInCMYK(Channel: C1) || ChannelIsInCMYK(Channel: C2) || ChannelIsInCMYK(Channel: C3)
         {
-            IsCMYK = 1
+            IsCMYK = true
         }
+        let InvertRed = ParameterManager.GetBool(From: ID(), Field: .InvertRed, Default: false)
+        let InvertGreen = ParameterManager.GetBool(From: ID(), Field: .InvertGreen, Default: false)
+        let InvertBlue = ParameterManager.GetBool(From: ID(), Field: .InvertBlue, Default: false)
         let Parameter = ChannelSwizzles(Channel1: simd_int1(C1), Channel2: simd_int1(C2), Channel3: simd_int1(C3),
-                                        HasHSB: simd_int1(IsHSB), HasCMYK: simd_int1(IsCMYK))
+                                        HasHSB: simd_bool(IsHSB), HasCMYK: simd_bool(IsCMYK),
+                                        InvertRed: simd_bool(InvertRed), InvertGreen: simd_bool(InvertGreen),
+                                        InvertBlue: simd_bool(InvertBlue))
         let Parameters = [Parameter]
         ParameterBuffer = MetalDevice!.makeBuffer(length: MemoryLayout<ChannelSwizzles>.size, options: [])
         memcpy(ParameterBuffer.contents(), Parameters, MemoryLayout<ChannelSwizzles>.size)
@@ -301,6 +310,7 @@ class ChannelMixer: FilterParent, Renderer
                                  bitsPerComponent: (CgImage?.bitsPerComponent)!, bitsPerPixel: (CgImage?.bitsPerPixel)!,
                                  bytesPerRow: BytesPerRow!, space: RGBColorSpace, bitmapInfo: OBitmapInfo, provider: Provider!,
                                  decode: nil, shouldInterpolate: false, intent: RenderingIntent)
+        LastUIImage = UIImage(cgImage: FinalImage!)
         return UIImage(cgImage: FinalImage!)
     }
     
@@ -311,6 +321,7 @@ class ChannelMixer: FilterParent, Renderer
         {
             if let CFinal = IFinal.ciImage
             {
+                LastCIImage = CFinal
                 return CFinal
             }
             else
@@ -326,22 +337,37 @@ class ChannelMixer: FilterParent, Renderer
         }
     }
     
+    var LastUIImage: UIImage? = nil
+    var LastCIImage: CIImage? = nil
+    
+    func LastImageRendered(AsUIImage: Bool) -> Any?
+    {
+        if AsUIImage
+        {
+            return LastUIImage as Any?
+        }
+        else
+        {
+            return LastCIImage as Any?
+        }
+    }
+    
     func GetSwizzleValues() -> (Int, Int, Int)
     {
         var C1: Int = Channels.Red.rawValue
         var C2: Int = Channels.Green.rawValue
         var C3: Int = Channels.Blue.rawValue
-        let RawC1 = ParameterManager.GetField(From: ID, Field: FilterManager.InputFields.Channel1)
+        let RawC1 = ParameterManager.GetField(From: ID(), Field: FilterManager.InputFields.Channel1)
         if let C1Val = RawC1 as? Int
         {
             C1 = C1Val
         }
-        let RawC2 = ParameterManager.GetField(From: ID, Field: FilterManager.InputFields.Channel2)
+        let RawC2 = ParameterManager.GetField(From: ID(), Field: FilterManager.InputFields.Channel2)
         if let C2Val = RawC2 as? Int
         {
             C2 = C2Val
         }
-        let RawC3 = ParameterManager.GetField(From: ID, Field: FilterManager.InputFields.Channel3)
+        let RawC3 = ParameterManager.GetField(From: ID(), Field: FilterManager.InputFields.Channel3)
         if let C3Val = RawC3 as? Int
         {
             C3 = C3Val
@@ -358,7 +384,7 @@ class ChannelMixer: FilterParent, Renderer
     {
         return Channel >= Channels.Cyan.rawValue && Channel <= Channels.Black.rawValue
     }
-
+    
     func DefaultFieldValue(Field: FilterManager.InputFields) -> (FilterManager.InputTypes, Any?)
     {
         switch Field
@@ -371,6 +397,15 @@ class ChannelMixer: FilterParent, Renderer
             
         case .Channel3:
             return (FilterManager.InputTypes.IntType, Channels.Blue.rawValue as Any?)
+            
+        case .InvertRed:
+            return (.BoolType, false as Any?)
+            
+        case .InvertGreen:
+            return (.BoolType, false as Any?)
+            
+        case .InvertBlue:
+            return (.BoolType, false as Any?)
             
         case .RedChannel:
             return (FilterManager.InputTypes.IntType, 0 as Any?)
@@ -389,7 +424,7 @@ class ChannelMixer: FilterParent, Renderer
             
         case .BrightnessChannel:
             return (FilterManager.InputTypes.IntType, 5 as Any?)
-      
+            
         case .CyanChannel:
             return (FilterManager.InputTypes.IntType, 6 as Any?)
             
@@ -427,6 +462,9 @@ class ChannelMixer: FilterParent, Renderer
     public static func SupportedFields() -> [FilterManager.InputFields]
     {
         var Fields = [FilterManager.InputFields]()
+        Fields.append(.InvertRed)
+        Fields.append(.InvertGreen)
+        Fields.append(.InvertBlue)
         Fields.append(.Channel1)
         Fields.append(.Channel2)
         Fields.append(.Channel3)

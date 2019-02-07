@@ -1,8 +1,8 @@
 //
-//  Pixellate_Metal.swift
+//  Solarize.swift
 //  BumpCamera
 //
-//  Created by Stuart Rankin on 1/28/19.
+//  Created by Stuart Rankin on 2/6/19.
 //  Copyright © 2019 Stuart Rankin. All rights reserved.
 //
 
@@ -12,12 +12,12 @@ import CoreMedia
 import CoreVideo
 import MetalKit
 
-class Pixellate_Metal: FilterParent, Renderer
+class Solarize: FilterParent, Renderer
 {
     required override init()
     {
         let DefaultLibrary = MetalDevice?.makeDefaultLibrary()
-        let KernelFunction = DefaultLibrary?.makeFunction(name: "PixellateKernel")
+        let KernelFunction = DefaultLibrary?.makeFunction(name: "SolarizeKernel")
         do
         {
             ComputePipelineState = try MetalDevice?.makeComputePipelineState(function: KernelFunction!)
@@ -28,11 +28,11 @@ class Pixellate_Metal: FilterParent, Renderer
         }
     }
     
-    static let _ID: UUID = UUID(uuidString: "ea2602d1-468e-4ff4-a1ea-1299af4b70aa")!
+    static let _ID: UUID = UUID(uuidString: "aa7092db-d258-41d6-8779-ba5d358ebbc5")!
     
     func ID() -> UUID
     {
-        return Pixellate_Metal._ID
+        return Solarize._ID
     }
     
     static func ID() -> UUID
@@ -45,9 +45,9 @@ class Pixellate_Metal: FilterParent, Renderer
         return UUID()
     }
     
-    var Description: String = "Metal Pixellate"
+    var Description: String = "Solarize"
     
-    var IconName: String = "Metal Pixellate"
+    var IconName: String = "Solarize"
     
     private let MetalDevice = MTLCreateSystemDefaultDevice()
     
@@ -68,11 +68,11 @@ class Pixellate_Metal: FilterParent, Renderer
     
     func Initialize(With FormatDescription: CMFormatDescription, BufferCountHint: Int)
     {
-        Reset("Pixellate_Metal.Initialize")
+        Reset("Solarize.Initialize")
         (BufferPool, _, OutputFormatDescription) = CreateBufferPool(From: FormatDescription, BufferCountHint: BufferCountHint)
         if BufferPool == nil
         {
-            print("BufferPool nil in Pixellate_Metal.Initialize.")
+            print("BufferPool nil in Solarize.Initialize.")
             return
         }
         InputFormatDescription = FormatDescription
@@ -82,7 +82,7 @@ class Pixellate_Metal: FilterParent, Renderer
         var MetalTextureCache: CVMetalTextureCache? = nil
         if CVMetalTextureCacheCreate(kCFAllocatorDefault, nil, MetalDevice!, nil, &MetalTextureCache) != kCVReturnSuccess
         {
-            fatalError("Unable to allocation texture cache in Pixellate_Metal.")
+            fatalError("Unable to allocation texture cache in Solarize.")
         }
         else
         {
@@ -108,48 +108,46 @@ class Pixellate_Metal: FilterParent, Renderer
     
     var AccessLock = NSObject()
     
-    var ParameterBuffer: MTLBuffer? = nil
+    var ParameterBuffer: MTLBuffer! = nil
+    var PreviousDebug = ""
     
     func Render(PixelBuffer: CVPixelBuffer) -> CVPixelBuffer?
     {
         if !Initialized
         {
-            fatalError("Pixellate_Metal not initialized at Render(CVPixelBuffer) call.")
+            fatalError("Solarize not initialized at Render(CVPixelBuffer) call.")
         }
         
-        var FinalWidth: Int = 20
-        if let RawWidth = ParameterManager.GetField(From: ID(), Field: FilterManager.InputFields.BlockWidth)
-        {
-            if let DS = RawWidth as? Int
-            {
-                FinalWidth = DS
-            }
-        }
-        var FinalHeight: Int = 20
-        if let RawHeight = ParameterManager.GetField(From: ID(), Field: FilterManager.InputFields.BlockHeight)
-        {
-            if let DS = RawHeight as? Int
-            {
-                FinalHeight = DS
-            }
-        }
-        let Buffer0 = BlockInfoParameters(Width: uint(FinalWidth), Height: uint(FinalHeight))
-        let Buffers = [Buffer0]
-        ParameterBuffer = MetalDevice!.makeBuffer(length: MemoryLayout<BlockInfoParameters>.size, options: [])
-        memcpy(ParameterBuffer?.contents(), Buffers, MemoryLayout<BlockInfoParameters>.size)
+        let How = ParameterManager.GetInt(From: ID(), Field: .SolarizeMethod, Default: 0)
+        let Threshold = ParameterManager.GetDouble(From: ID(), Field: .SolarizeThreshold, Default: 0.5)
+        let LowHue = ParameterManager.GetDouble(From: ID(), Field: .HueRangeLow, Default: 0.25)
+        let HighHue = ParameterManager.GetDouble(From: ID(), Field: .HueRangeHigh, Default: 0.75)
+        let BThreshold = ParameterManager.GetDouble(From: ID(), Field: .BrightnessThreshold, Default: 0.5)
+        let SThreshold = ParameterManager.GetDouble(From: ID(), Field: .SaturationThreshold, Default: 0.5)
+        let IfGreater = ParameterManager.GetBool(From: ID(), Field: .SolarizeIfGreater, Default: false)
+        let Parameter = SolarizeParameters(SolarizeHow: simd_uint1(How),
+                                           Threshold: simd_float1(Threshold),
+                                           LowHue: simd_float1(LowHue),
+                                           HighHue: simd_float1(HighHue),
+                                           BrightnessThreshold: simd_float1(BThreshold),
+                                           SaturationThreshold: simd_float1(SThreshold),
+                                           SolarizeIfGreater: simd_bool(IfGreater))
+        let Parameters = [Parameter]
+        ParameterBuffer = MetalDevice!.makeBuffer(length: MemoryLayout<SolarizeParameters>.size, options: [])
+        memcpy(ParameterBuffer.contents(), Parameters, MemoryLayout<SolarizeParameters>.size)
         
         var NewPixelBuffer: CVPixelBuffer? = nil
         CVPixelBufferPoolCreatePixelBuffer(kCFAllocatorDefault, BufferPool!, &NewPixelBuffer)
         guard let OutputBuffer = NewPixelBuffer else
         {
-            print("Allocation failure for new pixel buffer pool in Pixellate_Metal.")
+            print("Allocation failure for new pixel buffer pool in Solarize.")
             return nil
         }
         
         guard let InputTexture = MakeTextureFromCVPixelBuffer(pixelBuffer: PixelBuffer, textureFormat: .bgra8Unorm),
             let OutputTexture = MakeTextureFromCVPixelBuffer(pixelBuffer: OutputBuffer, textureFormat: .bgra8Unorm) else
         {
-            print("Error creating textures in Pixellate_Metal.")
+            print("Error creating textures in Solarize.")
             return nil
         }
         
@@ -162,7 +160,7 @@ class Pixellate_Metal: FilterParent, Renderer
             return nil
         }
         
-        CommandEncoder.label = "Pixellate Metal"
+        CommandEncoder.label = "Solarize Kernel"
         CommandEncoder.setComputePipelineState(ComputePipelineState!)
         CommandEncoder.setTexture(InputTexture, index: 0)
         CommandEncoder.setTexture(OutputTexture, index: 1)
@@ -193,10 +191,10 @@ class Pixellate_Metal: FilterParent, Renderer
     {
         ImageDevice = MTLCreateSystemDefaultDevice()
         let DefaultLibrary = ImageDevice?.makeDefaultLibrary()
-        let KernelFunction = DefaultLibrary?.makeFunction(name: "PixellateKernel")
+        let KernelFunction = DefaultLibrary?.makeFunction(name: "SolarizeKernel")
         do
         {
-            ImageComputePipelineState = try MetalDevice!.makeComputePipelineState(function: KernelFunction!)
+            ImageComputePipelineState = try MetalDevice?.makeComputePipelineState(function: KernelFunction!)
         }
         catch
         {
@@ -205,8 +203,6 @@ class Pixellate_Metal: FilterParent, Renderer
         
         InitializedForImage = true
     }
-    
-        var ImageParameterBuffer: MTLBuffer? = nil
     
     //http://flexmonkey.blogspot.com/2014/10/metal-kernel-functions-compute-shaders.html
     func Render(Image: UIImage) -> UIImage?
@@ -228,7 +224,7 @@ class Pixellate_Metal: FilterParent, Renderer
                                                                          width: Int(ImageWidth), height: Int(ImageHeight), mipmapped: true)
         guard let Texture = ImageDevice?.makeTexture(descriptor: TextureDescriptor) else
         {
-            print("Error creating input texture in Pixellate_Metal.Render.")
+            print("Error creating input texture in Solarize.Render.")
             return nil
         }
         
@@ -245,28 +241,24 @@ class Pixellate_Metal: FilterParent, Renderer
         CommandEncoder?.setTexture(Texture, index: 0)
         CommandEncoder?.setTexture(OutputTexture, index: 1)
         
-        var FinalWidth: Int = 20
-        if let RawWidth = ParameterManager.GetField(From: ID(), Field: .BlockWidth)
-        {
-            if let DS = RawWidth as? Int
-            {
-                FinalWidth = DS
-            }
-        }
-        var FinalHeight: Int = 20
-        if let RawHeight = ParameterManager.GetField(From: ID(), Field: .BlockHeight)
-        {
-            if let DS = RawHeight as? Int
-            {
-                FinalHeight = DS
-            }
-        }
-        print("Block height in Pixellate_Metal: \(FinalWidth)x\(FinalHeight)")
-        let Buffer0 = BlockInfoParameters(Width: uint(FinalWidth), Height: uint(FinalHeight))
-        let Buffers = [Buffer0]
-        ImageParameterBuffer = MetalDevice!.makeBuffer(length: MemoryLayout<BlockInfoParameters>.size, options: [])
-        memcpy(ImageParameterBuffer?.contents(), Buffers, MemoryLayout<BlockInfoParameters>.size)
-        CommandEncoder!.setBuffer(ImageParameterBuffer, offset: 0, index: 0)
+        let How = ParameterManager.GetInt(From: ID(), Field: .SolarizeMethod, Default: 0)
+        let Threshold = ParameterManager.GetDouble(From: ID(), Field: .SolarizeThreshold, Default: 0.5)
+        let LowHue = ParameterManager.GetDouble(From: ID(), Field: .HueRangeLow, Default: 0.25)
+        let HighHue = ParameterManager.GetDouble(From: ID(), Field: .HueRangeHigh, Default: 0.75)
+        let BThreshold = ParameterManager.GetDouble(From: ID(), Field: .BrightnessThreshold, Default: 0.5)
+        let SThreshold = ParameterManager.GetDouble(From: ID(), Field: .SaturationThreshold, Default: 0.5)
+        let IfGreater = ParameterManager.GetBool(From: ID(), Field: .SolarizeIfGreater, Default: false)
+        let Parameter = SolarizeParameters(SolarizeHow: simd_uint1(How),
+                                           Threshold: simd_float1(Threshold),
+                                           LowHue: simd_float1(LowHue),
+                                           HighHue: simd_float1(HighHue),
+                                           BrightnessThreshold: simd_float1(BThreshold),
+                                           SaturationThreshold: simd_float1(SThreshold),
+                                           SolarizeIfGreater: simd_bool(IfGreater))
+        let Parameters = [Parameter]
+        ParameterBuffer = MetalDevice!.makeBuffer(length: MemoryLayout<SolarizeParameters>.size, options: [])
+        memcpy(ParameterBuffer.contents(), Parameters, MemoryLayout<SolarizeParameters>.size)
+        CommandEncoder!.setBuffer(ParameterBuffer, offset: 0, index: 0)
         
         let ThreadGroupCount  = MTLSizeMake(8, 8, 1)
         let ThreadGroups = MTLSizeMake(Texture.width / ThreadGroupCount.width,
@@ -311,13 +303,13 @@ class Pixellate_Metal: FilterParent, Renderer
             }
             else
             {
-                print("Error converting UIImage to CIImage in Pixellate_Metal.Render(CIImage)")
+                print("Error converting UIImage to CIImage in Solarize.Render(CIImage)")
                 return nil
             }
         }
         else
         {
-            print("Error returned from Render(UIImage) in Pixellate_Metal.Render(CIImage)")
+            print("Error returned from Render(UIImage) in Solarize.Render(CIImage)")
             return nil
         }
     }
@@ -341,60 +333,63 @@ class Pixellate_Metal: FilterParent, Renderer
     {
         switch Field
         {
-        case .BlockWidth:
-            return (.IntType, 20 as Any?)
+        case .SolarizeMethod:
+            return (.IntType, 0 as Any?)
             
-        case .BlockHeight:
-            return (.IntType, 20 as Any?)
+        case .SolarizeThreshold:
+            return (.DoubleType, 0.5 as Any?)
             
-        case .HighlightColor:
-            return (.BoolType, false as Any?)
+        case .HueRangeLow:
+            return (.DoubleType, 0.25 as Any?)
             
-        case .HighlightSaturation:
-            return (.BoolType, false as Any?)
+        case .HueRangeHigh:
+            return (.DoubleType, 0.75 as Any?)
             
-        case .HighlightBrightness:
-            return (.BoolType, false as Any?)
+        case .BrightnessThreshold:
+            return (.DoubleType, 0.5 as Any?)
             
-        case .MergeWithBackground:
+        case .SaturationThreshold:
+            return (.DoubleType, 0.5 as Any?)
+            
+        case .SolarizeIfGreater:
             return (.BoolType, false as Any?)
             
         default:
-            break
+            return (.NoType, nil)
         }
-        return (FilterManager.InputTypes.NoType, nil)
     }
     
     func SupportedFields() -> [FilterManager.InputFields]
     {
-        return Pixellate_Metal.SupportedFields()
+        return Solarize.SupportedFields()
     }
     
     public static func SupportedFields() -> [FilterManager.InputFields]
     {
         var Fields = [FilterManager.InputFields]()
-        Fields.append(.BlockWidth)
-        Fields.append(.BlockHeight)
-        Fields.append(.HighlightColor)
-        Fields.append(.HighlightSaturation)
-        Fields.append(.HighlightBrightness)
-        Fields.append(.MergeWithBackground)
+        Fields.append(.SolarizeMethod)
+        Fields.append(.SolarizeThreshold)
+        Fields.append(.HueRangeLow)
+        Fields.append(.HueRangeHigh)
+        Fields.append(.BrightnessThreshold)
+        Fields.append(.SaturationThreshold)
+        Fields.append(.SolarizeIfGreater)
         return Fields
     }
     
     func SettingsStoryboard() -> String?
     {
-        return Pixellate_Metal.SettingsStoryboard()
+        return Solarize.SettingsStoryboard()
     }
     
     public static func SettingsStoryboard() -> String?
     {
-        return "Pixellate2Table"
+       return "SolarizeSettingsUI2"
     }
     
     func IsSlow() -> Bool
     {
-        return true
+        return false
     }
     
     func FilterTarget() -> [FilterTargets]

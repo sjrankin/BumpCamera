@@ -14,17 +14,16 @@ import CoreImage
 
 class XRay: FilterParent, Renderer
 {
-    var _ID: UUID = UUID(uuidString: "47d5ac1d-7878-4623-b3df-55559b9d7087")!
-    var ID: UUID
+    static let _ID: UUID = UUID(uuidString: "47d5ac1d-7878-4623-b3df-55559b9d7087")!
+    
+    func ID() -> UUID
     {
-        get
-        {
-            return _ID
-        }
-        set
-        {
-            _ID = newValue
-        }
+        return XRay._ID
+    }
+    
+    static func ID() -> UUID
+    {
+        return _ID
     }
     
     var InstanceID: UUID
@@ -141,7 +140,9 @@ class XRay: FilterParent, Renderer
         {
             if let Result = Render(Image: CImage)
             {
+                LastCIImage = Result
                 let Final = UIImage(ciImage: Result)
+                LastUIImage = Final
                 return Final
             }
             else
@@ -161,20 +162,14 @@ class XRay: FilterParent, Renderer
     {
         objc_sync_enter(AccessLock)
         defer{objc_sync_exit(AccessLock)}
-        #if false
-        guard let PrimaryFilter = PrimaryFilter,
-            Initialized else
-        {
-            print("Filter not initialized.")
-            return nil
-        }
-        #endif
-                PrimaryFilter = CIFilter(name: "CIXRay")
+        
+        PrimaryFilter = CIFilter(name: "CIXRay")
         PrimaryFilter?.setDefaults()
         PrimaryFilter?.setValue(Image, forKey: kCIInputImageKey)
         if let Result = PrimaryFilter?.value(forKey: kCIOutputImageKey) as? CIImage
         {
             #if true
+            LastCIImage = Result
             return Result
             #else
             let Rotated = RotateImage(Result)
@@ -184,9 +179,24 @@ class XRay: FilterParent, Renderer
         return nil
     }
     
+    var LastUIImage: UIImage? = nil
+    var LastCIImage: CIImage? = nil
+    
+    func LastImageRendered(AsUIImage: Bool) -> Any?
+    {
+        if AsUIImage
+        {
+            return LastUIImage as Any?
+        }
+        else
+        {
+            return LastCIImage as Any?
+        }
+    }
+    
     func DefaultFieldValue(Field: FilterManager.InputFields) -> (FilterManager.InputTypes, Any?)
     {
-       return (FilterManager.InputTypes.NoType, nil)
+        return (FilterManager.InputTypes.NoType, nil)
     }
     
     func SupportedFields() -> [FilterManager.InputFields]

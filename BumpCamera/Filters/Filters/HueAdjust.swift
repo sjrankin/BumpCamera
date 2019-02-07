@@ -14,17 +14,16 @@ import CoreImage
 
 class HueAdjust: FilterParent, Renderer
 {
-    var _ID: UUID = UUID(uuidString: "dd8f30bf-e22b-4d8c-afa3-303c15eb1928")!
-    var ID: UUID
+    static let _ID: UUID = UUID(uuidString: "dd8f30bf-e22b-4d8c-afa3-303c15eb1928")!
+    
+    func ID() -> UUID
     {
-        get
-        {
-            return _ID
-        }
-        set
-        {
-            _ID = newValue
-        }
+        return HueAdjust._ID
+    }
+    
+    static func ID() -> UUID
+    {
+        return _ID
     }
     
     var InstanceID: UUID
@@ -109,7 +108,7 @@ class HueAdjust: FilterParent, Renderer
         PrimaryFilter.setDefaults()
         PrimaryFilter.setValue(SourceImage, forKey: kCIInputImageKey)
         
-        let AngleAsAny = ParameterManager.GetField(From: ID, Field: FilterManager.InputFields.Angle)
+        let AngleAsAny = ParameterManager.GetField(From: ID(), Field: FilterManager.InputFields.Angle)
         if let Angle = AngleAsAny as? Double
         {
             PrimaryFilter.setValue(Float(Angle), forKey: kCIInputAngleKey)
@@ -148,7 +147,9 @@ class HueAdjust: FilterParent, Renderer
         {
             if let Result = Render(Image: CImage)
             {
+                LastCIImage = Result
                 let Final = UIImage(ciImage: Result)
+                LastUIImage = Final
                 return Final
             }
             else
@@ -168,27 +169,37 @@ class HueAdjust: FilterParent, Renderer
     {
         objc_sync_enter(AccessLock)
         defer{objc_sync_exit(AccessLock)}
-        #if false
-        guard let PrimaryFilter = PrimaryFilter,
-            Initialized else
-        {
-            print("Filter not initialized.")
-            return nil
-        }
-        #endif
+
+        
         PrimaryFilter = CIFilter(name: "CIHueAdjust")
         PrimaryFilter?.setDefaults()
         PrimaryFilter?.setValue(Image, forKey: kCIInputImageKey)
-        let AngleAsAny = ParameterManager.GetField(From: ID, Field: FilterManager.InputFields.Angle)
+        let AngleAsAny = ParameterManager.GetField(From: ID(), Field: FilterManager.InputFields.Angle)
         if let Angle = AngleAsAny as? Double
         {
             PrimaryFilter?.setValue(Float(Angle), forKey: kCIInputAngleKey)
         }
         if let Result = PrimaryFilter?.value(forKey: kCIOutputImageKey) as? CIImage
         {
+            LastCIImage = Result
             return Result
         }
         return nil
+    }
+    
+    var LastUIImage: UIImage? = nil
+    var LastCIImage: CIImage? = nil
+    
+    func LastImageRendered(AsUIImage: Bool) -> Any?
+    {
+        if AsUIImage
+        {
+            return LastUIImage as Any?
+        }
+        else
+        {
+            return LastCIImage as Any?
+        }
     }
     
     func DefaultFieldValue(Field: FilterManager.InputFields) -> (FilterManager.InputTypes, Any?)
