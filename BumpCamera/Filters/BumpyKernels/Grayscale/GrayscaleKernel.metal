@@ -15,12 +15,15 @@ struct GrayscaleParameters
     float RMultiplier;
     float GMultiplier;
     float BMultiplier;
+    int Test;
 };
+
 
 //http://www.tannerhelland.com/3643/grayscale-image-algorithm-vb6/
 kernel void GrayscaleKernel(texture2d<float, access::read> inTexture [[texture(0)]],
                             texture2d<float, access::write> outTexture [[texture(1)]],
                             constant GrayscaleParameters &Grayscale [[buffer(0)]],
+                            //device float *ToCPU [[buffer(2)]],
                             uint2 gid [[thread_position_in_grid]])
 {
     float4 InColor = inTexture.read(gid);
@@ -28,6 +31,11 @@ kernel void GrayscaleKernel(texture2d<float, access::read> inTexture [[texture(0
     float g = InColor.g;
     float b = InColor.b;
     float gray = 0.0;
+
+    //for (int i = 0; i < 10; i++)
+    //    {
+    //    ToCPU[i] = (float)i;
+    //    }
     
     switch (Grayscale.Command)
     {
