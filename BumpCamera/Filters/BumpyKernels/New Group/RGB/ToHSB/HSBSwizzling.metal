@@ -14,8 +14,11 @@ struct ChannelSwizzles
     int Channel1;
     int Channel2;
     int Channel3;
-    int HasHSB;
-    int HasCMYK;
+    bool HasHSB;
+    bool HasCMYK;
+    bool InvertRed;
+    bool InvertGreen;
+    bool InvertBlue;
 };
 
 // Compute kernel
@@ -45,8 +48,8 @@ kernel void HSBSwizzling(texture2d<float, access::read> inputTexture  [[ texture
     float Y = 0.0;
     float K = 0.0;
     
-    bool RunHSB = Swizzling.HasHSB == 1;
-    bool RunCMYK = Swizzling.HasCMYK == 1;
+    bool RunHSB = Swizzling.HasHSB;
+    bool RunCMYK = Swizzling.HasCMYK;
     
     if (RunHSB)
         {
@@ -250,7 +253,23 @@ kernel void HSBSwizzling(texture2d<float, access::read> inputTexture  [[ texture
         break;
     }
     
-    float4 outputColor = float4(C1, C2, C3, 1.0);
+    float F1 = C1;
+    if (Swizzling.InvertRed)
+        {
+        F1 = 1.0 - F1;
+        }
+    float F2 = C2;
+    if (Swizzling.InvertGreen)
+        {
+        F2 = 1.0 - F2;
+        }
+    float F3 = C3;
+    if (Swizzling.InvertBlue)
+        {
+        F3 = 1.0 - F3;
+        }
+    
+    float4 outputColor = float4(F1, F2, F3, 1.0);
     
     outputTexture.write(outputColor, gid);
 }
