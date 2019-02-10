@@ -28,6 +28,7 @@ import MobileCoreServices
 ///     - *MainUIJpegDataClass*: Code for the JpegData class used for saving images.
 ///     - *MainUIDebug*: Debug code and visual debug code.
 ///     - *MainUILabelManagement*: Code related to showing and animating the visibility of transient labels on the main UI.
+///     - *MainUIUserInteractions*: Code to handle taps for focus/exposure and hiding parts of the UI.
 class MainUIViewer: UIViewController,
     AVCapturePhotoCaptureDelegate,
     AVCaptureVideoDataOutputSampleBufferDelegate,
@@ -92,6 +93,27 @@ class MainUIViewer: UIViewController,
         MainBottomToolbar.sizeToFit()
         MainBottomToolbar.isTranslucent = false
         
+        switch AVCaptureDevice.authorizationStatus(for: .video)
+        {
+        case .authorized:
+            break;
+            
+        case .notDetermined:
+            SessionQueue.suspend()
+            AVCaptureDevice.requestAccess(for: .video, completionHandler:
+                {
+                    granted in
+                    if !granted
+                    {
+                        self.SetupResult = .NotAuthorized
+                    }
+                    self.SessionQueue.resume()
+            })
+            
+        default:
+            SetupResult = .NotAuthorized
+        }
+        
         PrepareForLiveView()
         SessionQueue.async
             {
@@ -104,7 +126,7 @@ class MainUIViewer: UIViewController,
     
     var WasGranted: Bool = false
     
-    var StatusBarOrientation: UIInterfaceOrientation!
+    var StatusBarOrientation: UIInterfaceOrientation = .portrait
     
     var CaptureSessionContext = 0
     
@@ -113,33 +135,6 @@ class MainUIViewer: UIViewController,
     var IsSessionRunning = false
     
     var VideoDeviceInput: AVCaptureDeviceInput!
-    
-    @objc func HandlePreviewTap(sender: UITapGestureRecognizer)
-    {
-        if sender.state == .ended
-        {
-            if _Settings.bool(forKey: "ShowFilterName")
-            {
-                let TapLocation = sender.location(in: LiveView)
-                if TapLocation.y <= FilterLabel.frame.minY + FilterLabel.frame.height
-                {
-                    if FilterLabelIsVisible
-                    {
-                        SetFilterLabelVisibility(IsVisible: false)
-                    }
-                    else
-                    {
-                        SetFilterLabelVisibility(IsVisible: true)
-                    }
-                    return
-                }
-            }
-            if FiltersAreShowing
-            {
-                UpdateFilterSelectionVisibility()
-            }
-        }
-    }
     
     override func viewWillAppear(_ animated: Bool)
     {
@@ -154,24 +149,51 @@ class MainUIViewer: UIViewController,
         }
         
         SessionQueue.async {
-            self.AddObservers()
-            if let PhotoOrientation = AVCaptureVideoOrientation(interfaceOrientation: InterfaceOrientation)
+            switch self.SetupResult
             {
-                self.PhotoOutput.connection(with: .video)!.videoOrientation = PhotoOrientation
+            case .Success:
+                self.AddObservers()
+                if let PhotoOrientation = AVCaptureVideoOrientation(interfaceOrientation: InterfaceOrientation)
+                {
+                    self.PhotoOutput.connection(with: .video)!.videoOrientation = PhotoOrientation
+                }
+                let VideoOrientation = self.VideoDataOutput.connection(with: .video)!.videoOrientation
+                let VideoDevicePosition = self.VideoDeviceInput.device.position
+                let Rotation = LiveMetalView.Rotation(with: InterfaceOrientation, videoOrientation: VideoOrientation,
+                                                      cameraPosition: VideoDevicePosition)
+                print("Video position is front: \(VideoDevicePosition == .front)")
+                self.LiveView.mirroring = (VideoDevicePosition == .front)
+                if let Rotation = Rotation
+                {
+                    self.LiveView.rotation = Rotation
+                }
+                self.RenderingEnabled = true
+                self.CaptureSession.startRunning()
+                self.IsSessionRunning = self.CaptureSession.isRunning
+                
+            case .NotAuthorized:
+                DispatchQueue.main.async {
+                    let Message = "BumpCamera does not have permission to use the camera. Please change in your privacy settings."
+                    let Alert = UIAlertController(title: "BumpCamera", message: Message, preferredStyle: .alert)
+                    Alert.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
+                    Alert.addAction(UIAlertAction(title: "Settings", style: .default, handler:
+                        {
+                            _ in
+                            UIApplication.shared.open(URL(string: UIApplication.openSettingsURLString)!,
+                                                      options: [:],
+                                                      completionHandler: nil)
+                    }))
+                    self.present(Alert, animated: true, completion: nil)
+                }
+                
+            case .ConfigurationFailed:
+                DispatchQueue.main.async {
+                    let Message = "Unable to capture media."
+                    let Alert = UIAlertController(title: "BumpCamera", message: Message, preferredStyle: .alert)
+                    Alert.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
+                    self.present(Alert, animated: true, completion: nil)
+                }
             }
-            let VideoOrientation = self.VideoDataOutput.connection(with: .video)!.videoOrientation
-            let VideoDevicePosition = self.VideoDeviceInput.device.position
-            let Rotation = PreviewMetalView.Rotation(with: InterfaceOrientation, videoOrientation: VideoOrientation,
-                                                     cameraPosition: VideoDevicePosition)
-            print("Video position is front: \(VideoDevicePosition == .front)")
-            self.LiveView.mirroring = (VideoDevicePosition == .front)
-            if let Rotation = Rotation
-            {
-                self.LiveView.rotation = Rotation
-            }
-            self.RenderingEnabled = true
-            self.CaptureSession.startRunning()
-            self.IsSessionRunning = self.CaptureSession.isRunning
         }
     }
     
@@ -196,9 +218,12 @@ class MainUIViewer: UIViewController,
         }
         SessionQueue.async
             {
-                self.CaptureSession.stopRunning()
-                self.IsSessionRunning = self.CaptureSession.isRunning
-                self.RemoveObservers()
+                if self.SetupResult == .Success
+                {
+                    self.CaptureSession.stopRunning()
+                    self.IsSessionRunning = self.CaptureSession.isRunning
+                    self.RemoveObservers()
+                }
         }
         super.viewWillDisappear(animated)
     }
@@ -278,6 +303,8 @@ class MainUIViewer: UIViewController,
     var CurrentDepthPixelBuffer: CVPixelBuffer? = nil
     let VideoDepthConverter = DepthToGrayscaleConverter()
     let PhotoDepthConverter = DepthToGrayscaleConverter()
+    let PhotoDepthMixer = VideoMixer()
+    let VideoDepthMixer = VideoMixer()
     
     //https://stackoverflow.com/questions/39060171/switching-camera-with-a-button-in-swift
     @IBAction func HandleCameraSwitchButtonPressed(_ sender: Any)
@@ -310,7 +337,7 @@ class MainUIViewer: UIViewController,
         UpdateFilterSelectionVisibility()
     }
     
-    @IBOutlet weak var LiveView: PreviewMetalView!
+    @IBOutlet weak var LiveView: LiveMetalView!
     
     var PreviewImage: UIImage!
     
@@ -398,5 +425,35 @@ class MainUIViewer: UIViewController,
     
     /// MARK: Transient label stored properties.
     var FilterLabelIsVisible: Bool = false
+    
+    var SetupResult: SetupResults = .Success
+}
+
+public enum SetupResults
+{
+    case Success
+    case NotAuthorized
+    case ConfigurationFailed(Reason: String)
+}
+
+extension SetupResults: Equatable
+{
+    public static func ==(lhs: SetupResults, rhs: SetupResults) -> Bool
+    {
+        switch (lhs, rhs)
+        {
+        case (.Success, .Success):
+            return true
+            
+        case (.NotAuthorized, .NotAuthorized):
+            return true
+            
+        case (.ConfigurationFailed, .ConfigurationFailed):
+            return true
+            
+        default:
+            return false
+        }
+    }
 }
 
