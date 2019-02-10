@@ -48,13 +48,17 @@ extension MainUIViewer
         DataOutputQueue.async
             {
                 self.RenderingEnabled = false
-                self.LiveView.pixelBuffer = nil
-                self.LiveView.flushTextureCache()
                 self.Filters?.VideoFilter?.Filter?.Reset("Video: DidEnterBackground")
+                self.CurrentDepthPixelBuffer = nil
+                self.VideoDepthConverter.reset()
+                self.LiveView.pixelBuffer = nil
+                self.LiveView.FlushTextureCache()
         }
         ProcessingQueue.async
             {
                 self.Filters?.PhotoFilter?.Filter?.Reset("Photo: DidEnterBackground")
+                self.PhotoDepthMixer.reset()
+                self.PhotoDepthConverter.reset()
         }
     }
     
@@ -81,6 +85,7 @@ extension MainUIViewer
                 {
                     if self.IsSessionRunning
                     {
+                        self.CaptureSession.startRunning()
                         self.IsSessionRunning = self.CaptureSession.isRunning
                     }
             }
@@ -139,8 +144,8 @@ extension MainUIViewer
                             self.PhotoOutput.connection(with: .video)!.videoOrientation = PhotoOrientation
                         }
                         let VideoOrientation = self.VideoDataOutput.connection(with: .video)!.videoOrientation
-                        if let VRotation = PreviewMetalView.Rotation(with: InterfaceOrientation, videoOrientation: VideoOrientation,
-                                                                     cameraPosition: self.VideoDeviceInput.device.position)
+                        if let VRotation = LiveMetalView.Rotation(with: InterfaceOrientation, videoOrientation: VideoOrientation,
+                                                                  cameraPosition: self.VideoDeviceInput.device.position)
                         {
                             self.LiveView.rotation = VRotation
                         }
@@ -220,7 +225,7 @@ extension MainUIViewer
             }
             DispatchQueue.main.async
                 {
-                    self.CameraSwitchButton.isEnabled = IsSessionRunning
+                    self.CameraSwitchButton.isEnabled = IsSessionRunning && self.VideoDeviceDiscoverySession.devices.count > 1
             }
         }
         else
