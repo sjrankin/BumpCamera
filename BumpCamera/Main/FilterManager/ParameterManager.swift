@@ -8,6 +8,7 @@
 
 import Foundation
 import UIKit
+import simd
 
 /// Manages parameter values for the various filters.
 class ParameterManager
@@ -259,6 +260,12 @@ class ParameterManager
         return FieldData.1
     }
     
+    /// Convert a string representation of a color ("double,double,double,double") into an
+    /// equivalent color.
+    ///
+    /// - Parameter Raw: String representation of a color in the form double,double,double,double where the value of
+    ///                  each double is in the range 0.0 to 1.0. Values are clamped internally.
+    /// - Returns: UIColor created from the string representation of the color.
     private static func ConvertStringtoColor(_ Raw: String) -> UIColor
     {
             let Parts = Raw.split(separator: ",")
@@ -270,8 +277,9 @@ class ParameterManager
             for Part in Parts
             {
                 let SPart = String(Part)
-                if let DVal = Double(SPart)
+                if var DVal = Double(SPart)
                 {
+                    DVal = DVal.Clamp(0.0, 1.0)
                     Values.append(CGFloat(DVal))
                 }
                 else
@@ -283,6 +291,16 @@ class ParameterManager
             return Final
     }
     
+    /// Return a color stored in user settings.
+    ///
+    /// - Note: This function generate a fatal error if the specified field is not found or the data cannot be converted
+    ///         into a color.
+    ///
+    /// - Parameters:
+    ///   - From: The ID of the filter where the color is stored.
+    ///   - Field: The input field associated with the color value.
+    ///   - Default: Default color value.
+    /// - Returns: Value of the color stored in user settings on success, default color on failure.
     public static func GetColor(From: UUID, Field: FilterManager.InputFields, Default: UIColor) -> UIColor
     {
         let FieldData = GetFieldData(From: From, Field: Field)
@@ -294,13 +312,34 @@ class ParameterManager
         {
             return CVal
         }
-        if let SVal = FieldData.1 as? String
-        {
-            return ConvertStringtoColor(SVal)
-        }
-        fatalError("Bad data found for \(Field) in \(From).")
+        return Default
     }
     
+    /// Return a color stored in user settings. The color is converted to simd_float4 before being returned.
+    ///
+    /// - Note: Calls GetColor which may generate a fatal error on bad data.
+    ///
+    /// - Parameters:
+    ///   - From: The ID of the filter where the color is stored.
+    ///   - Field: The input field associated with the color value.
+    ///   - Default: Default color value.
+    /// - Returns: Value of the color stored in user settings on success in a simd_float4 structure, default color on failure.
+    public static func GetFloat4(From: UUID, Field: FilterManager.InputFields, Default: UIColor) -> simd_float4
+    {
+        let Color = GetColor(From: From, Field: Field, Default: Default)
+        return Color.ToFloat4()
+    }
+    
+    /// Return a double value stored in user settings.
+    ///
+    /// - Note: This function generate a fatal error if the specified field is not found or the data cannot be converted
+    ///         into a double.
+    ///
+    /// - Parameters:
+    ///   - From: The ID of the filter where the double is stored.
+    ///   - Field: The input field associated with the double value.
+    ///   - Default: Default double value.
+    /// - Returns: Value of the double stored in user settings on success, default value on failure.
     public static func GetDouble(From: UUID, Field: FilterManager.InputFields, Default: Double) -> Double
     {
         let FieldData = GetFieldData(From: From, Field: Field)
@@ -312,9 +351,33 @@ class ParameterManager
         {
             return DVal
         }
-        fatalError("Bad data found for \(Field) in \(From).")
+        return Default
     }
     
+    /// Return a double value stored in user settings. Value is converted into a simd_float1 before being returned.
+    ///
+    /// - Note: This function calls GetDouble which may generate a fatal error on bad data.
+    ///
+    /// - Parameters:
+    ///   - From: The ID of the filter where the value is stored.
+    ///   - Field: The input field associated with the value.
+    ///   - Default: Default value.
+    /// - Returns: Value of the double stored in user settings on success and converted to a simd_float1, default double on failure.
+    public static func GetFloat1(From: UUID, Field: FilterManager.InputFields, Default: Double) -> simd_float1
+    {
+        return simd_float1(GetDouble(From: From, Field: Field, Default: Default))
+    }
+    
+    /// Return an integer stored in user settings.
+    ///
+    /// - Note: This function generate a fatal error if the specified field is not found or the data cannot be converted
+    ///         into an integer.
+    ///
+    /// - Parameters:
+    ///   - From: The ID of the filter where the integer is stored.
+    ///   - Field: The input field associated with the integer value.
+    ///   - Default: Default integer value.
+    /// - Returns: Value of the integer stored in user settings on success, default integer on failure.
     public static func GetInt(From: UUID, Field: FilterManager.InputFields, Default: Int) -> Int
     {
         let FieldData = GetFieldData(From: From, Field: Field)
@@ -326,9 +389,33 @@ class ParameterManager
         {
             return IVal
         }
-        fatalError("Bad data found for \(Field) in \(From).")
+        return Default
     }
     
+    /// Return an integer stored in user settings as a simd_uint1 value.
+    ///
+    /// - Note: This function calls GetInt which may generate a fatal error on bad data.
+    ///
+    /// - Parameters:
+    ///   - From: The ID of the filter where the integer is stored.
+    ///   - Field: The input field associated with the integer value.
+    ///   - Default: Default integer value.
+    /// - Returns: Value of the integer stored in user settings on success cast as a simd_uint1, default color on failure.
+    public static func GetUInt1(From: UUID, Field: FilterManager.InputFields, Default: Int) -> simd_uint1
+    {
+        return simd_uint1(GetInt(From: From, Field: Field, Default: Default))
+    }
+    
+    /// Return a boolean value stored in user settings.
+    ///
+    /// - Note: This function generate a fatal error if the specified field is not found or the data cannot be converted
+    ///         into a boolean value.
+    ///
+    /// - Parameters:
+    ///   - From: The ID of the filter where the boolean is stored.
+    ///   - Field: The input field associated with the boolean value.
+    ///   - Default: Default boolean value.
+    /// - Returns: Value of the boolean stored in user settings on success, default boolean value on failure.
     public static func GetBool(From: UUID, Field: FilterManager.InputFields, Default: Bool) -> Bool
     {
         let FieldData = GetFieldData(From: From, Field: Field)
@@ -340,9 +427,33 @@ class ParameterManager
         {
             return BVal
         }
-        fatalError("Bad data found for \(Field) in \(From).")
+        return Default
     }
     
+    /// Return a boolean stored in user settings cast as a simd_bool.
+    ///
+    /// - Note: This function calls GetBool which may cause a fatal error if the data cannot be read.
+    ///
+    /// - Parameters:
+    ///   - From: The ID of the filter where the boolean is stored.
+    ///   - Field: The input field associated with the boolean value.
+    ///   - Default: Default boolean value.
+    /// - Returns: Value of the boolean stored in user settings on success converted to simd_bool, default boolean on failure.
+    public static func GetSimdBool(From: UUID, Field: FilterManager.InputFields, Default: Bool) -> simd_bool
+    {
+        return GetBool(From: From, Field: Field, Default: Default)
+    }
+    
+    /// Return a string stored in user settings.
+    ///
+    /// - Note: This function generate a fatal error if the specified field is not found or the data cannot be converted
+    ///         into a string.
+    ///
+    /// - Parameters:
+    ///   - From: The ID of the filter where the string is stored.
+    ///   - Field: The input field associated with the string value.
+    ///   - Default: Default string value.
+    /// - Returns: The string stored in user settings on success, default string value on failure.
     public static func GetString(From: UUID, Field: FilterManager.InputFields, Default: String) -> String
     {
         let FieldData = GetFieldData(From: From, Field: Field)
@@ -354,9 +465,19 @@ class ParameterManager
         {
             return SVal
         }
-        fatalError("Bad data found for \(Field) in \(From).")
+        return Default
     }
     
+    /// Return a normal stored in user settings as a double value. Value is clamped to 0.0 to 1.0 before being returned.
+    ///
+    /// - Note: This function generate a fatal error if the specified field is not found or the data cannot be converted
+    ///         into a double.
+    ///
+    /// - Parameters:
+    ///   - From: The ID of the filter where the normal is stored.
+    ///   - Field: The input field associated with the normal value.
+    ///   - Default: Default normal value. If returned, clamped first to 0.0 to 1.0.
+    /// - Returns: Value of the normal stored in user settings on success, default normal on failure.
     public static func GetNormal(From: UUID, Field: FilterManager.InputFields, Default: Double) -> Double
     {
         let FieldData = GetFieldData(From: From, Field: Field)
@@ -364,13 +485,24 @@ class ParameterManager
         {
             fatalError("No data found for \(Field) in \(From).")
         }
-        if let NVal = FieldData.1 as? Double
+        if var NVal = FieldData.1 as? Double
         {
+            NVal = NVal.Clamp(0.0, 1.0)
             return NVal
         }
-        fatalError("Bad data found for \(Field) in \(From).")
+        return Default.Clamp(0.0, 1.0)
     }
     
+    /// Return a CGPoint stored in user settings.
+    ///
+    /// - Note: This function generate a fatal error if the specified field is not found or the data cannot be converted
+    ///         into a CGPoint.
+    ///
+    /// - Parameters:
+    ///   - From: The ID of the filter where the point is stored.
+    ///   - Field: The input field associated with the point value.
+    ///   - Default: Default point value.
+    /// - Returns: Value of the point stored in user settings on success, default point on failure.
     public static func GetPoint(From: UUID, Field: FilterManager.InputFields, Default: CGPoint) -> CGPoint
     {
         let FieldData = GetFieldData(From: From, Field: Field)
@@ -382,7 +514,7 @@ class ParameterManager
         {
             return PVal
         }
-        fatalError("Bad data found for \(Field) in \(From).")
+        return Default
     }
     
     /// Converted the passed string into type Any? Values are converted to their specified types then cast to Any? when returned.
