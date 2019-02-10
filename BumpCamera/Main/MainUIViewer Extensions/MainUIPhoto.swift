@@ -24,9 +24,22 @@ extension MainUIViewer
             print("Error capturing photo buffer - no pixel buffer: \((error?.localizedDescription)!)")
             return
         }
+        #if false
+        let test0 = photo.cgImageRepresentation()
+        let testX = UIImage(cgImage: (test0?.takeRetainedValue())!)
+        let Test = UIImage(PixelBuffer: PhotoPixelBuffer)
+        if let ciimg = CIImage(image: Test!)
+        {
+            let Context = CIContext()
+            let cgimg = Context.createCGImage(ciimg, from: ciimg.extent)
+            let Final = UIImage(cgImage: cgimg!)
+            UIImageWriteToSavedPhotosAlbum(Final, nil, nil, nil)
+        }
+        #endif
         
         var PhotoFormat: CMFormatDescription?
-        CMVideoFormatDescriptionCreateForImageBuffer(allocator: kCFAllocatorDefault, imageBuffer: PhotoPixelBuffer,
+        CMVideoFormatDescriptionCreateForImageBuffer(allocator: kCFAllocatorDefault,
+                                                     imageBuffer: PhotoPixelBuffer,
                                                      formatDescriptionOut: &PhotoFormat)
         
         ProcessingQueue.async
@@ -42,6 +55,34 @@ extension MainUIViewer
                     return
                 }
                 FinalPixelBuffer = FilteredPixelBuffer
+                
+                if let DepthData = photo.depthData
+                {
+                    let DepthPixelBuffer = DepthData.depthDataMap
+                    if !self.PhotoDepthConverter.isPrepared
+                    {
+                        var DepthFormatDescription: CMFormatDescription? = nil
+                        CMVideoFormatDescriptionCreateForImageBuffer(allocator: kCFAllocatorDefault, imageBuffer: DepthPixelBuffer, formatDescriptionOut: &DepthFormatDescription)
+                    self.PhotoDepthConverter.prepare(with: DepthFormatDescription!, outputRetainedBufferCountHint: 3)
+                        guard let ConvertedDepthPixelBuffer = self.PhotoDepthConverter.render(pixelBuffer: DepthPixelBuffer) else
+                        {
+                            print("Unable to convert depth pixel buffer.")
+                            return
+                        }
+                        if !self.PhotoDepthMixer.isPrepared
+                        {
+                            self.PhotoDepthMixer.prepare(with: PhotoFormat!, outputRetainedBufferCountHint: 2)
+                        }
+                        guard let MixedPixelBuffer = self.PhotoDepthMixer.mix(videoPixelBuffer: FinalPixelBuffer,
+                                                                              depthPixelBuffer: ConvertedDepthPixelBuffer) else
+                        {
+                            print("Unable to mix depth and photo buffers.")
+                            return
+                        }
+                        
+                        FinalPixelBuffer = MixedPixelBuffer
+                    }
+                }
                 
                 let MetaData: CFDictionary = photo.metadata as CFDictionary
                 guard let JData = MainUIViewer.JpegData(WithPixelBuffer: FinalPixelBuffer, Attachments: MetaData) else
@@ -123,5 +164,16 @@ extension MainUIViewer
         }
         fatalError("Error converting UIImage to CIImage.")
         #endif
+    }
+    
+    @objc func HandleTapForFocus(Location: CGPoint)
+    {
+        guard let TexturePoint = LiveView.texturePointForView(point: Location) else
+        {
+            return
+        }
+        let TextureRect = CGRect(origin: TexturePoint, size: .zero)
+        let DeviceRect = VideoDataOutput.metadataOutputRectConverted(fromOutputRect: TextureRect)
+        focus(with: .autoFocus, exposureMode: .autoExpose, at: DeviceRect.origin, monitorSubjectAreaChange: true)
     }
 }
