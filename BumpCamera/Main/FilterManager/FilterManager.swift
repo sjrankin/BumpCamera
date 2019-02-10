@@ -620,7 +620,7 @@ class FilterManager
             .Motion: ("Motion", 7),
             .Tiles: ("Distortion", 5),
             .Generator: ("Generators", 8),
-            .Gray: ("Monochrome", 3),
+            .Gray: ("Mono- chrome", 3),
             ]
     
     /// Map between group type and group color.
