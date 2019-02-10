@@ -16,6 +16,10 @@ import MobileCoreServices
 
 extension MainUIViewer
 {
+    /// Checks authorization to use the capture device (eg, camera). If authorization isn't determined, the app
+    /// will request authorization via the API and return those results.
+    ///
+    /// - Returns: True if the app is authorized, false if not.
     func CheckAuthorization() -> Bool
     {
         switch AVCaptureDevice.authorizationStatus(for: .video)
@@ -71,6 +75,7 @@ extension MainUIViewer
         }
     }
     
+    #if false
     func HandleTapForFocusAndExpose(_ Gesture: UITapGestureRecognizer)
     {
         let Location = Gesture.location(in: LiveView)
@@ -82,6 +87,7 @@ extension MainUIViewer
         let DeviceRect = VideoOutput.metadataOutputRectConverted(fromOutputRect: TextureRect)
         focus(with: .autoFocus, exposureMode: .autoExpose, at: DeviceRect.origin, monitorSubjectAreaChange: true)
     }
+    #endif
     
     func PrepareForLiveView()
     {
@@ -99,13 +105,20 @@ extension MainUIViewer
     {
         if OnSimulator
         {
+            print("Cannot configure live view on simulator.")
+            return
+        }
+        if SetupResult != .Success
+        {
+            print("Error setting up device - cannot configure live view.")
             return
         }
         
         let DefaultVideoDevice: AVCaptureDevice? = VideoDeviceDiscoverySession.devices.first
         guard let DefVideoDevice = DefaultVideoDevice else
         {
-            print("No video device.")
+            print("Configuration failed: No video device.")
+            SetupResult = .ConfigurationFailed(Reason: "No video device.")
             return
         }
         
@@ -115,7 +128,9 @@ extension MainUIViewer
         }
         catch
         {
-            print("Error creating input video device: \(error.localizedDescription)")
+            print("Configuration failed: Error creating input video device: \(error.localizedDescription)")
+            SetupResult = .ConfigurationFailed(Reason: "Error creating input video device.")
+            return
         }
         
         CaptureSession.beginConfiguration()
@@ -123,7 +138,8 @@ extension MainUIViewer
         
         guard CaptureSession.canAddInput(VideoDeviceInput) else
         {
-            print("Could not add video device for session")
+            print("Configuration failed: Could not add video device for session.")
+            SetupResult = .ConfigurationFailed(Reason: "Could not add video device for session.")
             CaptureSession.commitConfiguration()
             return
         }
@@ -137,7 +153,8 @@ extension MainUIViewer
         }
         else
         {
-            print("Error adding video data output to the capture session.")
+            print("Configuration failed: Error adding video data output to the capture session.")
+            SetupResult = .ConfigurationFailed(Reason: "Error adding video data output to the capture session.")
             CaptureSession.commitConfiguration()
             return
         }
@@ -145,13 +162,72 @@ extension MainUIViewer
         if CaptureSession.canAddOutput(PhotoOutput)
         {
             CaptureSession.addOutput(PhotoOutput)
-            PhotoOutput.isHighResolutionCaptureEnabled = false
+            PhotoOutput.isHighResolutionCaptureEnabled = true
+            if _Settings.bool(forKey: "EnableDepthData")
+            {
+                if PhotoOutput.isDepthDataDeliverySupported
+                {
+                    PhotoOutput.isDepthDataDeliveryEnabled = true
+                }
+                else
+                {
+                    _Settings.set(false, forKey: "EnableDepthData")
+                }
+            }
         }
         else
         {
-            print("Error adding photo device to session.")
+            print("Configuration failed: Error adding photo device to session.")
+            SetupResult = .ConfigurationFailed(Reason: "Error adding photo device to session.")
             CaptureSession.commitConfiguration()
             return
+        }
+        
+        if _Settings.bool(forKey: "EnableDepthData")
+        {
+            if CaptureSession.canAddOutput(DepthDataOutput)
+            {
+                CaptureSession.addOutput(DepthDataOutput)
+                DepthDataOutput.setDelegate(self, callbackQueue: DataOutputQueue)
+                DepthDataOutput.isFilteringEnabled = false
+                if let Connection = DepthDataOutput.connection(with: .depthData)
+                {
+                    Connection.isEnabled = _Settings.bool(forKey: "EnableDepthData")
+                }
+                else
+                {
+                    print("Configuration failed: Could not add depth data output to capture session.")
+                    SetupResult = .ConfigurationFailed(Reason: "Could not add depth data output to capture session.")
+                    CaptureSession.commitConfiguration()
+                    return
+                }
+                if _Settings.bool(forKey: "EnableDepthData")
+                {
+                    OutputSynchronizer = AVCaptureDataOutputSynchronizer(dataOutputs: [VideoDataOutput, DepthDataOutput])
+                    OutputSynchronizer!.setDelegate(self, queue: DataOutputQueue)
+                }
+                else
+                {
+                    OutputSynchronizer = nil
+                }
+            }
+        }
+        
+        if PhotoOutput.isDepthDataDeliveryEnabled
+        {
+            if let FrameDuration = DefVideoDevice.activeDepthDataFormat?.videoSupportedFrameRateRanges.first?.minFrameDuration
+            {
+                do
+                {
+                    try DefVideoDevice.lockForConfiguration()
+                    DefVideoDevice.activeVideoMinFrameDuration = FrameDuration
+                    DefVideoDevice.unlockForConfiguration()
+                }
+                catch
+                {
+                    print("Could not lock device for configuration: \(error.localizedDescription)")
+                }
+            }
         }
         
         CaptureSession.commitConfiguration()
@@ -174,15 +250,21 @@ extension MainUIViewer
             {
                 self.RenderingEnabled = false
                 self.Filters?.VideoFilter?.Filter!.Reset("Video: DoSwitchCameras")
+                self.VideoDepthMixer.reset()
+                self.CurrentDepthPixelBuffer = nil
+                self.VideoDepthConverter.reset()
                 self.LiveView.pixelBuffer = nil
         }
         
         ProcessingQueue.sync
             {
                 self.Filters?.PhotoFilter?.Filter!.Reset("Photo: DoSwitchCameras")
+                self.PhotoDepthMixer.reset()
+                self.PhotoDepthConverter.reset()
         }
         
         let InterfaceOrientation = StatusBarOrientation
+        var DepthEnabled = _Settings.bool(forKey: "EnableDepthData")
         
         SessionQueue.async
             {
@@ -221,6 +303,7 @@ extension MainUIViewer
                     self.CaptureSession.beginConfiguration()
                     
                     self.CaptureSession.removeInput(self.VideoDeviceInput)
+                    
                     if self.CaptureSession.canAddInput(VidInput)
                     {
                         NotificationCenter.default.removeObserver(self,
@@ -266,6 +349,7 @@ extension MainUIViewer
                     else
                     {
                         self.OutputSynchronizer = nil
+                        DepthEnabled = false
                     }
                     
                     self.CaptureSession.commitConfiguration()
@@ -273,10 +357,10 @@ extension MainUIViewer
                 
                 let VideoPosition = self.VideoDeviceInput.device.position
                 let VideoOrientation = self.VideoDataOutput.connection(with: .video)!.videoOrientation
-                let Rotation = PreviewMetalView.Rotation(with: InterfaceOrientation!, videoOrientation: VideoOrientation,
-                                                         cameraPosition: VideoPosition)
+                let Rotation = LiveMetalView.Rotation(with: InterfaceOrientation, videoOrientation: VideoOrientation,
+                                                      cameraPosition: VideoPosition)
                 
-                print("Video position is front: \(VideoPosition == .front)")
+                //print("Video position is front: \(VideoPosition == .front)")
                 self.LiveView.mirroring = (VideoPosition == .front)
                 if let Rotation = Rotation
                 {
@@ -286,6 +370,7 @@ extension MainUIViewer
                 self.DataOutputQueue.async
                     {
                         self.RenderingEnabled = true
+                        //self.DepthVisualizationEnabled = DepthEnabled
                 }
         }
     }
@@ -343,8 +428,9 @@ extension MainUIViewer
     
     func CameraWithPosition(_ Position: AVCaptureDevice.Position) -> AVCaptureDevice?
     {
-        let DeviceDiscoverySession = AVCaptureDevice.DiscoverySession(deviceTypes: [AVCaptureDevice.DeviceType.builtInWideAngleCamera],
-                                                                      mediaType: AVMediaType.video, position: AVCaptureDevice.Position.unspecified)
+        let DeviceDiscoverySession = AVCaptureDevice.DiscoverySession(deviceTypes: [.builtInWideAngleCamera, .builtInWideAngleCamera],
+                                                                      mediaType: AVMediaType.video,
+                                                                      position: .unspecified)
         for Device in DeviceDiscoverySession.devices
         {
             if Device.position == Position
@@ -379,8 +465,6 @@ extension MainUIViewer
             print("Setting filter to NotSet")
             Filters?.SetCurrentFilter(FilterType: .NotSet)
         }
-        //let Current = Filters?.VideoFilter?.FilterType
-        //print("Current video filter: \((Filters?.GetFilterTitle(Current!))!), Raw=\(Current!.rawValue)")
         if !(Filters?.VideoFilter?.Filter?.Initialized)!
         {
             Filters?.VideoFilter?.Filter?.Initialize(With: FormatDescription, BufferCountHint: BufferCount)
