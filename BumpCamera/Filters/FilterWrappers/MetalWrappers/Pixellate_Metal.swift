@@ -338,6 +338,33 @@ class Pixellate_Metal: FilterParent, Renderer
         case .MergeWithBackground:
             return (.BoolType, false as Any?)
             
+        case .ConditionalPixellation:
+            return (.BoolType, false as Any?)
+            
+        case .InvertConditionalPixellationRange:
+            return (.BoolType, false as Any?)
+            
+        case .ConditionalPixellationSelector:
+            return (.IntType, 0 as Any?)
+            
+        case .ConditionalHueRangeLow:
+            return (.DoubleType, 0.25 as Any?)
+            
+        case .ConditionalHueRangeHigh:
+            return (.DoubleType, 0.75 as Any?)
+            
+        case .ConditionalSaturation:
+            return (.DoubleType, 0.5 as Any?)
+            
+        case .ConditionalBrightness:
+            return (.DoubleType, 0.5 as Any?)
+            
+        case .ConditionalBackground:
+            return (.IntType, 0 as Any?)
+            
+        case .PixellationHighlighting:
+            return (.IntType, 3 as Any?)
+            
         default:
             break
         }
@@ -358,6 +385,13 @@ class Pixellate_Metal: FilterParent, Renderer
         Fields.append(.HighlightSaturation)
         Fields.append(.HighlightBrightness)
         Fields.append(.MergeWithBackground)
+        Fields.append(.ConditionalPixellation)
+        Fields.append(.InvertConditionalPixellationRange)
+        Fields.append(.ConditionalHueRangeLow)
+        Fields.append(.ConditionalHueRangeHigh)
+        Fields.append(.ConditionalBrightness)
+        Fields.append(.ConditionalSaturation)
+        Fields.append(.ConditionalBackground)
         return Fields
     }
     
@@ -368,7 +402,7 @@ class Pixellate_Metal: FilterParent, Renderer
     
     public static func SettingsStoryboard() -> String?
     {
-        return "Pixellate2Table"
+        return "Pixellate2SettingsUI"
     }
     
     func IsSlow() -> Bool
