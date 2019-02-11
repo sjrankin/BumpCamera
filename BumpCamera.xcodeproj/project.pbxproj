@@ -53,7 +53,6 @@
 		1726243221F8640100C7688C /* Numeric.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1726243121F8640100C7688C /* Numeric.swift */; };
 		1726243421F8964E00C7688C /* HSBAdjust.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1726243321F8964E00C7688C /* HSBAdjust.swift */; };
 		172D98C921F9A53A005A5275 /* ChannelMixer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 172D98C821F9A53A005A5275 /* ChannelMixer.swift */; };
-		1739EAD021E7563300407556 /* ImageFilterer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1739EACF21E7563300407556 /* ImageFilterer.swift */; };
 		173B16A42201437B005A5B0B /* Pixellate2TableCode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 173B16A32201437B005A5B0B /* Pixellate2TableCode.swift */; };
 		173B16A622014F8B005A5B0B /* HighlightBrightness.swift in Sources */ = {isa = PBXBuildFile; fileRef = 173B16A522014F8B005A5B0B /* HighlightBrightness.swift */; };
 		173B16A822015766005A5B0B /* About.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 173B16A722015766005A5B0B /* About.storyboard */; };
@@ -103,7 +102,7 @@
 		17787F092202E2E400D15761 /* ChannelMixerSettingsUICode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17787F082202E2E400D15761 /* ChannelMixerSettingsUICode.swift */; };
 		17787F0C2203069A00D15761 /* HalftoneSettingsUI.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 17787F0B2203069A00D15761 /* HalftoneSettingsUI.storyboard */; };
 		17787F0E22031BD100D15761 /* HalftoneSettingsUICode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17787F0D22031BD100D15761 /* HalftoneSettingsUICode.swift */; };
-		178C75BC21F3247E00844FFF /* MTLKitExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 178C75BB21F3247E00844FFF /* MTLKitExtension.swift */; };
+		178C75BC21F3247E00844FFF /* LiveMetalViewExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 178C75BB21F3247E00844FFF /* LiveMetalViewExtension.swift */; };
 		178C75BE21F337C100844FFF /* AVCaptureVideoOrientationExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 178C75BD21F337C100844FFF /* AVCaptureVideoOrientationExtension.swift */; };
 		178CF92621F5B98D007229FD /* ParameterManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 178CF92521F5B98D007229FD /* ParameterManager.swift */; };
 		178CF92821F5F286007229FD /* FilterManagerEnums.swift in Sources */ = {isa = PBXBuildFile; fileRef = 178CF92721F5F286007229FD /* FilterManagerEnums.swift */; };
@@ -119,6 +118,16 @@
 		17BEE0B221FC20FF00A9370B /* DesaturateColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17BEE0B121FC20FF00A9370B /* DesaturateColors.swift */; };
 		17BEE0B421FC2F8500A9370B /* DesaturationKernelParameters.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17BEE0B321FC2F8500A9370B /* DesaturationKernelParameters.swift */; };
 		17D5F32521FC1DC00093DFFF /* DesaturationKernel.metal in Sources */ = {isa = PBXBuildFile; fileRef = 17D5F32421FC1DC00093DFFF /* DesaturationKernel.metal */; };
+		17D60D7E220FCDF800933F15 /* MonochromeColors.metal in Sources */ = {isa = PBXBuildFile; fileRef = 17D60D7D220FCDF800933F15 /* MonochromeColors.metal */; };
+		17D60D80220FD6A700933F15 /* MonochromeColorsParameters.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17D60D7F220FD6A700933F15 /* MonochromeColorsParameters.swift */; };
+		17D60D82220FD7A900933F15 /* MonochromeColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17D60D81220FD7A900933F15 /* MonochromeColors.swift */; };
+		17D60D84220FEA7700933F15 /* MonochromeColorsSettingUICode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17D60D83220FEA7700933F15 /* MonochromeColorsSettingUICode.swift */; };
+		17D60D87220FEAD000933F15 /* MonochromeColorsSettingsUI.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 17D60D86220FEAD000933F15 /* MonochromeColorsSettingsUI.storyboard */; };
+		17D60D892210511800933F15 /* SampleContainerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17D60D882210511800933F15 /* SampleContainerView.swift */; };
+		17D60D8C22115CB700933F15 /* Pixellate2SettingsUI.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 17D60D8B22115CB700933F15 /* Pixellate2SettingsUI.storyboard */; };
+		17D60D8E221162F100933F15 /* Pixellate2SettingsUICode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17D60D8D221162F100933F15 /* Pixellate2SettingsUICode.swift */; };
+		17D60D9022118CF800933F15 /* DescendentDelta.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17D60D8F22118CF800933F15 /* DescendentDelta.swift */; };
+		17D60D9222118EDB00933F15 /* Pixellate2ConditionalUI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17D60D9122118EDB00933F15 /* Pixellate2ConditionalUI.swift */; };
 		17D7510821F410BF0050A2B5 /* MainUIFilterSelection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17D7510721F410BF0050A2B5 /* MainUIFilterSelection.swift */; };
 		17D7510A21F414390050A2B5 /* MainUILabelManagement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17D7510921F414390050A2B5 /* MainUILabelManagement.swift */; };
 		17D7510C21F418430050A2B5 /* MainUIObserving.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17D7510B21F418430050A2B5 /* MainUIObserving.swift */; };
@@ -209,7 +218,6 @@
 		1726243121F8640100C7688C /* Numeric.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Numeric.swift; sourceTree = "<group>"; };
 		1726243321F8964E00C7688C /* HSBAdjust.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HSBAdjust.swift; sourceTree = "<group>"; };
 		172D98C821F9A53A005A5275 /* ChannelMixer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelMixer.swift; sourceTree = "<group>"; };
-		1739EACF21E7563300407556 /* ImageFilterer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageFilterer.swift; sourceTree = "<group>"; };
 		173B16A32201437B005A5B0B /* Pixellate2TableCode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Pixellate2TableCode.swift; sourceTree = "<group>"; };
 		173B16A522014F8B005A5B0B /* HighlightBrightness.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HighlightBrightness.swift; sourceTree = "<group>"; };
 		173B16A722015766005A5B0B /* About.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = About.storyboard; sourceTree = "<group>"; };
@@ -259,7 +267,7 @@
 		17787F082202E2E400D15761 /* ChannelMixerSettingsUICode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelMixerSettingsUICode.swift; sourceTree = "<group>"; };
 		17787F0B2203069A00D15761 /* HalftoneSettingsUI.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = HalftoneSettingsUI.storyboard; sourceTree = "<group>"; };
 		17787F0D22031BD100D15761 /* HalftoneSettingsUICode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HalftoneSettingsUICode.swift; sourceTree = "<group>"; };
-		178C75BB21F3247E00844FFF /* MTLKitExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MTLKitExtension.swift; sourceTree = "<group>"; };
+		178C75BB21F3247E00844FFF /* LiveMetalViewExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveMetalViewExtension.swift; sourceTree = "<group>"; };
 		178C75BD21F337C100844FFF /* AVCaptureVideoOrientationExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AVCaptureVideoOrientationExtension.swift; sourceTree = "<group>"; };
 		178CF92521F5B98D007229FD /* ParameterManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParameterManager.swift; sourceTree = "<group>"; };
 		178CF92721F5F286007229FD /* FilterManagerEnums.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterManagerEnums.swift; sourceTree = "<group>"; };
@@ -275,6 +283,16 @@
 		17BEE0B121FC20FF00A9370B /* DesaturateColors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DesaturateColors.swift; sourceTree = "<group>"; };
 		17BEE0B321FC2F8500A9370B /* DesaturationKernelParameters.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DesaturationKernelParameters.swift; sourceTree = "<group>"; };
 		17D5F32421FC1DC00093DFFF /* DesaturationKernel.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = DesaturationKernel.metal; sourceTree = "<group>"; };
+		17D60D7D220FCDF800933F15 /* MonochromeColors.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = MonochromeColors.metal; sourceTree = "<group>"; };
+		17D60D7F220FD6A700933F15 /* MonochromeColorsParameters.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MonochromeColorsParameters.swift; sourceTree = "<group>"; };
+		17D60D81220FD7A900933F15 /* MonochromeColors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MonochromeColors.swift; sourceTree = "<group>"; };
+		17D60D83220FEA7700933F15 /* MonochromeColorsSettingUICode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MonochromeColorsSettingUICode.swift; sourceTree = "<group>"; };
+		17D60D86220FEAD000933F15 /* MonochromeColorsSettingsUI.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = MonochromeColorsSettingsUI.storyboard; sourceTree = "<group>"; };
+		17D60D882210511800933F15 /* SampleContainerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SampleContainerView.swift; sourceTree = "<group>"; };
+		17D60D8B22115CB700933F15 /* Pixellate2SettingsUI.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Pixellate2SettingsUI.storyboard; sourceTree = "<group>"; };
+		17D60D8D221162F100933F15 /* Pixellate2SettingsUICode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Pixellate2SettingsUICode.swift; sourceTree = "<group>"; };
+		17D60D8F22118CF800933F15 /* DescendentDelta.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DescendentDelta.swift; sourceTree = "<group>"; };
+		17D60D9122118EDB00933F15 /* Pixellate2ConditionalUI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Pixellate2ConditionalUI.swift; sourceTree = "<group>"; };
 		17D7510721F410BF0050A2B5 /* MainUIFilterSelection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainUIFilterSelection.swift; sourceTree = "<group>"; };
 		17D7510921F414390050A2B5 /* MainUILabelManagement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainUILabelManagement.swift; sourceTree = "<group>"; };
 		17D7510B21F418430050A2B5 /* MainUIObserving.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainUIObserving.swift; sourceTree = "<group>"; };
@@ -357,6 +375,7 @@
 				171F3D06220AD16A0098E2B7 /* Solarize */,
 				17020EE121FDDC03006DE7ED /* Grayscale */,
 				17363C7E21FD5FE0004CF131 /* ChannelMixers */,
+				17D60D7C220FCDB300933F15 /* MonochromeColors */,
 				17E15FF222057E630037B35F /* Mirroring */,
 			);
 			path = BumpyKernels;
@@ -366,7 +385,7 @@
 			isa = PBXGroup;
 			children = (
 				1712A85321FB23F4001E9D2B /* BumpyKernels */,
-				171D627421EDD4B2004D3545 /* Filters */,
+				171D627421EDD4B2004D3545 /* FilterWrappers */,
 			);
 			path = Filters;
 			sourceTree = "<group>";
@@ -374,6 +393,7 @@
 		171D625C21EDB409004D3545 /* AVCamShaders */ = {
 			isa = PBXGroup;
 			children = (
+				17D7511821F461DA0050A2B5 /* DepthToGrayscaleConverter.swift */,
 				171D625D21EDB446004D3545 /* PassThrough.metal */,
 				171D625F21EDB46D004D3545 /* Mixer.metal */,
 				17D7511F21F466AE0050A2B5 /* RosyEffect.metal */,
@@ -396,7 +416,7 @@
 			path = FilterManager;
 			sourceTree = "<group>";
 		};
-		171D627421EDD4B2004D3545 /* Filters */ = {
+		171D627421EDD4B2004D3545 /* FilterWrappers */ = {
 			isa = PBXGroup;
 			children = (
 				173FDCBD220E946000EFA90D /* MetalWrappers */,
@@ -418,7 +438,7 @@
 				17EC44CF21F0250C00197804 /* Comic.swift */,
 				17D7512521F497DF0050A2B5 /* FilterParent.swift */,
 			);
-			path = Filters;
+			path = FilterWrappers;
 			sourceTree = "<group>";
 		};
 		171D627921EDF496004D3545 /* Main */ = {
@@ -427,6 +447,7 @@
 				171E542821E44E170045ED77 /* MainUIViewer.swift */,
 				17D7510F21F41B820050A2B5 /* MainUIViewer Extensions */,
 				171E542A21E44E170045ED77 /* Main.storyboard */,
+				171D625A21EDA5B6004D3545 /* LiveMetalView.swift */,
 				171E542621E44E170045ED77 /* AppDelegate.swift */,
 				171E542F21E44E180045ED77 /* LaunchScreen.storyboard */,
 				171D626921EDCBAB004D3545 /* FilterManager */,
@@ -463,11 +484,8 @@
 				17D7512321F4679D0050A2B5 /* ObjectiveC */,
 				17D7512421F46B4D0050A2B5 /* Extensions */,
 				17B2ED8221F1A5A700E3B56A /* SettingsUI */,
-				171D625A21EDA5B6004D3545 /* LiveMetalView.swift */,
 				17F51B0021E9E44F00843092 /* BackgroundServer.swift */,
-				1739EACF21E7563300407556 /* ImageFilterer.swift */,
 				17F51B0221E9E86E00843092 /* Times.swift */,
-				17D7511821F461DA0050A2B5 /* DepthToGrayscaleConverter.swift */,
 				17D7511A21F462CD0050A2B5 /* BumpCamera-Bridging-Header.h */,
 			);
 			path = BumpCamera;
@@ -634,6 +652,7 @@
 			children = (
 				171F3CF22208634F0098E2B7 /* Generators */,
 				1799C8A121FF2F9C0069D5AC /* Pixellate_Metal.swift */,
+				17D60D81220FD7A900933F15 /* MonochromeColors.swift */,
 				172D98C821F9A53A005A5275 /* ChannelMixer.swift */,
 				17BEE0B121FC20FF00A9370B /* DesaturateColors.swift */,
 				1799C89921FF1B890069D5AC /* KuwaharaEffect.swift */,
@@ -788,6 +807,34 @@
 			path = SettingsUI;
 			sourceTree = "<group>";
 		};
+		17D60D7C220FCDB300933F15 /* MonochromeColors */ = {
+			isa = PBXGroup;
+			children = (
+				17D60D7F220FD6A700933F15 /* MonochromeColorsParameters.swift */,
+				17D60D7D220FCDF800933F15 /* MonochromeColors.metal */,
+			);
+			path = MonochromeColors;
+			sourceTree = "<group>";
+		};
+		17D60D85220FEA7D00933F15 /* MonochromeColors */ = {
+			isa = PBXGroup;
+			children = (
+				17D60D83220FEA7700933F15 /* MonochromeColorsSettingUICode.swift */,
+				17D60D86220FEAD000933F15 /* MonochromeColorsSettingsUI.storyboard */,
+			);
+			path = MonochromeColors;
+			sourceTree = "<group>";
+		};
+		17D60D8A22115C9400933F15 /* Pixellate2 */ = {
+			isa = PBXGroup;
+			children = (
+				17D60D8B22115CB700933F15 /* Pixellate2SettingsUI.storyboard */,
+				17D60D8D221162F100933F15 /* Pixellate2SettingsUICode.swift */,
+				17D60D9122118EDB00933F15 /* Pixellate2ConditionalUI.swift */,
+			);
+			path = Pixellate2;
+			sourceTree = "<group>";
+		};
 		17D7510F21F41B820050A2B5 /* MainUIViewer Extensions */ = {
 			isa = PBXGroup;
 			children = (
@@ -820,7 +867,7 @@
 				17FA09A721E8814700405B2D /* UIImageExtensions.swift */,
 				171F3CFB220967D70098E2B7 /* UIColorExtensions.swift */,
 				178C75BD21F337C100844FFF /* AVCaptureVideoOrientationExtension.swift */,
-				178C75BB21F3247E00844FFF /* MTLKitExtension.swift */,
+				178C75BB21F3247E00844FFF /* LiveMetalViewExtension.swift */,
 				1726243121F8640100C7688C /* Numeric.swift */,
 			);
 			path = Extensions;
@@ -857,14 +904,18 @@
 			isa = PBXGroup;
 			children = (
 				17A409D62201E941003D4EC6 /* FilterSettingUIBase.swift */,
+				17D60D882210511800933F15 /* SampleContainerView.swift */,
 				17E9F0DC2201719600BA7B46 /* FilterSettingsUI.storyboard */,
 				17E9F0E622017E9600BA7B46 /* FilterSettingsUICode.swift */,
+				17D60D8F22118CF800933F15 /* DescendentDelta.swift */,
 				174779FF22048C6600FD64EF /* FilterSectionData.swift */,
+				171F3CF5220944120098E2B7 /* Generators */,
+				17D60D8A22115C9400933F15 /* Pixellate2 */,
 				174779FB2204338600FD64EF /* CollapsibleHeader.swift */,
 				174779FD220433CB00FD64EF /* CollapsibleTableViewHeaderDelegate.swift */,
+				17D60D85220FEA7D00933F15 /* MonochromeColors */,
 				173F5D02220BE80D00067ABB /* Threshold */,
 				171F3D12220AF94A0098E2B7 /* Solarize */,
-				171F3CF5220944120098E2B7 /* Generators */,
 				17E15FED220575C00037B35F /* Mirroring */,
 				17E15FE8220562590037B35F /* Desaturate */,
 				17477A0122049AEC00FD64EF /* Grayscale */,
@@ -963,6 +1014,8 @@
 				17477A0322049B1500FD64EF /* GrayscaleSettingsUI.storyboard in Resources */,
 				171E543121E44E180045ED77 /* LaunchScreen.storyboard in Resources */,
 				174779F822042FEC00FD64EF /* NoParametersSettingsUI.storyboard in Resources */,
+				17D60D8C22115CB700933F15 /* Pixellate2SettingsUI.storyboard in Resources */,
+				17D60D87220FEAD000933F15 /* MonochromeColorsSettingsUI.storyboard in Resources */,
 				1726241721F840E500C7688C /* PixellateTable.storyboard in Resources */,
 				173F633422001800006CB67C /* Pixellate2Table.storyboard in Resources */,
 				173F632F22000045006CB67C /* PixellateMetalTable.storyboard in Resources */,
@@ -1007,11 +1060,12 @@
 				17A409D72201E941003D4EC6 /* FilterSettingUIBase.swift in Sources */,
 				174D6D5D220804000066AE93 /* GroupNode.swift in Sources */,
 				174779FC2204338600FD64EF /* CollapsibleHeader.swift in Sources */,
-				178C75BC21F3247E00844FFF /* MTLKitExtension.swift in Sources */,
+				178C75BC21F3247E00844FFF /* LiveMetalViewExtension.swift in Sources */,
 				1756CE0821FD737100C4E638 /* RGBtoSHB.metal in Sources */,
 				17A686EB21F824AA00F252CA /* HueAdustTableCode.swift in Sources */,
 				178C75BE21F337C100844FFF /* AVCaptureVideoOrientationExtension.swift in Sources */,
 				1756CE1221FD874800C4E638 /* ChannelSwizzleParameters.swift in Sources */,
+				17D60D892210511800933F15 /* SampleContainerView.swift in Sources */,
 				171F3D09220AD1990098E2B7 /* Dithering.swift in Sources */,
 				1726241A21F844DF00C7688C /* FilterTableBase.swift in Sources */,
 				171F3CEF220861800098E2B7 /* GridGenerator.metal in Sources */,
@@ -1031,13 +1085,16 @@
 				1756CDF221FD60B300C4E638 /* RGBtoRGB.metal in Sources */,
 				171D625721ED974A004D3545 /* Renderer.swift in Sources */,
 				178CF92821F5F286007229FD /* FilterManagerEnums.swift in Sources */,
+				17D60D9222118EDB00933F15 /* Pixellate2ConditionalUI.swift in Sources */,
 				173F632D21FFFBEE006CB67C /* BlockInfoParameters.swift in Sources */,
 				171D626421EDBE4B004D3545 /* RenderPacket.swift in Sources */,
 				173F5D06220BEABF00067ABB /* ThresholdSettingsUICode.swift in Sources */,
 				17787F0E22031BD100D15761 /* HalftoneSettingsUICode.swift in Sources */,
 				171D626821EDC45E004D3545 /* CameraFilter.swift in Sources */,
+				17D60D9022118CF800933F15 /* DescendentDelta.swift in Sources */,
 				171D625921ED98AE004D3545 /* Noir.swift in Sources */,
 				17787F042202C6AE00D15761 /* HSBFilterSettingsUICode.swift in Sources */,
+				17D60D80220FD6A700933F15 /* MonochromeColorsParameters.swift in Sources */,
 				171D626B21EDCE62004D3545 /* Pixellate.swift in Sources */,
 				173F5CFF220BDF0A00067ABB /* Threshold.metal in Sources */,
 				173FDCC1220EB86C00EFA90D /* MainUIUserInteractions.swift in Sources */,
@@ -1049,18 +1106,19 @@
 				17EC44D421F05B6600197804 /* FilterSelectorBlock.swift in Sources */,
 				1756CE1421FD87CB00C4E638 /* HSBSwizzling.metal in Sources */,
 				17E15FF822058C5A0037B35F /* MirroringFilterSettingsUICode.swift in Sources */,
-				1739EAD021E7563300407556 /* ImageFilterer.swift in Sources */,
 				171F3D04220AB0470098E2B7 /* LineOverlaySettingsUICode.swift in Sources */,
 				174779FE220433CB00FD64EF /* CollapsibleTableViewHeaderDelegate.swift in Sources */,
 				171F3CFF2209CB3F0098E2B7 /* FileHandling.swift in Sources */,
 				173B16A42201437B005A5B0B /* Pixellate2TableCode.swift in Sources */,
 				171D626221EDB66F004D3545 /* DotScreen.swift in Sources */,
+				17D60D82220FD7A900933F15 /* MonochromeColors.swift in Sources */,
 				1799C89A21FF1B890069D5AC /* KuwaharaEffect.swift in Sources */,
 				1726243221F8640100C7688C /* Numeric.swift in Sources */,
 				17020EDD21FDD6C5006DE7ED /* GrayscaleAdjust.swift in Sources */,
 				17E15FEC2205638F0037B35F /* DesaturateSettingsUICode.swift in Sources */,
 				1756CE0E21FD740300C4E638 /* RGBtoBSH.metal in Sources */,
 				17E15FE722053A620037B35F /* GrayscaleAdjustChannelMultipliersCode.swift in Sources */,
+				17D60D8E221162F100933F15 /* Pixellate2SettingsUICode.swift in Sources */,
 				171F3CFC220967D70098E2B7 /* UIColorExtensions.swift in Sources */,
 				171D627321EDD415004D3545 /* CMYKHalftone.swift in Sources */,
 				171D627821EDF017004D3545 /* PassThrough.swift in Sources */,
@@ -1072,6 +1130,7 @@
 				1756CE0121FD646600C4E638 /* RGBtoHSB.metal in Sources */,
 				17477A0022048C6600FD64EF /* FilterSectionData.swift in Sources */,
 				17E15FF122057E5E0037B35F /* Mirroring.metal in Sources */,
+				17D60D7E220FCDF800933F15 /* MonochromeColors.metal in Sources */,
 				17D7510821F410BF0050A2B5 /* MainUIFilterSelection.swift in Sources */,
 				171F3CF1220862B80098E2B7 /* GridParameters.swift in Sources */,
 				171D626D21EDCF6E004D3545 /* LineScreen.swift in Sources */,
@@ -1097,6 +1156,7 @@
 				17F51B0321E9E86F00843092 /* Times.swift in Sources */,
 				17D7510A21F414390050A2B5 /* MainUILabelManagement.swift in Sources */,
 				1799C89621FF15750069D5AC /* Pixellatekernel.metal in Sources */,
+				17D60D84220FEA7700933F15 /* MonochromeColorsSettingUICode.swift in Sources */,
 				17D7511321F41CD40050A2B5 /* MainUIPhoto.swift in Sources */,
 				171D626F21EDD143004D3545 /* CircularScreen.swift in Sources */,
 				17E9F0E722017E9600BA7B46 /* FilterSettingsUICode.swift in Sources */,
