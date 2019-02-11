@@ -117,7 +117,7 @@ class MainUIViewer: UIViewController,
         PrepareForLiveView()
         SessionQueue.async
             {
-                self.ConfigureLiveView()
+                self.SetupResult = self.ConfigureLiveView()
         }
         StartSettingsMonitor()
     }
@@ -186,9 +186,10 @@ class MainUIViewer: UIViewController,
                     self.present(Alert, animated: true, completion: nil)
                 }
                 
-            case .ConfigurationFailed:
+            case .ConfigurationFailed(let Reason):
                 DispatchQueue.main.async {
-                    let Message = "Unable to capture media."
+                    let Message = Reason
+                    print(Message)
                     let Alert = UIAlertController(title: "BumpCamera", message: Message, preferredStyle: .alert)
                     Alert.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
                     self.present(Alert, animated: true, completion: nil)
