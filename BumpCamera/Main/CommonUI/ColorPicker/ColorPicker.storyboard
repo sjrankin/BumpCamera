@@ -60,7 +60,7 @@
                     </navigationItem>
                     <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
                     <connections>
-                        <segue destination="7VC-Zt-gec" kind="show" id="bNh-Ud-GHV"/>
+                        <segue destination="7VC-Zt-gec" kind="show" identifier="ToColorChipPicker" id="bNh-Ud-GHV"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="7k1-R0-Elz" userLabel="First Responder" sceneMemberID="firstResponder"/>
