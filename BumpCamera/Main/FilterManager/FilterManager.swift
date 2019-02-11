@@ -113,6 +113,7 @@ class FilterManager
         ParameterCount![.Mirroring] = MirroringDistortion.SupportedFields().count
         ParameterCount![.Solarize] = Solarize.SupportedFields().count
         ParameterCount![.Threshold] = Threshold.SupportedFields().count
+        ParameterCount![.MonochromeColor] = MonochromeColors.SupportedFields().count
     }
     
     private static var ParameterCount: [FilterManager.FilterTypes: Int]? = nil
@@ -159,6 +160,7 @@ class FilterManager
         StoryboardList![.Grid] = GridGenerator.SettingsStoryboard()
         StoryboardList![.Solarize] = Solarize.SettingsStoryboard()
         StoryboardList![.Threshold] = Threshold.SettingsStoryboard()
+        StoryboardList![.MonochromeColor] = MonochromeColors.SettingsStoryboard()
     }
     
     private static var StoryboardList: [FilterTypes: String?]? = nil
@@ -385,6 +387,9 @@ class FilterManager
         case .Threshold:
             return Threshold()
             
+        case .MonochromeColor:
+            return MonochromeColors()
+            
         default:
             return nil
         }
@@ -488,36 +493,39 @@ class FilterManager
     /// Map between filter types and filter IDs.
     static let FilterMap: [FilterTypes: UUID] =
         [
-            .Noir: UUID(uuidString: "7215048f-15ea-46a1-8b11-a03e104a568d")!,
-            .LineScreen: UUID(uuidString: "03d25ebe-1536-4088-9af6-150490262467")!,
-            .CircularScreen: UUID(uuidString: "43a29cb4-4f85-40a7-b535-3cd659edd3cb")!,
-            .DotScreen: UUID(uuidString: "48145942-f695-436a-a9bc-94158d3b469a")!,
-            .HatchScreen: UUID(uuidString: "49a3792a-f46a-40c5-8831-51ff7834e8c7")!,
-            .Pixellate: UUID(uuidString: "0f56b55b-0d77-4c3a-98eb-cadc62be7f4d")!,
-            .CircleAndLines: UUID(uuidString: "0c84fc21-e06a-4b49-ae0e-90594abeeb4a")!,
-            .CMYKHalftone: UUID(uuidString: "13c40f19-3d54-492c-92bc-2680f4cf2a2f")!,
-            .PassThrough: UUID(uuidString: "e18b32bf-e965-41c6-a1f5-4bb4ed6ba472")!,
-            .Comic: UUID(uuidString: "e730f3ba-c4d7-4d06-8754-b878c92260aa")!,
-            .XRay: UUID(uuidString: "47d5ac1d-7878-4623-b3df-55559b9d7087")!,
-            .LineOverlay: UUID(uuidString: "910d04a3-729d-4fdf-b19e-654904b0eeeb")!,
-            .BumpyPixels: UUID(uuidString: "11c13687-8166-4549-a328-cfac37bd7954")!,
-            .BumpyTriangles: UUID(uuidString: "72f7bdf9-bf19-4fd6-a37d-c453223b7a2d")!,
-            .Embossed: UUID(uuidString: "35c4e25e-5579-4f4a-8a8d-f0d56597226b")!,
-            .ColorDelta: UUID(uuidString: "7d35d31b-15bd-4953-a80d-38ef06fceee6")!,
-            .FilterDelta: UUID(uuidString: "fc913b9c-8567-4fb2-b2ff-4b1f6e849978")!,
-            .PatternDelta: UUID(uuidString: "0ce80007-9d48-4a4f-95ae-0d059a1710c2")!,
-            .HueAdjust: UUID(uuidString: "dd8f30bf-e22b-4d8c-afa3-303c15eb1928")!,
-            .HSBAdjust: UUID(uuidString: "ff3679e7-a415-4562-8032-e07f51a63621")!,
-            .ChannelMixer: UUID(uuidString: "b49e8644-99be-4492-aecc-f9f4430012fd")!,
-            .DesaturateColors: UUID(uuidString: "e3f8071f-5ece-43b7-af06-5cba81d81693")!,
-            .GrayscaleKernel: UUID(uuidString: "6a76fc03-e4e4-4192-82b6-40cf8e520861")!,
-            .Kuwahara: UUID(uuidString: "241c7331-bb81-4dbe-983f-bb73209eea85")!,
-            .PixellateMetal: UUID(uuidString: "ea2602d1-468e-4ff4-a1ea-1299af4b70aa")!,
-            .Mirroring: UUID(uuidString: "895f46c2-443d-4ffb-a3c3-bd3dacaf33b2")!,
-            .Grid: UUID(uuidString: "e6e4941f-cc45-4e68-ad15-f2a06d9477f7")!,
-            .Solarize: UUID(uuidString: "aa7092db-d258-41d6-8779-ba5d358ebbc5")!,
-            .Threshold: UUID(uuidString: "ab5d654e-93a7-4cd1-a7bc-a48d0800efce")!,
-            .Dither: UUID(uuidString: "bebfc984-efa6-41ec-9461-3608e0affba7")!,
+            .Noir: Noir.ID(),
+            .LineScreen: LineScreen.ID(),
+            .CircularScreen: CircularScreen.ID(),
+            .DotScreen: DotScreen.ID(),
+            .HatchScreen: HatchScreen.ID(),
+            .Pixellate: Pixellate.ID(),
+            .CircleAndLines: CircleAndLines.ID(),
+            .CMYKHalftone: CMYKHalftone.ID(),
+            .PassThrough: PassThrough.ID(),
+            .Comic: Comic.ID(),
+            .XRay: XRay.ID(),
+            .LineOverlay: LineOverlay.ID(),
+            /*
+            .BumpyPixels: BumpyPixels.ID(),
+            .BumpyTriangles: BumpyTriangles.ID(),
+            .Embossed: Embossed.ID(),
+            .ColorDelta: ColorDelta.ID(),
+            .FilterDelta: FilterDelta.ID(),
+            .PatternDelta: PatternDelta.ID(),
+ */
+            .HueAdjust: HueAdjust.ID(),
+            .HSBAdjust: HSBAdjust.ID(),
+            .ChannelMixer: ChannelMixer.ID(),
+            .DesaturateColors: DesaturateColors.ID(),
+            .GrayscaleKernel: GrayscaleAdjust.ID(),
+            .Kuwahara: KuwaharaEffect.ID(),
+            .PixellateMetal: Pixellate_Metal.ID(),
+            .Mirroring: MirroringDistortion.ID(),
+            .Grid: GridGenerator.ID(),
+            .Solarize: Solarize.ID(),
+            .Threshold: Threshold.ID(),
+            .Dither: Dithering.ID(),
+            .MonochromeColor: MonochromeColors.ID(),
             ]
     
     /// Map between group type and filters in the group.
@@ -528,10 +536,10 @@ class FilterManager
             .Combined: [(.CircleAndLines, 0)],
             .Effects: [(.PixellateMetal, 0), (.Kuwahara, 1)],
             .Colors: [(.HueAdjust, 0), (.HSBAdjust, 1), (.Solarize, 2), (.ChannelMixer, 3),
-                      (.DesaturateColors, 4), (.Threshold, 5), (.PaletteShifting, 6)],
+                      (.DesaturateColors, 4), (.Threshold, 5), (.MonochromeColor, 6), (.PaletteShifting, 7)],
             .Gray: [(.GrayscaleKernel, 0), (.Dither, 1)],
-            .Bumpy: [(.BumpyPixels, 1), (.BumpyTriangles, 2), (.Embossed, 0)],
-            .Motion: [(.ColorDelta, 0), (.FilterDelta, 1), (.PatternDelta, 2)],
+            //.Bumpy: [(.BumpyPixels, 1), (.BumpyTriangles, 2), (.Embossed, 0)],
+            //.Motion: [(.ColorDelta, 0), (.FilterDelta, 1), (.PatternDelta, 2)],
             .Tiles: [(.Mirroring, 0)],
             .Generator: [(.Grid, 0)]
     ]
@@ -784,6 +792,7 @@ class FilterManager
             .Dither: "Dithing",
             .Solarize: "Solarize",
             .Threshold: "Threshold",
+            .MonochromeColor: "Mono- Colors"
             ]
     
     public static func GetFilterTitle(_ Filter: FilterTypes) -> String?
@@ -829,6 +838,7 @@ class FilterManager
             .Threshold: true,
             .Dither: false,
             .Solarize: true,
+            .MonochromeColor: true
             ]
     
     /// Determines if the given filter type is implemented.
@@ -941,6 +951,27 @@ class FilterManager
             .ApplyThresholdIfHigher: .BoolType,
             .LowThresholdColor: .ColorType,
             .HighThresholdColor: .ColorType,
+            .BrightChannels: .BoolType,
+            .RGBColorspace: .BoolType,
+            .ForRed: .BoolType,
+            .ForGreen: .BoolType,
+            .ForBlue: .BoolType,
+            .ForCyan: .BoolType,
+            .ForMagenta: .BoolType,
+            .ForYellow: .BoolType,
+            .ForBlack: .BoolType,
+            .ConditionalPixellation: .BoolType,
+            .InvertConditionalPixellationRange: .BoolType,
+            .ConditionalHueRangeLow: .DoubleType,
+            .ConditionalHueRangeHigh: .DoubleType,
+            .ConditionalBrightness: .DoubleType,
+            .ConditionalSaturation: .DoubleType,
+            .ConditionalBackground: .IntType,
+            .ConditionalPixellationSelector: .IntType,
+            .PixellationHighlighting: .IntType,
+            .HueSegmentCount: .IntType,
+            .MonochromeColorspace: .IntType,
+            .HueSelectedSegment: .IntType,
             ]
     
     public static let FieldStorageMap: [InputFields: String] =
@@ -1015,5 +1046,26 @@ class FilterManager
             .LowThresholdColor: "_LowThresholdColor",
             .HighThresholdColor: "_HighThresholdColor",
             .ApplyThresholdIfHigher: "_ApplyIfHigher",
+            .BrightChannels: "_UseBrightChannels",
+            .RGBColorspace: "_RGBColorspace",
+            .ForRed: "_ForRed",
+            .ForGreen: "_ForGreen",
+            .ForBlue: "_ForBlue",
+            .ForCyan: "_ForCyan",
+            .ForMagenta: "_ForMagenta",
+            .ForYellow: "_ForYellow",
+            .ForBlack: "_ForBlack",
+            .ConditionalPixellation: "_ConditionalPixellation",
+            .InvertConditionalPixellationRange: "_InvertConditionalPixellationValue",
+            .ConditionalHueRangeLow: "_CondPixHueLow",
+            .ConditionalHueRangeHigh: "_CondPixHueHigh",
+            .ConditionalBrightness: "_CondPixBright",
+            .ConditionalSaturation: "_CondPixSat",
+            .ConditionalBackground: "_CondBackType",
+            .ConditionalPixellationSelector: "_ConditionOn",
+            .PixellationHighlighting: "_PixellationHighlighting",
+            .HueSegmentCount: "_HueSegmentCount",
+            .MonochromeColorspace: "_MonochromeColorspace",
+            .HueSelectedSegment: "_HueIndex",
             ]
 }
