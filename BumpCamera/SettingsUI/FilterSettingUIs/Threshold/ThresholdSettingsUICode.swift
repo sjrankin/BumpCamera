@@ -288,4 +288,11 @@ class ThresholdSettingsUICode: FilterSettingUIBase
     @IBAction func HandleCameraHomePressed(_ sender: Any)
     {
     }
+    
+    @IBAction func HandleChangeImageSize(_ sender: Any)
+    {
+        #if false
+        ChangeImageSize()
+        #endif
+    }
 }
