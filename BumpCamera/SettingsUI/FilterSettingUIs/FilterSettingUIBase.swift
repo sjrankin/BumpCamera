@@ -54,6 +54,7 @@ class FilterSettingUIBase: UITableViewController, UIImagePickerControllerDelegat
         {
             ImagePicker = UIImagePickerController()
             ImagePicker!.delegate = self
+            
             SampleImageName = _Settings.string(forKey: "SampleImage")!
             SampleView.image = UIImage(named: SampleImageName)
             SampleView.backgroundColor = UIColor.darkGray
@@ -63,16 +64,20 @@ class FilterSettingUIBase: UITableViewController, UIImagePickerControllerDelegat
                 let Tap = UITapGestureRecognizer(target: self, action: #selector(HandleSampleSelection))
                 SampleView.addGestureRecognizer(Tap)
             }
+            #if false
+            AddSampleView()
+            #endif
             ShowSampleView()
         }
         let End = CACurrentMediaTime()
         print("FilterSettingUIBase(Filter) start-up duration: \(End - Start) seconds")
     }
     
+    #if true
     /// Return the contents of the header row, which in our case is the sample image. The sample image is kept in
     /// the header row of the table to make sure it is visible regardless of how far the user scrolls the table.
     ///
-    /// - Note: https://stackoverflow.com/questions/43555124/how-to-freeze-a-tableview-cell-in-swift
+    /// - Note: Note: See [How to freeze a table view in Swift](https://stackoverflow.com/questions/43555124/how-to-freeze-a-tableview-cell-in-swift)
     ///
     /// - Parameters:
     ///   - tableView: Not used.
@@ -87,7 +92,7 @@ class FilterSettingUIBase: UITableViewController, UIImagePickerControllerDelegat
     /// in the header row because it is always visible, no matter how much the contents of the table have
     /// scrolled.
     ///
-    /// - Note: https://stackoverflow.com/questions/43555124/how-to-freeze-a-tableview-cell-in-swift
+    /// - Note: See [How to freeze a table view in Swift](https://stackoverflow.com/questions/43555124/how-to-freeze-a-tableview-cell-in-swift)
     ///
     /// - Parameters:
     ///   - tableView: Not used.
@@ -95,8 +100,33 @@ class FilterSettingUIBase: UITableViewController, UIImagePickerControllerDelegat
     /// - Returns: The vertical height of the header row.
     override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat
     {
-        return 180
+        return 180.0
     }
+    #endif
+    
+    #if false
+    /// Change the size of the sample image.
+    func ChangeImageSize()
+    {
+        var CurrentHeight = SampleView.frame.size.height
+        var CurrentWidth = SampleView.frame.size.width
+        print("Old SampleView size: \(CurrentWidth)x\(CurrentHeight)")
+        if CurrentHeight == 180.0
+        {
+            CurrentHeight = CurrentHeight * 2.0
+            CurrentWidth = CurrentWidth * 2.0
+        }
+        else
+        {
+            CurrentHeight = CurrentHeight / 2.0
+            CurrentWidth = CurrentWidth / 2.0
+        }
+                print("New SampleView size: \(CurrentWidth)x\(CurrentHeight)")
+        SampleView.frame.size.height = CurrentHeight
+        SampleView.frame.size.width = CurrentWidth
+        SizeHeaderToFit()
+    }
+    #endif
     
     /// When the view disappears, remove the notification observer.
     ///
@@ -115,20 +145,29 @@ class FilterSettingUIBase: UITableViewController, UIImagePickerControllerDelegat
     {
         if let Defaults = notification.object as? UserDefaults
         {
-            if let NewName = Defaults.value(forKey: "SampleImage") as? String
+            if let _ = Defaults.value(forKey: "SampleImage") as? String
             {
-                print("SampleImage set with name \"\(NewName)\"")
                 ShowSampleView()
             }
-            /*
-             if NewName != PreviousSampleImage
-             {
-             PreviousSampleImage = NewName!
-             ShowSampleView()
-             }
-             */
         }
     }
+    
+    #if false
+    func AddSampleView()
+    {
+        let OldFrame = SampleView.frame
+        let Ratio = 180.0 / SampleView.frame.size.height
+        let NewFrame = CGRect(x: OldFrame.minX, y: OldFrame.minY, width: OldFrame.width * Ratio, height: OldFrame.height * Ratio)
+        SampleView.frame = NewFrame
+        self.tableView.SetTableHeaderView(HeaderView: SampleView)
+    }
+    
+    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator)
+    {
+    super.viewWillTransition(to: size, with: coordinator)
+        self.SizeHeaderToFit()
+    }
+    #endif
     
     /// Object used to lock the sample viewer.
     let SampleViewLock = NSObject()
@@ -153,11 +192,11 @@ class FilterSettingUIBase: UITableViewController, UIImagePickerControllerDelegat
         {
             if ImageName == "custom image"
             {
-                print("Looking for custom image.")
+                //print("Looking for custom image.")
                 if let UserSample = FileHandler.GetSampleImage()
                 {
                     SampleImage = UserSample
-                    print("Found custom image.")
+                    //print("Found custom image.")
                 }
                 else
                 {
@@ -180,6 +219,9 @@ class FilterSettingUIBase: UITableViewController, UIImagePickerControllerDelegat
         let FinalImage = SampleFilter?.Render(Image: SampleImage)
         SampleView.image = FinalImage
         LastSampleImage = FinalImage
+        #if false
+        SizeHeaderToFit()
+        #endif
     }
     
     var LastSampleImage: UIImage? = nil
@@ -292,14 +334,14 @@ class FilterSettingUIBase: UITableViewController, UIImagePickerControllerDelegat
                 //If we're here, the image is well-behaved and we can convert it to CGImage backed easily.
                 let Context = CIContext()
                 let cgimg = Context.createCGImage(ciimg, from: ciimg.extent)
-                print("ciimage.extent=\(ciimg.extent)")
+                //print("ciimage.extent=\(ciimg.extent)")
                 Final = UIImage(cgImage: cgimg!)
             }
             else
             {
                 let ciimg = SampleFilter?.LastImageRendered(AsUIImage: false) as! CIImage
                 let Context = CIContext()
-                print("ciiage.extentX=\(ciimg.extent)")
+                //print("ciiage.extentX=\(ciimg.extent)")
                 let cgimg = Context.createCGImage(ciimg, from: ciimg.extent)
                 Final = UIImage(cgImage: cgimg!)
             }
@@ -596,3 +638,53 @@ class FilterSettingUIBase: UITableViewController, UIImagePickerControllerDelegat
         ParameterManager.SetField(To: FilterID, Field: ToField, Value: WithValue as Any?)
     }
 }
+
+#if false
+extension UITableView
+{
+    func SetTableHeaderView(HeaderView: UIView)
+    {
+        HeaderView.translatesAutoresizingMaskIntoConstraints = false
+        self.tableHeaderView = HeaderView
+        HeaderView.centerXAnchor.constraint(equalTo: self.centerXAnchor).isActive = true
+        HeaderView.centerYAnchor.constraint(equalTo: self.centerYAnchor).isActive = true
+        HeaderView.topAnchor.constraint(equalTo: self.topAnchor).isActive = true
+    }
+}
+
+extension FilterSettingUIBase
+{
+    //https://spin.atomicobject.com/2017/08/11/swift-extending-uitableviewcontroller/
+    func SizeHeaderToFit()
+    {
+        if let HeaderView = tableView.tableHeaderView
+        {
+            print("Setting constraints on sample view.")
+            SampleView.centerXAnchor.constraint(equalTo: HeaderView.centerXAnchor).isActive = true
+                        SampleView.centerYAnchor.constraint(equalTo: HeaderView.centerYAnchor).isActive = true
+            HeaderView.setNeedsLayout()
+            HeaderView.layoutIfNeeded()
+            
+            let Height = HeaderView.systemLayoutSizeFitting(UIView.layoutFittingCompressedSize).height
+            var Frame = HeaderView.frame
+            Frame.size.height = Height
+            tableView.tableHeaderView = HeaderView
+        }
+    }
+    
+    //https://spin.atomicobject.com/2017/08/11/swift-extending-uitableviewcontroller/
+    func SizeFooterToFit()
+    {
+        if let FooterView = tableView.tableFooterView
+        {
+            FooterView.setNeedsLayout()
+            FooterView.layoutIfNeeded()
+            
+            let Height = FooterView.systemLayoutSizeFitting(UIView.layoutFittingCompressedSize).height
+            var Frame = FooterView.frame
+            Frame.size.height = Height
+            tableView.tableFooterView = FooterView
+        }
+    }
+}
+#endif
