@@ -25,9 +25,11 @@ extension MainUIViewer
         switch AVCaptureDevice.authorizationStatus(for: .video)
         {
         case .authorized:
+            //User authorized camera usage earlier.
             return true
             
         case .notDetermined:
+            //Ask the user for permission.
             AVCaptureDevice.requestAccess(for: .video, completionHandler:
                 {
                     Granted in
@@ -43,11 +45,13 @@ extension MainUIViewer
             return WasGranted
             
         default:
+            //Not authorized.
             return false
         }
     }
     
-    func focus(with focusMode: AVCaptureDevice.FocusMode, exposureMode: AVCaptureDevice.ExposureMode, at devicePoint: CGPoint, monitorSubjectAreaChange: Bool)
+    func focus(with focusMode: AVCaptureDevice.FocusMode, exposureMode: AVCaptureDevice.ExposureMode,
+               at devicePoint: CGPoint, monitorSubjectAreaChange: Bool)
     {
         SessionQueue.async
             {
@@ -101,25 +105,25 @@ extension MainUIViewer
         VideoPreviewLayer!.frame = LiveView.bounds
     }
     
-    func ConfigureLiveView()
+    /// Configure the device for live view.
+    ///
+    /// - Returns: Value indicating success. If the configuration failed, the resultant enum also contains
+    ///            a string describing why the failure occurred.
+    func ConfigureLiveView() -> SetupResults
     {
         if OnSimulator
         {
-            print("Cannot configure live view on simulator.")
-            return
+            return .ConfigurationFailed(Reason: "Configuration failed: Cannot run live view on simulator.")
         }
         if SetupResult != .Success
         {
-            print("Error setting up device - cannot configure live view.")
-            return
+            return .ConfigurationFailed(Reason: "Error setting up device - cannot configure live view.")
         }
         
         let DefaultVideoDevice: AVCaptureDevice? = VideoDeviceDiscoverySession.devices.first
         guard let DefVideoDevice = DefaultVideoDevice else
         {
-            print("Configuration failed: No video device.")
-            SetupResult = .ConfigurationFailed(Reason: "No video device.")
-            return
+            return .ConfigurationFailed(Reason: "No video device.")
         }
         
         do
@@ -128,9 +132,7 @@ extension MainUIViewer
         }
         catch
         {
-            print("Configuration failed: Error creating input video device: \(error.localizedDescription)")
-            SetupResult = .ConfigurationFailed(Reason: "Error creating input video device.")
-            return
+            return .ConfigurationFailed(Reason: "Configuration failed: Error creating input video device. \(error.localizedDescription)")
         }
         
         CaptureSession.beginConfiguration()
@@ -138,10 +140,8 @@ extension MainUIViewer
         
         guard CaptureSession.canAddInput(VideoDeviceInput) else
         {
-            print("Configuration failed: Could not add video device for session.")
-            SetupResult = .ConfigurationFailed(Reason: "Could not add video device for session.")
             CaptureSession.commitConfiguration()
-            return
+            return .ConfigurationFailed(Reason: "Configuration failed: Could not add video device for session.")
         }
         CaptureSession.addInput(VideoDeviceInput)
         
@@ -153,10 +153,8 @@ extension MainUIViewer
         }
         else
         {
-            print("Configuration failed: Error adding video data output to the capture session.")
-            SetupResult = .ConfigurationFailed(Reason: "Error adding video data output to the capture session.")
             CaptureSession.commitConfiguration()
-            return
+            return .ConfigurationFailed(Reason: "Configuration failed: Error adding video data output to the capture session.")
         }
         
         if CaptureSession.canAddOutput(PhotoOutput)
@@ -177,10 +175,8 @@ extension MainUIViewer
         }
         else
         {
-            print("Configuration failed: Error adding photo device to session.")
-            SetupResult = .ConfigurationFailed(Reason: "Error adding photo device to session.")
             CaptureSession.commitConfiguration()
-            return
+            return .ConfigurationFailed(Reason: "Configuration failed: Error adding photo device to session.")
         }
         
         if _Settings.bool(forKey: "EnableDepthData")
@@ -196,10 +192,8 @@ extension MainUIViewer
                 }
                 else
                 {
-                    print("Configuration failed: Could not add depth data output to capture session.")
-                    SetupResult = .ConfigurationFailed(Reason: "Could not add depth data output to capture session.")
                     CaptureSession.commitConfiguration()
-                    return
+                    return .ConfigurationFailed(Reason: "Configuration failed: Could not add depth data output to capture session.")
                 }
                 if _Settings.bool(forKey: "EnableDepthData")
                 {
@@ -231,13 +225,10 @@ extension MainUIViewer
         }
         
         CaptureSession.commitConfiguration()
+        return .Success
     }
     
-    func SwitchToRearCamera()
-    {
-        DoSwitchCameras()
-    }
-    
+    /// Switch cameras (front to back or back to front).
     func DoSwitchCameras()
     {
         if OnSimulator
