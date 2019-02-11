@@ -56,6 +56,7 @@ extension FilterManager
         case Solarize = 29
         case Dither = 30
         case Threshold = 31
+        case MonochromeColor = 32
         case NotSet = 1000
     }
     
@@ -164,6 +165,27 @@ extension FilterManager
         case ApplyThresholdIfHigher = 67
         case LowThresholdColor = 68
         case HighThresholdColor = 69
+        case BrightChannels = 70
+        case RGBColorspace = 71
+        case ForRed = 72
+        case ForGreen = 73
+        case ForBlue = 74
+        case ForCyan = 75
+        case ForMagenta = 76
+        case ForYellow = 77
+        case ForBlack = 78
+        case ConditionalPixellation = 79
+        case InvertConditionalPixellationRange = 80
+        case ConditionalHueRangeLow = 81
+        case ConditionalHueRangeHigh = 82
+        case ConditionalBrightness = 83
+        case ConditionalSaturation = 84
+        case ConditionalBackground = 85
+        case ConditionalPixellationSelector = 86
+        case PixellationHighlighting = 87
+        case HueSegmentCount = 88
+        case MonochromeColorspace = 89
+        case HueSelectedSegment = 90
         case NoField = 1000
     }
     
