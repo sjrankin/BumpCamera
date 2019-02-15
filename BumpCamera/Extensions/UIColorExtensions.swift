@@ -55,6 +55,9 @@ extension UIColor
         return (Red, Green, Blue, Alpha)
     }
     
+    /// Return the RGB channels of the color.
+    ///
+    /// - Returns: Tuple of channel values in R, G, and B order.
     func AsRGB() -> (CGFloat, CGFloat, CGFloat)
     {
         let (R, G, B, _) = AsRGBA()
@@ -72,6 +75,15 @@ extension UIColor
         var Alpha: CGFloat = 1.0
         self.getHue(&Hue, saturation: &Saturation, brightness: &Brightness, alpha: &Alpha)
         return (Hue, Saturation, Brightness, Alpha)
+    }
+    
+    /// Return the hue of the instance color.
+    ///
+    /// - Returns: Normalized value of the hue of the color.
+    func Hue() -> CGFloat
+    {
+        let (TheHue, _, _, _) = self.AsHSBA()
+        return TheHue
     }
     
     /// Change the alpha component of the color to the passed value.
@@ -93,6 +105,9 @@ extension UIColor
         return UIColor(red: Red, green: Green, blue: Blue, alpha: Final)
     }
     
+    /// Return the alpha value of the instance color.
+    ///
+    /// - Returns: Alpha value of the color.
     func Alpha() -> CGFloat
     {
         let (_, _, _, A) = AsRGBA()
