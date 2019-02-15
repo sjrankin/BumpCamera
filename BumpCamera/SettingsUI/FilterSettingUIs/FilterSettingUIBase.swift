@@ -33,10 +33,12 @@ class FilterSettingUIBase: UITableViewController, UIImagePickerControllerDelegat
         print("\(FilterType) start at \(CACurrentMediaTime())")
         let Start = CACurrentMediaTime()
         
+        /*
         NotificationCenter.default.addObserver(self, selector: #selector(DefaultsChanged),
                                                name: UserDefaults.didChangeNotification,
                                                object: nil)
-        
+*/
+ 
         SampleView = UIImageView(image: UIImage(named: "Norio"))
         SampleView.contentMode = .scaleAspectFit
         ShowingSample = _Settings.bool(forKey: "ShowFilterSampleImages")
@@ -59,11 +61,19 @@ class FilterSettingUIBase: UITableViewController, UIImagePickerControllerDelegat
             SampleView.image = UIImage(named: SampleImageName)
             SampleView.backgroundColor = UIColor.darkGray
             SampleView.isUserInteractionEnabled = true
+            #if false
             if DoEnableSelect
             {
                 let Tap = UITapGestureRecognizer(target: self, action: #selector(HandleSampleSelection))
                 SampleView.addGestureRecognizer(Tap)
+                let LeftSwipe = UISwipeGestureRecognizer(target: self, action: #selector(HandleSampleChange))
+                LeftSwipe.direction = UISwipeGestureRecognizer.Direction.left
+                SampleView.addGestureRecognizer(LeftSwipe)
+                let RightSwipe = UISwipeGestureRecognizer(target: self, action: #selector(HandleSampleChange))
+                RightSwipe.direction = UISwipeGestureRecognizer.Direction.right
+                SampleView.addGestureRecognizer(RightSwipe)
             }
+            #endif
             #if false
             AddSampleView()
             #endif
@@ -121,12 +131,33 @@ class FilterSettingUIBase: UITableViewController, UIImagePickerControllerDelegat
             CurrentHeight = CurrentHeight / 2.0
             CurrentWidth = CurrentWidth / 2.0
         }
-                print("New SampleView size: \(CurrentWidth)x\(CurrentHeight)")
+        print("New SampleView size: \(CurrentWidth)x\(CurrentHeight)")
         SampleView.frame.size.height = CurrentHeight
         SampleView.frame.size.width = CurrentWidth
         SizeHeaderToFit()
     }
     #endif
+    
+    override func viewWillAppear(_ animated: Bool)
+    {
+        NotificationCenter.default.addObserver(self, selector: #selector(DefaultsChanged),
+                                               name: UserDefaults.didChangeNotification,
+                                               object: nil)
+        if ShowingSample
+        {
+            if DoEnableSelect
+            {
+                let Tap = UITapGestureRecognizer(target: self, action: #selector(HandleSampleSelection))
+                SampleView.addGestureRecognizer(Tap)
+                let LeftSwipe = UISwipeGestureRecognizer(target: self, action: #selector(HandleSampleChange))
+                LeftSwipe.direction = UISwipeGestureRecognizer.Direction.left
+                SampleView.addGestureRecognizer(LeftSwipe)
+                let RightSwipe = UISwipeGestureRecognizer(target: self, action: #selector(HandleSampleChange))
+                RightSwipe.direction = UISwipeGestureRecognizer.Direction.right
+                SampleView.addGestureRecognizer(RightSwipe)
+            }
+        }
+    }
     
     /// When the view disappears, remove the notification observer.
     ///
@@ -164,7 +195,7 @@ class FilterSettingUIBase: UITableViewController, UIImagePickerControllerDelegat
     
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator)
     {
-    super.viewWillTransition(to: size, with: coordinator)
+        super.viewWillTransition(to: size, with: coordinator)
         self.SizeHeaderToFit()
     }
     #endif
@@ -224,6 +255,74 @@ class FilterSettingUIBase: UITableViewController, UIImagePickerControllerDelegat
         #endif
     }
     
+    var CustomizedImageAvailable: Bool
+    {
+        get
+        {
+            if let _ = FileHandler.GetSampleImage()
+            {
+                return true
+            }
+            return false
+        }
+    }
+    
+    var SampleIndex = 0
+    let SampleImageList: [String] =
+        [
+            "Norio",
+            "HamanasuSample",
+            "DandelionSample",
+            "Painting",
+            "BWPortrait",
+            "TestPattern",
+            "TestPattern2",
+            "TestPattern3",
+            "TheProgrammer",
+            "custom image"
+    ]
+    
+    @objc func HandleSampleChange(_ Swipe: UISwipeGestureRecognizer)
+    {
+        if Swipe.direction == UISwipeGestureRecognizer.Direction .left
+        {
+            SampleIndex = SampleIndex - 1
+            if SampleIndex < 0
+            {
+                if CustomizedImageAvailable
+                {
+                    SampleIndex = SampleImageList.count - 1
+                }
+                else
+                {
+                    SampleIndex = SampleImageList.count - 2
+                }
+            }
+        }
+        else
+        {
+            SampleIndex = SampleIndex + 1
+            if CustomizedImageAvailable
+            {
+                if SampleIndex > SampleImageList.count - 1
+                {
+                    SampleIndex = 0
+                }
+            }
+            else
+            {
+                if SampleIndex > SampleImageList.count - 2
+                {
+                    SampleIndex = 0
+                }
+            }
+        }
+        
+        let NewImage = SampleImageList[SampleIndex]
+        print("NewImage=\(NewImage) at index \(SampleIndex)")
+        _Settings.set(NewImage, forKey: "SampleImage")
+    }
+    
     var LastSampleImage: UIImage? = nil
     
     /// Flag that lets the user select various sample images.
@@ -243,18 +342,11 @@ class FilterSettingUIBase: UITableViewController, UIImagePickerControllerDelegat
     /// When the user taps on the sample image, show a dialog that allows the user to change sample images.
     func ShowSampleSelectionDialog()
     {
-        let Alert = UIAlertController(title: "Select Sample Image",
-                                      message: "Select the sample image to use.",
+        let Alert = UIAlertController(title: "Manage Sample Image",
+                                      message: "Select the action to perform on the sample image.",
                                       preferredStyle: UIAlertController.Style.actionSheet)
-        Alert.addAction(UIAlertAction(title: "Cat", style: UIAlertAction.Style.default, handler: HandleNewSampleImage))
-        Alert.addAction(UIAlertAction(title: "Rose", style: UIAlertAction.Style.default, handler: HandleNewSampleImage))
-        Alert.addAction(UIAlertAction(title: "Dandelion", style: UIAlertAction.Style.default, handler: HandleNewSampleImage))
-        Alert.addAction(UIAlertAction(title: "Painted Portrait", style: UIAlertAction.Style.default, handler: HandleNewSampleImage))
-        Alert.addAction(UIAlertAction(title: "Black and White Portrait", style: UIAlertAction.Style.default, handler: HandleNewSampleImage))
-        Alert.addAction(UIAlertAction(title: "Test Pattern", style: UIAlertAction.Style.default, handler: HandleNewSampleImage))
-        Alert.addAction(UIAlertAction(title: "The Programmer", style: UIAlertAction.Style.default, handler: HandleNewSampleImage))
-        Alert.addAction(UIAlertAction(title: "Use Custom Image", style: UIAlertAction.Style.default, handler: HandleNewSampleImage))
         Alert.addAction(UIAlertAction(title: "Select Custom Image", style: UIAlertAction.Style.default, handler: HandleNewSampleImage))
+        Alert.addAction(UIAlertAction(title: "Clear Custom Image", style: UIAlertAction.Style.default, handler: HandleNewSampleImage))
         Alert.addAction(UIAlertAction(title: "Save Sample Image", style: UIAlertAction.Style.default, handler: HandleNewSampleImage))
         Alert.addAction(UIAlertAction(title: "Cancel", style: UIAlertAction.Style.cancel, handler: nil))
         self.present(Alert, animated: true, completion: nil)
@@ -267,46 +359,30 @@ class FilterSettingUIBase: UITableViewController, UIImagePickerControllerDelegat
     /// - Parameter Action: The action related to what the user tapped.
     @objc func HandleNewSampleImage(_ Action: UIAlertAction)
     {
-        var NewImageName: String? = nil
         switch Action.title
         {
         case "Save Sample Image":
             SaveSampleImage()
             
-        case "Cat":
-            NewImageName = "Norio"
-            
-        case "The Programmer":
-            NewImageName = "TheProgrammer"
-            
-        case "Rose":
-            NewImageName = "HamanasuSample"
-            
-        case "Dandelion":
-            NewImageName = "DandelionSample"
-            
-        case "Painted Portrait":
-            NewImageName = "Painting"
-            
-        case "Black and White Portrait":
-            NewImageName = "BWPortrait"
-            
-        case "Test Pattern":
-            NewImageName = "TestPattern"
-            
-        case "Use Custom Image":
-            NewImageName = "custom image"
-            
         case "Select Custom Image":
             GetUserSelectedImage()
+            
+        case "Clear Custom Image":
+            RemoveCustomImage()
             
         default:
             break
         }
-        if let NewImage = NewImageName
+    }
+    
+    func RemoveCustomImage()
+    {
+        if SampleIndex == SampleImageList.count - 1
         {
-            _Settings.set(NewImage, forKey: "SampleImage")
+            SampleIndex = 0
+            ShowSampleView()
         }
+        FileHandler.DeleteSampleImage()
     }
     
     /// Run the image picker to let the user select a custom image to use for the sample image.
@@ -661,7 +737,7 @@ extension FilterSettingUIBase
         {
             print("Setting constraints on sample view.")
             SampleView.centerXAnchor.constraint(equalTo: HeaderView.centerXAnchor).isActive = true
-                        SampleView.centerYAnchor.constraint(equalTo: HeaderView.centerYAnchor).isActive = true
+            SampleView.centerYAnchor.constraint(equalTo: HeaderView.centerYAnchor).isActive = true
             HeaderView.setNeedsLayout()
             HeaderView.layoutIfNeeded()
             
