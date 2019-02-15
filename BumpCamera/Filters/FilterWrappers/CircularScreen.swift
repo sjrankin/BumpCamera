@@ -113,23 +113,18 @@ class CircularScreen: FilterParent, Renderer
         let SourceImage = CIImage(cvImageBuffer: PixelBuffer)
         PrimaryFilter.setDefaults()
         PrimaryFilter.setValue(SourceImage, forKey: kCIInputImageKey)
-        var DoMerge = false
-        let WidthAsAny = ParameterManager.GetField(From: ID(), Field: FilterManager.InputFields.Width)
-        if let Width = WidthAsAny as? Double
-        {
-            PrimaryFilter.setValue(Width, forKey: kCIInputWidthKey)
-        }
-        let CenterAsAny = ParameterManager.GetField(From: ID(), Field: FilterManager.InputFields.Center)
-        if let Center = CenterAsAny as? CGPoint
-        {
-            let CVCenter = CIVector(x: Center.x, y: Center.y)
-            PrimaryFilter.setValue(CVCenter, forKey: kCIInputCenterKey)
-        }
-        let MergeAsAny = ParameterManager.GetField(From: ID(), Field: FilterManager.InputFields.MergeWithBackground)
-        if let MergeImages = MergeAsAny as? Bool
-        {
-            DoMerge = MergeImages
-        }
+        let Width = ParameterManager.GetDouble(From: ID(), Field: .Width, Default: 2.0)
+        PrimaryFilter.setValue(Width, forKey: kCIInputWidthKey)
+        PrimaryFilter.setValue(SourceImage, forKey: kCIInputImageKey)
+        
+        let BufferWidth = CVPixelBufferGetWidth(PixelBuffer)
+        let BufferHeight = CVPixelBufferGetHeight(PixelBuffer)
+        let CenterX = BufferWidth / 2
+        let CenterY = BufferHeight / 2
+        let CenterVector = CIVector(x: CGFloat(CenterX), y: CGFloat(CenterY))
+        PrimaryFilter.setValue(CenterVector, forKey: kCIInputCenterKey)
+        
+        let DoMerge = ParameterManager.GetBool(From: ID(), Field: .MergeWithBackground, Default: true)
         
         guard var FilteredImage = PrimaryFilter.value(forKey: kCIOutputImageKey) as? CIImage else
         {
@@ -199,23 +194,17 @@ class CircularScreen: FilterParent, Renderer
         PrimaryFilter = CIFilter(name: "CICircularScreen")
         PrimaryFilter?.setDefaults()
         PrimaryFilter?.setValue(Image, forKey: kCIInputImageKey)
-        let WidthAsAny = ParameterManager.GetField(From: ID(), Field: FilterManager.InputFields.Width)
-        if let Width = WidthAsAny as? Double
-        {
-            PrimaryFilter?.setValue(Width, forKey: kCIInputWidthKey)
-        }
-        let CenterAsAny = ParameterManager.GetField(From: ID(), Field: FilterManager.InputFields.Center)
-        if let Center = CenterAsAny as? CGPoint
-        {
-            let CVCenter = CIVector(x: Center.x, y: Center.y)
-            PrimaryFilter?.setValue(CVCenter, forKey: kCIInputCenterKey)
-        }
-        var DoMerge = false
-        let MergeAsAny = ParameterManager.GetField(From: ID(), Field: FilterManager.InputFields.MergeWithBackground)
-        if let MergeImages = MergeAsAny as? Bool
-        {
-            DoMerge = MergeImages
-        }
+        let Width = ParameterManager.GetDouble(From: ID(), Field: .Width, Default: 2.0)
+        PrimaryFilter?.setValue(Width, forKey: kCIInputWidthKey)
+        
+        let BufferWidth = Image.extent.width
+        let BufferHeight = Image.extent.height
+        let CenterX = BufferWidth / 2
+        let CenterY = BufferHeight / 2
+        let CenterVector = CIVector(x: CGFloat(CenterX), y: CGFloat(CenterY))
+        PrimaryFilter?.setValue(CenterVector, forKey: kCIInputCenterKey)
+        
+        let DoMerge = ParameterManager.GetBool(From: ID(), Field: .MergeWithBackground, Default: true)
         
         if let Result = PrimaryFilter?.value(forKey: kCIOutputImageKey) as? CIImage
         {
@@ -256,12 +245,6 @@ class CircularScreen: FilterParent, Renderer
         case .Width:
             return (.DoubleType, 5.0 as Any?)
             
-        case .Center:
-            return (.PointType, CGPoint(x: 0.0, y: 0.0) as Any?)
-            
-        case .CenterInImage:
-            return (.BoolType, true as Any?)
-            
         case .MergeWithBackground:
             return (.BoolType, true as Any?)
             
@@ -286,8 +269,6 @@ class CircularScreen: FilterParent, Renderer
         var Fields = [FilterManager.InputFields]()
         Fields.append(.Width)
         Fields.append(.Angle)
-        Fields.append(.Center)
-        Fields.append(.CenterInImage)
         Fields.append(.AdjustInLandscape)
         Fields.append(.MergeWithBackground)
         return Fields
