@@ -11,6 +11,9 @@ import CoreMedia
 import CoreVideo
 import MetalKit
 
+typealias ReturnBufferType = CFloat
+
+/// Wrapper for the Mirroring metal kernel.
 class MirroringDistortion: FilterParent, Renderer
 {
     required override init()
@@ -128,7 +131,7 @@ class MirroringDistortion: FilterParent, Renderer
         var MDirection = ParameterManager.GetInt(From: ID(), Field: .MirroringDirection, Default: 0)
         //Because AV-based images seem to be rotated either 90 or 270 degrees, we need to changed
         //the direction orientation if necessary.
-        MDirection = [0: 1, 1: 0, 2: 2][MDirection]!
+        MDirection = [0: 1, 1: 0, 2: 2, 3: 4, 4: 3][MDirection]!
         let HSide = 1 - ParameterManager.GetInt(From: ID(), Field: .HorizontalSide, Default: 0)
         let VSide = 1 - ParameterManager.GetInt(From: ID(), Field: .VerticalSide, Default: 0)
         var Quadrant = ParameterManager.GetInt(From: ID(), Field: .Quadrant, Default: 1)
@@ -145,6 +148,12 @@ class MirroringDistortion: FilterParent, Renderer
             
         case 2:
             MName = "Quadrant"
+            
+        case 3:
+            MName = "VMirror*"
+            
+        case 4:
+            MName = "HMirror*"
             
         default:
             MName = "Unknown"
@@ -196,6 +205,11 @@ class MirroringDistortion: FilterParent, Renderer
         ParameterBuffer = MetalDevice!.makeBuffer(length: MemoryLayout<MirrorParameters>.size, options: [])
         memcpy(ParameterBuffer.contents(), Parameters, MemoryLayout<MirrorParameters>.size)
         
+        let ResultCount = 10
+        let ResultsBuffer = MetalDevice!.makeBuffer(length: MemoryLayout<ReturnBufferType>.stride * ResultCount, options: [])
+        let Results = UnsafeBufferPointer<ReturnBufferType>(start: UnsafePointer(ResultsBuffer!.contents().assumingMemoryBound(to: ReturnBufferType.self)),
+                                                            count: ResultCount)
+        
         var NewPixelBuffer: CVPixelBuffer? = nil
         CVPixelBufferPoolCreatePixelBuffer(kCFAllocatorDefault, BufferPool!, &NewPixelBuffer)
         guard let OutputBuffer = NewPixelBuffer else
@@ -226,6 +240,8 @@ class MirroringDistortion: FilterParent, Renderer
         CommandEncoder.setTexture(OutputTexture, index: 1)
         CommandEncoder.setBuffer(ParameterBuffer, offset: 0, index: 0)
         
+        CommandEncoder.setBuffer(ResultsBuffer, offset: 0, index: 1)
+        
         let w = ComputePipelineState!.threadExecutionWidth
         let h = ComputePipelineState!.maxTotalThreadsPerThreadgroup / w
         let ThreadsPerThreadGroup = MTLSize(width: w, height: h, depth: 1)
@@ -235,6 +251,18 @@ class MirroringDistortion: FilterParent, Renderer
         CommandEncoder.dispatchThreadgroups(ThreadGroupsPerGrid, threadsPerThreadgroup: ThreadsPerThreadGroup)
         CommandEncoder.endEncoding()
         CommandBuffer.commit()
+        
+        CommandBuffer.waitUntilCompleted()
+        
+        #if false
+        for V in Results
+        {
+            if V > 0
+            {
+                print("V=\(V)")
+            }
+        }
+        #endif
         
         return OutputBuffer
     }
@@ -288,6 +316,11 @@ class MirroringDistortion: FilterParent, Renderer
             return nil
         }
         
+        let ResultCount = 10
+        let ResultsBuffer = MetalDevice!.makeBuffer(length: MemoryLayout<ReturnBufferType>.stride * ResultCount, options: [])
+        let Results = UnsafeBufferPointer<ReturnBufferType>(start: UnsafePointer(ResultsBuffer!.contents().assumingMemoryBound(to: ReturnBufferType.self)),
+                                                            count: ResultCount)
+        
         let Region = MTLRegionMake2D(0, 0, Int(ImageWidth), Int(ImageHeight))
         Texture.replace(region: Region, mipmapLevel: 0, withBytes: &RawData, bytesPerRow: Int((CgImage?.bytesPerRow)!))
         let OutputTextureDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: Texture.pixelFormat,
@@ -300,6 +333,8 @@ class MirroringDistortion: FilterParent, Renderer
         CommandEncoder?.setComputePipelineState(ImageComputePipelineState!)
         CommandEncoder?.setTexture(Texture, index: 0)
         CommandEncoder?.setTexture(OutputTexture, index: 1)
+        
+        CommandEncoder?.setBuffer(ResultsBuffer, offset: 0, index: 1)
         
         let MDirection = ParameterManager.GetInt(From: ID(), Field: .MirroringDirection, Default: 0)
         let HSide = ParameterManager.GetInt(From: ID(), Field: .HorizontalSide, Default: 0)
@@ -327,6 +362,16 @@ class MirroringDistortion: FilterParent, Renderer
         CommandEncoder!.endEncoding()
         CommandBuffer?.commit()
         CommandBuffer?.waitUntilCompleted()
+        
+        #if false
+        for V in Results
+        {
+            if V > 0
+            {
+                print("V=\(V)")
+            }
+        }
+        #endif
         
         let ImageSize = CGSize(width: Texture.width, height: Texture.height)
         let ImageByteCount = Int(ImageSize.width * ImageSize.height * 4)
