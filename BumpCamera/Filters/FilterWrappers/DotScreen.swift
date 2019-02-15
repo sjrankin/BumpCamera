@@ -113,28 +113,20 @@ class DotScreen: FilterParent, Renderer
         let SourceImage = CIImage(cvImageBuffer: PixelBuffer)
         PrimaryFilter.setDefaults()
         PrimaryFilter.setValue(SourceImage, forKey: kCIInputImageKey)
-        var DoMerge = false
-        let AngleAsAny = ParameterManager.GetField(From: ID(), Field: FilterManager.InputFields.Angle)
-        if let Angle = AngleAsAny as? Double
-        {
-            PrimaryFilter.setValue(Angle, forKey: kCIInputAngleKey)
-        }
-        let WidthAsAny = ParameterManager.GetField(From: ID(), Field: FilterManager.InputFields.Width)
-        if let Width = WidthAsAny as? Double
-        {
-            PrimaryFilter.setValue(Width, forKey: kCIInputWidthKey)
-        }
-        let CenterAsAny = ParameterManager.GetField(From: ID(), Field: FilterManager.InputFields.Center)
-        if let Center = CenterAsAny as? CGPoint
-        {
-            let CVCenter = CIVector(x: Center.x, y: Center.y)
-            PrimaryFilter.setValue(CVCenter, forKey: kCIInputCenterKey)
-        }
-        let MergeAsAny = ParameterManager.GetField(From: ID(), Field: FilterManager.InputFields.MergeWithBackground)
-        if let MergeImages = MergeAsAny as? Bool
-        {
-            DoMerge = MergeImages
-        }
+        let DoMerge = ParameterManager.GetBool(From: ID(), Field: .MergeWithBackground, Default: true)
+        
+        let Angle = ParameterManager.GetDouble(From: ID(), Field: .Angle, Default: 90.0)
+        PrimaryFilter.setValue(Angle, forKey: kCIInputAngleKey)
+        
+        let Width = ParameterManager.GetDouble(From: ID(), Field: .Width, Default: 2.0)
+        PrimaryFilter.setValue(Width, forKey: kCIInputWidthKey)
+        
+        let BufferWidth = CVPixelBufferGetWidth(PixelBuffer)
+        let BufferHeight = CVPixelBufferGetHeight(PixelBuffer)
+        let CenterX = BufferWidth / 2
+        let CenterY = BufferHeight / 2
+        let CenterVector = CIVector(x: CGFloat(CenterX), y: CGFloat(CenterY))
+        PrimaryFilter.setValue(CenterVector, forKey: kCIInputCenterKey)
         
         guard var FilteredImage = PrimaryFilter.value(forKey: kCIOutputImageKey) as? CIImage else
         {
@@ -200,32 +192,24 @@ class DotScreen: FilterParent, Renderer
     {
         objc_sync_enter(AccessLock)
         defer{objc_sync_exit(AccessLock)}
-
+        
         PrimaryFilter = CIFilter(name: "CIDotScreen")
         PrimaryFilter?.setDefaults()
         PrimaryFilter?.setValue(Image, forKey: kCIInputImageKey)
-        let AngleAsAny = ParameterManager.GetField(From: ID(), Field: FilterManager.InputFields.Angle)
-        if let Angle = AngleAsAny as? Double
-        {
-            PrimaryFilter?.setValue(Angle, forKey: kCIInputAngleKey)
-        }
-        let WidthAsAny = ParameterManager.GetField(From: ID(), Field: FilterManager.InputFields.Width)
-        if let Width = WidthAsAny as? Double
-        {
-            PrimaryFilter?.setValue(Width, forKey: kCIInputWidthKey)
-        }
-        let CenterAsAny = ParameterManager.GetField(From: ID(), Field: FilterManager.InputFields.Center)
-        if let Center = CenterAsAny as? CGPoint
-        {
-            let CVCenter = CIVector(x: Center.x, y: Center.y)
-            PrimaryFilter?.setValue(CVCenter, forKey: kCIInputCenterKey)
-        }
-        var DoMerge = false
-        let MergeAsAny = ParameterManager.GetField(From: ID(), Field: FilterManager.InputFields.MergeWithBackground)
-        if let MergeImages = MergeAsAny as? Bool
-        {
-            DoMerge = MergeImages
-        }
+        let DoMerge = ParameterManager.GetBool(From: ID(), Field: .MergeWithBackground, Default: true)
+        
+        let Angle = ParameterManager.GetDouble(From: ID(), Field: .Angle, Default: 90.0)
+        PrimaryFilter?.setValue(Angle, forKey: kCIInputAngleKey)
+        
+        let Width = ParameterManager.GetDouble(From: ID(), Field: .Width, Default: 2.0)
+        PrimaryFilter?.setValue(Width, forKey: kCIInputWidthKey)
+        
+        let BufferWidth = Image.extent.width
+        let BufferHeight = Image.extent.height
+        let CenterX = BufferWidth / 2
+        let CenterY = BufferHeight / 2
+        let CenterVector = CIVector(x: CGFloat(CenterX), y: CGFloat(CenterY))
+        PrimaryFilter?.setValue(CenterVector, forKey: kCIInputCenterKey)
         
         if let Result = PrimaryFilter?.value(forKey: kCIOutputImageKey) as? CIImage
         {
@@ -269,13 +253,7 @@ class DotScreen: FilterParent, Renderer
         case .Angle:
             return (.DoubleType, 90.0 as Any?)
             
-        case .Center:
-            return (.PointType, CGPoint(x: -1.0, y: -1.0) as Any?)
-            
         case .MergeWithBackground:
-            return (.BoolType, true as Any?)
-            
-        case .CenterInImage:
             return (.BoolType, true as Any?)
             
         case .AdjustInLandscape:
@@ -294,11 +272,9 @@ class DotScreen: FilterParent, Renderer
     public static func SupportedFields() -> [FilterManager.InputFields]
     {
         var Fields = [FilterManager.InputFields]()
-        Fields.append(.CenterInImage)
         Fields.append(.AdjustInLandscape)
         Fields.append(.Width)
         Fields.append(.Angle)
-        Fields.append(.Center)
         Fields.append(.MergeWithBackground)
         return Fields
     }
