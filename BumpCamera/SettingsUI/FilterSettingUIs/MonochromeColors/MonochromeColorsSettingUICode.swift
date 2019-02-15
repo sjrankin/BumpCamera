@@ -34,13 +34,82 @@ class MonochromeColorsSettingUICode: FilterSettingUIBase
         YellowSwitch.isOn = ParameterManager.GetBool(From: FilterID, Field: .ForYellow, Default: true)
         BlackSwitch.isOn = ParameterManager.GetBool(From: FilterID, Field: .ForBlack, Default: false)
         let SegmentCount = ParameterManager.GetInt(From: FilterID, Field: .HueSegmentCount, Default: 10)
-        SegmentCountSlider.value = Float(SegmentCount * 50)
-        SegmentCountLabel.text = "\(SegmentCount)"
         let SegmentIndex = ParameterManager.GetInt(From: FilterID, Field: .HueSelectedSegment, Default: 0)
-        SegmentIndexSlider.value = Float(SegmentIndex * 50)
-        SegmentIndexValue.text = "\(SegmentIndex)"
-        SegmentCountSlider.addTarget(self, action: #selector(SegmentCountStoppedSliding), for: [.touchUpInside, .touchUpOutside])
-        SegmentIndexSlider.addTarget(self, action: #selector(SegmentIndexStoppedSliding), for: [.touchUpInside, .touchUpOutside])
+        SetSegmentCount(To: SegmentCount)
+        SetSegmentIndex(To: SegmentIndex)
+        SetDisabledIndices(SegmentCount)
+    }
+    
+    func SetSegmentCount(To: Int)
+    {
+        if To < 1
+        {
+            return
+        }
+        if To > 10
+        {
+            return
+        }
+        if To >= 1 && To <= 5
+        {
+            SegmentCount1.selectedSegmentIndex = UISegmentedControl.noSegment
+            SegmentCount0.selectedSegmentIndex = To - 1
+        }
+        else
+        {
+            SegmentCount0.selectedSegmentIndex = UISegmentedControl.noSegment
+            SegmentCount1.selectedSegmentIndex = To - 6
+        }
+    }
+    
+    func GetSegmentCount() -> Int
+    {
+        if SegmentCount1.selectedSegmentIndex == UISegmentedControl.noSegment
+        {
+            return SegmentCount0.selectedSegmentIndex + 1
+        }
+        else
+        {
+            return SegmentCount1.selectedSegmentIndex + 6
+        }
+    }
+    
+    func SetSegmentIndex(To: Int)
+    {
+        if To < 1
+        {
+            return
+        }
+        if To > 10
+        {
+            return
+        }
+        print("Setting segment index to \(To)")
+        if To >= 1 && To <= 5
+        {
+            SegmentIndex1.selectedSegmentIndex = UISegmentedControl.noSegment
+            SegmentIndex0.selectedSegmentIndex = To - 1
+        }
+        else
+        {
+            SegmentIndex0.selectedSegmentIndex = UISegmentedControl.noSegment
+            SegmentIndex1.selectedSegmentIndex = To - 6
+        }
+    }
+    
+    func GetSegmentIndex() -> Int
+    {
+        var Index = 0
+        if SegmentIndex1.selectedSegmentIndex == UISegmentedControl.noSegment
+        {
+            Index = SegmentIndex0.selectedSegmentIndex + 1
+        }
+        else
+        {
+            Index = SegmentIndex1.selectedSegmentIndex + 6
+        }
+        print("Selected segment index: \(Index)")
+        return Index
     }
     
     func SetColorspace(_ Colorspace: Int)
@@ -63,78 +132,99 @@ class MonochromeColorsSettingUICode: FilterSettingUIBase
         BlackSwitch.isEnabled = Colorspace == 1
         HueLabel.isEnabled = Colorspace == 2
         SegmentLabel.isEnabled = Colorspace == 2
-        SegmentCountSlider.isEnabled = Colorspace == 2
-        SegmentCountLabel.isEnabled = Colorspace == 2
+        SegmentCount0.isEnabled = Colorspace == 2
+        SegmentCount1.isEnabled = Colorspace == 2
+        SegmentIndex0.isEnabled = Colorspace == 2
+        SegmentIndex1.isEnabled = Colorspace == 2
         IndexLabel.isEnabled = Colorspace == 2
-        SegmentIndexSlider.isEnabled = Colorspace == 2
-        SegmentIndexValue.isEnabled = Colorspace == 2
     }
     
-    func CoordinateSlidersFromCount(_ NewSegmentCount: Int)
+    func EnableIndexAt(_ IndexValue: Int, To: Bool)
     {
-        let IndexValue = Int(SegmentIndexSlider.value / 50.0)
-        if IndexValue <= NewSegmentCount
+        if IndexValue < 1
         {
             return
         }
-        SegmentIndexSlider.value = Float(NewSegmentCount * 50)
-        SegmentIndexValue.text = "\(NewSegmentCount)"
-        UpdateValue(WithValue: NewSegmentCount, ToField: .HueSelectedSegment)
-    }
-    
-    @IBAction func HandleSegmentCountChanged(_ sender: Any)
-    {
-        let SliderValue = Int(SegmentCountSlider.value / 50.0)
-        SegmentCountLabel.text = "\(SliderValue)"
-        CoordinateSlidersFromCount(SliderValue)
-    }
-    
-    func CoordinateSlidersFromIndex(_ NewIndexCount: Int)
-    {
-        let SegmentCount = Int(SegmentCountSlider.value / 50.0)
-        if NewIndexCount <= SegmentCount
+        if IndexValue > 10
         {
-            SnapIndexBack = false
-            SegmentIndexSlider.tintColor = self.view.tintColor
-            SegmentIndexValue.textColor = UIColor.black
             return
         }
-        SegmentIndexSlider.tintColor = UIColor.red
-        SegmentIndexValue.textColor = UIColor.red
-        SnapIndexBack = true
+        if IndexValue < 6
+        {
+            SegmentIndex0.setEnabled(To, forSegmentAt: IndexValue - 1)
+        }
+        else
+        {
+            SegmentIndex1.setEnabled(To, forSegmentAt: IndexValue - 6)
+        }
     }
     
-    var SnapIndexBack = false
-    
-    @objc func SegmentCountStoppedSliding()
+    func SetDisabledIndices(_ ToValid: Int)
     {
-        let SliderValue = Int(SegmentCountSlider.value / 50.0)
-        SegmentCountLabel.text = "\(SliderValue)"
-        CoordinateSlidersFromCount(SliderValue)
-        UpdateValue(WithValue: SliderValue, ToField: .HueSegmentCount)
+        print("SetDisabledIndices(\(ToValid))")
+        let Final = ToValid
+        if Final >= 10
+        {
+            for i in 1 ... 5
+            {
+                SegmentIndex0.setEnabled(true, forSegmentAt: i - 1)
+                SegmentIndex1.setEnabled(true, forSegmentAt: i - 1)
+            }
+            return
+        }
+        for i in 1 ... Final
+        {
+            EnableIndexAt(i, To: true)
+        }
+        for i in Final + 1 ... 10
+        {
+            EnableIndexAt(i, To: false)
+        }
+    }
+    
+    func UpdateIndices(WithCount: Int)
+    {
+        let CurrentIndex = GetSegmentIndex()
+        if CurrentIndex > WithCount
+        {
+            print("Index \(CurrentIndex) > segment count \(WithCount)")
+            SetSegmentIndex(To: WithCount)
+            
+        }
+        SetDisabledIndices(WithCount)
+    }
+    
+    func UpdateSegmentCount()
+    {
+        let NewCount = GetSegmentCount()
+        UpdateIndices(WithCount: NewCount)
+        UpdateValue(WithValue: NewCount, ToField: .HueSegmentCount)
         ShowSampleView()
     }
     
-    @IBAction func HandleSegmentIndexChanged(_ sender: Any)
+    @IBAction func HandleSegment0Changed(_ sender: Any)
     {
-        let SliderValue = Int(SegmentIndexSlider.value / 50.0)
-        SegmentIndexValue.text = "\(SliderValue)"
-        CoordinateSlidersFromIndex(SliderValue)
+        SegmentCount1.selectedSegmentIndex = UISegmentedControl.noSegment
+        UpdateSegmentCount()
     }
     
-    @objc func SegmentIndexStoppedSliding()
+    @IBAction func HandleSegment1Changed(_ sender: Any)
     {
-        if SnapIndexBack
-        {
-            SnapIndexBack = false
-            let SegmentCount = Int(SegmentCountSlider.value / 50.0)
-            SegmentIndexSlider.tintColor = self.view.tintColor
-            SegmentIndexValue.textColor = UIColor.black
-            SegmentIndexSlider.value = Float(SegmentCount * 50)
-        }
-        let SliderValue = Int(SegmentIndexSlider.value / 50.0)
-        SegmentIndexValue.text = "\(SliderValue)"
-        UpdateValue(WithValue: SliderValue, ToField: .HueSelectedSegment)
+        SegmentCount0.selectedSegmentIndex = UISegmentedControl.noSegment
+        UpdateSegmentCount()
+    }
+    
+    @IBAction func HandleIndex0Changed(_ sender: Any)
+    {
+        SegmentIndex1.selectedSegmentIndex = UISegmentedControl.noSegment
+        UpdateValue(WithValue: SegmentIndex0.selectedSegmentIndex + 1, ToField: .HueSelectedSegment)
+        ShowSampleView()
+    }
+    
+    @IBAction func HandleIndex1Changed(_ sender: Any)
+    {
+        SegmentIndex0.selectedSegmentIndex = UISegmentedControl.noSegment
+        UpdateValue(WithValue: SegmentIndex1.selectedSegmentIndex + 1, ToField: .HueSelectedSegment)
         ShowSampleView()
     }
     
@@ -225,9 +315,9 @@ class MonochromeColorsSettingUICode: FilterSettingUIBase
     @IBOutlet weak var BlackSwitch: UISwitch!
     @IBOutlet weak var HueLabel: UILabel!
     @IBOutlet weak var SegmentLabel: UILabel!
-    @IBOutlet weak var SegmentCountSlider: UISlider!
-    @IBOutlet weak var SegmentCountLabel: UILabel!
     @IBOutlet weak var IndexLabel: UILabel!
-    @IBOutlet weak var SegmentIndexSlider: UISlider!
-    @IBOutlet weak var SegmentIndexValue: UILabel!
+    @IBOutlet weak var SegmentCount0: UISegmentedControl!
+    @IBOutlet weak var SegmentCount1: UISegmentedControl!
+    @IBOutlet weak var SegmentIndex0: UISegmentedControl!
+    @IBOutlet weak var SegmentIndex1: UISegmentedControl!
 }
