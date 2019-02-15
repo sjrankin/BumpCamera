@@ -19,16 +19,17 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" preservesSuperviewLayoutMargins="YES" image="LaunchImage" translatesAutoresizingMaskIntoConstraints="NO" id="yNl-LV-tcD">
-                                <rect key="frame" x="20" y="228" width="374" height="280"/>
+                                <rect key="frame" x="20" y="181" width="374" height="374"/>
                                 <viewLayoutGuide key="safeArea" id="Ax1-49-APG"/>
                             </imageView>
                         </subviews>
                         <color key="backgroundColor" red="1" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstItem="yNl-LV-tcD" firstAttribute="leading" secondItem="Ze5-6b-2t3" secondAttribute="leadingMargin" id="3JU-JR-HiA"/>
-                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="yNl-LV-tcD" secondAttribute="bottom" constant="228" id="ReX-3e-UgV"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="yNl-LV-tcD" secondAttribute="bottom" constant="181" id="ReX-3e-UgV"/>
                             <constraint firstItem="yNl-LV-tcD" firstAttribute="trailing" secondItem="Ze5-6b-2t3" secondAttribute="trailingMargin" id="d2Q-bs-tJX"/>
                             <constraint firstItem="yNl-LV-tcD" firstAttribute="centerY" secondItem="Ze5-6b-2t3" secondAttribute="centerY" id="dgw-1M-LlD"/>
+                            <constraint firstItem="yNl-LV-tcD" firstAttribute="centerY" secondItem="Ze5-6b-2t3" secondAttribute="centerY" id="di2-sW-otw"/>
                             <constraint firstItem="yNl-LV-tcD" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="usY-NS-5vz"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
@@ -40,6 +41,6 @@
         </scene>
     </scenes>
     <resources>
-        <image name="LaunchImage" width="839" height="662.15997314453125"/>
+        <image name="LaunchImage" width="614.4000244140625" height="614.4000244140625"/>
     </resources>
 </document>
