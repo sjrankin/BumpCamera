@@ -17,6 +17,12 @@ class FilterParent
 {
     // MARK: Common convenience functions.
     
+    /// Merge two images using the SourceAtop compositing filter.
+    ///
+    /// - Parameters:
+    ///   - Top: The top image (eg, closest to the viewer).
+    ///   - Bottom: The bottom image (eg, the background image).
+    /// - Returns: Merged image on success, nil on error.
     func Merge(_ Top: CIImage, _ Bottom: CIImage) -> CIImage?
     {
         let InvertFilter = CIFilter(name: "CIColorInvert")
@@ -73,7 +79,15 @@ class FilterParent
         }
     }
     
-    //https://stackoverflow.com/questions/44462087/how-to-convert-a-uiimage-to-a-cvpixelbuffer
+    //
+    
+    /// Get the pixel buffer from the passed image.
+    ///
+    /// - Note:
+    ///     - [How to convert a UUImage to a CVPixelBuffer](https://stackoverflow.com/questions/44462087/how-to-convert-a-uiimage-to-a-cvpixelbuffer)
+    ///
+    /// - Parameter Image: The image that is the source of the returned pixel buffer.
+    /// - Returns: Pixel buffer with image data from the passed image on success, nil on error.
     func GetPixelBufferFrom(_ Image: UIImage) -> CVPixelBuffer?
     {
         let Attributes = [kCVPixelBufferCGImageCompatibilityKey: kCFBooleanTrue,
@@ -153,6 +167,13 @@ class FilterParent
     
     // MARK: Common pixel buffer allocation functions.
     
+    /// Create a buffer pool with the suggested number of entries and passed format.
+    ///
+    /// - Parameters:
+    ///   - From: Format to use for the buffer.
+    ///   - BufferCountHint: Suggested number of entries in the buffer pool.
+    /// - Returns: Tuple with the following contents: (The buffer pool to use, the color space of
+    ///            the buffer pool, and a description of the format of the buffer pool).
     func CreateBufferPool(From: CMFormatDescription, BufferCountHint: Int) ->
         (BufferPool: CVPixelBufferPool?, ColorSpace: CGColorSpace?, FormatDescription: CMFormatDescription?)
     {
@@ -253,5 +274,43 @@ class FilterParent
     func RotateImage(_ Image: CIImage) -> CIImage
     {
         return Image.oriented(CGImagePropertyOrientation.right)
+    }
+}
+
+/// Filter execution result types.
+///
+/// - Success: Returned on successful execution of a given filter. Result contains the final
+///            successful result of the operation.
+/// - Failure: Returned on a failed execution of a given filter. Failure(let Reason) will
+///            return the reason (in a string) why the filter failed.
+public enum RunFilterResults<T>
+{
+    case Success(Result: T)
+    case Failure(Reason: String)
+}
+
+/// Equatable extension for the RunFilterResults enum.
+extension RunFilterResults: Equatable
+{
+    /// Compares two RunFilterResults for equality.
+    ///
+    /// - Parameters:
+    ///   - lhs: Left-hand side value.
+    ///   - rhs: Right-hand side value.
+    /// - Returns: True if the two sides are equal, false if not. Associated values for
+    ///            enum cases are not taken into account.
+    public static func ==(lhs: RunFilterResults, rhs: RunFilterResults) -> Bool
+    {
+        switch (lhs, rhs)
+        {
+        case (.Success, .Success):
+            return true
+            
+        case (.Failure, .Failure):
+            return true
+        
+        default:
+            return false
+        }
     }
 }
