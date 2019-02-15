@@ -260,4 +260,58 @@ class FileHandler
             return nil
         }
     }
+    
+    /// Delete the file at the specified URL.
+    ///
+    /// - Parameter FileURL: The URL of the file to delete.
+    /// - Returns: True if the file was deleted, false if not.
+    public static func DeleteFile(_ FileURL: URL) -> Bool
+    {
+        if !FileManager.default.fileExists(atPath: FileURL.path)
+        {
+            print("Unable to find the file \(FileURL.path) - cannot delete.")
+            return false
+        }
+        do
+        {
+        try FileManager.default.removeItem(at: FileURL)
+            return true
+        }
+        catch
+        {
+            print("Error deleting file \(FileURL.path): error: \(error.localizedDescription)")
+            return false
+        }
+    }
+    
+    /// Delete the sample image in the sample image directory.
+    ///
+    /// - Returns: True if the file was deleted, false if not (for any reason - not necessarily an error).
+    @discardableResult public static func DeleteSampleImage() -> Bool
+    {
+        if !DirectoryExists(DirectoryName: SampleDirectory)
+        {
+            //No sample directory. Nothing to delete. Nothing deleted.
+            return false
+        }
+        if let SampleDirURL = GetDirectoryURL(DirectoryName: SampleDirectory)
+        {
+            if let Images = GetFilesIn(Directory: SampleDirURL)
+            {
+                if Images.count < 1
+                {
+                    return false
+                }
+                return DeleteFile(Images[0])
+            }
+            else
+            {
+                return false
+            }
+        }
+        else
+        {
+            return false
+        }
+    }
 }
