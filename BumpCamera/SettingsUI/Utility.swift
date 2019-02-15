@@ -1623,5 +1623,97 @@ class Utility
         let W = Round(Raw.w, ToPlaces: 2)
         return (String(X), String(Y), String(Z), String(W))
     }
+    
+    /// Convert the passed UInt64 value into a string, separated into groups of three.
+    ///
+    /// - Parameters:
+    ///   - Raw: The UInt64 to convert and format.
+    ///   - Separator: The string to separate the groups of digits.
+    /// - Returns: Value converted to a string with separators breaking the value into groups of three each.
+    public static func MakeSeparatedNumber(_ Raw: UInt64, Separator: String) -> String
+    {
+        let SRaw = "\(Raw)"
+        return SeparateNumber(SRaw, Separator: Separator)
+    }
+    
+    /// Convert the passed UInt value into a string, separated into groups of three.
+    ///
+    /// - Parameters:
+    ///   - Raw: The UInt to convert and format.
+    ///   - Separator: The string to separate the groups of digits.
+    /// - Returns: Value converted to a string with separators breaking the value into groups of three each.
+    public static func MakeSeparatedNumber(_ Raw: UInt, Separator: String) -> String
+    {
+        let SRaw = "\(Raw)"
+        return SeparateNumber(SRaw, Separator: Separator)
+    }
+    
+    /// Convert the passed Int value into a string, separated into groups of three.
+    ///
+    /// - Parameters:
+    ///   - Raw: The Int to convert and format.
+    ///   - Separator: The string to separate the groups of digits.
+    /// - Returns: Value converted to a string with separators breaking the value into groups of three each.
+    public static func MakeSeparatedNumber(_ Raw: Int, Separator: String) -> String
+    {
+        let SRaw = "\(Raw)"
+        return SeparateNumber(SRaw, Separator: Separator)
+    }
+    
+    /// Break a number (presumably the string sent is a number) into groups of three digits separated by a
+    /// specified separator.
+    ///
+    /// - Parameters:
+    ///   - Raw: The number (in string format) to separate.
+    ///   - Separator: The string to use separate groups.
+    /// - Returns: String of digits (or anything, really) separated into groups of three, separated by the
+    ///            specified separator string.
+    private static func SeparateNumber(_ Raw: String, Separator: String) -> String
+    {
+        if Raw.count <= 3
+        {
+            return Raw
+        }
+        let Working = String(Raw.reversed())
+        var Final = ""
+        for i in 0 ..< Working.count
+        {
+            let AChar = String(Working[i...i])
+            if i > 0 && i % 3 == 0
+            {
+                Final = Final + Separator
+            }
+            Final = Final + AChar
+        }
+        Final = String(Final.reversed())
+        if String(Final.first!) == Separator
+        {
+            Final.removeFirst()
+        }
+        return Final
+    }
+    
+    /// Converts a large number to a small float in a string with the appropriate suffix. For numbers over a billion, "GB" is appended.
+    /// For numbers less than a billion, MB is appended.
+    ///
+    /// - Parameter BigNum: The number to convert.
+    /// - Returns: BigNum divided by either a billion or a million then converted to a string with the appropriate suffix added.
+    public static func BigNumToSuffixedNum(BigNum: Int64) -> String
+    {
+        let Billion: Int64 = 1000000000
+        let Million: Int64 = 1000000
+        let Billions: Double = Double(Double(BigNum) / Double(Billion))
+        if Billions < 1.0
+        {
+            let Millions = Double(Double(BigNum) / Double(Million))
+            let MString = "\(Millions.Round(To: 2))MB"
+            return MString
+        }
+        else
+        {
+            let BString = "\(Billions.Round(To: 2))GB"
+            return BString
+        }
+    }
 }
 
