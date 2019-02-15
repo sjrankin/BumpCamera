@@ -57,6 +57,10 @@ extension FilterManager
         case Dither = 30
         case Threshold = 31
         case MonochromeColor = 32
+        case EdgeWork = 33
+        case FalseColor = 34
+        case CornerGradient = 35
+        case DilateErode = 36
         case NotSet = 1000
     }
     
@@ -186,7 +190,21 @@ extension FilterManager
         case HueSegmentCount = 88
         case MonochromeColorspace = 89
         case HueSelectedSegment = 90
-        case NoField = 1000
+        case Color0 = 91
+        case Color1 = 92
+        case ULColor = 93
+        case URColor = 94
+        case LLColor = 95
+        case LRColor = 96
+        case HasULColor = 97
+        case HasURColor = 98
+        case HasLLColor = 99
+        case HasLRColor = 100
+        case AlphaGradiates = 101
+        case WindowSize = 102
+        case ValueDetermination = 103
+        case Operation = 104
+        case NoField = 10000
     }
     
     public enum InputTypes: Int
