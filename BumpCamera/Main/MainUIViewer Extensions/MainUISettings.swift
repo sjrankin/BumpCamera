@@ -35,6 +35,7 @@ extension MainUIViewer
         _Settings.set(0, forKey: "SetupForFilterType")
         _Settings.set(true, forKey: "ShowFilterSampleImages")
         _Settings.set(true, forKey: "StartWithLastFilter")
+        _Settings.set(true, forKey: "ShowClosestColor")
         let InitialGroupID = Filters?.GetGroupID(ForGroup: .Standard)
         _Settings.set(InitialGroupID?.uuidString, forKey: "CurrentGroup")
         let InitialFilterID = Filters?.GetFilterID(For: .PassThrough)
