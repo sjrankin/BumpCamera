@@ -31,7 +31,16 @@ class MirroringFilterSettingsUICode: FilterSettingUIBase
         Q4Button.backgroundColor = UIColor.white
         
         let MDirection = ParameterManager.GetInt(From: FilterID, Field: .MirroringDirection, Default: 0)
+        if MDirection < 3
+        {
+            MirroringDirection.selectedSegmentIndex = UISegmentedControl.noSegment
         DirectionSegment.selectedSegmentIndex = MDirection
+        }
+        else
+        {
+            DirectionSegment.selectedSegmentIndex = UISegmentedControl.noSegment
+            MirroringDirection.selectedSegmentIndex = MDirection - 3
+        }
         let HSide = ParameterManager.GetInt(From: FilterID, Field: .HorizontalSide, Default: 0)
         HorizontalSourceSegment.selectedSegmentIndex = HSide
         let VSide = ParameterManager.GetInt(From: FilterID, Field: .VerticalSide, Default: 0)
@@ -95,13 +104,28 @@ class MirroringFilterSettingsUICode: FilterSettingUIBase
             Q4Button.isEnabled = true
             
         default:
-            break
+            HorizontalSourceSegment.isEnabled = false
+            HorizontalSourceLabel.isEnabled = false
+            VerticalSourceSegment.isEnabled = false
+            VerticalSourceLabel.isEnabled = false
+            QuadrantLabel.isEnabled = false
+            Q1Button.isEnabled = false
+            Q2Button.isEnabled = false
+            Q3Button.isEnabled = false
+            Q4Button.isEnabled = false
         }
     }
     
     func UpdateParameters()
     {
+        if DirectionSegment.selectedSegmentIndex != UISegmentedControl.noSegment
+        {
         UpdateValue(WithValue: DirectionSegment.selectedSegmentIndex, ToField: .MirroringDirection)
+        }
+        else
+        {
+            UpdateValue(WithValue: MirroringDirection.selectedSegmentIndex + 3, ToField: .MirroringDirection)
+        }
         UpdateValue(WithValue: HorizontalSourceSegment.selectedSegmentIndex, ToField: .HorizontalSide)
         UpdateValue(WithValue: VerticalSourceSegment.selectedSegmentIndex, ToField: .VerticalSide)
         ShowSampleView()
@@ -119,6 +143,14 @@ class MirroringFilterSettingsUICode: FilterSettingUIBase
     
     @IBAction func HandleDirectionChanged(_ sender: Any)
     {
+        MirroringDirection.selectedSegmentIndex = UISegmentedControl.noSegment
+        UpdateParameters()
+        SetUI()
+    }
+    
+    @IBAction func HandleMirroringChanged(_ sender: Any)
+    {
+        DirectionSegment.selectedSegmentIndex = UISegmentedControl.noSegment
         UpdateParameters()
         SetUI()
     }
@@ -172,6 +204,7 @@ class MirroringFilterSettingsUICode: FilterSettingUIBase
         SetSelectedQuadrant(Quadrant: 4)
     }
     
+    @IBOutlet weak var MirroringDirection: UISegmentedControl!
     @IBOutlet weak var Q1Button: UIButton!
     @IBOutlet weak var Q2Button: UIButton!
     @IBOutlet weak var Q3Button: UIButton!
