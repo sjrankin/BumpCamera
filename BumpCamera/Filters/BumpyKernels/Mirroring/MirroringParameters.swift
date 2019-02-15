@@ -11,7 +11,8 @@ import simd
 
 struct MirrorParameters
 {
-    //0 = horizontal (left to right), 1 = vertical (top to bottom), 2 = quadrant
+    //0 = horizontal (left to right), 1 = vertical (top to bottom), 2 = quadrant,
+    //3 = mirror horizontally, 4 = mirror vertically
     let Direction: simd_uint1
     //0 = left, 1 = right
     let HorizontalSide: simd_uint1
