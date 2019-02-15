@@ -68,6 +68,9 @@
 		173F633422001800006CB67C /* Pixellate2Table.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 173F633322001800006CB67C /* Pixellate2Table.storyboard */; };
 		173FDCBF220EA61300EFA90D /* VideoMixer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 173FDCBE220EA61300EFA90D /* VideoMixer.swift */; };
 		173FDCC1220EB86C00EFA90D /* MainUIUserInteractions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 173FDCC0220EB86C00EFA90D /* MainUIUserInteractions.swift */; };
+		1740CEC42216A10A00BFD1A0 /* LicenseViewer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1740CEC32216A10A00BFD1A0 /* LicenseViewer.swift */; };
+		1740CEC62216A4A300BFD1A0 /* LicensingList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1740CEC52216A4A300BFD1A0 /* LicensingList.swift */; };
+		1740CEC82216B2FE00BFD1A0 /* Platform.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1740CEC72216B2FE00BFD1A0 /* Platform.swift */; };
 		174779F822042FEC00FD64EF /* NoParametersSettingsUI.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 174779F722042FEC00FD64EF /* NoParametersSettingsUI.storyboard */; };
 		174779FA2204309600FD64EF /* NoParametersSettingsUICode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 174779F92204309600FD64EF /* NoParametersSettingsUICode.swift */; };
 		174779FC2204338600FD64EF /* CollapsibleHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 174779FB2204338600FD64EF /* CollapsibleHeader.swift */; };
@@ -126,6 +129,10 @@
 		17C3926222159FBC0049B8FD /* DilateErode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17C3926122159FBC0049B8FD /* DilateErode.swift */; };
 		17C392652215A4480049B8FD /* DilateErodeSettingsUI.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 17C392642215A4480049B8FD /* DilateErodeSettingsUI.storyboard */; };
 		17C392672215A5CB0049B8FD /* DilateErodeSettingsUICode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17C392662215A5CB0049B8FD /* DilateErodeSettingsUICode.swift */; };
+		17CDB9B622166B1700C708F5 /* SystemReport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17CDB9B522166B1700C708F5 /* SystemReport.swift */; };
+		17CDB9B822167A7E00C708F5 /* StringExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17CDB9B722167A7E00C708F5 /* StringExtensions.swift */; };
+		17CDB9BA22168CB500C708F5 /* LicensingInformation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17CDB9B922168CB500C708F5 /* LicensingInformation.swift */; };
+		17CDB9BC22168CEF00C708F5 /* License.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17CDB9BB22168CEF00C708F5 /* License.swift */; };
 		17CE37362213AB5E0070ED87 /* FalseColorSettingsUI.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 17CE37352213AB5E0070ED87 /* FalseColorSettingsUI.storyboard */; };
 		17CE37382213AEDB0070ED87 /* GeneralResults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17CE37372213AEDB0070ED87 /* GeneralResults.swift */; };
 		17CE373A2213AF330070ED87 /* ColorPickerProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17CE37392213AF330070ED87 /* ColorPickerProtocol.swift */; };
@@ -258,6 +265,9 @@
 		173F633322001800006CB67C /* Pixellate2Table.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Pixellate2Table.storyboard; sourceTree = "<group>"; };
 		173FDCBE220EA61300EFA90D /* VideoMixer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoMixer.swift; sourceTree = "<group>"; };
 		173FDCC0220EB86C00EFA90D /* MainUIUserInteractions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainUIUserInteractions.swift; sourceTree = "<group>"; };
+		1740CEC32216A10A00BFD1A0 /* LicenseViewer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LicenseViewer.swift; sourceTree = "<group>"; };
+		1740CEC52216A4A300BFD1A0 /* LicensingList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LicensingList.swift; sourceTree = "<group>"; };
+		1740CEC72216B2FE00BFD1A0 /* Platform.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Platform.swift; sourceTree = "<group>"; };
 		174779F722042FEC00FD64EF /* NoParametersSettingsUI.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = NoParametersSettingsUI.storyboard; sourceTree = "<group>"; };
 		174779F92204309600FD64EF /* NoParametersSettingsUICode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoParametersSettingsUICode.swift; sourceTree = "<group>"; };
 		174779FB2204338600FD64EF /* CollapsibleHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollapsibleHeader.swift; sourceTree = "<group>"; };
@@ -316,6 +326,10 @@
 		17C3926122159FBC0049B8FD /* DilateErode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DilateErode.swift; sourceTree = "<group>"; };
 		17C392642215A4480049B8FD /* DilateErodeSettingsUI.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = DilateErodeSettingsUI.storyboard; sourceTree = "<group>"; };
 		17C392662215A5CB0049B8FD /* DilateErodeSettingsUICode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DilateErodeSettingsUICode.swift; sourceTree = "<group>"; };
+		17CDB9B522166B1700C708F5 /* SystemReport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemReport.swift; sourceTree = "<group>"; };
+		17CDB9B722167A7E00C708F5 /* StringExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringExtensions.swift; sourceTree = "<group>"; };
+		17CDB9B922168CB500C708F5 /* LicensingInformation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LicensingInformation.swift; sourceTree = "<group>"; };
+		17CDB9BB22168CEF00C708F5 /* License.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = License.swift; sourceTree = "<group>"; };
 		17CE37352213AB5E0070ED87 /* FalseColorSettingsUI.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = FalseColorSettingsUI.storyboard; sourceTree = "<group>"; };
 		17CE37372213AEDB0070ED87 /* GeneralResults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneralResults.swift; sourceTree = "<group>"; };
 		17CE37392213AF330070ED87 /* ColorPickerProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorPickerProtocol.swift; sourceTree = "<group>"; };
@@ -870,10 +884,11 @@
 				17E9F0DE2201721F00BA7B46 /* FilterSettingUIs */,
 				17A686E321F8166400F252CA /* FilterTables */,
 				17F51B0421EA03EB00843092 /* Settings.storyboard */,
-				173B16A722015766005A5B0B /* About.storyboard */,
+				17CDB9B42216697800C708F5 /* About */,
 				17B2ED8321F1A5CF00E3B56A /* MainSettings.swift */,
 				1764FA8921F1E6F90059FAFD /* FilterSettings.swift */,
 				1726242021F8503E00C7688C /* NewFieldSettingProtocol.swift */,
+				1740CEC72216B2FE00BFD1A0 /* Platform.swift */,
 				17F236A022152AF30091B865 /* Utility.swift */,
 				17E1856621F2C8E800192D03 /* FilterCell.swift */,
 			);
@@ -896,6 +911,19 @@
 				17C392662215A5CB0049B8FD /* DilateErodeSettingsUICode.swift */,
 			);
 			path = DilateErode;
+			sourceTree = "<group>";
+		};
+		17CDB9B42216697800C708F5 /* About */ = {
+			isa = PBXGroup;
+			children = (
+				173B16A722015766005A5B0B /* About.storyboard */,
+				17CDB9B522166B1700C708F5 /* SystemReport.swift */,
+				17CDB9B922168CB500C708F5 /* LicensingInformation.swift */,
+				1740CEC52216A4A300BFD1A0 /* LicensingList.swift */,
+				17CDB9BB22168CEF00C708F5 /* License.swift */,
+				1740CEC32216A10A00BFD1A0 /* LicenseViewer.swift */,
+			);
+			path = About;
 			sourceTree = "<group>";
 		};
 		17CE37342213AB3A0070ED87 /* FalseColor */ = {
@@ -978,6 +1006,7 @@
 				178C75BD21F337C100844FFF /* AVCaptureVideoOrientationExtension.swift */,
 				178C75BB21F3247E00844FFF /* LiveMetalViewExtension.swift */,
 				1726243121F8640100C7688C /* Numeric.swift */,
+				17CDB9B722167A7E00C708F5 /* StringExtensions.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -1176,6 +1205,7 @@
 				171D627121EDD1C2004D3545 /* HatchScreen.swift in Sources */,
 				17F51B0121E9E44F00843092 /* BackgroundServer.swift in Sources */,
 				17D7510E21F41ACD0050A2B5 /* MainUISettings.swift in Sources */,
+				1740CEC62216A4A300BFD1A0 /* LicensingList.swift in Sources */,
 				17D7512021F466AE0050A2B5 /* RosyEffect.metal in Sources */,
 				178CF92621F5B98D007229FD /* ParameterManager.swift in Sources */,
 				17D7511C21F462CE0050A2B5 /* MinMaxFromBuffer.m in Sources */,
@@ -1190,9 +1220,11 @@
 				17A409D72201E941003D4EC6 /* FilterSettingUIBase.swift in Sources */,
 				174D6D5D220804000066AE93 /* GroupNode.swift in Sources */,
 				174779FC2204338600FD64EF /* CollapsibleHeader.swift in Sources */,
+				17CDB9B622166B1700C708F5 /* SystemReport.swift in Sources */,
 				178C75BC21F3247E00844FFF /* LiveMetalViewExtension.swift in Sources */,
 				1756CE0821FD737100C4E638 /* RGBtoSHB.metal in Sources */,
 				17A686EB21F824AA00F252CA /* HueAdustTableCode.swift in Sources */,
+				17CDB9B822167A7E00C708F5 /* StringExtensions.swift in Sources */,
 				178C75BE21F337C100844FFF /* AVCaptureVideoOrientationExtension.swift in Sources */,
 				1756CE1221FD874800C4E638 /* ChannelSwizzleParameters.swift in Sources */,
 				17D60D892210511800933F15 /* SampleContainerView.swift in Sources */,
@@ -1273,6 +1305,7 @@
 				17E15FF6220585EE0037B35F /* MirroringDistortion.swift in Sources */,
 				1756CE0121FD646600C4E638 /* RGBtoHSB.metal in Sources */,
 				17477A0022048C6600FD64EF /* FilterSectionData.swift in Sources */,
+				17CDB9BA22168CB500C708F5 /* LicensingInformation.swift in Sources */,
 				17E15FF122057E5E0037B35F /* Mirroring.metal in Sources */,
 				17D60D7E220FCDF800933F15 /* MonochromeColors.metal in Sources */,
 				17D7510821F410BF0050A2B5 /* MainUIFilterSelection.swift in Sources */,
@@ -1313,6 +1346,7 @@
 				17D7511921F461DA0050A2B5 /* DepthToGrayscaleConverter.swift in Sources */,
 				17BEE0B421FC2F8500A9370B /* DesaturationKernelParameters.swift in Sources */,
 				173B16A622014F8B005A5B0B /* HighlightBrightness.swift in Sources */,
+				1740CEC82216B2FE00BFD1A0 /* Platform.swift in Sources */,
 				171F3D0D220AD3450098E2B7 /* Threshold.swift in Sources */,
 				17B2ED8421F1A5CF00E3B56A /* MainSettings.swift in Sources */,
 				1726243421F8964E00C7688C /* HSBAdjust.swift in Sources */,
@@ -1320,6 +1354,8 @@
 				1756CE0C21FD73D200C4E638 /* RGBtoBHS.metal in Sources */,
 				1756CDFA21FD633C00C4E638 /* RGBtoGBR.metal in Sources */,
 				171D627621EDD52D004D3545 /* CircleAndLines.swift in Sources */,
+				17CDB9BC22168CEF00C708F5 /* License.swift in Sources */,
+				1740CEC42216A10A00BFD1A0 /* LicenseViewer.swift in Sources */,
 				174779FA2204309600FD64EF /* NoParametersSettingsUICode.swift in Sources */,
 				175E260E21F4A5AB00B6BF8F /* HueAdjust.swift in Sources */,
 				17BEE0B221FC20FF00A9370B /* DesaturateColors.swift in Sources */,
