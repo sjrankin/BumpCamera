@@ -9,7 +9,7 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
-        <!--Mirroring Settings-->
+        <!--Reflection/Mirroring Settings-->
         <scene sceneID="vPy-sV-48I">
             <objects>
                 <tableViewController id="xu7-Kf-qRY" customClass="MirroringFilterSettingsUICode" customModule="BumpCamera" customModuleProvider="target" sceneMemberID="viewController">
@@ -20,24 +20,24 @@
                         <sections>
                             <tableViewSection id="oqp-oX-2TZ">
                                 <cells>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" rowHeight="80" id="ZS9-o5-Mqh">
-                                        <rect key="frame" x="0.0" y="0.0" width="414" height="80"/>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" rowHeight="149" id="ZS9-o5-Mqh">
+                                        <rect key="frame" x="0.0" y="0.0" width="414" height="149"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="ZS9-o5-Mqh" id="2vf-eC-Kpk">
-                                            <rect key="frame" x="0.0" y="0.0" width="414" height="79.666666666666671"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="414" height="148.66666666666666"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Mirroring direction" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="T67-KL-scw">
-                                                    <rect key="frame" x="20" y="10" width="141" height="21"/>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Reflection" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="T67-KL-scw">
+                                                    <rect key="frame" x="20" y="10" width="77" height="21"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="height" constant="21" id="hc3-hu-2Jz"/>
+                                                    </constraints>
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="YhZ-rh-h3W">
-                                                    <rect key="frame" x="20" y="39" width="277" height="29"/>
-                                                    <constraints>
-                                                        <constraint firstAttribute="width" constant="277" id="6OZ-Hj-klY"/>
-                                                    </constraints>
+                                                    <rect key="frame" x="20" y="39" width="317" height="29"/>
                                                     <segments>
                                                         <segment title="Horizontal"/>
                                                         <segment title="Vertical"/>
@@ -47,24 +47,53 @@
                                                         <action selector="HandleDirectionChanged:" destination="xu7-Kf-qRY" eventType="primaryActionTriggered" id="ItJ-3V-eGB"/>
                                                     </connections>
                                                 </segmentedControl>
+                                                <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" translatesAutoresizingMaskIntoConstraints="NO" id="2Yc-RE-Ijk">
+                                                    <rect key="frame" x="20" y="110" width="215" height="29"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="height" constant="28" id="Rng-3C-M8f"/>
+                                                        <constraint firstAttribute="width" constant="215" id="Vf5-0S-Tqc"/>
+                                                    </constraints>
+                                                    <segments>
+                                                        <segment title="Horizontal"/>
+                                                        <segment title="Vertical"/>
+                                                    </segments>
+                                                    <connections>
+                                                        <action selector="HandleMirroringChanged:" destination="xu7-Kf-qRY" eventType="primaryActionTriggered" id="WQp-ym-35Y"/>
+                                                    </connections>
+                                                </segmentedControl>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Mirroring" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="sMG-fP-kqZ">
+                                                    <rect key="frame" x="20" y="81" width="70" height="21"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="height" constant="21" id="YKM-ed-JkS"/>
+                                                    </constraints>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
                                             </subviews>
                                             <constraints>
-                                                <constraint firstItem="YhZ-rh-h3W" firstAttribute="leading" secondItem="2vf-eC-Kpk" secondAttribute="leadingMargin" id="Izf-3p-Rvq"/>
-                                                <constraint firstAttribute="bottomMargin" secondItem="YhZ-rh-h3W" secondAttribute="bottom" constant="2" id="e2W-W8-cWB"/>
-                                                <constraint firstItem="YhZ-rh-h3W" firstAttribute="leading" secondItem="T67-KL-scw" secondAttribute="leading" id="jqy-4H-uS5"/>
-                                                <constraint firstItem="YhZ-rh-h3W" firstAttribute="top" secondItem="T67-KL-scw" secondAttribute="bottom" constant="8" symbolic="YES" id="spD-HI-oF8"/>
+                                                <constraint firstItem="2Yc-RE-Ijk" firstAttribute="top" secondItem="sMG-fP-kqZ" secondAttribute="bottom" constant="8" symbolic="YES" id="8ID-B1-sZY"/>
+                                                <constraint firstItem="YhZ-rh-h3W" firstAttribute="leading" secondItem="sMG-fP-kqZ" secondAttribute="leading" id="CvA-TA-9Jj"/>
+                                                <constraint firstItem="T67-KL-scw" firstAttribute="leading" secondItem="2vf-eC-Kpk" secondAttribute="leadingMargin" id="I6R-nT-RNY"/>
+                                                <constraint firstItem="sMG-fP-kqZ" firstAttribute="top" secondItem="YhZ-rh-h3W" secondAttribute="bottom" constant="14" id="ajF-0t-rco"/>
+                                                <constraint firstAttribute="trailingMargin" secondItem="YhZ-rh-h3W" secondAttribute="trailing" constant="57" id="cIQ-wL-ec3"/>
+                                                <constraint firstItem="T67-KL-scw" firstAttribute="leading" secondItem="YhZ-rh-h3W" secondAttribute="leading" id="gkV-Nb-tO0"/>
+                                                <constraint firstItem="T67-KL-scw" firstAttribute="top" secondItem="2vf-eC-Kpk" secondAttribute="topMargin" constant="-1" id="oz6-mU-PQX"/>
+                                                <constraint firstItem="YhZ-rh-h3W" firstAttribute="top" secondItem="T67-KL-scw" secondAttribute="bottom" constant="8" symbolic="YES" id="rlv-Wq-piR"/>
+                                                <constraint firstItem="sMG-fP-kqZ" firstAttribute="leading" secondItem="2Yc-RE-Ijk" secondAttribute="leading" id="stf-3e-nYQ"/>
+                                                <constraint firstItem="2Yc-RE-Ijk" firstAttribute="bottom" secondItem="2vf-eC-Kpk" secondAttribute="bottomMargin" id="upm-iC-XI4"/>
                                             </constraints>
                                         </tableViewCellContentView>
                                     </tableViewCell>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" rowHeight="80" id="zcX-GM-LNi">
-                                        <rect key="frame" x="0.0" y="80" width="414" height="80"/>
+                                        <rect key="frame" x="0.0" y="149" width="414" height="80"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="zcX-GM-LNi" id="mDN-KD-qsa">
                                             <rect key="frame" x="0.0" y="0.0" width="414" height="79.666666666666671"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Horizontal source side" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="4hr-Li-IiK">
-                                                    <rect key="frame" x="20" y="11" width="171" height="21"/>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Horizontal reflection source side" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="4hr-Li-IiK">
+                                                    <rect key="frame" x="20.000000000000014" y="11" width="247.33333333333337" height="21"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
@@ -92,14 +121,14 @@
                                         </tableViewCellContentView>
                                     </tableViewCell>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" rowHeight="80" id="4az-Ws-Kfa">
-                                        <rect key="frame" x="0.0" y="160" width="414" height="80"/>
+                                        <rect key="frame" x="0.0" y="229" width="414" height="80"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="4az-Ws-Kfa" id="bOW-XG-Ck2">
                                             <rect key="frame" x="0.0" y="0.0" width="414" height="79.666666666666671"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Vertical source side" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="E93-6u-B3m">
-                                                    <rect key="frame" x="20" y="11" width="151" height="21"/>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Vertical reflection source side" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="E93-6u-B3m">
+                                                    <rect key="frame" x="20" y="11" width="227" height="21"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
@@ -127,7 +156,7 @@
                                         </tableViewCellContentView>
                                     </tableViewCell>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" rowHeight="190" id="u8u-Fh-zdK">
-                                        <rect key="frame" x="0.0" y="240" width="414" height="190"/>
+                                        <rect key="frame" x="0.0" y="309" width="414" height="190"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="u8u-Fh-zdK" id="lM0-gg-5Js">
                                             <rect key="frame" x="0.0" y="0.0" width="414" height="189.66666666666666"/>
@@ -213,7 +242,7 @@
                             </connections>
                         </barButtonItem>
                     </toolbarItems>
-                    <navigationItem key="navigationItem" title="Mirroring Settings" id="BST-th-QKA">
+                    <navigationItem key="navigationItem" title="Reflection/Mirroring Settings" id="BST-th-QKA">
                         <barButtonItem key="leftBarButtonItem" title="Back" id="ImE-fL-PY3">
                             <connections>
                                 <action selector="HandleBackButtonPressed:" destination="xu7-Kf-qRY" id="QRf-1h-v9C"/>
@@ -225,6 +254,7 @@
                         <outlet property="DirectionSegment" destination="YhZ-rh-h3W" id="jea-Nv-Goq"/>
                         <outlet property="HorizontalSourceLabel" destination="4hr-Li-IiK" id="U4o-xP-C9c"/>
                         <outlet property="HorizontalSourceSegment" destination="N2F-Bk-XEg" id="AwT-bA-Y0i"/>
+                        <outlet property="MirroringDirection" destination="2Yc-RE-Ijk" id="QH1-8M-9Pg"/>
                         <outlet property="Q1Button" destination="5CZ-Ys-8VX" id="QaE-14-loE"/>
                         <outlet property="Q2Button" destination="gMJ-Bd-Xpx" id="CpB-2c-xVJ"/>
                         <outlet property="Q3Button" destination="gCk-fI-6Xc" id="Gdi-XL-rfm"/>
