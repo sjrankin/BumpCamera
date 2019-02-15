@@ -33,6 +33,23 @@ extension UIImage
         }
     }
     
+    /// Returns an image with a solid color and passed size.
+    ///
+    /// - Parameters:
+    ///   - SolidColor: The color to fill the image with.
+    ///   - Size: The size of the image.
+    /// - Returns: UIImage filled with the specified color on success, nil on error.
+    public static func MakeColorImage(SolidColor: UIColor, Size: CGSize) -> UIImage?
+    {
+        let Rect = CGRect(x: 0, y: 0, width: Size.width, height: Size.height)
+        UIGraphicsBeginImageContextWithOptions(Size, true, 0)
+        SolidColor.setFill()
+        UIRectFill(Rect)
+        let Result: UIImage? = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        return Result
+    }
+    
     /// Convert an array of UInt8 values into a UIImage.
     ///
     /// - Parameters:
