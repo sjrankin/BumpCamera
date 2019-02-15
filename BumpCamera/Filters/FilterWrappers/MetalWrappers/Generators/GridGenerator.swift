@@ -158,7 +158,7 @@ class GridGenerator: FilterParent, Renderer
             return nil
         }
         
-        CommandEncoder.label = "GridGenerator Effect"
+        CommandEncoder.label = "GridGenerator Generator"
         CommandEncoder.setBuffer(ParameterBuffer, offset: 0, index: 0)
         CommandEncoder.setComputePipelineState(ComputePipelineState!)
         CommandEncoder.setTexture(InputTexture, index: 0)
