@@ -45,8 +45,6 @@ class HalftoneSettingsUICode: FilterSettingUIBase
     {
         let W = ParameterManager.GetDouble(From: FilterID, Field: .Width, Default: 10.0)
         let A = ParameterManager.GetDouble(From: FilterID, Field: .Angle, Default: 90.0)
-        let C = ParameterManager.GetPoint(From: FilterID, Field: .Center, Default: CGPoint(x: 0.0, y: 0.0))
-        let CenterInImage = ParameterManager.GetBool(From: FilterID, Field: .CenterInImage, Default: true)
         let Merge = ParameterManager.GetBool(From: FilterID, Field: .MergeWithBackground, Default: true)
         let Adjust = ParameterManager.GetBool(From: FilterID, Field: .AdjustInLandscape, Default: true)
         
@@ -54,16 +52,8 @@ class HalftoneSettingsUICode: FilterSettingUIBase
         WidthSlider.value = Float(W) * 50.0
         AngleLabel.text = "\(A.Round(To: 1))°"
         AngleSlider.value = Float(A) * 10.0
-        CenterXInput.text = "\(C.x.Round(To: 1))"
-        CenterYInput.text = "\(C.y.Round(To: 1))"
-        CenterInImageSwitch.isOn = CenterInImage
         MergeWithOriginalSwitch.isOn = Merge
         AdjustForLandscapeSwitch.isOn = Adjust
-        
-        XLabel.isEnabled = CenterInImageSwitch.isOn
-        YLabel.isEnabled = CenterInImageSwitch.isOn
-        CenterXInput.isEnabled = CenterInImageSwitch.isOn
-        CenterYInput.isEnabled = CenterInImageSwitch.isOn
     }
     
     @objc func AngleDoneSliding()
@@ -96,68 +86,6 @@ class HalftoneSettingsUICode: FilterSettingUIBase
         UpdateValue(WithValue: SliderValue, ToField: .Width)
     }
     
-    @IBAction func HandleCenterXChanged(_ sender: Any)
-    {
-        ValidatePoint()
-    }
-    
-    @IBAction func HandleCenterYChanged(_ sender: Any)
-    {
-        ValidatePoint()
-    }
-    
-    func ValidatePoint()
-    {
-        let X = GetTextFieldValue(CenterXInput)
-        let Y = GetTextFieldValue(CenterYInput)
-        let NewPoint = CGPoint(x: CGFloat(X), y: CGFloat(Y))
-        UpdateValue(WithValue: NewPoint, ToField: .Center)
-        ShowSampleView()
-    }
-    
-    func GetTextFieldValue(_ Input: UITextField, Min: Double? = nil, Max: Double? = nil, Default: Double = 0.0) -> Double
-    {
-        if let RawValue = Input.text
-        {
-            if var DValue = Double(RawValue)
-            {
-                if let MinVal = Min
-                {
-                    if DValue < MinVal
-                    {
-                        DValue = MinVal
-                    }
-                }
-                if let MaxVal = Max
-                {
-                    if DValue > MaxVal
-                    {
-                        DValue = MaxVal
-                    }
-                }
-                return DValue
-            }
-            else
-            {
-                return Default
-            }
-        }
-        else
-        {
-            return Default
-        }
-    }
-    
-    @IBAction func HandleCenterInImageChanged(_ sender: Any)
-    {
-        UpdateValue(WithValue: CenterInImageSwitch.isOn, ToField: .CenterInImage)
-        XLabel.isEnabled = CenterInImageSwitch.isOn
-        YLabel.isEnabled = CenterInImageSwitch.isOn
-        CenterXInput.isEnabled = CenterInImageSwitch.isOn
-        CenterYInput.isEnabled = CenterInImageSwitch.isOn
-        ShowSampleView()
-    }
-    
     @IBAction func HandleMergeWithOriginalChanged(_ sender: Any)
     {
         UpdateValue(WithValue: MergeWithOriginalSwitch.isOn, ToField: .MergeWithBackground)
@@ -172,13 +100,8 @@ class HalftoneSettingsUICode: FilterSettingUIBase
     
     @IBOutlet weak var AngleLabel: UILabel!
     @IBOutlet weak var WidthLabel: UILabel!
-    @IBOutlet weak var YLabel: UILabel!
-    @IBOutlet weak var XLabel: UILabel!
     @IBOutlet weak var WidthSlider: UISlider!
     @IBOutlet weak var AngleSlider: UISlider!
-    @IBOutlet weak var CenterXInput: UITextField!
-    @IBOutlet weak var CenterYInput: UITextField!
-    @IBOutlet weak var CenterInImageSwitch: UISwitch!
     @IBOutlet weak var MergeWithOriginalSwitch: UISwitch!
     @IBOutlet weak var AdjustForLandscapeSwitch: UISwitch!
     
