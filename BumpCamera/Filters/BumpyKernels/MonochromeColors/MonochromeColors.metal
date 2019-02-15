@@ -33,40 +33,34 @@ constant const int YellowChannel = 5;
 constant const int BlackChannel = 6;
 constant const int IsGray = 7;
 
-//https://www.rapidtables.com/convert/color/hsv-to-rgb.html
 float4 ToRGBFromHSB(float H, float S, float B)
 {
-    float4 Final = float4(0.0,0.0,0.0,1.0);
-    float C = B * S;
     float Hx = H * 360.0;
-    float FractionalH = fmod(Hx / 60.0, 2.0);
-    float AbsPart = abs(FractionalH - 1.0);
-    float X = C * AbsPart;
-    if (Hx >= 0.0 && Hx < 60.0)
+    float AbsTerm = fabs((2.0 * B) - 1.0);
+    float C = (1.0 - AbsTerm) * S;
+    float ModTerm = fmod((Hx / 60.0), 2.0);
+    float X = C * (1.0 - fabs(ModTerm - 1.0));
+    if ((Hx >= 0.0) && (Hx < 60.0))
         {
-        Final = float4(C, X, 0.0, 1.0);
+        return float4(C, X, 0.0, 1.0);
         }
-    if (Hx >= 60.0 && Hx < 120.0)
+    if ((Hx >= 60.0) && (Hx < 120.0))
         {
-        Final = float4(X, C, 0.0, 1.0);
+        return float4(X, C, 0.0, 1.0);
         }
-    if (Hx >= 120.0 && Hx < 180.0)
+    if ((Hx >= 120.0) && (Hx < 180.0))
         {
-        Final = float4(0.0, C, X, 1.0);
+        return float4(0.0, C, X, 1.0);
         }
-    if (Hx >= 180.0 && Hx < 240.0)
+    if ((Hx >= 180.0) && (Hx < 240.0))
         {
-        Final = float4(0.0, X, C, 1.0);
+        return float4(0.0, X, C, 1.0);
         }
-    if (Hx >= 240.0 && Hx < 300.0)
+    if ((Hx >= 240.0) && (Hx < 300.0))
         {
-        Final = float4(X, 0.0, C, 1.0);
+        return float4(X, 0.0, C, 1.0);
         }
-    if (Hx >= 300)
-        {
-        Final = float4(C, 0.0, X, 1.0);
-        }
-    return Final;
+    return float4(C, 0.0, X, 1.0);
 }
 
 float4 ToHSB_ForMonochromeColors(float4 Source)
@@ -417,6 +411,13 @@ kernel void MonochromeColorsKernel (texture2d<float, access::read> inTexture [[t
         float NewHue = (SelectedRange + (RangeSize / 2.0));
         if (H >= SelectedRange && H < SelectedRange + RangeSize)
             {
+            ChannelValue0 = r;
+            ChannelValue1 = g;
+            ChannelValue2 = b;
+            }
+        /*
+        if (H >= SelectedRange && H < SelectedRange + RangeSize)
+            {
             float4 FromHSB = ToRGBFromHSB(NewHue, HSB.g, HSB.b);
             ChannelValue0 = FromHSB.r;
             ChannelValue1 = FromHSB.g;
@@ -424,10 +425,11 @@ kernel void MonochromeColorsKernel (texture2d<float, access::read> inTexture [[t
             }
         else
             {
-            ChannelValue0 = NewHue;
-            ChannelValue1 = NewHue;
-            ChannelValue2 = NewHue;
+            ChannelValue0 = 1.0 - r;//NewHue;
+            ChannelValue1 = 1.0 - g;//NewHue;
+            ChannelValue2 = 1.0 - b;//NewHue;
             }
+         */
         break;
         }
     }
