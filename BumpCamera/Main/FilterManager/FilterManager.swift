@@ -114,6 +114,10 @@ class FilterManager
         ParameterCount![.Solarize] = Solarize.SupportedFields().count
         ParameterCount![.Threshold] = Threshold.SupportedFields().count
         ParameterCount![.MonochromeColor] = MonochromeColors.SupportedFields().count
+        ParameterCount![.EdgeWork] = EdgeWork.SupportedFields().count
+        ParameterCount![.FalseColor] = FalseColor.SupportedFields().count
+        ParameterCount![.CornerGradient] = CornerGradient.SupportedFields().count
+        ParameterCount![.DilateErode] = DilateErode.SupportedFields().count
     }
     
     private static var ParameterCount: [FilterManager.FilterTypes: Int]? = nil
@@ -161,6 +165,10 @@ class FilterManager
         StoryboardList![.Solarize] = Solarize.SettingsStoryboard()
         StoryboardList![.Threshold] = Threshold.SettingsStoryboard()
         StoryboardList![.MonochromeColor] = MonochromeColors.SettingsStoryboard()
+        StoryboardList![.EdgeWork] = EdgeWork.SettingsStoryboard()
+        StoryboardList![.FalseColor] = FalseColor.SettingsStoryboard()
+        StoryboardList![.CornerGradient] = CornerGradient.SettingsStoryboard()
+        StoryboardList![.DilateErode] = DilateErode.SettingsStoryboard()
     }
     
     private static var StoryboardList: [FilterTypes: String?]? = nil
@@ -280,24 +288,6 @@ class FilterManager
         return nil
     }
     
-    #if false
-    /// Returns the parameter block for the specified camera type.
-    ///
-    /// - Parameter For: The filter type whose parameters will be returned.
-    /// - Returns: The current set of parameters for the specified filter type. Nil on error.
-    public func GetParameters(For: FilterTypes, _ Location: FilterLocations) -> RenderPacket?
-    {
-        for Camera in GetFilterList(For: Location)
-        {
-            if Camera.FilterType == For
-            {
-                return Camera.Parameters
-            }
-        }
-        return nil
-    }
-    #endif
-    
     public func GetFilterList(For: FilterLocations) -> [CameraFilter]
     {
         switch For
@@ -389,6 +379,18 @@ class FilterManager
             
         case .MonochromeColor:
             return MonochromeColors()
+            
+        case .EdgeWork:
+            return EdgeWork()
+            
+        case .FalseColor:
+            return FalseColor()
+            
+        case .CornerGradient:
+            return CornerGradient()
+            
+        case .DilateErode:
+            return DilateErode()
             
         default:
             return nil
@@ -506,13 +508,13 @@ class FilterManager
             .XRay: XRay.ID(),
             .LineOverlay: LineOverlay.ID(),
             /*
-            .BumpyPixels: BumpyPixels.ID(),
-            .BumpyTriangles: BumpyTriangles.ID(),
-            .Embossed: Embossed.ID(),
-            .ColorDelta: ColorDelta.ID(),
-            .FilterDelta: FilterDelta.ID(),
-            .PatternDelta: PatternDelta.ID(),
- */
+             .BumpyPixels: BumpyPixels.ID(),
+             .BumpyTriangles: BumpyTriangles.ID(),
+             .Embossed: Embossed.ID(),
+             .ColorDelta: ColorDelta.ID(),
+             .FilterDelta: FilterDelta.ID(),
+             .PatternDelta: PatternDelta.ID(),
+             */
             .HueAdjust: HueAdjust.ID(),
             .HSBAdjust: HSBAdjust.ID(),
             .ChannelMixer: ChannelMixer.ID(),
@@ -526,22 +528,28 @@ class FilterManager
             .Threshold: Threshold.ID(),
             .Dither: Dithering.ID(),
             .MonochromeColor: MonochromeColors.ID(),
+            .EdgeWork: EdgeWork.ID(),
+            .FalseColor: FalseColor.ID(),
+            .CornerGradient: CornerGradient.ID(),
+            .DilateErode: DilateErode.ID(),
             ]
     
     /// Map between group type and filters in the group.
     private static let GroupMap: [FilterGroups: [(FilterTypes, Int)]] =
         [
             .Standard: [(.PassThrough, 0), (.Noir, 1), (.LineScreen, 4), (.DotScreen, 5), (.CircularScreen, 7),
-                        (.HatchScreen, 6), (.CMYKHalftone, 9), (.Pixellate, 10), (.Comic, 2), (.XRay, 3), (.LineOverlay, 8)],
+                        (.HatchScreen, 6), (.CMYKHalftone, 10), (.Pixellate, 10), (.Comic, 2), (.XRay, 3), (.LineOverlay, 8),
+                        (.EdgeWork, 9)],
             .Combined: [(.CircleAndLines, 0)],
-            .Effects: [(.PixellateMetal, 0), (.Kuwahara, 1)],
+            .Effects: [(.PixellateMetal, 0), (.DilateErode, 1), (.Kuwahara, 2)],
             .Colors: [(.HueAdjust, 0), (.HSBAdjust, 1), (.Solarize, 2), (.ChannelMixer, 3),
-                      (.DesaturateColors, 4), (.Threshold, 5), (.MonochromeColor, 6), (.PaletteShifting, 7)],
+                      (.DesaturateColors, 4), (.Threshold, 5), (.MonochromeColor, 6), (.FalseColor, 7),
+                      (.PaletteShifting, 8)],
             .Gray: [(.GrayscaleKernel, 0), (.Dither, 1)],
             //.Bumpy: [(.BumpyPixels, 1), (.BumpyTriangles, 2), (.Embossed, 0)],
             //.Motion: [(.ColorDelta, 0), (.FilterDelta, 1), (.PatternDelta, 2)],
             .Tiles: [(.Mirroring, 0)],
-            .Generator: [(.Grid, 0)]
+            .Generator: [(.Grid, 0), (.CornerGradient, 1)]
     ]
     
     /// Map from group descriptions to their respective IDs.
@@ -722,12 +730,14 @@ class FilterManager
     public func GetFilterData(ForGroup: FilterGroups) -> [(String, FilterTypes, Int, Bool)]
     {
         var Final = [(String, FilterTypes, Int, Bool)]()
-        let FiltersInGroup = FilterManager.GroupMap[ForGroup]
-        for (GroupFilter, SortOrder) in FiltersInGroup!
+        if let FiltersInGroup = FilterManager.GroupMap[ForGroup]
         {
-            let FilterTitle = FilterManager.FilterTitles[GroupFilter]
-            let ImplementationFlag = IsImplemented(GroupFilter)
-            Final.append((FilterTitle!, GroupFilter, SortOrder, ImplementationFlag))
+            for (GroupFilter, SortOrder) in FiltersInGroup
+            {
+                let FilterTitle = FilterManager.FilterTitles[GroupFilter]
+                let ImplementationFlag = IsImplemented(GroupFilter)
+                Final.append((FilterTitle!, GroupFilter, SortOrder, ImplementationFlag))
+            }
         }
         return Final
     }
@@ -792,7 +802,11 @@ class FilterManager
             .Dither: "Dithing",
             .Solarize: "Solarize",
             .Threshold: "Threshold",
-            .MonochromeColor: "Mono- Colors"
+            .MonochromeColor: "Mono- Colors",
+            .EdgeWork: "Edge Work",
+            .FalseColor: "False Color",
+            .CornerGradient: "Corner Gradient",
+            .DilateErode: "Dilate & Erode",
             ]
     
     public static func GetFilterTitle(_ Filter: FilterTypes) -> String?
@@ -838,7 +852,11 @@ class FilterManager
             .Threshold: true,
             .Dither: false,
             .Solarize: true,
-            .MonochromeColor: true
+            .MonochromeColor: true,
+            .EdgeWork: true,
+            .FalseColor: true,
+            .CornerGradient: false,
+            .DilateErode: true,
             ]
     
     /// Determines if the given filter type is implemented.
@@ -972,6 +990,20 @@ class FilterManager
             .HueSegmentCount: .IntType,
             .MonochromeColorspace: .IntType,
             .HueSelectedSegment: .IntType,
+            .Color0: .ColorType,
+            .Color1: .ColorType,
+            .ULColor: .ColorType,
+            .URColor: .ColorType,
+            .LLColor: .ColorType,
+            .LRColor: .ColorType,
+            .HasULColor: .BoolType,
+            .HasURColor: .BoolType,
+            .HasLLColor: .BoolType,
+            .HasLRColor: .BoolType,
+            .AlphaGradiates: .BoolType,
+            .WindowSize: .IntType,
+            .ValueDetermination: .IntType,
+            .Operation: .IntType,
             ]
     
     public static let FieldStorageMap: [InputFields: String] =
@@ -1067,5 +1099,20 @@ class FilterManager
             .HueSegmentCount: "_HueSegmentCount",
             .MonochromeColorspace: "_MonochromeColorspace",
             .HueSelectedSegment: "_HueIndex",
+            .Color0: "_Color0",
+            .Color1: "_Color1",
+            .ULColor: "_ULColor",
+            .URColor: "_URcolor",
+            .LLColor: "_LLColor",
+            .LRColor: "_LRColor",
+            .HasULColor: "_HasULColor",
+            .HasURColor: "_HasURColor",
+            .HasLLColor: "_HasLLColor",
+            .HasLRColor: "_HasLRColor",
+            .AlphaGradiates: "_IncludeAlpha",
+            .WindowSize: "_WindowSize",
+            .ValueDetermination: "_ValueDetermination",
+            .Operation: "_FilterOperation",
             ]
 }
+
