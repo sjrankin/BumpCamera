@@ -32,28 +32,18 @@ extension MainUIViewer
         
         ProcessingQueue.async
             {
-                var FinalPixelBuffer = PhotoPixelBuffer
-                #if true
+                self.FinalPixelBuffer = PhotoPixelBuffer
+
                 let CurrentFilter = self.Filters!.PhotoFilter!.FilterType
                 let FilterForPhoto = self.Filters!.CreateFilter(For: CurrentFilter)
                 FilterForPhoto?.Initialize(With: PhotoFormat!, BufferCountHint: self.BufferCount)
-                guard let FilteredPixelBuffer = FilterForPhoto?.Render(PixelBuffer: FinalPixelBuffer) else
+                guard let FilteredPixelBuffer = FilterForPhoto?.Render(PixelBuffer: self.FinalPixelBuffer) else
                 {
                     print("Unable to apply photo filter.")
                     return
                 }
-                #else
-                if !(self.Filters!.PhotoFilter!.Filter?.Initialized)!
-                {
-                    self.Filters!.PhotoFilter?.Filter?.Initialize(With: PhotoFormat!, BufferCountHint: self.BufferCount)
-                }
-                guard let FilteredPixelBuffer = self.Filters!.PhotoFilter?.Filter?.Render(PixelBuffer: FinalPixelBuffer) else
-                {
-                    print("Unable to apply photo filter.")
-                    return
-                }
-                #endif
-                FinalPixelBuffer = FilteredPixelBuffer
+
+                self.FinalPixelBuffer = FilteredPixelBuffer
                 
                 if let DepthData = photo.depthData
                 {
@@ -72,45 +62,19 @@ extension MainUIViewer
                         {
                             self.PhotoDepthMixer.prepare(with: PhotoFormat!, outputRetainedBufferCountHint: 2)
                         }
-                        guard let MixedPixelBuffer = self.PhotoDepthMixer.mix(videoPixelBuffer: FinalPixelBuffer,
+                        guard let MixedPixelBuffer = self.PhotoDepthMixer.mix(videoPixelBuffer: self.FinalPixelBuffer,
                                                                               depthPixelBuffer: ConvertedDepthPixelBuffer) else
                         {
                             print("Unable to mix depth and photo buffers.")
                             return
                         }
                         
-                        FinalPixelBuffer = MixedPixelBuffer
+                        self.FinalPixelBuffer = MixedPixelBuffer
                     }
                 }
                 
                 let MetaData: CFDictionary = photo.metadata as CFDictionary
-                guard let JData = MainUIViewer.JpegData(WithPixelBuffer: FinalPixelBuffer, Attachments: MetaData) else
-                {
-                    print("Unable to create Jpeg image.")
-                    return
-                }
-                
-                PHPhotoLibrary.requestAuthorization
-                    {
-                        Status in
-                        if Status == .authorized
-                        {
-                            PHPhotoLibrary.shared().performChanges(
-                                {
-                                    let CreationRequest = PHAssetCreationRequest.forAsset()
-                                    CreationRequest.addResource(with: .photo, data: JData, options: nil)
-                            },
-                                completionHandler:
-                                {
-                                    _, error in
-                                    if let error = error
-                                    {
-                                        print("Error saving photo to library: \(error.localizedDescription)")
-                                    }
-                            }
-                            )
-                        }
-                }
+                self.SaveImageAsJPeg(PixelBuffer: self.FinalPixelBuffer, MetaData: MetaData)
         }
         
         if _Settings.bool(forKey: "ShowSaveAlert")
@@ -123,24 +87,52 @@ extension MainUIViewer
         var WhatSaved = "Image"
         if _Settings.bool(forKey: "SaveOriginalImage")
         {
-            guard let ImageData = photo.fileDataRepresentation() else
+
+            let MetaData: CFDictionary = photo.metadata as CFDictionary
+            if SaveImageAsJPeg(PixelBuffer: PhotoPixelBuffer, MetaData: MetaData)
             {
-                print("Error getting data for original photo.")
-                return
-            }
-            if let Image = UIImage(data: ImageData)
-            {
-                UIImageWriteToSavedPhotosAlbum(Image, nil, nil, nil)
                 WhatSaved = "Images"
-            }
-            else
-            {
-                print("Error converting image data to image.")
-                return
             }
         }
         
         ShowTransientSaveMessage("\(WhatSaved) Saved")
+    }
+    
+    /// Save the passed pixel data as an image in the user's photo roll.
+    ///
+    /// - Parameters:
+    ///   - PixelBuffer: Pixel data to save.
+    ///   - MetaData: Meta data for the image.
+    /// - Returns: True on success, false on failure.
+    @discardableResult func SaveImageAsJPeg(PixelBuffer: CVPixelBuffer, MetaData: CFDictionary) -> Bool
+    {
+        guard let JData = MainUIViewer.JpegData(WithPixelBuffer: PixelBuffer, Attachments: MetaData) else
+        {
+            print("Unable to create Jpeg image.")
+            return false
+        }
+        PHPhotoLibrary.requestAuthorization
+            {
+                Status in
+                if Status == .authorized
+                {
+                    PHPhotoLibrary.shared().performChanges(
+                        {
+                            let CreationRequest = PHAssetCreationRequest.forAsset()
+                            CreationRequest.addResource(with: .photo, data: JData, options: nil)
+                    },
+                        completionHandler:
+                        {
+                            _, error in
+                            if let error = error
+                            {
+                                print("Error saving photo to library: \(error.localizedDescription)")
+                            }
+                    }
+                    )
+                }
+        }
+        return true
     }
     
     func FinalizeImage(_ Source: UIImage) -> UIImage
