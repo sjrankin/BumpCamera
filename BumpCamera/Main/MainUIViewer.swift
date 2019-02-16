@@ -436,6 +436,8 @@ class MainUIViewer: UIViewController,
     var FilterLabelIsVisible: Bool = false
     
     var SetupResult: SetupResults = .Success
+    
+    var FinalPixelBuffer: CVPixelBuffer!
 }
 
 public enum SetupResults
