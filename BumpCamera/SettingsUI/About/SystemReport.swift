@@ -11,8 +11,10 @@ import UIKit
 import Metal
 import AVFoundation
 
+/// Code for the System Report UITableViewController.
 class SystemReport: UITableViewController
 {
+    /// Load the UI.
     override func viewDidLoad()
     {
         super.viewDidLoad()
@@ -21,12 +23,22 @@ class SystemReport: UITableViewController
         tableView.tableFooterView = UIView()
     }
     
+    /// Handle view will appear events. Start the update timer, which fires once a second to keep information shown current. The timer
+    /// is set up here (and not in viewDidLoad) to handle the case for when the user goes to a different view controller then returns
+    /// here. If that happens, viewDidLoad isn't called again but this function is.
+    ///
+    /// - Parameter animated: Passed to super.viewWillAppear.
     override func viewWillAppear(_ animated: Bool)
     {
         super.viewWillAppear(animated)
         UpdateTimer = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(UpdateData), userInfo: nil, repeats: true)
     }
     
+    /// Handle view will disappear events. Invalidated the update timer. Doing this here will ensure the timer (which calls some relatively
+    /// heavy functions) will stop, and limit the effect of continuously running stats in the background where no one can see them. If the
+    /// user returns to this view controller, viewWillAppear will restart the timer.
+    ///
+    /// - Parameter animated: Passed to super.ViewWillDisappear.
     override func viewWillDisappear(_ animated: Bool)
     {
         UpdateTimer?.invalidate()
@@ -34,13 +46,16 @@ class SystemReport: UITableViewController
         super.viewWillDisappear(animated)
     }
     
+    /// Update the data in the UI. Called when the timer is triggered (and by viewDidLoad once).
     @objc func UpdateData()
     {
         LoadData()
     }
     
+    /// Timer for showing updated data in the UI.
     var UpdateTimer: Timer? = nil
     
+    /// Load the data into the UI.
     func LoadData()
     {
         ReportMetalFeatures()
@@ -48,11 +63,17 @@ class SystemReport: UITableViewController
         ReportSystemFeatures()
     }
     
+    /// Handle table cell selections. This is done to allow more information to be displayed for certain pieces of information.
+    ///
+    /// - Parameters:
+    ///   - tableView: The table view where the selection took place.
+    ///   - indexPath: Indicates which cell was selected (in our case, pressed).
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath)
     {
         let Cell = tableView.cellForRow(at: indexPath)
         if Cell?.tag == 2
         {
+            //Show an explanation for system pressure.
             let Explanation =
             """
 Shows the current system pressure. Nomimal is good, Fair is for reaonsable loads, Serious is for heavy loads, Critical for very heavy loads and you should close programs, and Catastrophic for when the system will shut down very soon to protect itself from thermal damage.
@@ -63,6 +84,7 @@ Shows the current system pressure. Nomimal is good, Fair is for reaonsable loads
         }
     }
     
+    /// Show data on system features, such as CPU, memory, system pressure, and the like.
     func ReportSystemFeatures()
     {
         let NetName = Platform.SystemName()
@@ -98,6 +120,7 @@ Shows the current system pressure. Nomimal is good, Fair is for reaonsable loads
         }
     }
     
+    /// Colors to use for reporting system pressure. The higher the pressure, the more strident the color.
     let PressureColors: [String: (UIColor, UIColor)] =
         [
             "Nominal": (UIColor.black, UIColor(named: "GreenPastel")!),
@@ -107,6 +130,7 @@ Shows the current system pressure. Nomimal is good, Fair is for reaonsable loads
             "Catastrophic": (UIColor.yellow, UIColor.red),
             ]
     
+    /// Show metal feature information in the UI.
     func ReportMetalFeatures()
     {
         MetalFeatures.text = Platform.MetalGPU()
@@ -114,6 +138,7 @@ Shows the current system pressure. Nomimal is good, Fair is for reaonsable loads
         AllocMemLabel.text = Platform.MetalAllocatedSpace()
     }
     
+    /// Show camera information in the UI.
     func ReportCameraFeatures()
     {
         let HasZoom = Platform.HasTelephotoCamera()
@@ -137,6 +162,8 @@ Shows the current system pressure. Nomimal is good, Fair is for reaonsable loads
             BackCameraResolution.text = "unknown"
         }
     }
+    
+    // MARK: UI controls/outlets.
     
     @IBOutlet weak var NetworkNameLabel: UILabel!
     @IBOutlet weak var DeviceLabel: UILabel!
