@@ -73,7 +73,7 @@ class MainUIViewer: UIViewController,
         
         InitializeLabels()
         
-        //Make sure the file structure is OK...
+        //Make sure the file structure is OK... If not, create expected directories.
         if FileHandler.DirectoryExists(DirectoryName: FileHandler.SampleDirectory)
         {
             print("\(FileHandler.SampleDirectory) already exists.")
@@ -159,15 +159,18 @@ class MainUIViewer: UIViewController,
                 }
                 let VideoOrientation = self.VideoDataOutput.connection(with: .video)!.videoOrientation
                 let VideoDevicePosition = self.VideoDeviceInput.device.position
-                let Rotation = LiveMetalView.Rotation(with: InterfaceOrientation, videoOrientation: VideoOrientation,
+                let Rotation = LiveMetalView.Rotation(with: InterfaceOrientation,
+                                                      videoOrientation: VideoOrientation,
                                                       cameraPosition: VideoDevicePosition)
-                print("Video position is front: \(VideoDevicePosition == .front)")
                 self.LiveView.mirroring = (VideoDevicePosition == .front)
                 if let Rotation = Rotation
                 {
                     self.LiveView.rotation = Rotation
                 }
+                self.DataOutputQueue.async
+                    {
                 self.RenderingEnabled = true
+                }
                 self.CaptureSession.startRunning()
                 self.IsSessionRunning = self.CaptureSession.isRunning
                 
@@ -325,6 +328,11 @@ class MainUIViewer: UIViewController,
         SessionQueue.async
             {
                 let Settings = AVCapturePhotoSettings(format: [kCVPixelBufferPixelFormatTypeKey as String: Int(kCVPixelFormatType_32BGRA)])
+                if self.DepthDataSupported && self.PhotoOutput.isDepthDataDeliverySupported
+                {
+                    Settings.isDepthDataDeliveryEnabled = true
+                    Settings.embedsDepthDataInPhoto = false
+                }
                 self.PhotoOutput.capturePhoto(with: Settings, delegate: self)
         }
     }
