@@ -11,6 +11,7 @@ import UIKit
 import Metal
 import AVFoundation
 
+/// Functions to get information about the platform upon which we are running.
 class Platform
 {
     /// Returns the type of processor architecture we're running on.
@@ -60,17 +61,30 @@ class Platform
         return String(Parts[0])
     }
     
+    /// Return the iOS version.
+    ///
+    /// - Returns: iOS version we're running on.
     public static func iOSVersion() -> String
     {
         let SysVer = UIDevice.current.systemVersion
         return SysVer
     }
     
+    /// Name of the OS.
+    ///
+    /// - Returns: OS name.
     public static func SystemOSName() -> String
     {
         return UIDevice.current.systemName
     }
     
+    /// Return a string indicating the system pressure. System pressure is essentially a thermal measurement - the hotter the
+    /// device, the more pressure is being applied to the system. Once the device reaches .shutdown, the system will turn itself
+    /// off to protect itself from damage.
+    ///
+    /// - Note: "Pressure" in this case has nothing to do with barametric pressure.
+    ///
+    /// - Returns: String indicating thermal system pressure. One of: Nominal, Fair, Serious, Critical, Catastrophic, and Unknown.
     public static func GetSystemPressure() -> String
     {
         let VideoDeviceDiscoverySession = AVCaptureDevice.DiscoverySession(deviceTypes: [.builtInDualCamera,
@@ -129,6 +143,9 @@ class Platform
         return (MemUsed, MemFree)
     }
     
+    /// Return the battery level percent.
+    ///
+    /// - Returns: Percent full the battery is. If monitoring not enabled, nil is returned.
     public static func BatteryLevel() -> Float?
     {
         if UIDevice.current.isBatteryMonitoringEnabled
@@ -141,12 +158,19 @@ class Platform
         }
     }
     
+    /// Enable or disable battery monitoring.
+    ///
+    /// - Parameter Enabled: Value to control battery monitoring.
     public static func MonitorBatteryLevel(_ Enabled: Bool)
     {
         UIDevice.current.isBatteryMonitoringEnabled = Enabled
     }
     
-    //https://stackoverflow.com/questions/26028918/how-to-determine-the-current-iphone-device-model
+    /// Return a string of the name of the device.
+    ///
+    /// - Note: [How to determine the current iPhone device model](https://stackoverflow.com/questions/26028918/how-to-determine-the-current-iphone-device-model)
+    ///
+    /// - Returns: String describing the current device.
     public static func NiceModelName() -> String
     {
         let ModelType = UIDevice.current.SystemType
@@ -154,22 +178,37 @@ class Platform
         return ModelTypeString
     }
     
+    /// Return the name of the processor and its nominal operating frequency. Derived from static tables.
+    ///
+    /// - Returns: Tuple of the name of the processor and nominal operating frequency (in string format).
     public static func GetProcessorInfo() -> (String, String)
     {
         let (CPUName, CPUFrequency) = Processor[UIDevice.current.SystemType]!
         return (CPUName, CPUFrequency)
     }
     
+    /// Determines if the back camera has true depth capabilities.
+    ///
+    /// - Returns: True if the back camera supports true depth, false if not.
     public static func HasTrueDepthCamera() -> Bool
     {
         return GetCameraResolution(CameraType: .builtInTrueDepthCamera, Position: .back) != nil
     }
     
+    /// Determines if the back camera has a built-in telephoto lens.
+    ///
+    /// - Returns: True if the back camera has a telephoto lens, false if not.
     public static func HasTelephotoCamera() -> Bool
     {
         return GetCameraResolution(CameraType: .builtInTelephotoCamera, Position: .back) != nil
     }
     
+    /// Return the native resolution of the specified camera in the specified position.
+    ///
+    /// - Parameters:
+    ///   - CameraType: The camera type to check.
+    ///   - Position: The position of the camera.
+    /// - Returns: Size of the resolution on success, nil if no such camera found.
     public static func GetCameraResolution(CameraType: AVCaptureDevice.DeviceType, Position: AVCaptureDevice.Position) -> CGSize?
     {
         var Resolution = CGSize.zero
@@ -186,6 +225,9 @@ class Platform
         }
     }
     
+    /// Return a string that describes the Metal GPU.
+    ///
+    /// - Returns: Metal GPU description.
     public static func MetalGPU() -> String
     {
         let MetalDevice = MTLCreateSystemDefaultDevice()
@@ -207,12 +249,18 @@ class Platform
         return SupportedGPU.trimmingCharacters(in: .whitespacesAndNewlines)
     }
     
+    /// Return a string that describes the Metal device name.
+    ///
+    /// - Returns: Metal device name.
     public static func MetalDeviceName() -> String
     {
         let MetalDevice = MTLCreateSystemDefaultDevice()
         return (MetalDevice?.name)!
     }
     
+    /// Return a string of the amount of space currently allocated by Metal.
+    ///
+    /// - Returns: Number of bytes (in string format) allocated by Metal.
     public static func MetalAllocatedSpace() -> String
     {
         let MetalDevice = MTLCreateSystemDefaultDevice()
@@ -220,6 +268,7 @@ class Platform
         return Utility.MakeSeparatedNumber(Allocated!, Separator: ",")
     }
     
+    /// Table of GPU families for Metal.
     static let MetalFeatureTable: [MTLFeatureSet: String] =
         [
             MTLFeatureSet.iOS_GPUFamily1_v1: "GPU 1, v1",
@@ -241,7 +290,8 @@ class Platform
             MTLFeatureSet.iOS_GPUFamily5_v1: "GPU 5, v1"
     ]
     
-    //https://www.devicespecifications.com/en/brand/cefa26
+    /// Table of devices to processor names and nominal frequencies.
+    /// - Note: See [Device Specifications](https://www.devicespecifications.com/en/brand/cefa26)
     private static let Processor: [Model: (String, String)] =
         [
             .simulator        : ("N/A", ""),
@@ -286,7 +336,9 @@ class Platform
     ]
 }
 
-//https://stackoverflow.com/questions/26028918/how-to-determine-the-current-iphone-device-model
+/// Enum of iPads and iPhones supported by this application. Each enum has as its value a human-readable
+/// device name.
+/// - Note See [How to determine the current iPhone model device](https://stackoverflow.com/questions/26028918/how-to-determine-the-current-iphone-device-model)
 public enum Model : String
 {
     case simulator   = "simulator/sandbox",
@@ -330,9 +382,11 @@ public enum Model : String
     unrecognized     = "?unrecognized?"
 }
 
-//https://stackoverflow.com/questions/26028918/how-to-determine-the-current-iphone-device-model
+/// Extension to UIDevice that returns the model of the current device.
+/// - Note See [How to determine the current iPhone model device](https://stackoverflow.com/questions/26028918/how-to-determine-the-current-iphone-device-model)
 public extension UIDevice
 {
+    /// Returns an enum indicating which system we're running on.
     public var SystemType: Model
     {
         var systemInfo = utsname()
