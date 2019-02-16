@@ -111,7 +111,6 @@ class LineScreen: FilterParent, Renderer
         }
         
         let SourceImage = CIImage(cvImageBuffer: PixelBuffer)
-        Utility.print1("Image size=\(SourceImage.extent)")
         PrimaryFilter.setDefaults()
         PrimaryFilter.setValue(SourceImage, forKey: kCIInputImageKey)
         let DoMerge = ParameterManager.GetBool(From: ID(), Field: .MergeWithBackground, Default: true)
