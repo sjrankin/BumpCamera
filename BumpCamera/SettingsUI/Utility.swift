@@ -1423,6 +1423,30 @@ class Utility
         #endif
     }
     
+    private static var Printed = [String]()
+    
+    public static func print1(_ Message: String)
+    {
+        #if DEBUG
+        if Printed.contains(Message)
+        {
+            return
+        }
+        Printed.append(Message)
+        print(Message)
+        #endif
+    }
+    
+    public static func remove1(_ Message: String)
+    {
+        #if DEBUG
+        if let Index = Printed.firstIndex(of: Message)
+        {
+            Printed.remove(at: Index)
+        }
+        #endif
+    }
+    
     /// Return the device class of the device we're running on. Device classes are based on screen size only.
     ///
     /// - Returns: Device class of the system.
