@@ -24,18 +24,6 @@ extension MainUIViewer
             print("Error capturing photo buffer - no pixel buffer: \((error?.localizedDescription)!)")
             return
         }
-        #if false
-        let test0 = photo.cgImageRepresentation()
-        let testX = UIImage(cgImage: (test0?.takeRetainedValue())!)
-        let Test = UIImage(PixelBuffer: PhotoPixelBuffer)
-        if let ciimg = CIImage(image: Test!)
-        {
-            let Context = CIContext()
-            let cgimg = Context.createCGImage(ciimg, from: ciimg.extent)
-            let Final = UIImage(cgImage: cgimg!)
-            UIImageWriteToSavedPhotosAlbum(Final, nil, nil, nil)
-        }
-        #endif
         
         var PhotoFormat: CMFormatDescription?
         CMVideoFormatDescriptionCreateForImageBuffer(allocator: kCFAllocatorDefault,
@@ -45,6 +33,16 @@ extension MainUIViewer
         ProcessingQueue.async
             {
                 var FinalPixelBuffer = PhotoPixelBuffer
+                #if true
+                let CurrentFilter = self.Filters!.PhotoFilter!.FilterType
+                let FilterForPhoto = self.Filters!.CreateFilter(For: CurrentFilter)
+                FilterForPhoto?.Initialize(With: PhotoFormat!, BufferCountHint: self.BufferCount)
+                guard let FilteredPixelBuffer = FilterForPhoto?.Render(PixelBuffer: FinalPixelBuffer) else
+                {
+                    print("Unable to apply photo filter.")
+                    return
+                }
+                #else
                 if !(self.Filters!.PhotoFilter!.Filter?.Initialized)!
                 {
                     self.Filters!.PhotoFilter?.Filter?.Initialize(With: PhotoFormat!, BufferCountHint: self.BufferCount)
@@ -54,6 +52,7 @@ extension MainUIViewer
                     print("Unable to apply photo filter.")
                     return
                 }
+                #endif
                 FinalPixelBuffer = FilteredPixelBuffer
                 
                 if let DepthData = photo.depthData
