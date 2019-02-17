@@ -278,6 +278,7 @@ class FilterSettingUIBase: UITableViewController, UIImagePickerControllerDelegat
             "TestPattern",
             "TestPattern2",
             "TestPattern3",
+            "MarsBayerEncoded",
             "TheProgrammer",
             "custom image"
     ]
