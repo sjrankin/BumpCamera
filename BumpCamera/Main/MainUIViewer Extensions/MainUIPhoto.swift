@@ -17,6 +17,12 @@ import MobileCoreServices
 /// Code for handling photos.
 extension MainUIViewer
 {
+    /// didFinishProcessingPhoto delegate handler.
+    ///
+    /// - Parameters:
+    ///   - output: The output of the photo capture process.
+    ///   - photo: Contains photo information.
+    ///   - error: If not nil, error information.
     func photoOutput(_ output: AVCapturePhotoOutput, didFinishProcessingPhoto photo: AVCapturePhoto, error: Error?)
     {
         guard let PhotoPixelBuffer = photo.pixelBuffer else
@@ -73,7 +79,8 @@ extension MainUIViewer
                     }
                 }
                 
-                let MetaData: CFDictionary = photo.metadata as CFDictionary
+                //let MetaData: CFDictionary = photo.metadata as CFDictionary
+                let MetaData = photo.metadata
                 self.SaveImageAsJPeg(PixelBuffer: self.FinalPixelBuffer, MetaData: MetaData)
         }
         
@@ -88,7 +95,8 @@ extension MainUIViewer
         if _Settings.bool(forKey: "SaveOriginalImage")
         {
 
-            let MetaData: CFDictionary = photo.metadata as CFDictionary
+            //let MetaData: CFDictionary = photo.metadata as CFDictionary
+            let MetaData = photo.metadata
             if SaveImageAsJPeg(PixelBuffer: PhotoPixelBuffer, MetaData: MetaData)
             {
                 WhatSaved = "Images"
@@ -104,7 +112,7 @@ extension MainUIViewer
     ///   - PixelBuffer: Pixel data to save.
     ///   - MetaData: Meta data for the image.
     /// - Returns: True on success, false on failure.
-    @discardableResult func SaveImageAsJPeg(PixelBuffer: CVPixelBuffer, MetaData: CFDictionary) -> Bool
+    @discardableResult func SaveImageAsJPeg(PixelBuffer: CVPixelBuffer, MetaData: [String: Any]) -> Bool//CFDictionary) -> Bool
     {
         guard let JData = MainUIViewer.JpegData(WithPixelBuffer: PixelBuffer, Attachments: MetaData) else
         {
