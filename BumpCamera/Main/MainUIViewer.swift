@@ -333,6 +333,7 @@ class MainUIViewer: UIViewController,
                     Settings.isDepthDataDeliveryEnabled = true
                     Settings.embedsDepthDataInPhoto = false
                 }
+                let MetaData = Settings.metadata
                 self.PhotoOutput.capturePhoto(with: Settings, delegate: self)
         }
     }
