@@ -118,6 +118,13 @@ class FilterManager
         ParameterCount![.FalseColor] = FalseColor.SupportedFields().count
         ParameterCount![.CornerGradient] = CornerGradient.SupportedFields().count
         ParameterCount![.DilateErode] = DilateErode.SupportedFields().count
+        ParameterCount![.Posterize] = Posterize.SupportedFields().count
+        ParameterCount![.Chrome] = Chrome.SupportedFields().count
+        ParameterCount![.Instant] = Instant.SupportedFields().count
+        ParameterCount![.ProcessEffect] = ProcessEffect.SupportedFields().count
+        ParameterCount![.TransferEffect] = TransferEffect.SupportedFields().count
+        ParameterCount![.SepiaTone] = SepiaTone.SupportedFields().count
+        ParameterCount![.BayerDecode] = BayerDecode.SupportedFields().count
     }
     
     private static var ParameterCount: [FilterManager.FilterTypes: Int]? = nil
@@ -169,6 +176,13 @@ class FilterManager
         StoryboardList![.FalseColor] = FalseColor.SettingsStoryboard()
         StoryboardList![.CornerGradient] = CornerGradient.SettingsStoryboard()
         StoryboardList![.DilateErode] = DilateErode.SettingsStoryboard()
+        StoryboardList![.Posterize] = Posterize.SettingsStoryboard()
+        StoryboardList![.Chrome] = Chrome.SettingsStoryboard()
+        StoryboardList![.Instant] = Instant.SettingsStoryboard()
+        StoryboardList![.ProcessEffect] = ProcessEffect.SettingsStoryboard()
+        StoryboardList![.TransferEffect] = TransferEffect.SettingsStoryboard()
+        StoryboardList![.SepiaTone] = SepiaTone.SettingsStoryboard()
+        StoryboardList![.BayerDecode] = BayerDecode.SettingsStoryboard()
     }
     
     private static var StoryboardList: [FilterTypes: String?]? = nil
@@ -392,6 +406,27 @@ class FilterManager
         case .DilateErode:
             return DilateErode()
             
+        case .Posterize:
+            return Posterize()
+            
+        case .Chrome:
+            return Chrome()
+            
+        case .Instant:
+            return Instant()
+            
+        case .ProcessEffect:
+            return ProcessEffect()
+            
+        case .TransferEffect:
+            return TransferEffect()
+            
+        case .SepiaTone:
+            return SepiaTone()
+            
+        case .BayerDecode:
+            return BayerDecode()
+            
         default:
             return nil
         }
@@ -532,16 +567,25 @@ class FilterManager
             .FalseColor: FalseColor.ID(),
             .CornerGradient: CornerGradient.ID(),
             .DilateErode: DilateErode.ID(),
+            .Posterize: Posterize.ID(),
+            .Chrome: Chrome.ID(),
+            .Instant: Instant.ID(),
+            .ProcessEffect: ProcessEffect.ID(),
+            .TransferEffect: TransferEffect.ID(),
+            .SepiaTone: SepiaTone.ID(),
+            .BayerDecode: BayerDecode.ID(),
             ]
     
     /// Map between group type and filters in the group.
     private static let GroupMap: [FilterGroups: [(FilterTypes, Int)]] =
         [
-            .Standard: [(.PassThrough, 0), (.Noir, 1), (.LineScreen, 4), (.DotScreen, 5), (.CircularScreen, 7),
-                        (.HatchScreen, 6), (.CMYKHalftone, 10), (.Pixellate, 10), (.Comic, 2), (.XRay, 3), (.LineOverlay, 8),
-                        (.EdgeWork, 9)],
+            .Standard: [(.PassThrough, 0), (.LineScreen, 4), (.DotScreen, 5), (.CircularScreen, 7),
+                        (.HatchScreen, 6), (.CMYKHalftone, 8), (.Pixellate, 11), (.Comic, 2),
+                        (.LineOverlay, 9), (.EdgeWork, 10), (.Posterize, 13)],
             .Combined: [(.CircleAndLines, 0)],
-            .Effects: [(.PixellateMetal, 0), (.DilateErode, 1), (.Kuwahara, 2)],
+            .Effects: [(.PixellateMetal, 0), (.DilateErode, 1), (.Kuwahara, 2), (.BayerDecode, 3)],
+            .PhotoEffects: [(.Noir, 0), (.Chrome, 1), (.XRay, 2), (.Instant, 2), (.ProcessEffect, 3),
+                            (.TransferEffect, 4), (.SepiaTone, 5)],
             .Colors: [(.HueAdjust, 0), (.HSBAdjust, 1), (.Solarize, 2), (.ChannelMixer, 3),
                       (.DesaturateColors, 4), (.Threshold, 5), (.MonochromeColor, 6), (.FalseColor, 7),
                       (.PaletteShifting, 8)],
@@ -564,6 +608,7 @@ class FilterManager
             .Effects: UUID(uuidString: "fae8b7f3-db91-47c9-8599-7227ef0d9fdb")!,
             .Generator: UUID(uuidString: "fc757ea9-8300-47a9-9fa0-0855d86100bb")!,
             .Gray: UUID(uuidString: "d004805c-4571-40d1-b2af-fb6d9b680816")!,
+            .PhotoEffects: UUID(uuidString: "a8a857f4-ddbf-4fbb-a998-e48395f3ca10")!,
             ]
     
     /// Given a group description, return its ID.
@@ -632,11 +677,12 @@ class FilterManager
             .Combined: ("Combined", 1),
             .Colors: ("Colors", 2),
             .Effects: ("Effects", 4),
-            .Bumpy: ("3D", 6),
-            .Motion: ("Motion", 7),
-            .Tiles: ("Distortion", 5),
-            .Generator: ("Generators", 8),
+            .Bumpy: ("3D", 7),
+            .Motion: ("Motion", 8),
+            .Tiles: ("Distortion", 6),
+            .Generator: ("Generators", 9),
             .Gray: ("Mono- chrome", 3),
+            .PhotoEffects: ("Photo Effects", 5),
             ]
     
     /// Map between group type and group color.
@@ -646,6 +692,7 @@ class FilterManager
             .Combined: UIColor(named: "PastelYellow")!,
             .Colors: UIColor(named: "GreenPastel")!,
             .Effects: UIColor(named: "PinkPastel")!,
+            .PhotoEffects: UIColor.orange,
             .Tiles: UIColor(named: "LightBlue")!,
             .Bumpy: UIColor(named: "Thistle")!,
             .Motion: UIColor(named: "Gold")!,
@@ -807,6 +854,13 @@ class FilterManager
             .FalseColor: "False Color",
             .CornerGradient: "Corner Gradient",
             .DilateErode: "Dilate & Erode",
+            .Posterize: "Posterize",
+            .Chrome: "Chrome",
+            .Instant: "Instant Photo",
+            .ProcessEffect: "Process Effect",
+            .TransferEffect: "Transfer Effect",
+            .SepiaTone: "Sepia Tone",
+            .BayerDecode: "Bayer Decode",
             ]
     
     public static func GetFilterTitle(_ Filter: FilterTypes) -> String?
@@ -857,6 +911,13 @@ class FilterManager
             .FalseColor: true,
             .CornerGradient: false,
             .DilateErode: true,
+            .Posterize: true,
+            .Chrome: true,
+            .Instant: true,
+            .ProcessEffect: true,
+            .TransferEffect: true,
+            .SepiaTone: true,
+            .BayerDecode: true,
             ]
     
     /// Determines if the given filter type is implemented.
@@ -1004,6 +1065,10 @@ class FilterManager
             .WindowSize: .IntType,
             .ValueDetermination: .IntType,
             .Operation: .IntType,
+            .PosterizeLevel: .IntType,
+            .SepiaToneLevel: .DoubleType,
+            .BayerPattern: .IntType,
+            .BayerDecodeMethod: .IntType,
             ]
     
     public static let FieldStorageMap: [InputFields: String] =
@@ -1113,6 +1178,10 @@ class FilterManager
             .WindowSize: "_WindowSize",
             .ValueDetermination: "_ValueDetermination",
             .Operation: "_FilterOperation",
+            .PosterizeLevel: "_PosterizeLevel",
+            .SepiaToneLevel: "_SepiaToneLevel",
+            .BayerPattern: "_SourceBayerPattern",
+            .BayerDecodeMethod: "_BayerDecodeMethod",
             ]
 }
 
