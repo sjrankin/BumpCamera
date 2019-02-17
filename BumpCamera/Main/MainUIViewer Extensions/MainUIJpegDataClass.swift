@@ -17,7 +17,7 @@ import MobileCoreServices
 /// Contains a jpg data class as an extension to the MainUIViewer.
 extension MainUIViewer
 {
-    class func JpegData(WithPixelBuffer PixelBuffer: CVPixelBuffer, Attachments: CFDictionary?) -> Data?
+    class func JpegData(WithPixelBuffer PixelBuffer: CVPixelBuffer, Attachments: [String: Any]?) -> Data?//CFDictionary?) -> Data?
     {
         let Context = CIContext()
         let RenderedCIImage = CIImage(cvImageBuffer: PixelBuffer)
@@ -40,7 +40,16 @@ extension MainUIViewer
             return nil
         }
         
-        CGImageDestinationAddImage(CGImageDestination, RenderedCGImage, Attachments)
+        #if false
+        let RawMetaData = CMCopyDictionaryOfAttachments(allocator: nil, target: IData, attachmentMode: CMAttachmentMode(kCMAttachmentMode_ShouldPropagate))
+        let metadata = CFDictionaryCreateMutableCopy(nil, 0, RawMetaData) as NSMutableDictionary
+        let ExifData = metadata.value(forKey: kCGImagePropertyExifDictionary as String) as? NSMutableDictionary
+        ExifData?.setValue("Will this one work?", forKey: kCGImagePropertyExifUserComment as String)
+        let FinalAttachments = ExifData! as CFDictionary
+        #else
+        let FinalAttachments = Attachments
+        #endif
+        CGImageDestinationAddImage(CGImageDestination, RenderedCGImage, FinalAttachments! as CFDictionary)
         if CGImageDestinationFinalize(CGImageDestination)
         {
             return IData as Data
