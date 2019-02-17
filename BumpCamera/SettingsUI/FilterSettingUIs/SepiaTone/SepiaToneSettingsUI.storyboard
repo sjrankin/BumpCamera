@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14460.31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="ozL-TN-zgQ">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14460.20"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--Sepia Tone Settings-->
+        <scene sceneID="jxa-aj-huD">
+            <objects>
+                <tableViewController id="EwJ-0k-qT9" customClass="SepiaToneSettingsUICode" customModule="BumpCamera" customModuleProvider="target" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="static" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" id="z7n-gy-5Dy">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <sections>
+                            <tableViewSection id="t7K-r9-Ljj">
+                                <cells>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" rowHeight="87" id="ChK-b5-T4V">
+                                        <rect key="frame" x="0.0" y="0.0" width="375" height="87"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="ChK-b5-T4V" id="u0R-Xf-FIH">
+                                            <rect key="frame" x="0.0" y="0.0" width="375" height="86.5"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Level" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="XtV-hb-OND">
+                                                    <rect key="frame" x="16" y="11" width="43" height="20"/>
+                                                    <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="0.5" minValue="0.0" maxValue="1000" translatesAutoresizingMaskIntoConstraints="NO" id="h7S-VF-lP9">
+                                                    <rect key="frame" x="33" y="39" width="256" height="31"/>
+                                                    <connections>
+                                                        <action selector="HandleLevelSliderChanged:" destination="EwJ-0k-qT9" eventType="primaryActionTriggered" id="WQp-VN-TKe"/>
+                                                    </connections>
+                                                </slider>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="4ww-GW-wGv">
+                                                    <rect key="frame" x="295" y="42" width="64" height="24"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="width" constant="64" id="bAt-79-Wil"/>
+                                                    </constraints>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="20"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstItem="4ww-GW-wGv" firstAttribute="top" secondItem="u0R-Xf-FIH" secondAttribute="topMargin" constant="31" id="Fwb-WW-nBe"/>
+                                                <constraint firstItem="XtV-hb-OND" firstAttribute="leading" secondItem="u0R-Xf-FIH" secondAttribute="leadingMargin" id="G3y-gu-lbo"/>
+                                                <constraint firstItem="h7S-VF-lP9" firstAttribute="top" secondItem="XtV-hb-OND" secondAttribute="bottom" constant="8" symbolic="YES" id="GgB-3t-L8R"/>
+                                                <constraint firstItem="4ww-GW-wGv" firstAttribute="trailing" secondItem="u0R-Xf-FIH" secondAttribute="trailingMargin" id="MEl-fD-EIG"/>
+                                                <constraint firstItem="h7S-VF-lP9" firstAttribute="leading" secondItem="u0R-Xf-FIH" secondAttribute="leadingMargin" constant="19" id="OIt-EM-tly"/>
+                                                <constraint firstAttribute="bottomMargin" secondItem="h7S-VF-lP9" secondAttribute="bottom" constant="7" id="ROz-vA-Y6b"/>
+                                                <constraint firstItem="h7S-VF-lP9" firstAttribute="centerY" secondItem="4ww-GW-wGv" secondAttribute="centerY" id="SyN-rB-wFL"/>
+                                                <constraint firstItem="4ww-GW-wGv" firstAttribute="leading" secondItem="h7S-VF-lP9" secondAttribute="trailing" constant="8" symbolic="YES" id="aFn-p3-Xxg"/>
+                                                <constraint firstAttribute="bottomMargin" secondItem="4ww-GW-wGv" secondAttribute="bottom" constant="10" id="bb8-rn-Peh"/>
+                                                <constraint firstItem="XtV-hb-OND" firstAttribute="top" secondItem="u0R-Xf-FIH" secondAttribute="topMargin" id="ynW-fZ-7Td"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
+                                </cells>
+                            </tableViewSection>
+                        </sections>
+                        <connections>
+                            <outlet property="dataSource" destination="EwJ-0k-qT9" id="C6i-k9-G4u"/>
+                            <outlet property="delegate" destination="EwJ-0k-qT9" id="8oS-7o-7gV"/>
+                        </connections>
+                    </tableView>
+                    <toolbarItems>
+                        <barButtonItem title="Item" image="CameraHome" id="Kek-sf-af4">
+                            <connections>
+                                <action selector="HandleCameraButton:" destination="EwJ-0k-qT9" id="INI-ir-QAa"/>
+                            </connections>
+                        </barButtonItem>
+                    </toolbarItems>
+                    <navigationItem key="navigationItem" title="Sepia Tone Settings" id="iO7-dh-yDC">
+                        <barButtonItem key="leftBarButtonItem" title="Back" id="LnV-8j-ttz">
+                            <connections>
+                                <action selector="HandleBackButotn:" destination="EwJ-0k-qT9" id="5kr-g6-MHE"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
+                    <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
+                    <connections>
+                        <outlet property="LevelSlider" destination="h7S-VF-lP9" id="62F-YK-GWb"/>
+                        <outlet property="LevelValueLabel" destination="4ww-GW-wGv" id="Sps-h9-gcE"/>
+                    </connections>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="ra7-1H-AVR" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-135.19999999999999" y="26.53673163418291"/>
+        </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="chG-ZN-8lI">
+            <objects>
+                <navigationController storyboardIdentifier="SepiaToneSettingsUI" toolbarHidden="NO" id="ozL-TN-zgQ" sceneMemberID="viewController">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="zjX-ZJ-IsH">
+                        <rect key="frame" x="0.0" y="20" width="375" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <toolbar key="toolbar" opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="6bV-8o-5R8">
+                        <rect key="frame" x="0.0" y="623" width="375" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </toolbar>
+                    <connections>
+                        <segue destination="EwJ-0k-qT9" kind="relationship" relationship="rootViewController" id="HtU-wh-qRH"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Jq3-vE-1kT" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-1086" y="27"/>
+        </scene>
+    </scenes>
+    <resources>
+        <image name="CameraHome" width="96" height="96"/>
+    </resources>
+</document>
