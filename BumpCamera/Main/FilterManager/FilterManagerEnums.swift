@@ -61,7 +61,14 @@ extension FilterManager
         case FalseColor = 34
         case CornerGradient = 35
         case DilateErode = 36
-        case NotSet = 1000
+        case Posterize = 37
+        case Chrome = 38
+        case Instant = 39
+        case ProcessEffect = 40
+        case TransferEffect = 41
+        case SepiaTone = 42
+        case BayerDecode = 43
+        case NotSet = 10000
     }
     
     /// Logical groups of filters.
@@ -84,7 +91,8 @@ extension FilterManager
         case Tiles = 6
         case Generator = 7
         case Gray = 8
-        case NotSet = 1000
+        case PhotoEffects = 9
+        case NotSet = 10000
     }
     
     /// Describes where a filter may be applied.
@@ -204,6 +212,10 @@ extension FilterManager
         case WindowSize = 102
         case ValueDetermination = 103
         case Operation = 104
+        case PosterizeLevel = 105
+        case SepiaToneLevel = 106
+        case BayerPattern = 107
+        case BayerDecodeMethod = 108
         case NoField = 10000
     }
     
