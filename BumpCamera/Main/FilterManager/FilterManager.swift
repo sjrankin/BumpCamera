@@ -527,8 +527,33 @@ class FilterManager
         return nil
     }
     
-    /// Map between filter types and filter IDs.
-    static let FilterMap: [FilterTypes: UUID] =
+    public static func FiltersByKernel(KernelType: FilterKernelTypes) -> [FilterTypes]
+    {
+        if FilterKernelMap == nil
+        {
+            MakeFilterKernelMap()
+        }
+        var Results = [FilterTypes]()
+        for (FilterType, TheType) in FilterKernelMap!
+        {
+            if KernelType == TheType
+            {
+            Results.append(FilterType)
+            }
+        }
+        return Results
+    }
+    
+    private static func MakeFilterKernelMap()
+    {
+        FilterKernelMap = [FilterTypes: FilterKernelTypes]()
+        
+    }
+    
+    private static var FilterKernelMap: [FilterTypes: FilterKernelTypes]? = nil
+    
+    /// Map between filter types and their IDs. Only working filters should be included in this map.
+    public static let FilterMap: [FilterTypes: UUID] =
         [
             .Noir: Noir.ID(),
             .LineScreen: LineScreen.ID(),
@@ -1069,6 +1094,10 @@ class FilterManager
             .SepiaToneLevel: .DoubleType,
             .BayerPattern: .IntType,
             .BayerDecodeMethod: .IntType,
+            .RenderImageCount: .IntType,
+            .CumulativeImageRenderDuration: .DoubleType,
+            .RenderLiveCount: .IntType,
+            .CumulativeLiveRenderDuration: .DoubleType,
             ]
     
     public static let FieldStorageMap: [InputFields: String] =
@@ -1182,6 +1211,10 @@ class FilterManager
             .SepiaToneLevel: "_SepiaToneLevel",
             .BayerPattern: "_SourceBayerPattern",
             .BayerDecodeMethod: "_BayerDecodeMethod",
+            .RenderImageCount: "_FilterRenderImageCount",
+            .CumulativeImageRenderDuration: "_CumulativeImageRenderDuration",
+            .RenderLiveCount: "_FilterRenderLiveCount",
+            .CumulativeLiveRenderDuration: "_CumulativeLiveRenderDuration",
             ]
 }
 
