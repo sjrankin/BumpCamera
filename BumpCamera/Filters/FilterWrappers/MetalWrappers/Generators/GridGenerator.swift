@@ -117,6 +117,7 @@ class GridGenerator: FilterParent, Renderer
             fatalError("GridGenerator not initialized at Render(CVPixelBuffer) call.")
         }
         
+        let Start = CACurrentMediaTime()
         let GX = ParameterManager.GetInt(From: ID(), Field: .GridX, Default: 10)
         let GY = ParameterManager.GetInt(From: ID(), Field: .GridY, Default: 10)
         let GColor = ParameterManager.GetColor(From: ID(), Field: .GridColor, Default: UIColor.black)
@@ -174,6 +175,8 @@ class GridGenerator: FilterParent, Renderer
         CommandEncoder.endEncoding()
         CommandBuffer.commit()
         
+        LiveRenderTime = CACurrentMediaTime() - Start
+        ParameterManager.UpdateRenderAccumulator(NewValue: LiveRenderTime, ID: ID(), ForImage: false)
         return OutputBuffer
     }
     
@@ -211,6 +214,7 @@ class GridGenerator: FilterParent, Renderer
         {
             fatalError("Not initialized.")
         }
+        let Start = CACurrentMediaTime()
         let CgImage = Image.cgImage
         let ImageWidth: Int = (CgImage?.width)!
         let ImageHeight: Int = (CgImage?.height)!
@@ -287,6 +291,9 @@ class GridGenerator: FilterParent, Renderer
                                  bytesPerRow: BytesPerRow!, space: RGBColorSpace, bitmapInfo: OBitmapInfo, provider: Provider!,
                                  decode: nil, shouldInterpolate: false, intent: RenderingIntent)
         LastUIImage = UIImage(cgImage: FinalImage!)
+
+        ImageRenderTime = CACurrentMediaTime() - Start
+        ParameterManager.UpdateRenderAccumulator(NewValue: ImageRenderTime, ID: ID(), ForImage: true)
         return UIImage(cgImage: FinalImage!)
     }
     
@@ -353,6 +360,18 @@ class GridGenerator: FilterParent, Renderer
         case .InvertBackgroundColor:
             return (.BoolType, false as Any?)
             
+        case .RenderImageCount:
+            return (.IntType, 0 as Any?)
+            
+        case .CumulativeImageRenderDuration:
+            return (.DoubleType, 0.0 as Any?)
+            
+        case .RenderLiveCount:
+            return (.IntType, 0 as Any?)
+            
+        case .CumulativeLiveRenderDuration:
+            return (.DoubleType, 0.0 as Any?)
+            
         default:
             return (.NoType, nil)
         }
@@ -366,13 +385,17 @@ class GridGenerator: FilterParent, Renderer
     public static func SupportedFields() -> [FilterManager.InputFields]
     {
         var Fields = [FilterManager.InputFields]()
-        Fields.append(FilterManager.InputFields.LineWidth)
-        Fields.append(FilterManager.InputFields.GridX)
-        Fields.append(FilterManager.InputFields.GridY)
-        Fields.append(FilterManager.InputFields.GridColor)
-        Fields.append(FilterManager.InputFields.GridBackground)
-        Fields.append(FilterManager.InputFields.InvertColor)
-        Fields.append(FilterManager.InputFields.InvertBackgroundColor)
+        Fields.append(.LineWidth)
+        Fields.append(.GridX)
+        Fields.append(.GridY)
+        Fields.append(.GridColor)
+        Fields.append(.GridBackground)
+        Fields.append(.InvertColor)
+        Fields.append(.InvertBackgroundColor)
+        Fields.append(.RenderImageCount)
+        Fields.append(.CumulativeImageRenderDuration)
+        Fields.append(.RenderLiveCount)
+        Fields.append(.CumulativeLiveRenderDuration)
         return Fields
     }
     
@@ -394,5 +417,64 @@ class GridGenerator: FilterParent, Renderer
     func FilterTarget() -> [FilterTargets]
     {
         return [.Video, .Still, .LiveView]
+    }
+    
+    private var ImageRenderTime: Double = 0.0
+    private var LiveRenderTime: Double = 0.0
+    
+    /// Return the rendering time for the most recent image or live view render. Optionally reset the saved render
+    /// time. Render time is from start of function call to return, not just kernel/filter time. One data point isn't
+    /// terribly useful so be sure to collect several hundred in different environmental conditions to get a good idea
+    /// of the actual rendering time.
+    ///
+    /// - Parameters:
+    ///   - ForImage: If true, return the render time for the last image rendered. If false, return the render time
+    ///               for the last live view frame rendered.
+    ///   - Reset: If true, the cumulative render time is reset to 0.0 for the type of data being returned.
+    /// - Returns: The number of seconds it took to render the for the type of data specified by ForImage.
+    public func RenderTime(ForImage: Bool, Reset: Bool = false) -> Double
+    {
+        let Final = ForImage ? ImageRenderTime : LiveRenderTime
+        if Reset
+        {
+            ParameterManager.ResetRenderAccumulator(ID: ID(), ForImage: ForImage)
+        }
+        return Final
+    }
+    
+    /// Returns a list of strings intended to be used as key words in Exif data.
+    ///
+    /// - Returns: List of key words associated with the filter, including setting values.
+    func ExifKeyWords() -> [String]
+    {
+        var Keywords = [String]()
+        Keywords.append("Filter: GridGenerator")
+        Keywords.append("FilterType: Metal Generator")
+        Keywords.append("FilterID: \(ID().uuidString)")
+        return Keywords
+    }
+    
+    /// Returns a dictionary of Exif key-value pairs. Intended for use for inclusion in image Exif data.
+    ///
+    /// - Returns: Dictionary of key-value data for top-level Exif data.
+    func ExifKeyValues() -> [String: String]
+    {
+        return [String: String]()
+    }
+    
+    var FilterKernel: FilterManager.FilterKernelTypes
+    {
+        get
+        {
+            return GridGenerator.FilterKernel
+        }
+    }
+    
+    static var FilterKernel: FilterManager.FilterKernelTypes
+    {
+        get
+        {
+            return FilterManager.FilterKernelTypes.Metal
+        }
     }
 }

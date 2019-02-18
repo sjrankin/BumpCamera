@@ -15,6 +15,8 @@ import CoreImage
 
 class FilterParent
 {
+    let _Settings = UserDefaults.standard
+    
     // MARK: Common convenience functions.
     
     /// Merge two images using the SourceAtop compositing filter.

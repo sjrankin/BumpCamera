@@ -191,7 +191,23 @@ class Chrome: FilterParent, Renderer
     
     func DefaultFieldValue(Field: FilterManager.InputFields) -> (FilterManager.InputTypes, Any?)
     {
-        return (.NoType, nil)
+        switch Field
+        {
+        case .RenderImageCount:
+            return (.IntType, 0 as Any?)
+            
+        case .CumulativeImageRenderDuration:
+            return (.DoubleType, 0.0 as Any?)
+            
+        case .RenderLiveCount:
+            return (.IntType, 0 as Any?)
+            
+        case .CumulativeLiveRenderDuration:
+            return (.DoubleType, 0.0 as Any?)
+            
+        default:
+            fatalError("Unexpected field \(Field) encountered.")
+        }
     }
     
     func SupportedFields() -> [FilterManager.InputFields]
@@ -201,7 +217,12 @@ class Chrome: FilterParent, Renderer
     
     public static func SupportedFields() -> [FilterManager.InputFields]
     {
-        return [FilterManager.InputFields]()
+        var Fields = [FilterManager.InputFields]()
+        Fields.append(.RenderImageCount)
+        Fields.append(.CumulativeImageRenderDuration)
+        Fields.append(.RenderLiveCount)
+        Fields.append(.CumulativeLiveRenderDuration)
+        return Fields
     }
     
     func SettingsStoryboard() -> String?
@@ -222,5 +243,67 @@ class Chrome: FilterParent, Renderer
     func FilterTarget() -> [FilterTargets]
     {
         return [.LiveView, .Video, .Still]
+    }
+    
+    private var ImageRenderStart: Double = 0.0
+    private var LiveRenderStart: Double = 0.0
+    private var ImageRenderTime: Double = 0.0
+    private var LiveRenderTime: Double = 0.0
+    
+    /// Return the rendering time for the most recent image or live view render. Optionally reset the saved render
+    /// time. Render time is from start of function call to return, not just kernel/filter time. One data point isn't
+    /// terribly useful so be sure to collect several hundred in different environmental conditions to get a good idea
+    /// of the actual rendering time.
+    ///
+    /// - Parameters:
+    ///   - ForImage: If true, return the render time for the last image rendered. If false, return the render time
+    ///               for the last live view frame rendered.
+    ///   - Reset: If true, the render time is reset to 0.0 for the type of data being returned.
+    /// - Returns: The number of seconds it took to render the for the type of data specified by ForImage.
+    public func RenderTime(ForImage: Bool, Reset: Bool = false) -> Double
+    {
+        let Final = ForImage ? ImageRenderTime : LiveRenderTime
+        if Reset
+        {
+            if ForImage
+            {
+                ParameterManager.SetField(To: ID(), Field: .RenderImageCount, Value: 0)
+                ParameterManager.SetField(To: ID(), Field: .CumulativeImageRenderDuration, Value: 0.0)
+            }
+            else
+            {
+                ParameterManager.SetField(To: ID(), Field: .RenderLiveCount, Value: 0)
+                ParameterManager.SetField(To: ID(), Field: .CumulativeLiveRenderDuration, Value: 0.0)
+            }
+        }
+        return Final
+    }
+    
+    /// Returns a list of strings intended to be used as key words in Exif data.
+    ///
+    /// - Returns: List of key words associated with the filter, including setting values.
+    func ExifKeyWords() -> [String]
+    {
+        var Keywords = [String]()
+        Keywords.append("Filter: CIPhotoEffectChrome")
+        Keywords.append("FilterType: CIFilter")
+        Keywords.append("FilterID: \(ID().uuidString)")
+        return Keywords
+    }
+    
+    /// Returns a dictionary of Exif key-value pairs. Intended for use for inclusion in image Exif data.
+    ///
+    /// - Returns: Dictionary of key-value data for top-level Exif data.
+    func ExifKeyValues() -> [String: String]
+    {
+        return [String: String]()
+    }
+    
+    var FilterKernel: FilterManager.FilterKernelTypes
+    {
+        get
+        {
+            return FilterManager.FilterKernelTypes.CIFilter
+        }
     }
 }

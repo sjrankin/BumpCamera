@@ -112,6 +112,32 @@ protocol Renderer: class
     ///
     /// - Returns: List of valid filter targets.
     func FilterTarget() -> [FilterTargets]
+    
+    /// Returns a list of strings intended to be used as key words in Exif data.
+    ///
+    /// - Returns: List of key words associated with the filter, including setting values.
+    func ExifKeyWords() -> [String]
+    
+    /// Returns a dictionary of Exif key-value pairs. Intended for use for inclusion in image Exif data.
+    ///
+    /// - Returns: Dictionary of key-value data for top-level Exif data.
+    func ExifKeyValues() -> [String: String]
+    
+    /// Return how the filter was implemented.
+    var FilterKernel: FilterManager.FilterKernelTypes {get}
+    
+    /// Return the rendering time for the most recent image or live view render. Optionally reset the saved render
+    /// time. Render time is from start of function call to return, not just kernel/filter time. One data point isn't
+    /// terribly useful so be sure to collect several hundred in different environmental conditions to get a good idea
+    /// of the actual rendering time. Accumulated rendering counts and durations are saved in user settings on a filter-
+    /// by-filter basis.
+    ///
+    /// - Parameters:
+    ///   - ForImage: If true, return the render time for the last image rendered. If false, return the render time
+    ///               for the last live view frame rendered.
+    ///   - Reset: If true, the cumulative render time is reset to 0.0 for the type of data being returned.
+    /// - Returns: The number of seconds it took to render the for the type of data specified by ForImage.
+    func RenderTime(ForImage: Bool, Reset: Bool) -> Double
 }
 
 /// Valid targets for the various filters. A target is something the filter can reasonably process, where "reasonable" means
