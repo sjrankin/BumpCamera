@@ -268,27 +268,27 @@ class ParameterManager
     /// - Returns: UIColor created from the string representation of the color.
     private static func ConvertStringtoColor(_ Raw: String) -> UIColor
     {
-            let Parts = Raw.split(separator: ",")
-            if Parts.count != 4
+        let Parts = Raw.split(separator: ",")
+        if Parts.count != 4
+        {
+            fatalError("Raw color \"\(Raw)\" does not have four parts.")
+        }
+        var Values = [CGFloat]()
+        for Part in Parts
+        {
+            let SPart = String(Part)
+            if var DVal = Double(SPart)
             {
-                fatalError("Raw color \"\(Raw)\" does not have four parts.")
+                DVal = DVal.Clamp(0.0, 1.0)
+                Values.append(CGFloat(DVal))
             }
-            var Values = [CGFloat]()
-            for Part in Parts
+            else
             {
-                let SPart = String(Part)
-                if var DVal = Double(SPart)
-                {
-                    DVal = DVal.Clamp(0.0, 1.0)
-                    Values.append(CGFloat(DVal))
-                }
-                else
-                {
-                    fatalError("Error converting \"\(SPart)\" to number.")
-                }
+                fatalError("Error converting \"\(SPart)\" to number.")
             }
-            let Final = UIColor(red: Values[0], green: Values[1], blue: Values[2], alpha: Values[3])
-            return Final
+        }
+        let Final = UIColor(red: Values[0], green: Values[1], blue: Values[2], alpha: Values[3])
+        return Final
     }
     
     /// Return a color stored in user settings.
@@ -618,6 +618,49 @@ class ParameterManager
         let FinalValue = ConvertAny(Value, OfType: ExpectedType)
         _Settings.set(FinalValue, forKey: StorageName)
         FieldCache[StorageName] = (ExpectedType, Value)
+    }
+    
+    /// Lock for updating render accumulation values.
+    static let RenderUpdateLock = NSObject()
+    
+    /// Update rendering accumulator totals for a given filter. The rendering count is updated
+    /// here as well.
+    ///
+    /// - Parameters:
+    ///   - NewValue: New rendering value to accumulate.
+    ///   - ID: ID of the filter updating the accumulator.
+    ///   - ForImage: If true, the value is for rendering an image. If false, for rendering a live view.
+    public static func UpdateRenderAccumulator(NewValue: Double, ID: UUID, ForImage: Bool)
+    {
+        objc_sync_enter(RenderUpdateLock)
+        defer{objc_sync_exit(RenderUpdateLock)}
+        let CountField = ForImage ? FilterManager.InputFields.RenderImageCount : .RenderLiveCount
+        let ValueField = ForImage ? FilterManager.InputFields.CumulativeImageRenderDuration : .CumulativeLiveRenderDuration
+        let CountName = MakeStorageName(For: ID, Field: CountField)
+        let ValueName = MakeStorageName(For: ID, Field: ValueField)
+        var Count = _Settings.integer(forKey: CountName)
+        Count = Count + 1
+        _Settings.set(Count, forKey: CountName)
+        var Value = _Settings.double(forKey: ValueName)
+        Value = Value + NewValue
+        _Settings.set(Value, forKey: ValueName)
+    }
+    
+    /// Reset the filter render accumulation instances and durations.
+    ///
+    /// - Parameters:
+    ///   - ID: ID of the filter whose accumulation statistics will be reset.
+    ///   - ForImage: If true, the image rendering statistics will be reset. If false, the live rendering statistics will be reset.
+    public static func ResetRenderAccumulator(ID: UUID, ForImage: Bool)
+    {
+        objc_sync_enter(RenderUpdateLock)
+        defer{objc_sync_exit(RenderUpdateLock)}
+        let CountField = ForImage ? FilterManager.InputFields.RenderImageCount : .RenderLiveCount
+        let ValueField = ForImage ? FilterManager.InputFields.CumulativeImageRenderDuration : .CumulativeLiveRenderDuration
+        let CountName = MakeStorageName(For: ID, Field: CountField)
+        let ValueName = MakeStorageName(For: ID, Field: ValueField)
+        _Settings.set(0, forKey: CountName)
+        _Settings.set(0.0, forKey: ValueName)
     }
     
     private static func ConvertAny(_ Raw: Any?, OfType: FilterManager.InputTypes) -> String
