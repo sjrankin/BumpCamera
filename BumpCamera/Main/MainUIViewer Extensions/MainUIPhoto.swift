@@ -13,6 +13,7 @@ import CoreVideo
 import AVFoundation
 import Photos
 import MobileCoreServices
+import CoreServices
 
 /// Code for handling photos.
 extension MainUIViewer
@@ -81,7 +82,7 @@ extension MainUIViewer
                 
                 //let MetaData: CFDictionary = photo.metadata as CFDictionary
                 let MetaData = photo.metadata
-                self.SaveImageAsJPeg(PixelBuffer: self.FinalPixelBuffer, MetaData: MetaData)
+                self.SaveImageAsJPeg2(PixelBuffer: self.FinalPixelBuffer, MetaData: MetaData)
         }
         
         if _Settings.bool(forKey: "ShowSaveAlert")
@@ -140,6 +141,92 @@ extension MainUIViewer
                     )
                 }
         }
+        return true
+    }
+    
+    func Spaces(_ Count: Int) -> String
+    {
+        var stemp = ""
+        for _ in 0 ..< Count
+        {
+            stemp = stemp + " "
+        }
+        return stemp
+    }
+    
+    func DumpMetaData(_ Meta: [String: Any], Title: String, _ Level: Int)
+    {
+        print("Metadata dump for ==\(Title)==")
+        for (Key, Value) in Meta
+        {
+            switch Key
+            {
+            case String(kCGImagePropertyExifDictionary):
+                DumpMetaData(Value as! [String: Any], Title: "Exif", 2)
+                
+            case String(kCGImagePropertyExifAuxDictionary):
+                DumpMetaData(Value as! [String: Any], Title: "Exif Aux", 2)
+                
+            case String(kCGImagePropertyTIFFDictionary):
+                DumpMetaData(Value as! [String: Any], Title: "Tiff", 2)
+                
+            case String(kCGImagePropertyIPTCDictionary):
+                DumpMetaData(Value as! [String: Any], Title: "Tiff", 2)
+                
+            case "{MakerApple}":
+                DumpMetaData(Value as! [String: Any], Title: "MakerApple", 2)
+            
+            default:
+                print(Spaces(Level) + "\(Key)=\(Value)")
+            }
+        }
+    }
+    
+    //https://medium.com/@emiswelt/exporting-images-with-metadata-to-the-photo-gallery-in-swift-3-ios-10-66210bbad5d2
+    func SaveImageAsJPeg2(PixelBuffer: CVPixelBuffer, MetaData: [String: Any]) -> Bool
+    {
+        guard let JData = MainUIViewer.JpegData(WithPixelBuffer: PixelBuffer, Attachments: MetaData) else
+        {
+            print("Error creating jpeg image.")
+            return false
+        }
+        let Image = UIImage(data: JData)
+        
+        if !FileHandler.ClearDirectory(FileHandler.ScratchDirectory)
+        {
+            print("Error clearing scratch file directory.")
+            return false
+        }
+        let ScratchFileName = UUID().uuidString + ".jpg"
+        let ScratchPath = FileHandler.ScratchDirectoryURL()?.appendingPathComponent(ScratchFileName)
+        let FilePath = CFURLCreateWithFileSystemPath(nil, ScratchPath!.path as CFString, CFURLPathStyle.cfurlposixPathStyle, false)
+        let Destination = CGImageDestinationCreateWithURL(FilePath!, kUTTypeJPEG, 1, nil)
+        
+        var Meta = MetaData
+        Meta["Copyright"] = "Copyright by me"
+        Meta["Software"] = "BumpCamera"
+        Meta["XPKeywords"] = "test 0;test 1;test 2"
+        DumpMetaData(Meta, Title: "Top-Level", 0)
+        //var Exif1 = Meta[kCGImagePropertyExifDictionary as String] as! Dictionary<String,Any>
+        //print("Exif:")
+        //for (Key, Value) in Exif1
+        //{
+        //    print(" \(Key)=\(Value)")
+        //}
+        
+        //Exif1[kCGImagePropertyExifUserComment as String] = "Comment test."
+        //Meta[kCGImagePropertyExifDictionary as String] = Exif1 as CFDictionary
+//        let Exif = [kCGImagePropertyExifUserComment as String: "User comment test."] as CFDictionary
+        //let Properties = [kCGImagePropertyExifDictionary as String: Meta] as CFDictionary
+        let Properties = Meta as CFDictionary
+        
+        CGImageDestinationAddImage(Destination!, (Image?.cgImage)!, Properties)
+        CGImageDestinationFinalize(Destination!)
+        
+        try? PHPhotoLibrary.shared().performChangesAndWait {
+            PHAssetChangeRequest.creationRequestForAssetFromImage(atFileURL: URL(fileURLWithPath: (ScratchPath?.path)!))
+        }
+        
         return true
     }
     
