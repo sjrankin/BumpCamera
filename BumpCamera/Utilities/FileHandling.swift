@@ -15,6 +15,10 @@ class FileHandler
     /// Name of the directory where user sample images (for viewing filter settings) are stored.
     static let SampleDirectory = "/UserSample"
     
+    /// Name of the directory where scratch images are saved (for the purposes of appending meta data before
+    /// being moved to the photo roll).
+    static let ScratchDirectory = "/Scratch"
+    
     /// Returns an URL for the document directory.
     ///
     /// - Returns: Document directory URL on success, nil on error.
@@ -73,6 +77,52 @@ class FileHandler
         }
         let CPath = GetDocumentDirectory()?.appendingPathComponent(DirectoryName)
         return CPath
+    }
+    
+    /// Return an URL to the scratch directory.
+    ///
+    /// - Returns: URL of the directory on success, nil if not found.
+    public static func ScratchDirectoryURL() -> URL?
+    {
+        return GetDirectoryURL(DirectoryName: ScratchDirectory)
+    }
+    
+    /// Remove all files from the given directory.
+    ///
+    /// - Note: [Delete files from directory](https://stackoverflow.com/questions/32840190/delete-files-from-directory-inside-document-directory)
+    ///
+    /// - Parameter Name: Name of the directory whose contents will be deleted.
+    /// - Returns: True on success, false on failure.
+    public static func ClearDirectory(_ Name: String) -> Bool
+    {
+        if !DirectoryExists(DirectoryName: Name)
+        {
+            return false
+        }
+        let CPath = GetDocumentDirectory()?.appendingPathComponent(Name)
+        do
+        {
+            let Contents = try FileManager.default.contentsOfDirectory(atPath: CPath!.path)
+            for Content in Contents
+            {
+                let ContentPath = CPath?.appendingPathComponent(Content)
+                do
+                {
+                    try FileManager.default.removeItem(at: ContentPath!)
+                }
+                catch
+                {
+                    print("Error removing \((ContentPath?.path)!): \(error.localizedDescription)")
+                    return false
+                }
+            }
+        }
+        catch
+        {
+            print("Error getting contents of \(CPath!.path): \(error.localizedDescription)")
+            return false
+        }
+        return true
     }
     
     /// Return a list of all files (in URL form) in the passed directory.
@@ -195,6 +245,17 @@ class FileHandler
         return SaveImage(SampleImage, WithName: "UserSelected.jpg", Directory: SampleDirectory, AsJPG: true)
     }
     
+    /// Save an image to the scratch directory.
+    ///
+    /// - Parameters:
+    ///   - ScratchImage: The image to save to the scratch directory.
+    ///   - WithName: The name to use when saving the image.
+    /// - Returns: True on success, false on failure.
+    public static func SaveScratchImage(_ ScratchImage: UIImage, WithName: String) -> Bool
+    {
+        return SaveImage(ScratchImage, WithName: WithName, Directory: ScratchDirectory, AsJPG: true)
+    }
+    
     /// Return the user-selected sample image previously stored in the sample image directory.
     ///
     /// - Returns: The sample image as a UIImage on success, nil if not found or on failure.
@@ -274,7 +335,7 @@ class FileHandler
         }
         do
         {
-        try FileManager.default.removeItem(at: FileURL)
+            try FileManager.default.removeItem(at: FileURL)
             return true
         }
         catch
