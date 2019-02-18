@@ -82,6 +82,7 @@
 		174779FE220433CB00FD64EF /* CollapsibleTableViewHeaderDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 174779FD220433CB00FD64EF /* CollapsibleTableViewHeaderDelegate.swift */; };
 		17477A0022048C6600FD64EF /* FilterSectionData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 174779FF22048C6600FD64EF /* FilterSectionData.swift */; };
 		17477A0322049B1500FD64EF /* GrayscaleSettingsUI.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 17477A0222049B1500FD64EF /* GrayscaleSettingsUI.storyboard */; };
+		174B568A221AEBDA0059806E /* FilterPerformanceCode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 174B5689221AEBDA0059806E /* FilterPerformanceCode.swift */; };
 		174D6D5B220803E70066AE93 /* GroupNodeManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 174D6D5A220803E70066AE93 /* GroupNodeManager.swift */; };
 		174D6D5D220804000066AE93 /* GroupNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 174D6D5C220804000066AE93 /* GroupNode.swift */; };
 		174D6D5F220804AC0066AE93 /* FilterNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 174D6D5E220804AC0066AE93 /* FilterNode.swift */; };
@@ -294,6 +295,7 @@
 		174779FD220433CB00FD64EF /* CollapsibleTableViewHeaderDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollapsibleTableViewHeaderDelegate.swift; sourceTree = "<group>"; };
 		174779FF22048C6600FD64EF /* FilterSectionData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterSectionData.swift; sourceTree = "<group>"; };
 		17477A0222049B1500FD64EF /* GrayscaleSettingsUI.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = GrayscaleSettingsUI.storyboard; sourceTree = "<group>"; };
+		174B5689221AEBDA0059806E /* FilterPerformanceCode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterPerformanceCode.swift; sourceTree = "<group>"; };
 		174D6D5A220803E70066AE93 /* GroupNodeManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupNodeManager.swift; sourceTree = "<group>"; };
 		174D6D5C220804000066AE93 /* GroupNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupNode.swift; sourceTree = "<group>"; };
 		174D6D5E220804AC0066AE93 /* FilterNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterNode.swift; sourceTree = "<group>"; };
@@ -572,6 +574,7 @@
 				171E542621E44E170045ED77 /* AppDelegate.swift */,
 				171E542F21E44E180045ED77 /* LaunchScreen.storyboard */,
 				17CE37372213AEDB0070ED87 /* GeneralResults.swift */,
+				17CDB9B42216697800C708F5 /* About */,
 				171D626921EDCBAB004D3545 /* FilterManager */,
 				173F5D07220C66FA00067ABB /* CommonUI */,
 			);
@@ -660,6 +663,7 @@
 		171F3CFD2209CB2D0098E2B7 /* Utilities */ = {
 			isa = PBXGroup;
 			children = (
+				17F236A022152AF30091B865 /* Utility.swift */,
 				171F3CFE2209CB3F0098E2B7 /* FileHandling.swift */,
 			);
 			path = Utilities;
@@ -958,12 +962,10 @@
 				17E9F0DE2201721F00BA7B46 /* FilterSettingUIs */,
 				17A686E321F8166400F252CA /* FilterTables */,
 				17F51B0421EA03EB00843092 /* Settings.storyboard */,
-				17CDB9B42216697800C708F5 /* About */,
 				17B2ED8321F1A5CF00E3B56A /* MainSettings.swift */,
 				1764FA8921F1E6F90059FAFD /* FilterSettings.swift */,
 				1726242021F8503E00C7688C /* NewFieldSettingProtocol.swift */,
 				1740CEC72216B2FE00BFD1A0 /* Platform.swift */,
-				17F236A022152AF30091B865 /* Utility.swift */,
 				17E1856621F2C8E800192D03 /* FilterCell.swift */,
 			);
 			path = SettingsUI;
@@ -991,6 +993,7 @@
 			isa = PBXGroup;
 			children = (
 				173B16A722015766005A5B0B /* About.storyboard */,
+				174B5689221AEBDA0059806E /* FilterPerformanceCode.swift */,
 				17CDB9B522166B1700C708F5 /* SystemReport.swift */,
 				17CDB9B922168CB500C708F5 /* LicensingInformation.swift */,
 				1740CEC52216A4A300BFD1A0 /* LicensingList.swift */,
@@ -1441,6 +1444,7 @@
 				1740CEC82216B2FE00BFD1A0 /* Platform.swift in Sources */,
 				171F3D0D220AD3450098E2B7 /* Threshold.swift in Sources */,
 				17B2ED8421F1A5CF00E3B56A /* MainSettings.swift in Sources */,
+				174B568A221AEBDA0059806E /* FilterPerformanceCode.swift in Sources */,
 				1726243421F8964E00C7688C /* HSBAdjust.swift in Sources */,
 				17020ED921FDD25D006DE7ED /* GrayscaleKernel.metal in Sources */,
 				1756CE0C21FD73D200C4E638 /* RGBtoBHS.metal in Sources */,
