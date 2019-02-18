@@ -216,9 +216,24 @@ extension FilterManager
         case SepiaToneLevel = 106
         case BayerPattern = 107
         case BayerDecodeMethod = 108
+        case RenderImageCount = 109
+        case CumulativeImageRenderDuration = 110
+        case RenderLiveCount = 111
+        case CumulativeLiveRenderDuration = 112
         case NoField = 10000
     }
     
+    /// Describes the expected data type for various input fields used as parameters
+    /// for filters.
+    ///
+    /// - DoubleType: Double value.
+    /// - IntType: Int value.
+    /// - BoolType: Bool value.
+    /// - PointType: CGPoint value.
+    /// - StringType: String value.
+    /// - Normal: Double nominally clamped from 0.0 to 1.0.
+    /// - ColorType: UIColor type.
+    /// - NoType: No type - returned on error.
     public enum InputTypes: Int
     {
         case DoubleType = 0
@@ -229,5 +244,22 @@ extension FilterManager
         case Normal = 5
         case ColorType = 6
         case NoType = 1000
+    }
+    
+    /// Describes how the filter was implemented.
+    ///
+    /// - CIFilter: Filter implemented with a built-in CIFilter.
+    /// - Metal: Filter implemented with a custom Metal kernel.
+    /// - MPS: Filter implemented with a built-in Metal Performance Shader kernel.
+    /// - Accelerate: Filter implemented with the Accelerate framework.
+    /// - Software: Filter implemented in code running on the CPU (one hopes not too
+    ///             many of these...).
+    public enum FilterKernelTypes: Int
+    {
+        case CIFilter = 0
+        case Metal = 1
+        case MPS = 2
+        case Accelerate = 3
+        case Software = 4
     }
 }
