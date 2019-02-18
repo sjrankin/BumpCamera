@@ -7,6 +7,7 @@
 //
 
 //https://www.azooptics.com/Article.aspx?ArticleID=1097
+//http://slazebni.cs.illinois.edu/spring19/assignment0.html
 
 #include <metal_stdlib>
 using namespace metal;
