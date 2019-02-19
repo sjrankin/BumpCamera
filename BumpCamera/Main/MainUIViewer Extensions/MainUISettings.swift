@@ -38,6 +38,7 @@ extension MainUIViewer
         _Settings.set(true, forKey: "ShowClosestColor")
         _Settings.set("", forKey: "UserCopyrightString")
         _Settings.set("", forKey: "UserAuthorString")
+        _Settings.set(true, forKey: "CollectPerformanceStatistics")
         let InitialGroupID = Filters?.GetGroupID(ForGroup: .Standard)
         _Settings.set(InitialGroupID?.uuidString, forKey: "CurrentGroup")
         let InitialFilterID = Filters?.GetFilterID(For: .PassThrough)
