@@ -27,7 +27,7 @@ class PixellateTableCode: FilterTableBase
         self.tableView.delegate = self
         self.tableView.dataSource = self
         
-        let RawAsAny = ParameterManager.GetField(From: FilterManager.FilterMap[Filter]!, Field: FilterManager.InputFields.Width)
+        let RawAsAny = ParameterManager.GetField(From: FilterManager.FilterInfoMap[Filter]!.0, Field: FilterManager.InputFields.Width)
         var WorkingRaw: Double = 0.0
         if let Raw = RawAsAny as? Double
         {
@@ -129,7 +129,7 @@ class PixellateTableCode: FilterTableBase
     func UpdateSettings(WithValue: Float)
     {
         let NewSize: Double = Double(WithValue)
-        ParameterManager.SetField(To: FilterManager.FilterMap[Filter]!,
+        ParameterManager.SetField(To: FilterManager.FilterInfoMap[Filter]!.0,
                                   Field: FilterManager.InputFields.Width, Value: NewSize as Any?)
         ParentDelegate?.NewRawValue()
     }

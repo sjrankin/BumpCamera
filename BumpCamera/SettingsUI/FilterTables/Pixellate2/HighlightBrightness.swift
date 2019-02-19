@@ -18,7 +18,7 @@ class HighlightBrightness: UIViewController
     override func viewDidLoad()
     {
         super.viewDidLoad()
-        FilterID = FilterManager.FilterMap[Filter]
+        FilterID = FilterManager.FilterInfoMap[Filter]!.0
         let IsEnabled = ParameterManager.GetBool(From: FilterID, Field: .HighlightBrightness, Default: false)
         UpdateUIForEnable(IsEnabled: IsEnabled)
         ParamBlock.backgroundColor = UIColor.clear

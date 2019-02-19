@@ -25,7 +25,7 @@ class HueAdjustTableCode: FilterTableBase
         self.tableView.delegate = self
         self.tableView.dataSource = self
         
-        FilterID = FilterManager.FilterMap[Filter]
+        FilterID = FilterManager.FilterInfoMap[Filter]!.0
         let RawAsAny = ParameterManager.GetField(From: FilterID!, Field: FilterManager.InputFields.Angle)
         var WorkingRaw: Double = 0.0
         if let Raw = RawAsAny as? Double

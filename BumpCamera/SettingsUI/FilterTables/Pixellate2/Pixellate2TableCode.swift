@@ -19,7 +19,7 @@ class Pixellate2TableCode: FilterTableBase, NewFieldSettingProtocol
         super.viewDidLoad()
         self.tableView.tableFooterView = UIView()
         
-        FilterID = FilterManager.FilterMap[Filter]
+        FilterID = FilterManager.FilterInfoMap[Filter]!.0
         
         //https://stackoverflow.com/questions/9390298/iphone-how-to-detect-the-end-of-slider-drag
         WidthSlider.addTarget(self, action: #selector(WidthDoneSliding), for: [.touchUpInside, .touchUpOutside])
