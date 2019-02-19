@@ -69,6 +69,7 @@ extension FilterManager
         case SepiaTone = 42
         case BayerDecode = 43
         case Thermal = 44
+        case SmoothLinearGradient = 45
         case NotSet = 10000
     }
     
@@ -221,6 +222,8 @@ extension FilterManager
         case CumulativeImageRenderDuration = 110
         case RenderLiveCount = 111
         case CumulativeLiveRenderDuration = 112
+        case Point0 = 113
+        case Point1 = 114
         case NoField = 10000
     }
     
@@ -264,6 +267,11 @@ extension FilterManager
         case Software = "CPU-Bound"
     }
     
+    /// Describes the types of files that can be exported.
+    ///
+    /// - CSV: Data saved in .csv format.
+    /// - XML: Data saved in .xml format.
+    /// - JSON: Data saved in .json format.
     public enum ExportDataTypes: Int
     {
         case CSV
