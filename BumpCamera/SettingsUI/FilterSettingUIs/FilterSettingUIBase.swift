@@ -49,7 +49,7 @@ class FilterSettingUIBase: UITableViewController, UIImagePickerControllerDelegat
         }
         tableView.tableFooterView = UIView()
         Filter = FilterType
-        FilterID = FilterManager.FilterMap[Filter]
+        FilterID = FilterManager.FilterInfoMap[Filter]!.0
         SampleFilter = Filters.CreateFilter(For: Filter)
         SampleFilter?.InitializeForImage()
         if ShowingSample
