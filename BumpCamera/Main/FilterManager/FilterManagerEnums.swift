@@ -255,12 +255,19 @@ extension FilterManager
     /// - Accelerate: Filter implemented with the Accelerate framework.
     /// - Software: Filter implemented in code running on the CPU (one hopes not too
     ///             many of these...).
-    public enum FilterKernelTypes: Int
+    public enum FilterKernelTypes: String
     {
-        case CIFilter = 0
-        case Metal = 1
-        case MPS = 2
-        case Accelerate = 3
-        case Software = 4
+        case CIFilter = "CIFilter"
+        case Metal = "Metal"
+        case MPS = "Metal Performance Shader"
+        case Accelerate = "Accelerate"
+        case Software = "CPU-Bound"
+    }
+    
+    public enum ExportDataTypes: Int
+    {
+        case CSV
+        case XML
+        case JSON
     }
 }
