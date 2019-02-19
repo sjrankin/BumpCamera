@@ -517,6 +517,23 @@ class ParameterManager
         return Default
     }
     
+    /// Return a CIVector stored in user settings.
+    ///
+    /// - Note: This function generate a fatal error if the specified field is not found or the data cannot be converted
+    ///         into a CGPoint. This function calls GetPoint and converts the point to a vector so the fatal error may
+    ///         occur there.
+    ///
+    /// - Parameters:
+    ///   - From: The ID of the filter where the vector is stored.
+    ///   - Field: The input field associated with the vector value.
+    ///   - Default: Default vector value.
+    /// - Returns: Value of the vector stored in user settings on success, default vector on failure.
+    public static func GetVector(From: UUID, Field: FilterManager.InputFields, Default: CIVector) -> CIVector
+    {
+        let Point = GetPoint(From: From, Field: Field, Default: CGPoint(x: 0, y: 0))
+        return CIVector(x: Point.x, y: Point.y)
+    }
+    
     /// Converted the passed string into type Any? Values are converted to their specified types then cast to Any? when returned.
     ///
     /// - Parameters:
@@ -707,6 +724,13 @@ class ParameterManager
         return Results
     }
     
+    /// Converts the value (type cast to Any) to the value specified in OfType and returns the
+    /// result as a string, ready to save to user settings.
+    ///
+    /// - Parameters:
+    ///   - Raw: The value to convert.
+    ///   - OfType: The type of the value.
+    /// - Returns: The converted value as a String.
     private static func ConvertAny(_ Raw: Any?, OfType: FilterManager.InputTypes) -> String
     {
         if Raw == nil
