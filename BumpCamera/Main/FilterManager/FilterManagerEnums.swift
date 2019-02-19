@@ -68,6 +68,7 @@ extension FilterManager
         case TransferEffect = 41
         case SepiaTone = 42
         case BayerDecode = 43
+        case Thermal = 44
         case NotSet = 10000
     }
     
