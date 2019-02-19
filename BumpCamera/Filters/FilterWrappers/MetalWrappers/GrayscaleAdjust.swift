@@ -122,6 +122,9 @@ class GrayscaleAdjust: FilterParent, Renderer
     
     func Render(PixelBuffer: CVPixelBuffer) -> CVPixelBuffer?
     {
+        objc_sync_enter(AccessLock)
+        defer{objc_sync_exit(AccessLock)}
+        
         if !Initialized
         {
             fatalError("GrayscaleAdjust not initialized at Render(CVPixelBuffer) call.")

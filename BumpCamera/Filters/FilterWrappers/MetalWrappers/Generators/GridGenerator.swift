@@ -122,6 +122,8 @@ class GridGenerator: FilterParent, Renderer
     
     func Render(PixelBuffer: CVPixelBuffer) -> CVPixelBuffer?
     {
+        objc_sync_enter(AccessLock)
+        defer{objc_sync_exit(AccessLock)}
         if !Initialized
         {
             fatalError("GridGenerator not initialized at Render(CVPixelBuffer) call.")
@@ -224,6 +226,7 @@ class GridGenerator: FilterParent, Renderer
         {
             fatalError("Not initialized.")
         }
+        
         let Start = CACurrentMediaTime()
         let CgImage = Image.cgImage
         let ImageWidth: Int = (CgImage?.width)!
