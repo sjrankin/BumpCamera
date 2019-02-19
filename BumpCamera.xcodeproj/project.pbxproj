@@ -10,6 +10,9 @@
 		17020ED921FDD25D006DE7ED /* GrayscaleKernel.metal in Sources */ = {isa = PBXBuildFile; fileRef = 17020ED821FDD25D006DE7ED /* GrayscaleKernel.metal */; };
 		17020EDB21FDD607006DE7ED /* GrayscaleKernelParameters.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17020EDA21FDD607006DE7ED /* GrayscaleKernelParameters.swift */; };
 		17020EDD21FDD6C5006DE7ED /* GrayscaleAdjust.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17020EDC21FDD6C5006DE7ED /* GrayscaleAdjust.swift */; };
+		170BFE6F221BD51200754BF6 /* PerformanceCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 170BFE6E221BD51200754BF6 /* PerformanceCell.swift */; };
+		170BFE71221BE63F00754BF6 /* PerformanceActionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 170BFE70221BE63F00754BF6 /* PerformanceActionCell.swift */; };
+		170BFE73221BEFCF00754BF6 /* AboutCode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 170BFE72221BEFCF00754BF6 /* AboutCode.swift */; };
 		171375F42218FA84000E49C2 /* BayerDecode.metal in Sources */ = {isa = PBXBuildFile; fileRef = 171375F32218FA84000E49C2 /* BayerDecode.metal */; };
 		171375F6221926BD000E49C2 /* BayerDecodeParameters.swift in Sources */ = {isa = PBXBuildFile; fileRef = 171375F5221926BD000E49C2 /* BayerDecodeParameters.swift */; };
 		171375F822192732000E49C2 /* BayerDecode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 171375F722192732000E49C2 /* BayerDecode.swift */; };
@@ -221,6 +224,9 @@
 		17020ED821FDD25D006DE7ED /* GrayscaleKernel.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = GrayscaleKernel.metal; sourceTree = "<group>"; };
 		17020EDA21FDD607006DE7ED /* GrayscaleKernelParameters.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrayscaleKernelParameters.swift; sourceTree = "<group>"; };
 		17020EDC21FDD6C5006DE7ED /* GrayscaleAdjust.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrayscaleAdjust.swift; sourceTree = "<group>"; };
+		170BFE6E221BD51200754BF6 /* PerformanceCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PerformanceCell.swift; sourceTree = "<group>"; };
+		170BFE70221BE63F00754BF6 /* PerformanceActionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PerformanceActionCell.swift; sourceTree = "<group>"; };
+		170BFE72221BEFCF00754BF6 /* AboutCode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutCode.swift; sourceTree = "<group>"; };
 		171375F32218FA84000E49C2 /* BayerDecode.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = BayerDecode.metal; sourceTree = "<group>"; };
 		171375F5221926BD000E49C2 /* BayerDecodeParameters.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BayerDecodeParameters.swift; sourceTree = "<group>"; };
 		171375F722192732000E49C2 /* BayerDecode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BayerDecode.swift; sourceTree = "<group>"; };
@@ -997,11 +1003,14 @@
 			children = (
 				173B16A722015766005A5B0B /* About.storyboard */,
 				174B5689221AEBDA0059806E /* FilterPerformanceCode.swift */,
+				170BFE72221BEFCF00754BF6 /* AboutCode.swift */,
 				17CDB9B522166B1700C708F5 /* SystemReport.swift */,
 				17CDB9B922168CB500C708F5 /* LicensingInformation.swift */,
 				1740CEC52216A4A300BFD1A0 /* LicensingList.swift */,
 				17CDB9BB22168CEF00C708F5 /* License.swift */,
 				1740CEC32216A10A00BFD1A0 /* LicenseViewer.swift */,
+				170BFE6E221BD51200754BF6 /* PerformanceCell.swift */,
+				170BFE70221BE63F00754BF6 /* PerformanceActionCell.swift */,
 			);
 			path = About;
 			sourceTree = "<group>";
@@ -1328,6 +1337,7 @@
 				17E15FF4220585950037B35F /* MirroringParameters.swift in Sources */,
 				174D6D5F220804AC0066AE93 /* FilterNode.swift in Sources */,
 				17D7511521F41DE40050A2B5 /* MainUIDebug.swift in Sources */,
+				170BFE71221BE63F00754BF6 /* PerformanceActionCell.swift in Sources */,
 				1756F1192204A37100CC655D /* GrayscaleSettingsUICode.swift in Sources */,
 				171E542721E44E170045ED77 /* AppDelegate.swift in Sources */,
 				17CE373E2213BAE20070ED87 /* ColorPicker.swift in Sources */,
@@ -1360,6 +1370,7 @@
 				171375FB2219319B000E49C2 /* GrayscaleToRGB.metal in Sources */,
 				173FDCC1220EB86C00EFA90D /* MainUIUserInteractions.swift in Sources */,
 				17AA10512212DE7C00EF72DA /* EdgeWork.swift in Sources */,
+				170BFE73221BEFCF00754BF6 /* AboutCode.swift in Sources */,
 				1756CDF821FD62E700C4E638 /* RGBtoGRB.metal in Sources */,
 				17020EDB21FDD607006DE7ED /* GrayscaleKernelParameters.swift in Sources */,
 				17C3926222159FBC0049B8FD /* DilateErode.swift in Sources */,
@@ -1410,6 +1421,7 @@
 				173FDCBF220EA61300EFA90D /* VideoMixer.swift in Sources */,
 				1779F3C922182DCA00140EEA /* Chrome.swift in Sources */,
 				17D5F32521FC1DC00093DFFF /* DesaturationKernel.metal in Sources */,
+				170BFE6F221BD51200754BF6 /* PerformanceCell.swift in Sources */,
 				17E9F0E52201784700BA7B46 /* KuwaharaFilterSettingsCode.swift in Sources */,
 				171F3CFA22094A4D0098E2B7 /* GridSettingsUICode.swift in Sources */,
 				171375F42218FA84000E49C2 /* BayerDecode.metal in Sources */,
