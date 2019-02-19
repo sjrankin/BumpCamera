@@ -53,6 +53,7 @@ class LicensingList: UITableViewController
     let LicenseMap: [Int: String] =
         [
             1: "SystemKit",
-            2: "Filterpedia"
+            2: "Filterpedia",
+            3: "OCHA Humanitarian Icons",
     ]
 }
