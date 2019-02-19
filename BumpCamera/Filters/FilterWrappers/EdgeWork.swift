@@ -30,6 +30,16 @@ class EdgeWork: FilterParent, Renderer
         return UUID()
     }
     
+    static func Title() -> String
+    {
+        return "Edge Work"
+    }
+    
+    func Title() -> String
+    {
+        return EdgeWork.Title()
+    }
+    
     var IconName: String = "Edge Work"
     
     var Description: String = "Edge Work"
@@ -109,6 +119,7 @@ class EdgeWork: FilterParent, Renderer
             return nil
         }
         
+        let Start = CACurrentMediaTime()
         let SourceImage = CIImage(cvImageBuffer: PixelBuffer)
         PrimaryFilter.setDefaults()
         PrimaryFilter.setValue(SourceImage, forKey: kCIInputImageKey)
@@ -144,6 +155,9 @@ class EdgeWork: FilterParent, Renderer
         }
         
         Context.render(FilteredImage, to: OutPixBuf, bounds: FilteredImage.extent, colorSpace: ColorSpace)
+        
+        LiveRenderTime = CACurrentMediaTime() - Start
+        ParameterManager.UpdateRenderAccumulator(NewValue: LiveRenderTime, ID: ID(), ForImage: false)
         return OutPixBuf
     }
     
@@ -180,6 +194,7 @@ class EdgeWork: FilterParent, Renderer
         objc_sync_enter(AccessLock)
         defer{objc_sync_exit(AccessLock)}
 
+        let Start = CACurrentMediaTime()
         PrimaryFilter = CIFilter(name: "CIEdgeWork")
         PrimaryFilter?.setDefaults()
         PrimaryFilter?.setValue(Image, forKey: kCIInputImageKey)
@@ -196,6 +211,8 @@ class EdgeWork: FilterParent, Renderer
                 Final = Merge(Final, Image)!
             }
             LastCIImage = Final
+            ImageRenderTime = CACurrentMediaTime() - Start
+            ParameterManager.UpdateRenderAccumulator(NewValue: ImageRenderTime, ID: ID(), ForImage: true)
             return Final
         }
         return nil
@@ -339,7 +356,15 @@ class EdgeWork: FilterParent, Renderer
     {
         get
         {
-            return FilterManager.FilterKernelTypes.CIFilter
+            return EdgeWork.FilterKernel
+        }
+    }
+    
+    static var FilterKernel: FilterManager.FilterKernelTypes
+    {
+        get
+        {
+            return FilterManager.FilterKernelTypes.Metal
         }
     }
 }

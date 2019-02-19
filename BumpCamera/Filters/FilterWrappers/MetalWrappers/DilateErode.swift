@@ -45,6 +45,16 @@ class DilateErode: FilterParent, Renderer
         return UUID()
     }
     
+    static func Title() -> String
+    {
+        return "Dilate & Erode"
+    }
+    
+    func Title() -> String
+    {
+        return DilateErode.Title()
+    }
+    
     var Description: String = "Dilate and Erode"
     
     var IconName: String = "Dilate and Erode"
@@ -126,6 +136,7 @@ class DilateErode: FilterParent, Renderer
             return nil
         }
         
+        let Start = CACurrentMediaTime()
         let WindowSize = ParameterManager.GetUInt1(From: ID(), Field: .WindowSize, Default: 5)
         let ValDet = ParameterManager.GetUInt1(From: ID(), Field: .ValueDetermination, Default: 0)
         let Op = ParameterManager.GetUInt1(From: ID(), Field: .Operation, Default: 0)
@@ -193,6 +204,8 @@ class DilateErode: FilterParent, Renderer
         }
         #endif
         
+        LiveRenderTime = CACurrentMediaTime() - Start
+        ParameterManager.UpdateRenderAccumulator(NewValue: LiveRenderTime, ID: ID(), ForImage: false)
         return OutputBuffer
     }
     
@@ -228,6 +241,8 @@ class DilateErode: FilterParent, Renderer
         {
             fatalError("Not initialized.")
         }
+        
+        let Start = CACurrentMediaTime()
         var CgImage = Image.cgImage
         let ImageColorspace = CgImage?.colorSpace
         //Handle sneaky grayscale images.
@@ -328,6 +343,9 @@ class DilateErode: FilterParent, Renderer
                                  bytesPerRow: BytesPerRow!, space: RGBColorSpace, bitmapInfo: OBitmapInfo, provider: Provider!,
                                  decode: nil, shouldInterpolate: false, intent: RenderingIntent)
         LastUIImage = UIImage(cgImage: FinalImage!)
+        
+        ImageRenderTime = CACurrentMediaTime() - Start
+        ParameterManager.UpdateRenderAccumulator(NewValue: ImageRenderTime, ID: ID(), ForImage: true)
         return UIImage(cgImage: FinalImage!)
     }
     
@@ -492,6 +510,14 @@ class DilateErode: FilterParent, Renderer
     }
     
     var FilterKernel: FilterManager.FilterKernelTypes
+    {
+        get
+        {
+            return DilateErode.FilterKernel
+        }
+    }
+    
+    static var FilterKernel: FilterManager.FilterKernelTypes
     {
         get
         {

@@ -192,6 +192,7 @@ kernel void MonochromeColorsKernel (texture2d<float, access::read> inTexture [[t
                                     constant MonochromeColorParameters &MonoColors [[buffer(0)]],
                                     uint2 gid [[thread_position_in_grid]])
 {
+    //Option to use primary color only instead of gradient
     float4 InColor = inTexture.read(gid);
     float r = InColor.r;
     float g = InColor.g;

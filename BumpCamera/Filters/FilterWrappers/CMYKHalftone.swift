@@ -26,6 +26,16 @@ class CMYKHalftone: FilterParent, Renderer
         return _ID
     }
     
+    static func Title() -> String
+    {
+        return "CMYK Halftone"
+    }
+    
+    func Title() -> String
+    {
+        return CMYKHalftone.Title()
+    }
+    
     var InstanceID: UUID
     {
         return UUID()
@@ -103,6 +113,7 @@ class CMYKHalftone: FilterParent, Renderer
             return nil
         }
         
+        let Start = CACurrentMediaTime()
         let SourceImage = CIImage(cvImageBuffer: PixelBuffer)
         PrimaryFilter.setDefaults()
         PrimaryFilter.setValue(SourceImage, forKey: kCIInputImageKey)
@@ -138,6 +149,9 @@ class CMYKHalftone: FilterParent, Renderer
         }
         
         Context.render(FilteredImage, to: OutPixBuf, bounds: FilteredImage.extent, colorSpace: ColorSpace)
+        
+        LiveRenderTime = CACurrentMediaTime() - Start
+        ParameterManager.UpdateRenderAccumulator(NewValue: LiveRenderTime, ID: ID(), ForImage: false)
         return OutPixBuf
     }
     
@@ -174,6 +188,7 @@ class CMYKHalftone: FilterParent, Renderer
         objc_sync_enter(AccessLock)
         defer{objc_sync_exit(AccessLock)}
 
+        let Start = CACurrentMediaTime()
         PrimaryFilter = CIFilter(name: "CICMYKHalftone")
         PrimaryFilter?.setDefaults()
         PrimaryFilter?.setValue(Image, forKey: kCIInputImageKey)
@@ -196,13 +211,10 @@ class CMYKHalftone: FilterParent, Renderer
         
         if let Result = PrimaryFilter?.value(forKey: kCIOutputImageKey) as? CIImage
         {
-            #if true
             LastCIImage = Result
+            ImageRenderTime = CACurrentMediaTime() - Start
+            ParameterManager.UpdateRenderAccumulator(NewValue: ImageRenderTime, ID: ID(), ForImage: true)
             return Result
-            #else
-            let Rotated = RotateImage(Result)
-            return Rotated
-            #endif
         }
         return nil
     }
@@ -360,7 +372,15 @@ class CMYKHalftone: FilterParent, Renderer
     {
         get
         {
-            return FilterManager.FilterKernelTypes.CIFilter
+            return CMYKHalftone.FilterKernel
+        }
+    }
+    
+    static var FilterKernel: FilterManager.FilterKernelTypes
+    {
+        get
+        {
+            return FilterManager.FilterKernelTypes.Metal
         }
     }
 }

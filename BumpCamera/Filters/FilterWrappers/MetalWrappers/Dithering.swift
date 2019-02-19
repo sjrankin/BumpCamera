@@ -40,6 +40,16 @@ class Dithering: FilterParent, Renderer
         return _ID
     }
     
+    static func Title() -> String
+    {
+        return "Dithering"
+    }
+    
+    func Title() -> String
+    {
+        return Dithering.Title()
+    }
+    
     var InstanceID: UUID
     {
         return UUID()
@@ -118,6 +128,7 @@ class Dithering: FilterParent, Renderer
             fatalError("Dithering not initialized at Render(CVPixelBuffer) call.")
         }
         
+        let Start = CACurrentMediaTime()
         var MDirection = ParameterManager.GetInt(From: ID(), Field: .MirroringDirection, Default: 0)
         //Because AV-based images seem to be rotated either 90 or 270 degrees, we need to changed
         //the direction orientation if necessary.
@@ -229,6 +240,8 @@ class Dithering: FilterParent, Renderer
         CommandEncoder.endEncoding()
         CommandBuffer.commit()
         
+        LiveRenderTime = CACurrentMediaTime() - Start
+        ParameterManager.UpdateRenderAccumulator(NewValue: LiveRenderTime, ID: ID(), ForImage: false)
         return OutputBuffer
     }
     
@@ -264,6 +277,8 @@ class Dithering: FilterParent, Renderer
         {
             fatalError("Not initialized.")
         }
+        
+        let Start = CACurrentMediaTime()
         var CgImage = Image.cgImage
         let ImageColorspace = CgImage?.colorSpace
         //Handle sneaky grayscale images.
@@ -353,6 +368,9 @@ class Dithering: FilterParent, Renderer
                                  bytesPerRow: BytesPerRow!, space: RGBColorSpace, bitmapInfo: OBitmapInfo, provider: Provider!,
                                  decode: nil, shouldInterpolate: false, intent: RenderingIntent)
         LastUIImage = UIImage(cgImage: FinalImage!)
+        
+        ImageRenderTime = CACurrentMediaTime() - Start
+        ParameterManager.UpdateRenderAccumulator(NewValue: ImageRenderTime, ID: ID(), ForImage: true)
         return UIImage(cgImage: FinalImage!)
     }
     
@@ -522,6 +540,14 @@ class Dithering: FilterParent, Renderer
     }
     
     var FilterKernel: FilterManager.FilterKernelTypes
+    {
+        get
+        {
+            return Dithering.FilterKernel
+        }
+    }
+    
+    static var FilterKernel: FilterManager.FilterKernelTypes
     {
         get
         {

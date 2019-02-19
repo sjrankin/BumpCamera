@@ -40,6 +40,16 @@ class DesaturateColors: FilterParent, Renderer
         return _ID
     }
     
+    static func Title() -> String
+    {
+        return "Desaturation"
+    }
+    
+    func Title() -> String
+    {
+        return DesaturateColors.Title()
+    }
+    
     var InstanceID: UUID
     {
         return UUID()
@@ -125,6 +135,7 @@ class DesaturateColors: FilterParent, Renderer
             return nil
         }
         
+        let Start = CACurrentMediaTime()
         let FinalDesat = ParameterManager.GetDouble(From: ID(), Field: .Normal, Default: 0.4)
         let Parameter = DesaturationKernelParameters(DesaturationValue: simd_float1(FinalDesat))
         let Parameters = [Parameter]
@@ -171,6 +182,8 @@ class DesaturateColors: FilterParent, Renderer
         CommandEncoder.endEncoding()
         CommandBuffer.commit()
         
+        LiveRenderTime = CACurrentMediaTime() - Start
+        ParameterManager.UpdateRenderAccumulator(NewValue: LiveRenderTime, ID: ID(), ForImage: false)
         return OutputBuffer
     }
     
@@ -206,6 +219,8 @@ class DesaturateColors: FilterParent, Renderer
         {
             fatalError("Not initialized.")
         }
+        
+        let Start = CACurrentMediaTime() 
         var CgImage = Image.cgImage
         let ImageColorspace = CgImage?.colorSpace
         //Handle sneaky grayscale images.
@@ -287,6 +302,9 @@ class DesaturateColors: FilterParent, Renderer
                                  bytesPerRow: BytesPerRow!, space: RGBColorSpace, bitmapInfo: OBitmapInfo, provider: Provider!,
                                  decode: nil, shouldInterpolate: false, intent: RenderingIntent)
         LastUIImage = UIImage(cgImage: FinalImage!)
+        
+        ImageRenderTime = CACurrentMediaTime() - Start
+        ParameterManager.UpdateRenderAccumulator(NewValue: ImageRenderTime, ID: ID(), ForImage: true)
         return UIImage(cgImage: FinalImage!)
     }
     
@@ -443,6 +461,14 @@ class DesaturateColors: FilterParent, Renderer
     }
     
     var FilterKernel: FilterManager.FilterKernelTypes
+    {
+        get
+        {
+            return DesaturateColors.FilterKernel
+        }
+    }
+    
+    static var FilterKernel: FilterManager.FilterKernelTypes
     {
         get
         {

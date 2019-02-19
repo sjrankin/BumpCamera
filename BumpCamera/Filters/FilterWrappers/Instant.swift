@@ -26,6 +26,16 @@ class Instant: FilterParent, Renderer
         return _ID
     }
     
+    static func Title() -> String
+    {
+        return "Instant Effect"
+    }
+    
+    func Title() -> String
+    {
+        return Instant.Title()
+    }
+    
     var InstanceID: UUID
     {
         return UUID()
@@ -107,6 +117,7 @@ class Instant: FilterParent, Renderer
             return nil
         }
         
+        let Start = CACurrentMediaTime()
         let SourceImage = CIImage(cvImageBuffer: PixelBuffer)
         PrimaryFilter.setDefaults()
         PrimaryFilter.setValue(SourceImage, forKey: kCIInputImageKey)
@@ -126,6 +137,9 @@ class Instant: FilterParent, Renderer
         }
         
         Context.render(FilteredImage, to: OutPixBuf, bounds: FilteredImage.extent, colorSpace: ColorSpace)
+        
+        LiveRenderTime = CACurrentMediaTime() - Start
+        ParameterManager.UpdateRenderAccumulator(NewValue: LiveRenderTime, ID: ID(), ForImage: false)
         return OutPixBuf
     }
     
@@ -162,6 +176,7 @@ class Instant: FilterParent, Renderer
         objc_sync_enter(AccessLock)
         defer{objc_sync_exit(AccessLock)}
         
+        let Start = CACurrentMediaTime()
         PrimaryFilter = CIFilter(name: "CIPhotoEffectInstant")
         PrimaryFilter?.setDefaults()
         PrimaryFilter?.setValue(Image, forKey: kCIInputImageKey)
@@ -169,6 +184,8 @@ class Instant: FilterParent, Renderer
         if let Result = PrimaryFilter?.value(forKey: kCIOutputImageKey) as? CIImage
         {
             LastCIImage = Result
+            ImageRenderTime = CACurrentMediaTime() - Start
+            ParameterManager.UpdateRenderAccumulator(NewValue: ImageRenderTime, ID: ID(), ForImage: true)
             return Result
         }
         return nil
@@ -303,7 +320,15 @@ class Instant: FilterParent, Renderer
     {
         get
         {
-            return FilterManager.FilterKernelTypes.CIFilter
+            return Instant.FilterKernel
+        }
+    }
+    
+    static var FilterKernel: FilterManager.FilterKernelTypes
+    {
+        get
+        {
+            return FilterManager.FilterKernelTypes.Metal
         }
     }
 }

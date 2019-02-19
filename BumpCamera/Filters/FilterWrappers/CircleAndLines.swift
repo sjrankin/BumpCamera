@@ -26,6 +26,16 @@ class CircleAndLines: FilterParent, Renderer
         return _ID
     }
     
+    static func Title() -> String
+    {
+        return "Circle & Lines"
+    }
+    
+    func Title() -> String
+    {
+        return CircleAndLines.Title()
+    }
+    
     var InstanceID: UUID
     {
         return UUID()
@@ -113,6 +123,7 @@ class CircleAndLines: FilterParent, Renderer
             return nil
         }
         
+        let Start = CACurrentMediaTime()
         let SourceImage = CIImage(cvImageBuffer: PixelBuffer)
         PrimaryFilter.setDefaults()
         PrimaryFilter.setValue(SourceImage, forKey: kCIInputImageKey)
@@ -170,6 +181,9 @@ class CircleAndLines: FilterParent, Renderer
         }
         
         Context.render(FilteredAgain, to: OutPixBuf, bounds: FilteredImage.extent, colorSpace: ColorSpace)
+        
+        LiveRenderTime = CACurrentMediaTime() - Start
+        ParameterManager.UpdateRenderAccumulator(NewValue: LiveRenderTime, ID: ID(), ForImage: false)
         return OutPixBuf
     }
     
@@ -206,6 +220,7 @@ class CircleAndLines: FilterParent, Renderer
         objc_sync_enter(AccessLock)
         defer{objc_sync_exit(AccessLock)}
 
+        let Start = CACurrentMediaTime()
         PrimaryFilter = CIFilter(name: "CILineScreen")
         SecondaryFilter = CIFilter(name: "CICircularScreen")
         PrimaryFilter?.setDefaults()
@@ -232,16 +247,14 @@ class CircleAndLines: FilterParent, Renderer
             SecondaryFilter?.setValue(CenterVector, forKey: kCIInputCenterKey)
             SecondaryFilter?.setValue(Result, forKey: kCIInputImageKey)
             Result = (SecondaryFilter?.value(forKey: kCIOutputImageKey) as? CIImage)!
-            #if true
             var Rotated = Result
-            #else
-            var Rotated = RotateImage(Result)
-            #endif
             if DoMerge
             {
                 Rotated = Merge(Rotated, Image)!
             }
             LastCIImage = Rotated
+            ImageRenderTime = CACurrentMediaTime() - Start
+            ParameterManager.UpdateRenderAccumulator(NewValue: ImageRenderTime, ID: ID(), ForImage: true)
             return Rotated
         }
         return nil
@@ -393,7 +406,15 @@ class CircleAndLines: FilterParent, Renderer
     {
         get
         {
-            return FilterManager.FilterKernelTypes.CIFilter
+            return CircleAndLines.FilterKernel
+        }
+    }
+    
+    static var FilterKernel: FilterManager.FilterKernelTypes
+    {
+        get
+        {
+            return FilterManager.FilterKernelTypes.Metal
         }
     }
 }

@@ -26,6 +26,16 @@ class XRay: FilterParent, Renderer
         return _ID
     }
     
+    static func Title() -> String
+    {
+        return "X-Ray Effect"
+    }
+    
+    func Title() -> String
+    {
+        return XRay.Title()
+    }
+    
     var InstanceID: UUID
     {
         return UUID()
@@ -104,6 +114,7 @@ class XRay: FilterParent, Renderer
             return nil
         }
         
+        let Start = CACurrentMediaTime()
         let SourceImage = CIImage(cvImageBuffer: PixelBuffer)
         PrimaryFilter.setDefaults()
         PrimaryFilter.setValue(SourceImage, forKey: kCIInputImageKey)
@@ -127,6 +138,9 @@ class XRay: FilterParent, Renderer
         }
         
         Context.render(FilteredImage, to: OutPixBuf, bounds: FilteredImage.extent, colorSpace: ColorSpace)
+        
+        LiveRenderTime = CACurrentMediaTime() - Start
+        ParameterManager.UpdateRenderAccumulator(NewValue: LiveRenderTime, ID: ID(), ForImage: false)
         return OutPixBuf
     }
     
@@ -163,18 +177,16 @@ class XRay: FilterParent, Renderer
         objc_sync_enter(AccessLock)
         defer{objc_sync_exit(AccessLock)}
         
+        let Start = CACurrentMediaTime()
         PrimaryFilter = CIFilter(name: "CIXRay")
         PrimaryFilter?.setDefaults()
         PrimaryFilter?.setValue(Image, forKey: kCIInputImageKey)
         if let Result = PrimaryFilter?.value(forKey: kCIOutputImageKey) as? CIImage
         {
-            #if true
             LastCIImage = Result
+            ImageRenderTime = CACurrentMediaTime() - Start
+            ParameterManager.UpdateRenderAccumulator(NewValue: ImageRenderTime, ID: ID(), ForImage: true)
             return Result
-            #else
-            let Rotated = RotateImage(Result)
-            return Rotated
-            #endif
         }
         return nil
     }
@@ -290,8 +302,8 @@ class XRay: FilterParent, Renderer
     func ExifKeyWords() -> [String]
     {
         var Keywords = [String]()
-        Keywords.append("Filter: CIEdgeWork")
-        Keywords.append("FilterType: CIXRay")
+        Keywords.append("Filter: CIXRay")
+        Keywords.append("FilterType: CIFilter")
         Keywords.append("FilterID: \(ID().uuidString)")
         return Keywords
     }
@@ -308,7 +320,15 @@ class XRay: FilterParent, Renderer
     {
         get
         {
-            return FilterManager.FilterKernelTypes.CIFilter
+            return XRay.FilterKernel
+        }
+    }
+    
+    static var FilterKernel: FilterManager.FilterKernelTypes
+    {
+        get
+        {
+            return FilterManager.FilterKernelTypes.Metal
         }
     }
 }

@@ -26,12 +26,22 @@ class HatchScreen: FilterParent, Renderer
         return _ID
     }
     
+    static func Title() -> String
+    {
+        return "Hatch Screen"
+    }
+    
+    func Title() -> String
+    {
+        return HatchScreen.Title()
+    }
+    
     var InstanceID: UUID
     {
         return UUID()
     }
     
-    var Description: String = "Circular Screen"
+    var Description: String = "Hatch Screen"
     
     var IconName: String = "HatchedScreenMerged"
     
@@ -110,6 +120,7 @@ class HatchScreen: FilterParent, Renderer
             return nil
         }
         
+        let Start = CACurrentMediaTime()
         let SourceImage = CIImage(cvImageBuffer: PixelBuffer)
         PrimaryFilter.setDefaults()
         PrimaryFilter.setValue(SourceImage, forKey: kCIInputImageKey)
@@ -157,6 +168,9 @@ class HatchScreen: FilterParent, Renderer
         }
         
         Context.render(FilteredImage, to: OutPixBuf, bounds: FilteredImage.extent, colorSpace: ColorSpace)
+        
+        LiveRenderTime = CACurrentMediaTime() - Start
+        ParameterManager.UpdateRenderAccumulator(NewValue: LiveRenderTime, ID: ID(), ForImage: false)
         return OutPixBuf
     }
     
@@ -193,6 +207,7 @@ class HatchScreen: FilterParent, Renderer
         objc_sync_enter(AccessLock)
         defer{objc_sync_exit(AccessLock)}
 
+        let Start = CACurrentMediaTime()
         PrimaryFilter = CIFilter(name: "CIHatchedScreen")
         PrimaryFilter?.setDefaults()
         PrimaryFilter?.setValue(Image, forKey: kCIInputImageKey)
@@ -213,16 +228,14 @@ class HatchScreen: FilterParent, Renderer
         
         if let Result = PrimaryFilter?.value(forKey: kCIOutputImageKey) as? CIImage
         {
-            #if true
             var Rotated = Result
-            #else
-            var Rotated = RotateImage(Result)
-            #endif
             if DoMerge
             {
                 Rotated = Merge(Rotated, Image)!
             }
             LastCIImage = Rotated
+            ImageRenderTime = CACurrentMediaTime() - Start
+            ParameterManager.UpdateRenderAccumulator(NewValue: ImageRenderTime, ID: ID(), ForImage: true)
             return Rotated
         }
         return nil
@@ -373,7 +386,15 @@ class HatchScreen: FilterParent, Renderer
     {
         get
         {
-            return FilterManager.FilterKernelTypes.CIFilter
+            return HatchScreen.FilterKernel
+        }
+    }
+    
+    static var FilterKernel: FilterManager.FilterKernelTypes
+    {
+        get
+        {
+            return FilterManager.FilterKernelTypes.Metal
         }
     }
 }

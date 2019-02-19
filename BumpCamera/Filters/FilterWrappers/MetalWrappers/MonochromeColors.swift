@@ -39,6 +39,16 @@ class MonochromeColors: FilterParent, Renderer
         return _ID
     }
     
+    static func Title() -> String
+    {
+        return "Monochrome Colors"
+    }
+    
+    func Title() -> String
+    {
+        return MonochromeColors.Title()
+    }
+    
     var InstanceID: UUID
     {
         return UUID()
@@ -125,6 +135,7 @@ class MonochromeColors: FilterParent, Renderer
             return nil
         }
         
+        let Start = CACurrentMediaTime()
         let UseBright = ParameterManager.GetSimdBool(From: ID(), Field: .BrightChannels, Default: true)
         let ForRed = ParameterManager.GetSimdBool(From: ID(), Field: .ForRed, Default: true)
         let ForGreen = ParameterManager.GetSimdBool(From: ID(), Field: .ForGreen, Default: true)
@@ -184,6 +195,8 @@ class MonochromeColors: FilterParent, Renderer
         CommandEncoder.endEncoding()
         CommandBuffer.commit()
         
+        LiveRenderTime = CACurrentMediaTime() - Start
+        ParameterManager.UpdateRenderAccumulator(NewValue: LiveRenderTime, ID: ID(), ForImage: false)
         return OutputBuffer
     }
     
@@ -219,6 +232,8 @@ class MonochromeColors: FilterParent, Renderer
         {
             fatalError("Not initialized.")
         }
+        
+        let Start = CACurrentMediaTime()
         var CgImage = Image.cgImage
         let ImageColorspace = CgImage?.colorSpace
         //Handle sneaky grayscale images.
@@ -313,6 +328,9 @@ class MonochromeColors: FilterParent, Renderer
                                  bytesPerRow: BytesPerRow!, space: RGBColorSpace, bitmapInfo: OBitmapInfo, provider: Provider!,
                                  decode: nil, shouldInterpolate: false, intent: RenderingIntent)
         LastUIImage = UIImage(cgImage: FinalImage!)
+        
+        ImageRenderTime = CACurrentMediaTime() - Start
+        ParameterManager.UpdateRenderAccumulator(NewValue: ImageRenderTime, ID: ID(), ForImage: true)
         return UIImage(cgImage: FinalImage!)
     }
     
@@ -509,6 +527,14 @@ class MonochromeColors: FilterParent, Renderer
     }
     
     var FilterKernel: FilterManager.FilterKernelTypes
+    {
+        get
+        {
+            return MonochromeColors.FilterKernel
+        }
+    }
+    
+    static var FilterKernel: FilterManager.FilterKernelTypes
     {
         get
         {

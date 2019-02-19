@@ -40,6 +40,16 @@ class CornerGradient: FilterParent, Renderer
         return CornerGradient._ID
     }
     
+    static func Title() -> String
+    {
+        return "Corner Gradient"
+    }
+    
+    func Title() -> String
+    {
+        return CornerGradient.Title()
+    }
+    
     var InstanceID: UUID
     {
         return UUID()
@@ -117,6 +127,7 @@ class CornerGradient: FilterParent, Renderer
             fatalError("CornerGradient not initialized at Render(CVPixelBuffer) call.")
         }
         
+        let Start = CACurrentMediaTime()
         let GX = ParameterManager.GetInt(From: ID(), Field: .GridX, Default: 10)
         let GY = ParameterManager.GetInt(From: ID(), Field: .GridY, Default: 10)
         let GColor = ParameterManager.GetColor(From: ID(), Field: .GridColor, Default: UIColor.black)
@@ -174,6 +185,8 @@ class CornerGradient: FilterParent, Renderer
         CommandEncoder.endEncoding()
         CommandBuffer.commit()
         
+        LiveRenderTime = CACurrentMediaTime() - Start
+        ParameterManager.UpdateRenderAccumulator(NewValue: LiveRenderTime, ID: ID(), ForImage: false)
         return OutputBuffer
     }
     
@@ -211,6 +224,8 @@ class CornerGradient: FilterParent, Renderer
         {
             fatalError("Not initialized.")
         }
+        
+        let Start = CACurrentMediaTime()
         let CgImage = Image.cgImage
         let ImageWidth: Int = (CgImage?.width)!
         let ImageHeight: Int = (CgImage?.height)!
@@ -287,6 +302,9 @@ class CornerGradient: FilterParent, Renderer
                                  bytesPerRow: BytesPerRow!, space: RGBColorSpace, bitmapInfo: OBitmapInfo, provider: Provider!,
                                  decode: nil, shouldInterpolate: false, intent: RenderingIntent)
         LastUIImage = UIImage(cgImage: FinalImage!)
+        
+        ImageRenderTime = CACurrentMediaTime() - Start
+        ParameterManager.UpdateRenderAccumulator(NewValue: ImageRenderTime, ID: ID(), ForImage: true)
         return UIImage(cgImage: FinalImage!)
     }
     
@@ -420,8 +438,6 @@ class CornerGradient: FilterParent, Renderer
         return [.Video, .Still, .LiveView]
     }
     
-    private var ImageRenderStart: Double = 0.0
-    private var LiveRenderStart: Double = 0.0
     private var ImageRenderTime: Double = 0.0
     private var LiveRenderTime: Double = 0.0
     
@@ -475,6 +491,14 @@ class CornerGradient: FilterParent, Renderer
     }
     
     var FilterKernel: FilterManager.FilterKernelTypes
+    {
+        get
+        {
+            return CornerGradient.FilterKernel
+        }
+    }
+    
+    static var FilterKernel: FilterManager.FilterKernelTypes
     {
         get
         {

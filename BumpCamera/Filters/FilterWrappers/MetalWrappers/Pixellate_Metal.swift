@@ -40,6 +40,16 @@ class Pixellate_Metal: FilterParent, Renderer
         return _ID
     }
     
+    static func Title() -> String
+    {
+        return "Metal Pixellate"
+    }
+    
+    func Title() -> String
+    {
+        return Pixellate_Metal.Title()
+    }
+    
     var InstanceID: UUID
     {
         return UUID()
@@ -125,6 +135,7 @@ class Pixellate_Metal: FilterParent, Renderer
             return nil
         }
         
+        let Start = CACurrentMediaTime()
         let FinalWidth = ParameterManager.GetInt(From: ID(), Field: .BlockWidth, Default: 20)
         let FinalHeight = ParameterManager.GetInt(From: ID(), Field: .BlockHeight, Default: 20)
         let Buffer0 = BlockInfoParameters(Width: uint(FinalWidth), Height: uint(FinalHeight))
@@ -172,6 +183,8 @@ class Pixellate_Metal: FilterParent, Renderer
         CommandEncoder.endEncoding()
         CommandBuffer.commit()
         
+        LiveRenderTime = CACurrentMediaTime() - Start
+        ParameterManager.UpdateRenderAccumulator(NewValue: LiveRenderTime, ID: ID(), ForImage: false)
         return OutputBuffer
     }
     
@@ -209,6 +222,8 @@ class Pixellate_Metal: FilterParent, Renderer
         {
             fatalError("Not initialized.")
         }
+        
+        let Start = CACurrentMediaTime()
         var CgImage = Image.cgImage
         let ImageColorspace = CgImage?.colorSpace
         //Handle sneaky grayscale images.
@@ -291,6 +306,9 @@ class Pixellate_Metal: FilterParent, Renderer
                                  bytesPerRow: BytesPerRow!, space: RGBColorSpace, bitmapInfo: OBitmapInfo, provider: Provider!,
                                  decode: nil, shouldInterpolate: false, intent: RenderingIntent)
         LastUIImage = UIImage(cgImage: FinalImage!)
+        
+        ImageRenderTime = CACurrentMediaTime() - Start
+        ParameterManager.UpdateRenderAccumulator(NewValue: LiveRenderTime, ID: ID(), ForImage: true)
         return UIImage(cgImage: FinalImage!)
     }
     
@@ -447,8 +465,6 @@ class Pixellate_Metal: FilterParent, Renderer
         return [.LiveView, .Video, .Still]
     }
     
-    private var ImageRenderStart: Double = 0.0
-    private var LiveRenderStart: Double = 0.0
     private var ImageRenderTime: Double = 0.0
     private var LiveRenderTime: Double = 0.0
     
@@ -502,6 +518,14 @@ class Pixellate_Metal: FilterParent, Renderer
     }
     
     var FilterKernel: FilterManager.FilterKernelTypes
+    {
+        get
+        {
+            return Pixellate_Metal.FilterKernel
+        }
+    }
+    
+    static var FilterKernel: FilterManager.FilterKernelTypes
     {
         get
         {

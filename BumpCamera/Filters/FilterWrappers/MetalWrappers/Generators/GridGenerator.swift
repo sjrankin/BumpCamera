@@ -28,6 +28,16 @@ class GridGenerator: FilterParent, Renderer
         }
     }
     
+    static func Title() -> String
+    {
+        return "Grid Generator"
+    }
+    
+    func Title() -> String
+    {
+        return GridGenerator.Title()
+    }
+    
     static let _ID: UUID = UUID(uuidString: "e6e4941f-cc45-4e68-ad15-f2a06d9477f7")!
     
     static func ID() -> UUID

@@ -26,6 +26,16 @@ class Pixellate: FilterParent, Renderer
         return _ID
     }
     
+    static func Title() -> String
+    {
+        return "Pixellate"
+    }
+    
+    func Title() -> String
+    {
+        return Pixellate.Title()
+    }
+    
     var InstanceID: UUID
     {
         return UUID()
@@ -97,6 +107,7 @@ class Pixellate: FilterParent, Renderer
             return nil
         }
         
+        let Start = CACurrentMediaTime()
         let SourceImage = CIImage(cvImageBuffer: PixelBuffer)
         PrimaryFilter.setDefaults()
         PrimaryFilter.setValue(SourceImage, forKey: kCIInputImageKey)
@@ -121,6 +132,9 @@ class Pixellate: FilterParent, Renderer
         }
         
         Context.render(FilteredImage, to: OutPixBuf, bounds: FilteredImage.extent, colorSpace: ColorSpace)
+        
+        LiveRenderTime = CACurrentMediaTime() - Start
+        ParameterManager.UpdateRenderAccumulator(NewValue: LiveRenderTime, ID: ID(), ForImage: false)
         return OutPixBuf
     }
     
@@ -157,6 +171,7 @@ class Pixellate: FilterParent, Renderer
         objc_sync_enter(AccessLock)
         defer{objc_sync_exit(AccessLock)}
 
+        let Start = CACurrentMediaTime()
         PrimaryFilter = CIFilter(name: "CIPixellate")
         PrimaryFilter?.setDefaults()
         PrimaryFilter?.setValue(Image, forKey: kCIInputImageKey)
@@ -167,13 +182,9 @@ class Pixellate: FilterParent, Renderer
         }
         if let Result = PrimaryFilter?.value(forKey: kCIOutputImageKey) as? CIImage
         {
-            #if true
+            ImageRenderTime = CACurrentMediaTime() - Start
+            ParameterManager.UpdateRenderAccumulator(NewValue: ImageRenderTime, ID: ID(), ForImage: true)
             return Result
-            #else
-            let Rotated = RotateImage(Result)
-            LastCIImage = Rotated
-            return Rotated
-            #endif
         }
         return nil
     }
@@ -311,7 +322,15 @@ class Pixellate: FilterParent, Renderer
     {
         get
         {
-            return FilterManager.FilterKernelTypes.CIFilter
+            return Pixellate.FilterKernel
+        }
+    }
+    
+    static var FilterKernel: FilterManager.FilterKernelTypes
+    {
+        get
+        {
+            return FilterManager.FilterKernelTypes.Metal
         }
     }
 }

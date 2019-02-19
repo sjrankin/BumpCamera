@@ -43,6 +43,16 @@ class ChannelMixer: FilterParent, Renderer
         return _ID
     }
     
+    static func Title() -> String
+    {
+        return "Channel Mixer"
+    }
+    
+    func Title() -> String
+    {
+        return ChannelMixer.Title()
+    }
+    
     var InstanceID: UUID
     {
         return UUID()
@@ -131,6 +141,7 @@ class ChannelMixer: FilterParent, Renderer
             return nil
         }
         
+        let Start = CACurrentMediaTime()
         let DefaultLibrary = MetalDevice?.makeDefaultLibrary()
         let KernelFunction = DefaultLibrary?.makeFunction(name: "HSBSwizzling")
         do
@@ -204,6 +215,8 @@ class ChannelMixer: FilterParent, Renderer
         CommandEncoder.endEncoding()
         CommandBuffer.commit()
         
+        LiveRenderTime = CACurrentMediaTime() - Start
+        ParameterManager.UpdateRenderAccumulator(NewValue: LiveRenderTime, ID: ID(), ForImage: false)
         return OutputBuffer
     }
     
@@ -228,6 +241,7 @@ class ChannelMixer: FilterParent, Renderer
             fatalError("Not initialized.")
         }
         
+        let Start = CACurrentMediaTime()
         let DefaultLibrary = MetalDevice?.makeDefaultLibrary()
         let KernelFunction = DefaultLibrary?.makeFunction(name: "HSBSwizzling")
         do
@@ -336,6 +350,9 @@ class ChannelMixer: FilterParent, Renderer
                                  bytesPerRow: BytesPerRow!, space: RGBColorSpace, bitmapInfo: OBitmapInfo, provider: Provider!,
                                  decode: nil, shouldInterpolate: false, intent: RenderingIntent)
         LastUIImage = UIImage(cgImage: FinalImage!)
+        
+        ImageRenderTime = CACurrentMediaTime() - Start
+        ParameterManager.UpdateRenderAccumulator(NewValue: ImageRenderTime, ID: ID(), ForImage: true)
         return UIImage(cgImage: FinalImage!)
     }
     
@@ -601,6 +618,14 @@ class ChannelMixer: FilterParent, Renderer
     }
     
     var FilterKernel: FilterManager.FilterKernelTypes
+    {
+        get
+        {
+            return ChannelMixer.FilterKernel
+        }
+    }
+    
+    static var FilterKernel: FilterManager.FilterKernelTypes
     {
         get
         {

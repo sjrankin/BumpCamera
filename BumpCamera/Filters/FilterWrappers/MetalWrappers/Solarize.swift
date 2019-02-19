@@ -40,6 +40,16 @@ class Solarize: FilterParent, Renderer
         return _ID
     }
     
+    static func Title() -> String
+    {
+        return "Solarize"
+    }
+    
+    func Title() -> String
+    {
+        return Solarize.Title()
+    }
+    
     var InstanceID: UUID
     {
         return UUID()
@@ -126,6 +136,7 @@ class Solarize: FilterParent, Renderer
             return nil
         }
         
+        let Start = CACurrentMediaTime()
         let How = ParameterManager.GetInt(From: ID(), Field: .SolarizeMethod, Default: 0)
         let Threshold = ParameterManager.GetDouble(From: ID(), Field: .SolarizeThreshold, Default: 0.5)
         let LowHue = ParameterManager.GetDouble(From: ID(), Field: .HueRangeLow, Default: 0.25)
@@ -184,6 +195,8 @@ class Solarize: FilterParent, Renderer
         CommandEncoder.endEncoding()
         CommandBuffer.commit()
         
+        LiveRenderTime = CACurrentMediaTime() - Start
+        ParameterManager.UpdateRenderAccumulator(NewValue: LiveRenderTime, ID: ID(), ForImage: false)
         return OutputBuffer
     }
     
@@ -219,6 +232,8 @@ class Solarize: FilterParent, Renderer
         {
             fatalError("Not initialized.")
         }
+        
+        let Start = CACurrentMediaTime()
         var CgImage = Image.cgImage
         let ImageColorspace = CgImage?.colorSpace
         //Handle sneaky grayscale images.
@@ -312,6 +327,9 @@ class Solarize: FilterParent, Renderer
                                  bytesPerRow: BytesPerRow!, space: RGBColorSpace, bitmapInfo: OBitmapInfo, provider: Provider!,
                                  decode: nil, shouldInterpolate: false, intent: RenderingIntent)
         LastUIImage = UIImage(cgImage: FinalImage!)
+        
+        ImageRenderTime = CACurrentMediaTime() - Start
+        ParameterManager.UpdateRenderAccumulator(NewValue: ImageRenderTime, ID: ID(), ForImage: true)
         return UIImage(cgImage: FinalImage!)
     }
     
@@ -492,6 +510,14 @@ class Solarize: FilterParent, Renderer
     }
     
     var FilterKernel: FilterManager.FilterKernelTypes
+    {
+        get
+        {
+            return Solarize.FilterKernel
+        }
+    }
+    
+    static var FilterKernel: FilterManager.FilterKernelTypes
     {
         get
         {

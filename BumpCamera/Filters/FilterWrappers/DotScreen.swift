@@ -26,6 +26,16 @@ class DotScreen: FilterParent, Renderer
         return _ID
     }
     
+    static func Title() -> String
+    {
+        return "Dot Screen"
+    }
+    
+    func Title() -> String
+    {
+        return DotScreen.Title()
+    }
+    
     var InstanceID: UUID
     {
         return UUID()
@@ -110,6 +120,7 @@ class DotScreen: FilterParent, Renderer
             return nil
         }
         
+        let Start = CACurrentMediaTime()
         let SourceImage = CIImage(cvImageBuffer: PixelBuffer)
         PrimaryFilter.setDefaults()
         PrimaryFilter.setValue(SourceImage, forKey: kCIInputImageKey)
@@ -157,6 +168,9 @@ class DotScreen: FilterParent, Renderer
         }
         
         Context.render(FilteredImage, to: OutPixBuf, bounds: FilteredImage.extent, colorSpace: ColorSpace)
+        
+        LiveRenderTime = CACurrentMediaTime() - Start
+        ParameterManager.UpdateRenderAccumulator(NewValue: LiveRenderTime, ID: ID(), ForImage: false)
         return OutPixBuf
     }
     
@@ -193,6 +207,7 @@ class DotScreen: FilterParent, Renderer
         objc_sync_enter(AccessLock)
         defer{objc_sync_exit(AccessLock)}
         
+        let Start = CACurrentMediaTime()
         PrimaryFilter = CIFilter(name: "CIDotScreen")
         PrimaryFilter?.setDefaults()
         PrimaryFilter?.setValue(Image, forKey: kCIInputImageKey)
@@ -213,16 +228,14 @@ class DotScreen: FilterParent, Renderer
         
         if let Result = PrimaryFilter?.value(forKey: kCIOutputImageKey) as? CIImage
         {
-            #if true
             var Rotated = Result
-            #else
-            var Rotated = RotateImage(Result)
-            #endif
             if DoMerge
             {
                 Rotated = Merge(Rotated, Image)!
             }
             LastCIImage = Rotated
+            ImageRenderTime = CACurrentMediaTime() - Start
+            ParameterManager.UpdateRenderAccumulator(NewValue: ImageRenderTime, ID: ID(), ForImage: true)
             return Rotated
         }
         return nil
@@ -373,7 +386,15 @@ class DotScreen: FilterParent, Renderer
     {
         get
         {
-            return FilterManager.FilterKernelTypes.CIFilter
+            return DotScreen.FilterKernel
+        }
+    }
+    
+    static var FilterKernel: FilterManager.FilterKernelTypes
+    {
+        get
+        {
+            return FilterManager.FilterKernelTypes.Metal
         }
     }
 }

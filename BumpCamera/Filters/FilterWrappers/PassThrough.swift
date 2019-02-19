@@ -26,6 +26,16 @@ class PassThrough: FilterParent, Renderer
         return PassThrough._ID
     }
     
+    static func Title() -> String
+    {
+        return "Pass Through"
+    }
+    
+    func Title() -> String
+    {
+        return PassThrough.Title()
+    }
+    
     var InstanceID: UUID
     {
         return UUID()
@@ -82,7 +92,8 @@ class PassThrough: FilterParent, Renderer
     }
     
     func Render(PixelBuffer: CVPixelBuffer) -> CVPixelBuffer?
-    {
+    {        LiveRenderTime = 0
+        ParameterManager.UpdateRenderAccumulator(NewValue: 0, ID: ID(), ForImage: false)
         return PixelBuffer
     }
     
@@ -93,6 +104,8 @@ class PassThrough: FilterParent, Renderer
     func Render(Image: UIImage) -> UIImage?
     {
         LastUIImage = Image
+        ImageRenderTime = 0
+        ParameterManager.UpdateRenderAccumulator(NewValue: 0, ID: ID(), ForImage: false)
         return Image
     }
     
@@ -173,8 +186,6 @@ class PassThrough: FilterParent, Renderer
         return [.LiveView, .Video, .Still]
     }
     
-    private var ImageRenderStart: Double = 0.0
-    private var LiveRenderStart: Double = 0.0
     private var ImageRenderTime: Double = 0.0
     private var LiveRenderTime: Double = 0.0
     
@@ -231,7 +242,15 @@ class PassThrough: FilterParent, Renderer
     {
         get
         {
-            return FilterManager.FilterKernelTypes.Software
+            return PassThrough.FilterKernel
+        }
+    }
+    
+    static var FilterKernel: FilterManager.FilterKernelTypes
+    {
+        get
+        {
+            return FilterManager.FilterKernelTypes.Metal
         }
     }
 }

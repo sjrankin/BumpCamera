@@ -19,6 +19,7 @@ kernel void DesaturationKernel(texture2d<float, access::read> inTexture [[textur
                                constant DesaturationAdjustment &Adjustment [[buffer(0)]],
                                uint2 gid [[thread_position_in_grid]])
 {
+    //Desaturate only individual color channels then reassemble?
    float4 inColor = inTexture.read(gid);
    float value = dot(inColor.rgb, float3(0.299, 0.587, 0.144));
    float4 grayColor(value, value, value, 1.0);

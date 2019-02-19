@@ -40,6 +40,16 @@ class GrayscaleAdjust: FilterParent, Renderer
         return _ID
     }
     
+    static func Title() -> String
+    {
+        return "Grayscale"
+    }
+    
+    func Title() -> String
+    {
+        return GrayscaleAdjust.Title()
+    }
+    
     var InstanceID: UUID
     {
         return UUID()
@@ -125,6 +135,7 @@ class GrayscaleAdjust: FilterParent, Renderer
             return nil
         }
         
+        let Start = CACurrentMediaTime()
         let FinalCommand = ParameterManager.GetInt(From: ID(), Field: .Command, Default: 0)
         let RMul = ParameterManager.GetDouble(From: ID(), Field: .RAdjustment, Default: 0.3)
         let GMul = ParameterManager.GetDouble(From: ID(), Field: .GAdjustment, Default: 0.5)
@@ -189,6 +200,9 @@ class GrayscaleAdjust: FilterParent, Renderer
             Values[i] = Result![i]
         }
         */
+        
+        LiveRenderTime = CACurrentMediaTime() - Start
+        ParameterManager.UpdateRenderAccumulator(NewValue: LiveRenderTime, ID: ID(), ForImage: false)
         return OutputBuffer
     }
     
@@ -224,6 +238,8 @@ class GrayscaleAdjust: FilterParent, Renderer
         {
             fatalError("Not initialized.")
         }
+        
+        let Start = CACurrentMediaTime()
         var CgImage = Image.cgImage
         let ImageColorspace = CgImage?.colorSpace
         //Handle sneaky grayscale images.
@@ -323,6 +339,9 @@ class GrayscaleAdjust: FilterParent, Renderer
                                  bytesPerRow: BytesPerRow!, space: RGBColorSpace, bitmapInfo: OBitmapInfo, provider: Provider!,
                                  decode: nil, shouldInterpolate: false, intent: RenderingIntent)
         LastUIImage = UIImage(cgImage: FinalImage!)
+        
+        ImageRenderTime = CACurrentMediaTime() - Start
+        ParameterManager.UpdateRenderAccumulator(NewValue: ImageRenderTime, ID: ID(), ForImage: true)
         return UIImage(cgImage: FinalImage!)
     }
     
@@ -616,6 +635,14 @@ class GrayscaleAdjust: FilterParent, Renderer
     }
     
     var FilterKernel: FilterManager.FilterKernelTypes
+    {
+        get
+        {
+            return GrayscaleAdjust.FilterKernel
+        }
+    }
+    
+    static var FilterKernel: FilterManager.FilterKernelTypes
     {
         get
         {

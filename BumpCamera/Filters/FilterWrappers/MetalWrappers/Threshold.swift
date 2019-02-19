@@ -40,6 +40,16 @@ class Threshold: FilterParent, Renderer
         return _ID
     }
     
+    static func Title() -> String
+    {
+        return "Threshold"
+    }
+    
+    func Title() -> String
+    {
+        return Threshold.Title()
+    }
+    
     var InstanceID: UUID
     {
         return UUID()
@@ -126,6 +136,7 @@ class Threshold: FilterParent, Renderer
             return nil
         }
         
+        let Start = CACurrentMediaTime()
         let TValue = ParameterManager.GetDouble(From: ID(), Field: .ThresholdValue, Default: 0.5)
         let TInput = ParameterManager.GetInt(From: ID(), Field: .ThresholdInput, Default: 0)
         let ApplyIfBig = ParameterManager.GetBool(From: ID(), Field: .ApplyThresholdIfHigher, Default: false)
@@ -180,6 +191,8 @@ class Threshold: FilterParent, Renderer
         CommandEncoder.endEncoding()
         CommandBuffer.commit()
         
+        LiveRenderTime = CACurrentMediaTime() - Start
+        ParameterManager.UpdateRenderAccumulator(NewValue: LiveRenderTime, ID: ID(), ForImage: false)
         return OutputBuffer
     }
     
@@ -215,6 +228,8 @@ class Threshold: FilterParent, Renderer
         {
             fatalError("Not initialized.")
         }
+        
+        let Start = CACurrentMediaTime()
         var CgImage = Image.cgImage
         let ImageColorspace = CgImage?.colorSpace
         //Handle sneaky grayscale images.
@@ -305,6 +320,9 @@ class Threshold: FilterParent, Renderer
                                  bytesPerRow: BytesPerRow!, space: RGBColorSpace, bitmapInfo: OBitmapInfo, provider: Provider!,
                                  decode: nil, shouldInterpolate: false, intent: RenderingIntent)
         LastUIImage = UIImage(cgImage: FinalImage!)
+        
+        ImageRenderTime = CACurrentMediaTime() - Start
+        ParameterManager.UpdateRenderAccumulator(NewValue: ImageRenderTime, ID: ID(), ForImage: true)
         return UIImage(cgImage: FinalImage!)
     }
     
@@ -477,6 +495,14 @@ class Threshold: FilterParent, Renderer
     }
     
     var FilterKernel: FilterManager.FilterKernelTypes
+    {
+        get
+        {
+            return Threshold.FilterKernel
+        }
+    }
+    
+    static var FilterKernel: FilterManager.FilterKernelTypes
     {
         get
         {

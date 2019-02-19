@@ -40,6 +40,16 @@ class BayerDecode: FilterParent, Renderer
         return _ID
     }
     
+    static func Title() -> String
+    {
+        return "Bayer Decode"
+    }
+    
+    func Title() -> String
+    {
+        return BayerDecode.Title()
+    }
+    
     var InstanceID: UUID
     {
         return UUID()
@@ -126,6 +136,7 @@ class BayerDecode: FilterParent, Renderer
             return nil
         }
         
+        let Start = CACurrentMediaTime()
         let Parameter = BayerDecodeParameters(Order: 0, Method: 0)
         let Parameters = [Parameter]
         ParameterBuffer = MetalDevice!.makeBuffer(length: MemoryLayout<BayerDecodeParameters>.size, options: [])
@@ -178,6 +189,8 @@ class BayerDecode: FilterParent, Renderer
         CommandEncoder.endEncoding()
         CommandBuffer.commit()
         
+        LiveRenderTime = CACurrentMediaTime() - Start
+        ParameterManager.UpdateRenderAccumulator(NewValue: LiveRenderTime, ID: ID(), ForImage: false)
         return OutputBuffer
     }
     
@@ -213,6 +226,8 @@ class BayerDecode: FilterParent, Renderer
         {
             fatalError("Not initialized.")
         }
+        
+        let Start = CACurrentMediaTime()
         var CgImage = Image.cgImage
         let ImageColorspace = CgImage?.colorSpace
         //Handle sneaky grayscale images.
@@ -300,6 +315,9 @@ class BayerDecode: FilterParent, Renderer
                                  bytesPerRow: BytesPerRow!, space: RGBColorSpace, bitmapInfo: OBitmapInfo, provider: Provider!,
                                  decode: nil, shouldInterpolate: false, intent: RenderingIntent)
         LastUIImage = UIImage(cgImage: FinalImage!)
+        
+        ImageRenderTime = CACurrentMediaTime() - Start
+        ParameterManager.UpdateRenderAccumulator(NewValue: ImageRenderTime, ID: ID(), ForImage: true)
         return UIImage(cgImage: FinalImage!)
     }
     
@@ -460,6 +478,14 @@ class BayerDecode: FilterParent, Renderer
     }
     
     var FilterKernel: FilterManager.FilterKernelTypes
+    {
+        get
+        {
+            return BayerDecode.FilterKernel
+        }
+    }
+    
+    static var FilterKernel: FilterManager.FilterKernelTypes
     {
         get
         {
