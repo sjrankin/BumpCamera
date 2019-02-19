@@ -13,6 +13,9 @@
 		170BFE6F221BD51200754BF6 /* PerformanceCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 170BFE6E221BD51200754BF6 /* PerformanceCell.swift */; };
 		170BFE71221BE63F00754BF6 /* PerformanceActionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 170BFE70221BE63F00754BF6 /* PerformanceActionCell.swift */; };
 		170BFE73221BEFCF00754BF6 /* AboutCode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 170BFE72221BEFCF00754BF6 /* AboutCode.swift */; };
+		170BFE75221C2DDF00754BF6 /* SmoothLinearGradient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 170BFE74221C2DDF00754BF6 /* SmoothLinearGradient.swift */; };
+		170BFE7A221C33EE00754BF6 /* SmoothLinearGradientSettingsUI.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 170BFE79221C33EE00754BF6 /* SmoothLinearGradientSettingsUI.storyboard */; };
+		170BFE7C221C363500754BF6 /* SmoothLinearGradientSettingsUICode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 170BFE7B221C363500754BF6 /* SmoothLinearGradientSettingsUICode.swift */; };
 		171375F42218FA84000E49C2 /* BayerDecode.metal in Sources */ = {isa = PBXBuildFile; fileRef = 171375F32218FA84000E49C2 /* BayerDecode.metal */; };
 		171375F6221926BD000E49C2 /* BayerDecodeParameters.swift in Sources */ = {isa = PBXBuildFile; fileRef = 171375F5221926BD000E49C2 /* BayerDecodeParameters.swift */; };
 		171375F822192732000E49C2 /* BayerDecode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 171375F722192732000E49C2 /* BayerDecode.swift */; };
@@ -227,6 +230,9 @@
 		170BFE6E221BD51200754BF6 /* PerformanceCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PerformanceCell.swift; sourceTree = "<group>"; };
 		170BFE70221BE63F00754BF6 /* PerformanceActionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PerformanceActionCell.swift; sourceTree = "<group>"; };
 		170BFE72221BEFCF00754BF6 /* AboutCode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutCode.swift; sourceTree = "<group>"; };
+		170BFE74221C2DDF00754BF6 /* SmoothLinearGradient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmoothLinearGradient.swift; sourceTree = "<group>"; };
+		170BFE79221C33EE00754BF6 /* SmoothLinearGradientSettingsUI.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = SmoothLinearGradientSettingsUI.storyboard; sourceTree = "<group>"; };
+		170BFE7B221C363500754BF6 /* SmoothLinearGradientSettingsUICode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmoothLinearGradientSettingsUICode.swift; sourceTree = "<group>"; };
 		171375F32218FA84000E49C2 /* BayerDecode.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = BayerDecode.metal; sourceTree = "<group>"; };
 		171375F5221926BD000E49C2 /* BayerDecodeParameters.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BayerDecodeParameters.swift; sourceTree = "<group>"; };
 		171375F722192732000E49C2 /* BayerDecode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BayerDecode.swift; sourceTree = "<group>"; };
@@ -467,6 +473,54 @@
 			path = Desaturation;
 			sourceTree = "<group>";
 		};
+		170BFE76221C2DE600754BF6 /* CIFilterWrappers */ = {
+			isa = PBXGroup;
+			children = (
+				170BFE77221C2ED400754BF6 /* Generators */,
+				171D625821ED98AE004D3545 /* Noir.swift */,
+				17AA10502212DE7C00EF72DA /* EdgeWork.swift */,
+				1779F3C12218265500140EEA /* Posterize.swift */,
+				1779F3D0221833A900140EEA /* SepiaTone.swift */,
+				1779F3C822182DCA00140EEA /* Chrome.swift */,
+				171D627721EDF017004D3545 /* PassThrough.swift */,
+				1779F3CA2218306400140EEA /* Instant.swift */,
+				1779F3CC2218314A00140EEA /* ProcessEffect.swift */,
+				1779F3CE2218324100140EEA /* TransferEffect.swift */,
+				171D626C21EDCF6D004D3545 /* LineScreen.swift */,
+				171D627021EDD1C2004D3545 /* HatchScreen.swift */,
+				171D626121EDB66F004D3545 /* DotScreen.swift */,
+				171D626E21EDD143004D3545 /* CircularScreen.swift */,
+				175E260D21F4A5AB00B6BF8F /* HueAdjust.swift */,
+				17EC44D121F027B500197804 /* LineOverlay.swift */,
+				171D627521EDD52D004D3545 /* CircleAndLines.swift */,
+				171D627221EDD415004D3545 /* CMYKHalftone.swift */,
+				17EC44CD21F0245100197804 /* XRay.swift */,
+				1726243321F8964E00C7688C /* HSBAdjust.swift */,
+				172B87A6221BCC6100F0A508 /* ThermalEffect.swift */,
+				17AA10572212F98C00EF72DA /* FalseColor.swift */,
+				17EC44CF21F0250C00197804 /* Comic.swift */,
+				171D626A21EDCE62004D3545 /* Pixellate.swift */,
+			);
+			path = CIFilterWrappers;
+			sourceTree = "<group>";
+		};
+		170BFE77221C2ED400754BF6 /* Generators */ = {
+			isa = PBXGroup;
+			children = (
+				170BFE74221C2DDF00754BF6 /* SmoothLinearGradient.swift */,
+			);
+			path = Generators;
+			sourceTree = "<group>";
+		};
+		170BFE78221C33C900754BF6 /* SmoothLinearGradient */ = {
+			isa = PBXGroup;
+			children = (
+				170BFE79221C33EE00754BF6 /* SmoothLinearGradientSettingsUI.storyboard */,
+				170BFE7B221C363500754BF6 /* SmoothLinearGradientSettingsUICode.swift */,
+			);
+			path = SmoothLinearGradient;
+			sourceTree = "<group>";
+		};
 		1712A85321FB23F4001E9D2B /* BumpyKernels */ = {
 			isa = PBXGroup;
 			children = (
@@ -544,30 +598,8 @@
 			isa = PBXGroup;
 			children = (
 				173FDCBD220E946000EFA90D /* MetalWrappers */,
+				170BFE76221C2DE600754BF6 /* CIFilterWrappers */,
 				171D625621ED974A004D3545 /* Renderer.swift */,
-				171D627721EDF017004D3545 /* PassThrough.swift */,
-				171D625821ED98AE004D3545 /* Noir.swift */,
-				17AA10502212DE7C00EF72DA /* EdgeWork.swift */,
-				1779F3C12218265500140EEA /* Posterize.swift */,
-				1779F3D0221833A900140EEA /* SepiaTone.swift */,
-				1779F3C822182DCA00140EEA /* Chrome.swift */,
-				171D626A21EDCE62004D3545 /* Pixellate.swift */,
-				171D626121EDB66F004D3545 /* DotScreen.swift */,
-				17AA10572212F98C00EF72DA /* FalseColor.swift */,
-				1779F3CA2218306400140EEA /* Instant.swift */,
-				1779F3CC2218314A00140EEA /* ProcessEffect.swift */,
-				1779F3CE2218324100140EEA /* TransferEffect.swift */,
-				171D626C21EDCF6D004D3545 /* LineScreen.swift */,
-				171D627021EDD1C2004D3545 /* HatchScreen.swift */,
-				171D626E21EDD143004D3545 /* CircularScreen.swift */,
-				171D627521EDD52D004D3545 /* CircleAndLines.swift */,
-				171D627221EDD415004D3545 /* CMYKHalftone.swift */,
-				17EC44D121F027B500197804 /* LineOverlay.swift */,
-				175E260D21F4A5AB00B6BF8F /* HueAdjust.swift */,
-				1726243321F8964E00C7688C /* HSBAdjust.swift */,
-				17EC44CD21F0245100197804 /* XRay.swift */,
-				172B87A6221BCC6100F0A508 /* ThermalEffect.swift */,
-				17EC44CF21F0250C00197804 /* Comic.swift */,
 				17D7512521F497DF0050A2B5 /* FilterParent.swift */,
 			);
 			path = FilterWrappers;
@@ -1140,6 +1172,7 @@
 				174779FB2204338600FD64EF /* CollapsibleHeader.swift */,
 				174779FD220433CB00FD64EF /* CollapsibleTableViewHeaderDelegate.swift */,
 				171F3CF5220944120098E2B7 /* Generators */,
+				170BFE78221C33C900754BF6 /* SmoothLinearGradient */,
 				17CE37342213AB3A0070ED87 /* FalseColor */,
 				17D60D8A22115C9400933F15 /* Pixellate2 */,
 				17C392632215A42C0049B8FD /* DilateErode */,
@@ -1268,6 +1301,7 @@
 				1779F3C5221829A900140EEA /* PosterizeSettingsUI.storyboard in Resources */,
 				171F3D02220AAE270098E2B7 /* LineOverlaySettingsUI.storyboard in Resources */,
 				17E9F0E1220173CD00BA7B46 /* KuwaharaFilterSettingsUI.storyboard in Resources */,
+				170BFE7A221C33EE00754BF6 /* SmoothLinearGradientSettingsUI.storyboard in Resources */,
 				171F3CF82209444B0098E2B7 /* GridSettingsUI.storyboard in Resources */,
 				173F5D04220BE82E00067ABB /* ThresholdSettingsUI.storyboard in Resources */,
 				17E15FEF220575DD0037B35F /* MirroringFilterSettingsUI.storyboard in Resources */,
@@ -1321,6 +1355,7 @@
 				17A686EB21F824AA00F252CA /* HueAdustTableCode.swift in Sources */,
 				171375FF22194363000E49C2 /* MainUIExif.swift in Sources */,
 				17CDB9B822167A7E00C708F5 /* StringExtensions.swift in Sources */,
+				170BFE75221C2DDF00754BF6 /* SmoothLinearGradient.swift in Sources */,
 				178C75BE21F337C100844FFF /* AVCaptureVideoOrientationExtension.swift in Sources */,
 				1756CE1221FD874800C4E638 /* ChannelSwizzleParameters.swift in Sources */,
 				17D60D892210511800933F15 /* SampleContainerView.swift in Sources */,
@@ -1417,6 +1452,7 @@
 				174D6D5B220803E70066AE93 /* GroupNodeManager.swift in Sources */,
 				17CE37382213AEDB0070ED87 /* GeneralResults.swift in Sources */,
 				179B599421EF0AC200905058 /* FilterCollectionCell.swift in Sources */,
+				170BFE7C221C363500754BF6 /* SmoothLinearGradientSettingsUICode.swift in Sources */,
 				171D625B21EDA5B6004D3545 /* LiveMetalView.swift in Sources */,
 				173FDCBF220EA61300EFA90D /* VideoMixer.swift in Sources */,
 				1779F3C922182DCA00140EEA /* Chrome.swift in Sources */,
