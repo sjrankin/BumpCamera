@@ -671,6 +671,42 @@ class ParameterManager
         _Settings.set(0.0, forKey: ValueName)
     }
     
+    /// Return rendering statistics for the specified filter and render type.
+    ///
+    /// - Parameters:
+    ///   - ID: The filter for which rendering statistics will be returned.
+    ///   - ForImage: The type of rendering for the filter (eg, image or live filtering).
+    /// - Returns: Tuple in the order of: render instance count, cumulative render time (in seconds).
+    public static func GetRenderStatistics(ID: UUID, ForImage: Bool) -> (Int, Double)?
+    {
+        objc_sync_enter(RenderUpdateLock)
+        defer{objc_sync_exit(RenderUpdateLock)}
+        
+        let CountField = ForImage ? FilterManager.InputFields.RenderImageCount : .RenderLiveCount
+        let ValueField = ForImage ? FilterManager.InputFields.CumulativeImageRenderDuration : .CumulativeLiveRenderDuration
+        let CountName = MakeStorageName(For: ID, Field: CountField)
+        let ValueName = MakeStorageName(For: ID, Field: ValueField)
+        let Count = _Settings.integer(forKey: CountName)
+        let Value = _Settings.double(forKey: ValueName)
+        return (Count, Value)
+    }
+    
+    /// Return all filter performace data.
+    ///
+    /// - Returns: List of performace data, each element a tuple of (filter type, image count, image total, live count
+    ///            and live total).
+    public static func DumpRenderData() -> [(FilterManager.FilterTypes, FilterManager.FilterKernelTypes, Int, Double, Int, Double)]
+    {
+        var Results = [(FilterManager.FilterTypes, FilterManager.FilterKernelTypes, Int, Double, Int, Double)]()
+        for (FilterType, Info) in FilterManager.FilterInfoMap
+        {
+            let (ImageCount, ImageTotal) = GetRenderStatistics(ID: Info.0, ForImage: true)!
+            let (LiveCount, LiveTotal) = GetRenderStatistics(ID: Info.0, ForImage: false)!
+            Results.append((FilterType, Info.1, ImageCount, ImageTotal, LiveCount, LiveTotal))
+        }
+        return Results
+    }
+    
     private static func ConvertAny(_ Raw: Any?, OfType: FilterManager.InputTypes) -> String
     {
         if Raw == nil
