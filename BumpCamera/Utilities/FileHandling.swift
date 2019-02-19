@@ -19,6 +19,9 @@ class FileHandler
     /// being moved to the photo roll).
     static let ScratchDirectory = "/Scratch"
     
+    /// Name of the directory where performance data is exported.
+    static let PerformanceDirectory = "/Performance"
+    
     /// Returns an URL for the document directory.
     ///
     /// - Returns: Document directory URL on success, nil on error.
@@ -374,5 +377,28 @@ class FileHandler
         {
             return false
         }
+    }
+    
+    /// Save the contents of the passed string to a file with the passed file name. The file is saved in BumpCamera's
+    /// performance directory.
+    ///
+    /// - Parameters:
+    ///   - SaveMe: Contains the string to save.
+    ///   - FileName: The name of the file to save.
+    /// - Returns: True on success, false on failure.
+    public static func SaveStringToFile(_ SaveMe: String, FileName: String) -> Bool
+    {
+        let SaveDirectory = GetDirectoryURL(DirectoryName: PerformanceDirectory)
+        let FinalFile = SaveDirectory?.appendingPathComponent(FileName)
+        do
+        {
+            try SaveMe.write(to: FinalFile!, atomically: false, encoding: .utf8)
+        }
+        catch
+        {
+            print("Error saving string to \(FinalFile!.path): error: \(error.localizedDescription)")
+            return false
+        }
+        return true
     }
 }
