@@ -15,6 +15,11 @@ import CoreImage
 /// Protocol for filter wrapper classes.
 protocol Renderer: class
 {
+    /// Return the title of the filter.
+    ///
+    /// - Returns: Filter title.
+    func Title() -> String
+    
     /// Get a description of the filter.
     var Description: String {get}
     
