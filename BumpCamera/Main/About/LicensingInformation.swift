@@ -49,6 +49,8 @@ class Licenses
     /// Array that holds license data.
     private static let Licenses: [License] =
     [
+        License(Name: "OCHA Humanitarian Icons v.02", Holder: "United Nations Office for the Coordination of Humanitarian Affairs",
+                Text: "Public Domain", Use: "Various icons repurposed."),
         License(Name: "SystemKit", Holder: "beltex", Text: """
 The MIT License (MIT)
             
