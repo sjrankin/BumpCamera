@@ -38,14 +38,75 @@ class FilterManager
         }
     }
     
+    /// Map between group type and filters in the group.
+    private static let GroupMap: [FilterGroups: [(FilterTypes, Int)]] =
+        [
+            .Standard: [(.PassThrough, 0), (.LineScreen, 4), (.DotScreen, 5), (.CircularScreen, 7),
+                        (.HatchScreen, 6), (.CMYKHalftone, 8), (.Pixellate, 11), (.Comic, 2),
+                        (.LineOverlay, 9), (.EdgeWork, 10), (.Posterize, 13)],
+            .Combined: [(.CircleAndLines, 0)],
+            .Effects: [(.PixellateMetal, 0), (.DilateErode, 1), (.Kuwahara, 2), (.BayerDecode, 3)],
+            .PhotoEffects: [(.Noir, 0), (.Chrome, 1), (.XRay, 2), (.Instant, 2), (.ProcessEffect, 3),
+                            (.TransferEffect, 4), (.SepiaTone, 5), (.Thermal, 6)],
+            .Colors: [(.HueAdjust, 0), (.HSBAdjust, 1), (.Solarize, 2), (.ChannelMixer, 3),
+                      (.DesaturateColors, 4), (.Threshold, 5), (.MonochromeColor, 6), (.FalseColor, 7),
+                      (.PaletteShifting, 8)],
+            .Gray: [(.GrayscaleKernel, 0), (.Dither, 1)],
+            //.Bumpy: [(.BumpyPixels, 1), (.BumpyTriangles, 2), (.Embossed, 0)],
+            //.Motion: [(.ColorDelta, 0), (.FilterDelta, 1), (.PatternDelta, 2)],
+            .Tiles: [(.Mirroring, 0)],
+            .Generator: [(.Grid, 0), (.CornerGradient, 1)]
+    ]
+    
+    public static let FilterInfoMap: [FilterTypes: (UUID, FilterKernelTypes, String)] =
+        [
+            .Noir: (Noir.ID(), Noir.FilterKernel, Noir.Title()),
+            .LineScreen: (LineScreen.ID(), LineScreen.FilterKernel, LineScreen.Title()),
+            .CircularScreen: (CircularScreen.ID(), CircularScreen.FilterKernel, CircularScreen.Title()),
+            .DotScreen: (DotScreen.ID(), DotScreen.FilterKernel, DotScreen.Title()),
+            .HatchScreen: (HatchScreen.ID(), HatchScreen.FilterKernel, HatchScreen.Title()),
+            .Pixellate: (Pixellate.ID(), Pixellate.FilterKernel, Pixellate.Title()),
+            .CircleAndLines: (CircleAndLines.ID(), CircleAndLines.FilterKernel, CircleAndLines.Title()),
+            .CMYKHalftone: (CMYKHalftone.ID(), CMYKHalftone.FilterKernel, CMYKHalftone.Title()),
+            .PassThrough: (PassThrough.ID(), PassThrough.FilterKernel, PassThrough.Title()),
+            .Comic: (Comic.ID(), Comic.FilterKernel, Comic.Title()),
+            .XRay: (XRay.ID(), XRay.FilterKernel, XRay.Title()),
+            .LineOverlay: (LineOverlay.ID(), LineOverlay.FilterKernel, LineOverlay.Title()),
+            .HueAdjust: (HueAdjust.ID(), HueAdjust.FilterKernel, HueAdjust.Title()),
+            .HSBAdjust: (HSBAdjust.ID(), HSBAdjust.FilterKernel, HSBAdjust.Title()),
+            .ChannelMixer: (ChannelMixer.ID(), ChannelMixer.FilterKernel, ChannelMixer.Title()),
+            .DesaturateColors: (DesaturateColors.ID(), DesaturateColors.FilterKernel, DesaturateColors.Title()),
+            .GrayscaleKernel: (GrayscaleAdjust.ID(), GrayscaleAdjust.FilterKernel, GrayscaleAdjust.Title()),
+            .Kuwahara: (KuwaharaEffect.ID(), KuwaharaEffect.FilterKernel, KuwaharaEffect.Title()),
+            .PixellateMetal: (Pixellate_Metal.ID(), Pixellate_Metal.FilterKernel, Pixellate_Metal.Title()),
+            .Mirroring: (MirroringDistortion.ID(), MirroringDistortion.FilterKernel, MirroringDistortion.Title()),
+            .Grid: (GridGenerator.ID(), GridGenerator.FilterKernel, GridGenerator.Title()),
+            .Solarize: (Solarize.ID(), Solarize.FilterKernel, Solarize.Title()),
+            .Threshold: (Threshold.ID(), Threshold.FilterKernel, Threshold.Title()),
+            .Dither: (Dithering.ID(), Dithering.FilterKernel, Dithering.Title()),
+            .MonochromeColor: (MonochromeColors.ID(), MonochromeColors.FilterKernel, MonochromeColors.Title()),
+            .EdgeWork: (EdgeWork.ID(), EdgeWork.FilterKernel, EdgeWork.Title()),
+            .FalseColor: (FalseColor.ID(), FalseColor.FilterKernel, FalseColor.Title()),
+            .CornerGradient: (CornerGradient.ID(), CornerGradient.FilterKernel, CornerGradient.Title()),
+            .DilateErode: (DilateErode.ID(), DilateErode.FilterKernel, DilateErode.Title()),
+            .Posterize: (Posterize.ID(), Posterize.FilterKernel, Posterize.Title()),
+            .Chrome: (Chrome.ID(), Chrome.FilterKernel, Chrome.Title()),
+            .Instant: (Instant.ID(), Instant.FilterKernel, Instant.Title()),
+            .ProcessEffect: (ProcessEffect.ID(), ProcessEffect.FilterKernel, ProcessEffect.Title()),
+            .TransferEffect: (TransferEffect.ID(), TransferEffect.FilterKernel, TransferEffect.Title()),
+            .SepiaTone: (SepiaTone.ID(), SepiaTone.FilterKernel, SepiaTone.Title()),
+            .BayerDecode: (BayerDecode.ID(), BayerDecode.FilterKernel, BayerDecode.Title()),
+            .Thermal: (ThermalEffect.ID(), ThermalEffect.FilterKernel, ThermalEffect.Title()),
+            ]
+    
     /// Load all of the filter classes into the filter manager.
     private func PreloadFilters()
     {
         FilterSettingsMap = [FilterManager.FilterTypes: String?]()
-        for (FilterName, _) in FilterManager.FilterMap
+        for (FilterType, _) in FilterManager.FilterInfoMap
         {
-            FilterSettingsMap![FilterName] = nil
-            if !IsImplemented(FilterName)
+            FilterSettingsMap![FilterType] = nil
+            if !IsImplemented(FilterType)
             {
                 #if false
                 let Raw = FilterName.rawValue
@@ -54,15 +115,15 @@ class FilterManager
                 #endif
                 continue
             }
-            if let NewRenderer = CreateFilter(For: FilterName)
+            if let NewRenderer = CreateFilter(For: FilterType)
             {
-                let NewPhotoCamera = CameraFilter(WithFilter: NewRenderer, AndType: FilterName, ID: FilterManager.FilterMap[FilterName]!)
-                NewPhotoCamera.Parameters = RenderPacket(ID: FilterManager.FilterMap[FilterName]!)
+                let NewPhotoCamera = CameraFilter(WithFilter: NewRenderer, AndType: FilterType, ID: FilterManager.FilterInfoMap[FilterType]!.0)
+                NewPhotoCamera.Parameters = RenderPacket(ID: FilterManager.FilterInfoMap[FilterType]!.0)
                 PhotoFilterList.append(NewPhotoCamera)
-                let NewVideoCamera = CameraFilter(WithFilter: NewRenderer, AndType: FilterName, ID: FilterManager.FilterMap[FilterName]!)
-                NewVideoCamera.Parameters = RenderPacket(ID: FilterManager.FilterMap[FilterName]!)
+                let NewVideoCamera = CameraFilter(WithFilter: NewRenderer, AndType: FilterType, ID: FilterManager.FilterInfoMap[FilterType]!.0)
+                NewVideoCamera.Parameters = RenderPacket(ID: FilterManager.FilterInfoMap[FilterType]!.0)
                 VideoFilterList.append(NewVideoCamera)
-                FilterSettingsMap![FilterName] = NewRenderer.SettingsStoryboard()
+                FilterSettingsMap![FilterType] = NewRenderer.SettingsStoryboard()
             }
             else
             {
@@ -125,6 +186,7 @@ class FilterManager
         ParameterCount![.TransferEffect] = TransferEffect.SupportedFields().count
         ParameterCount![.SepiaTone] = SepiaTone.SupportedFields().count
         ParameterCount![.BayerDecode] = BayerDecode.SupportedFields().count
+        ParameterCount![.Thermal] = ThermalEffect.SupportedFields().count
     }
     
     private static var ParameterCount: [FilterManager.FilterTypes: Int]? = nil
@@ -183,6 +245,7 @@ class FilterManager
         StoryboardList![.TransferEffect] = TransferEffect.SettingsStoryboard()
         StoryboardList![.SepiaTone] = SepiaTone.SettingsStoryboard()
         StoryboardList![.BayerDecode] = BayerDecode.SettingsStoryboard()
+        StoryboardList![.Thermal] = ThermalEffect.SettingsStoryboard()
     }
     
     private static var StoryboardList: [FilterTypes: String?]? = nil
@@ -287,7 +350,8 @@ class FilterManager
         if let NewRenderer = CreateFilter(For: Name)
         {
             let NewCamera = CameraFilter(WithFilter: NewRenderer, AndType: Name,
-                                         ID: FilterManager.FilterMap[Name]!)
+                                         ID: FilterManager.FilterInfoMap[Name]!.0)
+            //                                         ID: FilterManager.FilterMap[Name]!)
             switch For
             {
             case .Photo:
@@ -296,7 +360,7 @@ class FilterManager
             case .Video:
                 VideoFilterList.append(NewCamera)
             }
-            NewCamera.Parameters = RenderPacket(ID: FilterManager.FilterMap[Name]!)
+            NewCamera.Parameters = RenderPacket(ID: FilterManager.FilterInfoMap[Name]!.0)
             return NewCamera
         }
         return nil
@@ -427,6 +491,9 @@ class FilterManager
         case .BayerDecode:
             return BayerDecode()
             
+        case .Thermal:
+            return ThermalEffect()
+            
         default:
             return nil
         }
@@ -494,12 +561,12 @@ class FilterManager
     /// - Returns: The ID of the passed filter on success, nil if not found.
     public func GetFilterID(For: FilterTypes) -> UUID?
     {
-        return FilterManager.FilterMap[For]
+        return FilterManager.FilterInfoMap[For]!.0
     }
     
     public static func GetFilterID(For: FilterTypes) -> UUID?
     {
-        return FilterManager.FilterMap[For]
+        return FilterManager.FilterInfoMap[For]!.0
     }
     
     /// Given a filter ID, return it's type. Instance version.
@@ -517,9 +584,9 @@ class FilterManager
     /// - Returns: Type of the filter with the passed ID on success, nil if not found.
     public static func GetFilterTypeFrom(ID: UUID) -> FilterTypes?
     {
-        for (Name, FilterID) in FilterManager.FilterMap
+        for (Name, Info) in FilterManager.FilterInfoMap
         {
-            if FilterID == ID
+            if Info.0 == ID
             {
                 return Name
             }
@@ -527,99 +594,54 @@ class FilterManager
         return nil
     }
     
+    public static func TitleFor(Filter: FilterTypes) -> String?
+    {
+        if let (_, _, Title) = FilterInfoMap[Filter]
+        {
+            return Title
+        }
+        return nil
+    }
+    
+    /// Return all filters of the type of kernel specified.
+    ///
+    /// - Parameter KernelType: The type of kernels to return.
+    /// - Returns: List of kernels of the specified type, sorted by filter title.
     public static func FiltersByKernel(KernelType: FilterKernelTypes) -> [FilterTypes]
     {
-        if FilterKernelMap == nil
-        {
-            MakeFilterKernelMap()
-        }
         var Results = [FilterTypes]()
-        for (FilterType, TheType) in FilterKernelMap!
+        for (FilterType, Info) in FilterInfoMap
         {
-            if KernelType == TheType
+            if Info.1 == KernelType
             {
-            Results.append(FilterType)
+                Results.append(FilterType)
             }
         }
-        return Results
+        return SortByTitle(Results)
     }
     
-    private static func MakeFilterKernelMap()
+    /// Sort the passed list of filters by filter name.
+    ///
+    /// - Parameter TypeList: List of filter types to sort.
+    /// - Returns: Sorted (by filter name) list of filter types.
+    public static func SortByTitle(_ TypeList: [FilterTypes]) -> [FilterTypes]
     {
-        FilterKernelMap = [FilterTypes: FilterKernelTypes]()
-        
+        var SortList = [(FilterTypes, String)]()
+        for SomeFilter in TypeList
+        {
+            if let Title = TitleFor(Filter: SomeFilter)
+            {
+                SortList.append((SomeFilter, Title))
+            }
+        }
+        SortList.sort{$0.1 < $1.1}
+        var Sorted = [FilterTypes]()
+        for (SomeType, _) in SortList
+        {
+            Sorted.append(SomeType)
+        }
+        return Sorted
     }
-    
-    private static var FilterKernelMap: [FilterTypes: FilterKernelTypes]? = nil
-    
-    /// Map between filter types and their IDs. Only working filters should be included in this map.
-    public static let FilterMap: [FilterTypes: UUID] =
-        [
-            .Noir: Noir.ID(),
-            .LineScreen: LineScreen.ID(),
-            .CircularScreen: CircularScreen.ID(),
-            .DotScreen: DotScreen.ID(),
-            .HatchScreen: HatchScreen.ID(),
-            .Pixellate: Pixellate.ID(),
-            .CircleAndLines: CircleAndLines.ID(),
-            .CMYKHalftone: CMYKHalftone.ID(),
-            .PassThrough: PassThrough.ID(),
-            .Comic: Comic.ID(),
-            .XRay: XRay.ID(),
-            .LineOverlay: LineOverlay.ID(),
-            /*
-             .BumpyPixels: BumpyPixels.ID(),
-             .BumpyTriangles: BumpyTriangles.ID(),
-             .Embossed: Embossed.ID(),
-             .ColorDelta: ColorDelta.ID(),
-             .FilterDelta: FilterDelta.ID(),
-             .PatternDelta: PatternDelta.ID(),
-             */
-            .HueAdjust: HueAdjust.ID(),
-            .HSBAdjust: HSBAdjust.ID(),
-            .ChannelMixer: ChannelMixer.ID(),
-            .DesaturateColors: DesaturateColors.ID(),
-            .GrayscaleKernel: GrayscaleAdjust.ID(),
-            .Kuwahara: KuwaharaEffect.ID(),
-            .PixellateMetal: Pixellate_Metal.ID(),
-            .Mirroring: MirroringDistortion.ID(),
-            .Grid: GridGenerator.ID(),
-            .Solarize: Solarize.ID(),
-            .Threshold: Threshold.ID(),
-            .Dither: Dithering.ID(),
-            .MonochromeColor: MonochromeColors.ID(),
-            .EdgeWork: EdgeWork.ID(),
-            .FalseColor: FalseColor.ID(),
-            .CornerGradient: CornerGradient.ID(),
-            .DilateErode: DilateErode.ID(),
-            .Posterize: Posterize.ID(),
-            .Chrome: Chrome.ID(),
-            .Instant: Instant.ID(),
-            .ProcessEffect: ProcessEffect.ID(),
-            .TransferEffect: TransferEffect.ID(),
-            .SepiaTone: SepiaTone.ID(),
-            .BayerDecode: BayerDecode.ID(),
-            ]
-    
-    /// Map between group type and filters in the group.
-    private static let GroupMap: [FilterGroups: [(FilterTypes, Int)]] =
-        [
-            .Standard: [(.PassThrough, 0), (.LineScreen, 4), (.DotScreen, 5), (.CircularScreen, 7),
-                        (.HatchScreen, 6), (.CMYKHalftone, 8), (.Pixellate, 11), (.Comic, 2),
-                        (.LineOverlay, 9), (.EdgeWork, 10), (.Posterize, 13)],
-            .Combined: [(.CircleAndLines, 0)],
-            .Effects: [(.PixellateMetal, 0), (.DilateErode, 1), (.Kuwahara, 2), (.BayerDecode, 3)],
-            .PhotoEffects: [(.Noir, 0), (.Chrome, 1), (.XRay, 2), (.Instant, 2), (.ProcessEffect, 3),
-                            (.TransferEffect, 4), (.SepiaTone, 5)],
-            .Colors: [(.HueAdjust, 0), (.HSBAdjust, 1), (.Solarize, 2), (.ChannelMixer, 3),
-                      (.DesaturateColors, 4), (.Threshold, 5), (.MonochromeColor, 6), (.FalseColor, 7),
-                      (.PaletteShifting, 8)],
-            .Gray: [(.GrayscaleKernel, 0), (.Dither, 1)],
-            //.Bumpy: [(.BumpyPixels, 1), (.BumpyTriangles, 2), (.Embossed, 0)],
-            //.Motion: [(.ColorDelta, 0), (.FilterDelta, 1), (.PatternDelta, 2)],
-            .Tiles: [(.Mirroring, 0)],
-            .Generator: [(.Grid, 0), (.CornerGradient, 1)]
-    ]
     
     /// Map from group descriptions to their respective IDs.
     static let GroupIDs: [FilterGroups: UUID] =
@@ -886,6 +908,7 @@ class FilterManager
             .TransferEffect: "Transfer Effect",
             .SepiaTone: "Sepia Tone",
             .BayerDecode: "Bayer Decode",
+            .Thermal: "Thermal Effect",
             ]
     
     public static func GetFilterTitle(_ Filter: FilterTypes) -> String?
@@ -943,6 +966,7 @@ class FilterManager
             .TransferEffect: true,
             .SepiaTone: true,
             .BayerDecode: true,
+            .Thermal: true
             ]
     
     /// Determines if the given filter type is implemented.
