@@ -55,7 +55,7 @@ class FilterManager
             //.Bumpy: [(.BumpyPixels, 1), (.BumpyTriangles, 2), (.Embossed, 0)],
             //.Motion: [(.ColorDelta, 0), (.FilterDelta, 1), (.PatternDelta, 2)],
             .Tiles: [(.Mirroring, 0)],
-            .Generator: [(.Grid, 0), (.CornerGradient, 1)]
+            .Generator: [(.Grid, 0), (.SmoothLinearGradient, 1), (.CornerGradient, 2)]
     ]
     
     public static let FilterInfoMap: [FilterTypes: (UUID, FilterKernelTypes, String)] =
@@ -97,6 +97,7 @@ class FilterManager
             .SepiaTone: (SepiaTone.ID(), SepiaTone.FilterKernel, SepiaTone.Title()),
             .BayerDecode: (BayerDecode.ID(), BayerDecode.FilterKernel, BayerDecode.Title()),
             .Thermal: (ThermalEffect.ID(), ThermalEffect.FilterKernel, ThermalEffect.Title()),
+            .SmoothLinearGradient: (SmoothLinearGradient.ID(), SmoothLinearGradient.FilterKernel, SmoothLinearGradient.Title()),
             ]
     
     /// Load all of the filter classes into the filter manager.
@@ -275,6 +276,7 @@ class FilterManager
         ParameterCount![.SepiaTone] = SepiaTone.SupportedFields().count
         ParameterCount![.BayerDecode] = BayerDecode.SupportedFields().count
         ParameterCount![.Thermal] = ThermalEffect.SupportedFields().count
+        ParameterCount![.SmoothLinearGradient] = SmoothLinearGradient.SupportedFields().count
     }
     
     private static var ParameterCount: [FilterManager.FilterTypes: Int]? = nil
@@ -334,6 +336,7 @@ class FilterManager
         StoryboardList![.SepiaTone] = SepiaTone.SettingsStoryboard()
         StoryboardList![.BayerDecode] = BayerDecode.SettingsStoryboard()
         StoryboardList![.Thermal] = ThermalEffect.SettingsStoryboard()
+        StoryboardList![.SmoothLinearGradient] = SmoothLinearGradient.SettingsStoryboard()
     }
     
     private static var StoryboardList: [FilterTypes: String?]? = nil
@@ -581,6 +584,9 @@ class FilterManager
             
         case .Thermal:
             return ThermalEffect()
+            
+        case .SmoothLinearGradient:
+            return SmoothLinearGradient()
             
         default:
             return nil
@@ -1001,6 +1007,7 @@ class FilterManager
             .SepiaTone: "Sepia Tone",
             .BayerDecode: "Bayer Decode",
             .Thermal: "Thermal Effect",
+            .SmoothLinearGradient: "Linear Gradient",
             ]
     
     public static func GetFilterTitle(_ Filter: FilterTypes) -> String?
@@ -1058,7 +1065,8 @@ class FilterManager
             .TransferEffect: true,
             .SepiaTone: true,
             .BayerDecode: true,
-            .Thermal: true
+            .Thermal: true,
+            .SmoothLinearGradient: true
             ]
     
     /// Determines if the given filter type is implemented.
@@ -1223,6 +1231,8 @@ class FilterManager
             .CumulativeImageRenderDuration: .DoubleType,
             .RenderLiveCount: .IntType,
             .CumulativeLiveRenderDuration: .DoubleType,
+            .Point0: .PointType,
+            .Point1: .PointType,
             ]
     
     public static let FieldStorageMap: [InputFields: String] =
@@ -1340,6 +1350,8 @@ class FilterManager
             .CumulativeImageRenderDuration: "_CumulativeImageRenderDuration",
             .RenderLiveCount: "_FilterRenderLiveCount",
             .CumulativeLiveRenderDuration: "_CumulativeLiveRenderDuration",
+            .Point0: "_Point0",
+            .Point1: "_Point1",
             ]
 }
 
