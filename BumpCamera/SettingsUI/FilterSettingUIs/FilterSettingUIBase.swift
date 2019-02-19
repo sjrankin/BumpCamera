@@ -705,6 +705,19 @@ class FilterSettingUIBase: UITableViewController, UIImagePickerControllerDelegat
         ParameterManager.SetField(To: FilterID, Field: ToField, Value: WithValue as Any?)
     }
     
+    /// Save a filter settings CIVector to user settings.
+    ///
+    /// - Note: The vector is internally converted to a CGPoint before being saved.
+    ///
+    /// - Parameters:
+    ///   - WithValue: Value to save.
+    ///   - ToField: Indicates the field where the value will be saved.
+    func UpdateValue(WithValue: CIVector, ToField: FilterManager.InputFields)
+    {
+        let NewPoint = CGPoint(x: WithValue.x, y: WithValue.y)
+        ParameterManager.SetField(To: FilterID, Field: ToField, Value: NewPoint as Any?)
+    }
+    
     /// Save a filter settings UIColor value to user settings.
     ///
     /// - Parameters:
