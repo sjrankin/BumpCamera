@@ -298,13 +298,13 @@ class ChannelMixerSettingsUICode: FilterSettingUIBase
     
     func UpdateChannelSwizzles(Channel1: Int, Channel2: Int, Channel3: Int)
     {
-        ParameterManager.SetField(To: FilterManager.FilterMap[Filter]!,
+        ParameterManager.SetField(To: FilterManager.FilterInfoMap[Filter]!.0,
                                   Field: FilterManager.InputFields.Channel1,
                                   Value: Channel1 as Any?)
-        ParameterManager.SetField(To: FilterManager.FilterMap[Filter]!,
+        ParameterManager.SetField(To: FilterManager.FilterInfoMap[Filter]!.0,
                                   Field: FilterManager.InputFields.Channel2,
                                   Value: Channel2 as Any?)
-        ParameterManager.SetField(To: FilterManager.FilterMap[Filter]!,
+        ParameterManager.SetField(To: FilterManager.FilterInfoMap[Filter]!.0,
                                   Field: FilterManager.InputFields.Channel3,
                                   Value: Channel3 as Any?)
         ShowSampleView()
