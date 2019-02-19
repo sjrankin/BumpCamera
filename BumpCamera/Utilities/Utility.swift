@@ -345,6 +345,37 @@ class Utility
         return Result
     }
     
+    public static func MakeTimeStamp(FromDate: Date, TimeSeparator: String = ":") -> String
+    {
+        let Cal = Calendar.current
+        let Year = Cal.component(.year, from: FromDate)
+        let Month = Cal.component(.month, from: FromDate)
+        let MonthName = ["Zero", "Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"][Month]
+        let Day = Cal.component(.day, from: FromDate)
+        let DatePart = "\(Year)-\(MonthName)-\(Day) "
+        let Hour = Cal.component(.hour, from: FromDate)
+        var HourString = String(describing: Hour)
+        if Hour < 10
+        {
+            HourString = "0" + HourString
+        }
+        let Minute = Cal.component(.minute, from: FromDate)
+        var MinuteString = String(describing: Minute)
+        if Minute < 10
+        {
+            MinuteString = "0" + MinuteString
+        }
+        let Second = Cal.component(.second, from: FromDate)
+        var Result = HourString + TimeSeparator + MinuteString
+            var SecondString = String(describing: Second)
+            if Second < 10
+            {
+                SecondString = "0" + SecondString
+            }
+            Result = Result + TimeSeparator + SecondString
+        return DatePart + Result
+    }
+    
     /// Convert an integer into a string and pad left with the specified number of zeroes.
     ///
     /// - Parameters:
