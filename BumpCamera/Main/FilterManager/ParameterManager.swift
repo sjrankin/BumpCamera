@@ -634,6 +634,10 @@ class ParameterManager
     {
         objc_sync_enter(RenderUpdateLock)
         defer{objc_sync_exit(RenderUpdateLock)}
+        if !_Settings.bool(forKey: "CollectPerformanceStatistics")
+        {
+            return
+        }
         let CountField = ForImage ? FilterManager.InputFields.RenderImageCount : .RenderLiveCount
         let ValueField = ForImage ? FilterManager.InputFields.CumulativeImageRenderDuration : .CumulativeLiveRenderDuration
         let CountName = MakeStorageName(For: ID, Field: CountField)
@@ -655,6 +659,10 @@ class ParameterManager
     {
         objc_sync_enter(RenderUpdateLock)
         defer{objc_sync_exit(RenderUpdateLock)}
+        if !_Settings.bool(forKey: "CollectPerformanceStatistics")
+        {
+            return
+        }
         let CountField = ForImage ? FilterManager.InputFields.RenderImageCount : .RenderLiveCount
         let ValueField = ForImage ? FilterManager.InputFields.CumulativeImageRenderDuration : .CumulativeLiveRenderDuration
         let CountName = MakeStorageName(For: ID, Field: CountField)
