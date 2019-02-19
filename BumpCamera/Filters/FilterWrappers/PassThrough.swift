@@ -250,7 +250,7 @@ class PassThrough: FilterParent, Renderer
     {
         get
         {
-            return FilterManager.FilterKernelTypes.Metal
+            return FilterManager.FilterKernelTypes.CIFilter
         }
     }
 }
