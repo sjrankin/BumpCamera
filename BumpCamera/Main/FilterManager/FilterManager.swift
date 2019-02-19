@@ -132,6 +132,94 @@ class FilterManager
         }
     }
     
+    /// Reset all filter statistics.
+    ///
+    /// - Parameter CalledBy: Name of the class that called us. Used for debug.
+    public static func ResetPerformanceStatistics(CalledBy: String)
+    {
+        for (_, Info) in FilterInfoMap
+        {
+            ParameterManager.ResetRenderAccumulator(ID: Info.0, ForImage: true)
+            ParameterManager.ResetRenderAccumulator(ID: Info.0, ForImage: false)
+        }
+    }
+    
+    /// Export filter performance statistics to a file. The file is saved off the top-level BumpCamera directory in
+    /// /PerformanceData.
+    ///
+    /// - Parameter AsType: Determines the format of the exported file.
+    /// - Returns: Tuple with the success flag and file name used.
+    public static func ExportPerformanceStatistics(AsType: ExportDataTypes) -> (Bool, String)
+    {
+        let DateString = Utility.MakeTimeStamp(FromDate: Date(), TimeSeparator: ".")
+        var FileName = "FilterPerformance." + DateString
+        let RawData = ParameterManager.DumpRenderData()
+        var Working = ""
+        switch AsType
+        {
+        case .CSV:
+            FileName = FileName + ".csv"
+            Working = "BumpCamera Filter Performance,\(DateString),,,,\n"
+            Working = Working + "Filter Type,Filter Name,Image Count,Image Total,Live Count,LiveTotal\n"
+            for (FilterType, KernelType, ImageCount, ImageTotal, LiveCount, LiveTotal) in RawData
+            {
+                var OneLine = KernelType.rawValue + "," + GetFilterTitle(FilterType)! + ","
+                OneLine = OneLine + "\(ImageCount),\(ImageTotal),\(LiveCount),\(LiveTotal)\n"
+                Working = Working + OneLine
+            }
+            break;
+            
+        case .XML:
+            FileName = FileName + ".xml"
+            Working = "<FilterPerformance For=\"BumpCamera\" ExportedOn=\"\(DateString)\">\n"
+            for (FilterType, KernelType, ImageCount, ImageTotal, LiveCount, LiveTotal) in RawData
+            {
+                var OneLine = "  <Filter Name=\"\(GetFilterTitle(FilterType)!)\" KernelType=\"\(KernelType.rawValue)\">\n"
+                OneLine = OneLine + "    <ImagePerformance Count=\"\(ImageCount)\" TotalSeconds=\"\(ImageTotal)\"/>\n"
+                OneLine = OneLine + "    <LivePerformance Count=\"\(LiveCount)\" TotalSeconds=\"\(LiveTotal)\"/>\n"
+                OneLine = OneLine + "  </Filter>\n"
+                Working = Working + OneLine
+            }
+            Working = Working + "</FilterPerformance>\n"
+            break;
+            
+        case .JSON:
+            FileName = FileName + ".json"
+            Working = "{\n"
+            Working = Working + "  \"PerformanceFor\": \"BumpCamera\",\n"
+            Working = Working + "  \"ExportedOn\": \"\(DateString)\",\n"
+            Working = Working + "  \"Filter\":\n"
+            Working = Working + "  [\n"
+            
+            for (FilterType, KernelType, ImageCount, ImageTotal, LiveCount, LiveTotal) in RawData
+            {
+                var OneLine = "    {\n"
+                OneLine = OneLine + "      \"Name\": \"\(GetFilterTitle(FilterType)!)\",\n"
+                OneLine = OneLine + "      \"KernelType\": \"\(KernelType.rawValue)\",\n"
+                OneLine = OneLine + "      \"ImagePerformance\":\n"
+                OneLine = OneLine + "      {\n"
+                OneLine = OneLine + "        \"Count\": \"\(ImageCount)\",\n"
+                OneLine = OneLine + "        \"TotalSeconds\": \"\(ImageTotal)\",\n"
+                OneLine = OneLine + "      },\n"
+                OneLine = OneLine + "      \"LivePerformance\":\n"
+                OneLine = OneLine + "      {\n"
+                OneLine = OneLine + "        \"Count\": \"\(LiveCount)\",\n"
+                OneLine = OneLine + "        \"TotalSeconds\": \"\(LiveTotal)\",\n"
+                OneLine = OneLine + "      },\n"
+                OneLine = OneLine + "    },\n"
+                Working = Working + OneLine
+            }
+            
+            Working = Working + "  ]\n"
+            Working = Working + "}\n"
+            break
+        }
+        
+        FileHandler.SaveStringToFile(Working, FileName: FileName)
+        
+        return (true, FileName)
+    }
+    
     /// Returns the number of parameters for the passed filter type.
     ///
     /// - Parameter Filter: The filter whose number of parameters will be returned.
@@ -594,6 +682,10 @@ class FilterManager
         return nil
     }
     
+    /// Return the title for the specified filter. This title is the protocol-specified title.
+    ///
+    /// - Parameter Filter: The filter type whose title will be returned.
+    /// - Returns: The title of the specified filter on success, nil if not found.
     public static func TitleFor(Filter: FilterTypes) -> String?
     {
         if let (_, _, Title) = FilterInfoMap[Filter]
@@ -1006,6 +1098,15 @@ class FilterManager
         }
         return Result
     }
+    
+    public static let FilterKernelMap: [FilterKernelTypes: String] =
+        [
+            .CIFilter: "Core Image",
+            .Metal: "Metal",
+            .MPS: "Metal Performance Shader",
+            .Accelerate: "Accelerate",
+            .Software: "CPU-Bound"
+    ]
     
     public static let FieldMap: [InputFields: InputTypes] =
         [
