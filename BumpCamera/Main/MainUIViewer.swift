@@ -98,6 +98,18 @@ class MainUIViewer: UIViewController,
                 print("Error creating \(FileHandler.ScratchDirectory)") 
             }
         }
+        if FileHandler.DirectoryExists(DirectoryName: FileHandler.PerformanceDirectory)
+        {
+            print("\(FileHandler.PerformanceDirectory) already exists.")
+        }
+        else
+        {
+            let ScratchURL = FileHandler.CreateDirectory(DirectoryName: FileHandler.PerformanceDirectory)
+            if ScratchURL == nil
+            {
+                print("Error creating \(FileHandler.PerformanceDirectory)")
+            }
+        }
         
         //https://stackoverflow.com/questions/34883594/cant-make-uitoolbar-black-color-with-white-button-item-tint-ios-9-swift/34885377
         MainBottomToolbar.barTintColor = UIColor.black
