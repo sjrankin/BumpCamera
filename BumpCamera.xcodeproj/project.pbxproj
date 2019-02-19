@@ -57,6 +57,7 @@
 		1726242121F8503E00C7688C /* NewFieldSettingProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1726242021F8503E00C7688C /* NewFieldSettingProtocol.swift */; };
 		1726243221F8640100C7688C /* Numeric.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1726243121F8640100C7688C /* Numeric.swift */; };
 		1726243421F8964E00C7688C /* HSBAdjust.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1726243321F8964E00C7688C /* HSBAdjust.swift */; };
+		172B87A7221BCC6100F0A508 /* ThermalEffect.swift in Sources */ = {isa = PBXBuildFile; fileRef = 172B87A6221BCC6100F0A508 /* ThermalEffect.swift */; };
 		172D98C921F9A53A005A5275 /* ChannelMixer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 172D98C821F9A53A005A5275 /* ChannelMixer.swift */; };
 		173B16A42201437B005A5B0B /* Pixellate2TableCode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 173B16A32201437B005A5B0B /* Pixellate2TableCode.swift */; };
 		173B16A622014F8B005A5B0B /* HighlightBrightness.swift in Sources */ = {isa = PBXBuildFile; fileRef = 173B16A522014F8B005A5B0B /* HighlightBrightness.swift */; };
@@ -270,6 +271,7 @@
 		1726242021F8503E00C7688C /* NewFieldSettingProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewFieldSettingProtocol.swift; sourceTree = "<group>"; };
 		1726243121F8640100C7688C /* Numeric.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Numeric.swift; sourceTree = "<group>"; };
 		1726243321F8964E00C7688C /* HSBAdjust.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HSBAdjust.swift; sourceTree = "<group>"; };
+		172B87A6221BCC6100F0A508 /* ThermalEffect.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThermalEffect.swift; sourceTree = "<group>"; };
 		172D98C821F9A53A005A5275 /* ChannelMixer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelMixer.swift; sourceTree = "<group>"; };
 		173B16A32201437B005A5B0B /* Pixellate2TableCode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Pixellate2TableCode.swift; sourceTree = "<group>"; };
 		173B16A522014F8B005A5B0B /* HighlightBrightness.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HighlightBrightness.swift; sourceTree = "<group>"; };
@@ -558,6 +560,7 @@
 				175E260D21F4A5AB00B6BF8F /* HueAdjust.swift */,
 				1726243321F8964E00C7688C /* HSBAdjust.swift */,
 				17EC44CD21F0245100197804 /* XRay.swift */,
+				172B87A6221BCC6100F0A508 /* ThermalEffect.swift */,
 				17EC44CF21F0250C00197804 /* Comic.swift */,
 				17D7512521F497DF0050A2B5 /* FilterParent.swift */,
 			);
@@ -1385,6 +1388,7 @@
 				171375F822192732000E49C2 /* BayerDecode.swift in Sources */,
 				171D627821EDF017004D3545 /* PassThrough.swift in Sources */,
 				171D626021EDB46D004D3545 /* Mixer.metal in Sources */,
+				172B87A7221BCC6100F0A508 /* ThermalEffect.swift in Sources */,
 				17FA09AE21E8A8DD00405B2D /* PixelatorKernel.swift in Sources */,
 				171375F6221926BD000E49C2 /* BayerDecodeParameters.swift in Sources */,
 				1756CDFC21FD638F00C4E638 /* RGBtoBRG.metal in Sources */,
