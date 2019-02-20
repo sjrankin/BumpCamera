@@ -77,6 +77,12 @@ protocol Renderer: class
     ///            a lot easier to use built-in APIs to save it.
     func Render(Image: CIImage) -> CIImage?
     
+    /// Generates an image. Valid only for those filter that do not support input images.
+    ///
+    /// - Returns: Generated image. If the filter supports input images, you must use Render instead and this function
+    ///            will return nil.
+    func Generate() -> CIImage?
+    
     /// Return the last image rendered with either Render(:UIImage) or Render(:CIImage).
     ///
     /// - Parameter AsUIImage: Determines the format of the returned image. If true, the image returned is a UIImage.
@@ -143,6 +149,11 @@ protocol Renderer: class
     ///   - Reset: If true, the cumulative render time is reset to 0.0 for the type of data being returned.
     /// - Returns: The number of seconds it took to render the for the type of data specified by ForImage.
     func RenderTime(ForImage: Bool, Reset: Bool) -> Double
+    
+    /// Describes the available ports for the filter.
+    ///
+    /// - Returns: Array of ports.
+    func Ports() -> [FilterPorts]
 }
 
 /// Valid targets for the various filters. A target is something the filter can reasonably process, where "reasonable" means
@@ -156,5 +167,15 @@ enum FilterTargets
     case Still
     case Video
     case LiveView
+}
+
+/// Describes the ports of a filter - whether they take input and generate output.
+///
+/// - Input: Filter takes input.
+/// - Output: Filter generates output.
+enum FilterPorts: String
+{
+    case Input = "Input"
+    case Output = "Output"
 }
 
