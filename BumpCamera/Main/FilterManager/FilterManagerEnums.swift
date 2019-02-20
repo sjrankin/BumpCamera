@@ -224,6 +224,8 @@ extension FilterManager
         case CumulativeLiveRenderDuration = 112
         case Point0 = 113
         case Point1 = 114
+        case IHeight = 115
+        case IWidth = 116
         case NoField = 10000
     }
     
