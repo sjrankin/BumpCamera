@@ -638,7 +638,7 @@ class ParameterManager
     }
     
     /// Lock for updating render accumulation values.
-    static let RenderUpdateLock = NSObject()
+    static let RenderUpdateLock0 = NSObject()
     
     /// Update rendering accumulator totals for a given filter. The rendering count is updated
     /// here as well.
@@ -649,8 +649,8 @@ class ParameterManager
     ///   - ForImage: If true, the value is for rendering an image. If false, for rendering a live view.
     public static func UpdateRenderAccumulator(NewValue: Double, ID: UUID, ForImage: Bool)
     {
-        objc_sync_enter(RenderUpdateLock)
-        defer{objc_sync_exit(RenderUpdateLock)}
+        objc_sync_enter(RenderUpdateLock0)
+        defer{objc_sync_exit(RenderUpdateLock0)}
         if !_Settings.bool(forKey: "CollectPerformanceStatistics")
         {
             return
@@ -667,6 +667,9 @@ class ParameterManager
         _Settings.set(Value, forKey: ValueName)
     }
     
+    /// Lock for updating render accumulation values.
+    static let RenderUpdateLock1 = NSObject()
+    
     /// Reset the filter render accumulation instances and durations.
     ///
     /// - Parameters:
@@ -674,8 +677,8 @@ class ParameterManager
     ///   - ForImage: If true, the image rendering statistics will be reset. If false, the live rendering statistics will be reset.
     public static func ResetRenderAccumulator(ID: UUID, ForImage: Bool)
     {
-        objc_sync_enter(RenderUpdateLock)
-        defer{objc_sync_exit(RenderUpdateLock)}
+        objc_sync_enter(RenderUpdateLock1)
+        defer{objc_sync_exit(RenderUpdateLock1)}
         if !_Settings.bool(forKey: "CollectPerformanceStatistics")
         {
             return
@@ -696,8 +699,8 @@ class ParameterManager
     /// - Returns: Tuple in the order of: render instance count, cumulative render time (in seconds).
     public static func GetRenderStatistics(ID: UUID, ForImage: Bool) -> (Int, Double)?
     {
-        objc_sync_enter(RenderUpdateLock)
-        defer{objc_sync_exit(RenderUpdateLock)}
+        objc_sync_enter(RenderUpdateLock1)
+        defer{objc_sync_exit(RenderUpdateLock1)}
         
         let CountField = ForImage ? FilterManager.InputFields.RenderImageCount : .RenderLiveCount
         let ValueField = ForImage ? FilterManager.InputFields.CumulativeImageRenderDuration : .CumulativeLiveRenderDuration
