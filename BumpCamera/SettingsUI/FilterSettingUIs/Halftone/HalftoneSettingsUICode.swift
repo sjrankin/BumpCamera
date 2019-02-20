@@ -76,14 +76,12 @@ class HalftoneSettingsUICode: FilterSettingUIBase
     {
         let SliderValue: Double = Double(AngleSlider.value / 10.0)
         AngleLabel.text = "\(SliderValue.Round(To: 1))°"
-        UpdateValue(WithValue: SliderValue, ToField: .Angle)
     }
     
     @IBAction func HandleWidthSliderChanged(_ sender: Any)
     {
         let SliderValue: Double = Double(WidthSlider.value / 20.0)
         WidthLabel.text = "\(SliderValue.Round(To: 1))"
-        UpdateValue(WithValue: SliderValue, ToField: .Width)
     }
     
     @IBAction func HandleMergeWithOriginalChanged(_ sender: Any)
