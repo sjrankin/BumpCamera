@@ -239,6 +239,21 @@ class FilterManager
         var FileName = "FilterPerformance." + DateString
         let RawData = ParameterManager.DumpRenderData()
         var Working = ""
+        let GPUName = Platform.MetalGPU()
+        let MetalDevice = Platform.MetalDeviceName()
+        let (CPUName, CPUFreq) = Platform.GetProcessorInfo()
+        let iOSVer = Platform.iOSVersion()
+        let NiceModel = Platform.NiceModelName()
+        let SysOSName = Platform.SystemOSName()
+        let SysPressure = Platform.GetSystemPressure()
+        let (UsedMem, FreeMem) = Platform.RAMSize()
+        let MetalSpace = Platform.MetalAllocatedSpace()
+        var DebugDeviceName = ""
+        var DebugIsOn = "NO"
+        #if DEBUG
+        DebugIsOn = "YES"
+        DebugDeviceName = Platform.SystemName()
+        #endif
         switch AsType
         {
         case .CSV:
@@ -255,7 +270,19 @@ class FilterManager
             
         case .XML:
             FileName = FileName + ".xml"
-            Working = "<FilterPerformance For=\"BumpCamera\" ExportedOn=\"\(DateString)\">\n"
+            Working = Working + "<FilterPerformance For=\"BumpCamera\" ExportedOn=\"\(DateString)\">\n"
+            Working = Working + "  <SystemReport DebugBuild=\"\(DebugIsOn)\">\n"
+            #if DEBUG
+            Working = Working + "    <Device Model=\"\(NiceModel)\" DeviceName=\"\(DebugDeviceName)\">\n"
+            #else
+            Working = Working + "    <Device Model=\"\(NiceModel)\">\n"
+            #endif
+            Working = Working + "    <CPU Name=\"\(CPUName)\" BaseFrequency=\"\(CPUFreq)\">\n"
+            Working = Working + "    <GPU Name=\"\(GPUName)\" Metal=\"\(MetalDevice)\">\n"
+            Working = Working + "    <Memory Used=\"\(UsedMem)\" Free=\"\(FreeMem)\" MetalAllocated=\"\(MetalSpace)\">\n"
+            Working = Working + "    <OS Name=\"\(SysOSName)\" Version=\"\(iOSVer)\">\n"
+            Working = Working + "    <Current SystemPressure=\"\(SysPressure)\">\n"
+            Working = Working + "  </SystemReport>\n"
             for (FilterType, KernelType, ImageCount, ImageTotal, LiveCount, LiveTotal) in RawData
             {
                 var OneLine = "  <Filter Name=\"\(GetFilterTitle(FilterType)!)\" KernelType=\"\(KernelType.rawValue)\">\n"
