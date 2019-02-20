@@ -203,6 +203,14 @@ class HueAdjust: FilterParent, Renderer
         return nil
     }
     
+    /// Returns the generated image. If the filter does not support generated images nil is returned.
+    ///
+    /// - Returns: Nil is always returned.
+    func Generate() -> CIImage?
+    {
+        return nil
+    }
+    
     var LastUIImage: UIImage? = nil
     var LastCIImage: CIImage? = nil
     
@@ -273,13 +281,16 @@ class HueAdjust: FilterParent, Renderer
         return false
     }
     
-    func FilterTarget() -> [FilterTargets]
+    public static func FilterTarget() -> [FilterTargets]
     {
         return [.LiveView, .Video, .Still]
     }
     
-    private var ImageRenderStart: Double = 0.0
-    private var LiveRenderStart: Double = 0.0
+    func FilterTarget() -> [FilterTargets]
+    {
+        return HueAdjust.FilterTarget()
+    }
+    
     private var ImageRenderTime: Double = 0.0
     private var LiveRenderTime: Double = 0.0
     
@@ -346,5 +357,21 @@ class HueAdjust: FilterParent, Renderer
         {
             return FilterManager.FilterKernelTypes.CIFilter
         }
+    }
+    
+    /// Describes the available ports for the filter. Static version.
+    ///
+    /// - Returns: Array of ports.
+    static func Ports() -> [FilterPorts]
+    {
+        return [FilterPorts.Input, FilterPorts.Output]
+    }
+    
+    /// Describes the available ports for the filter.
+    ///
+    /// - Returns: Array of ports.
+    func Ports() -> [FilterPorts]
+    {
+        return HueAdjust.Ports()
     }
 }

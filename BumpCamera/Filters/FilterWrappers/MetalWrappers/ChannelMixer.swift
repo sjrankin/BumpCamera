@@ -379,6 +379,14 @@ class ChannelMixer: FilterParent, Renderer
         }
     }
     
+    /// Returns the generated image. If the filter does not support generated images nil is returned.
+    ///
+    /// - Returns: Nil is always returned.
+    func Generate() -> CIImage?
+    {
+        return nil
+    }
+    
     var LastUIImage: UIImage? = nil
     var LastCIImage: CIImage? = nil
     
@@ -558,9 +566,14 @@ class ChannelMixer: FilterParent, Renderer
         return false
     }
     
-    func FilterTarget() -> [FilterTargets]
+    public static func FilterTarget() -> [FilterTargets]
     {
         return [.LiveView, .Video, .Still]
+    }
+    
+    func FilterTarget() -> [FilterTargets]
+    {
+        return ChannelMixer.FilterTarget()
     }
     
     private var ImageRenderStart: Double = 0.0
@@ -632,8 +645,36 @@ class ChannelMixer: FilterParent, Renderer
             return FilterManager.FilterKernelTypes.Metal
         }
     }
+    
+    /// Describes the available ports for the filter. Static version.
+    ///
+    /// - Returns: Array of ports.
+    static func Ports() -> [FilterPorts]
+    {
+        return [FilterPorts.Input, FilterPorts.Output]
+    }
+    
+    /// Describes the available ports for the filter.
+    ///
+    /// - Returns: Array of ports.
+    func Ports() -> [FilterPorts]
+    {
+        return ChannelMixer.Ports()
+    }
 }
 
+/// Color channel defintions.
+///
+/// - Red: Red channel.
+/// - Green: Green channel.
+/// - Blue: Blue channel.
+/// - Hue: Hue value from HSB color space.
+/// - Saturation: Saturation value from HSB color space.
+/// - Brightness: Brightness value from HSB color space.
+/// - Cyan: Cyan channel from CMYK color space.
+/// - Magenta: Magenta channel from CMYK color space.
+/// - Yellow: Yellow channel from CMYK color space.
+/// - Black: Black channel from CMYK color space.
 enum Channels: Int
 {
     case Red = 0

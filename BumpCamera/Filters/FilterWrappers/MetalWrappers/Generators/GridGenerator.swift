@@ -304,7 +304,7 @@ class GridGenerator: FilterParent, Renderer
                                  bytesPerRow: BytesPerRow!, space: RGBColorSpace, bitmapInfo: OBitmapInfo, provider: Provider!,
                                  decode: nil, shouldInterpolate: false, intent: RenderingIntent)
         LastUIImage = UIImage(cgImage: FinalImage!)
-
+        
         ImageRenderTime = CACurrentMediaTime() - Start
         ParameterManager.UpdateRenderAccumulator(NewValue: ImageRenderTime, ID: ID(), ForImage: true)
         return UIImage(cgImage: FinalImage!)
@@ -331,6 +331,14 @@ class GridGenerator: FilterParent, Renderer
             print("Error returned from Render(UIImage) in GridGenerator.Render(CIImage)")
             return nil
         }
+    }
+    
+    /// Returns the generated image. If the filter does not support generated images nil is returned.
+    ///
+    /// - Returns: Nil is always returned.
+    func Generate() -> CIImage?
+    {
+        return nil
     }
     
     var LastUIImage: UIImage? = nil
@@ -427,9 +435,14 @@ class GridGenerator: FilterParent, Renderer
         return true
     }
     
+    public static func FilterTarget() -> [FilterTargets]
+    {
+        return [.LiveView, .Video, .Still]
+    }
+    
     func FilterTarget() -> [FilterTargets]
     {
-        return [.Video, .Still, .LiveView]
+        return GridGenerator.FilterTarget()
     }
     
     private var ImageRenderTime: Double = 0.0
@@ -489,5 +502,21 @@ class GridGenerator: FilterParent, Renderer
         {
             return FilterManager.FilterKernelTypes.Metal
         }
+    }
+    
+    /// Describes the available ports for the filter. Static version.
+    ///
+    /// - Returns: Array of ports.
+    static func Ports() -> [FilterPorts]
+    {
+        return [FilterPorts.Input, FilterPorts.Output]
+    }
+    
+    /// Describes the available ports for the filter.
+    ///
+    /// - Returns: Array of ports.
+    func Ports() -> [FilterPorts]
+    {
+        return GridGenerator.Ports()
     }
 }

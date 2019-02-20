@@ -107,6 +107,7 @@ class SmoothLinearGradient: FilterParent, Renderer
     
     func Render(PixelBuffer: CVPixelBuffer) -> CVPixelBuffer?
     {
+        #if false
         objc_sync_enter(AccessLock)
         defer{objc_sync_exit(AccessLock)}
         
@@ -151,6 +152,9 @@ class SmoothLinearGradient: FilterParent, Renderer
         LiveRenderTime = CACurrentMediaTime() - Start
         ParameterManager.UpdateRenderAccumulator(NewValue: LiveRenderTime, ID: ID(), ForImage: false)
         return OutPixBuf
+        #else
+        return nil
+        #endif
     }
     
     func InitializeForImage()
@@ -159,6 +163,7 @@ class SmoothLinearGradient: FilterParent, Renderer
     
     func Render(Image: UIImage) -> UIImage?
     {
+        #if false
         if let CImage = CIImage(image: Image)
         {
             if let Result = Render(Image: CImage)
@@ -179,10 +184,14 @@ class SmoothLinearGradient: FilterParent, Renderer
             print("Error converting UIImage to CIImage.")
             return nil
         }
+        #else
+        return nil
+        #endif
     }
     
     func Render(Image: CIImage) -> CIImage?
     {
+        #if false
         objc_sync_enter(AccessLock)
         defer{objc_sync_exit(AccessLock)}
         
@@ -207,6 +216,70 @@ class SmoothLinearGradient: FilterParent, Renderer
             ParameterManager.UpdateRenderAccumulator(NewValue: ImageRenderTime, ID: ID(), ForImage: true)
             return Result
         }
+        #endif
+        return nil
+    }
+    
+    func IsNormal(_ Vector: CIVector) -> Bool
+    {
+        if Vector.x > 1.0 || Vector.x < 0.0
+        {
+            return false
+        }
+        if Vector.y > 1.0 || Vector.y < 0.0
+        {
+            return false
+        }
+        return true
+    }
+    
+    /// Returns the generated image. If the filter does not support generated images nil is returned.
+    ///
+    /// - Returns: Generated image on success, nil on failure.
+    func Generate() -> CIImage?
+    {
+        objc_sync_enter(AccessLock)
+        defer{objc_sync_exit(AccessLock)}
+        
+        let Start = CACurrentMediaTime()
+        PrimaryFilter = CIFilter(name: "CISmoothLinearGradient")
+        PrimaryFilter?.setDefaults()
+        
+        let IWidth = ParameterManager.GetInt(From: ID(), Field: .IWidth, Default: 200)
+        let IHeight = ParameterManager.GetInt(From: ID(), Field: .IHeight, Default: 200)
+        let Color0 = ParameterManager.GetColor(From: ID(), Field: .Color0, Default: UIColor.darkGray)
+        let Color1 = ParameterManager.GetColor(From: ID(), Field: .Color1, Default: UIColor.yellow)
+        var Point0 = ParameterManager.GetVector(From: ID(), Field: .Point0, Default: CIVector(x: 0, y: 0))
+        if IsNormal(Point0)
+        {
+            Point0 = CIVector(x: CGFloat(IWidth) * Point0.x, y: CGFloat(IHeight) * Point0.y)
+        }
+        var Point1 = ParameterManager.GetVector(From: ID(), Field: .Point1, Default: CIVector(x: 200, y: 200))
+        if IsNormal(Point1)
+        {
+            Point1 = CIVector(x: CGFloat(IWidth) * Point1.x, y: CGFloat(IHeight) * Point1.y)
+        }
+        
+        PrimaryFilter?.setValue(Point0, forKey: "inputPoint0")
+        PrimaryFilter?.setValue(Point1, forKey: "inputPoint1")
+        PrimaryFilter?.setValue(CIColor(cgColor: Color0.cgColor), forKey: "inputColor0")
+        PrimaryFilter?.setValue(CIColor(cgColor: Color1.cgColor), forKey: "inputColor1")
+        
+        //Need to crop the result of the linear gradient in order to set valid dimensions.
+        SecondaryFilter = CIFilter(name: "CICrop")
+        SecondaryFilter?.setDefaults()
+        let CropTo = CIVector(x: 0.0, y: 0.0, z: CGFloat(IWidth), w: CGFloat(IHeight))
+        SecondaryFilter?.setValue(CropTo, forKey: "inputRectangle")
+        SecondaryFilter?.setValue(PrimaryFilter?.outputImage, forKey: kCIInputImageKey)
+        
+        if let Result = SecondaryFilter?.outputImage
+        {
+            LastCIImage = Result
+            ImageRenderTime = CACurrentMediaTime() - Start
+            ParameterManager.UpdateRenderAccumulator(NewValue: ImageRenderTime, ID: ID(), ForImage: true)
+            return Result
+        }
+
         return nil
     }
     
@@ -253,6 +326,12 @@ class SmoothLinearGradient: FilterParent, Renderer
         case .CumulativeLiveRenderDuration:
             return (.DoubleType, 0.0 as Any?)
             
+        case .IWidth:
+            return (.IntType, 200 as Any?)
+            
+        case .IHeight:
+            return (.IntType, 200 as Any?)
+            
         default:
             fatalError("Unexpected field \(Field) encountered in DefaultFieldValue.")
         }
@@ -270,6 +349,8 @@ class SmoothLinearGradient: FilterParent, Renderer
         Fields.append(.Color1)
         Fields.append(.Point0)
         Fields.append(.Point1)
+        Fields.append(.IWidth)
+        Fields.append(.IHeight)
         Fields.append(.RenderImageCount)
         Fields.append(.CumulativeImageRenderDuration)
         Fields.append(.RenderLiveCount)
@@ -292,9 +373,14 @@ class SmoothLinearGradient: FilterParent, Renderer
         return false
     }
     
+    public static func FilterTarget() -> [FilterTargets]
+    {
+        return [.Still]
+    }
+    
     func FilterTarget() -> [FilterTargets]
     {
-        return [.LiveView, .Video, .Still]
+        return SmoothLinearGradient.FilterTarget()
     }
     
     private var ImageRenderTime: Double = 0.0
@@ -354,5 +440,21 @@ class SmoothLinearGradient: FilterParent, Renderer
         {
             return FilterManager.FilterKernelTypes.CIFilter
         }
+    }
+    
+    /// Describes the available ports for the filter. Static version.
+    ///
+    /// - Returns: Array of ports.
+    static func Ports() -> [FilterPorts]
+    {
+        return [FilterPorts.Output]
+    }
+    
+    /// Describes the available ports for the filter.
+    ///
+    /// - Returns: Array of ports.
+    func Ports() -> [FilterPorts]
+    {
+        return SmoothLinearGradient.Ports()
     }
 }

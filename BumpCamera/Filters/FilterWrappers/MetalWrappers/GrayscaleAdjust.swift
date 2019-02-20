@@ -371,6 +371,14 @@ class GrayscaleAdjust: FilterParent, Renderer
         }
     }
     
+    /// Returns the generated image. If the filter does not support generated images nil is returned.
+    ///
+    /// - Returns: Nil is always returned.
+    func Generate() -> CIImage?
+    {
+        return nil
+    }
+    
     var LastUIImage: UIImage? = nil
     var LastCIImage: CIImage? = nil
     
@@ -500,6 +508,24 @@ class GrayscaleAdjust: FilterParent, Renderer
         case .Brightness:
             return "Brightness Channel"
             
+        case .MeanCMYK:
+            return "Mean CMYK Value"
+            
+        case .MeanHSB:
+            return "Mean HSB Value"
+            
+        case .CMYK_C:
+            return "CMYK Cyan"
+            
+        case .CMYK_M:
+            return "CMYK Magenta"
+            
+        case .CMYK_Y:
+            return "CMYK Yellow"
+            
+        case .CMYK_K:
+            return "CMYK Black"
+            
         case .ByParameters:
             return "User Parameters"
         }
@@ -557,6 +583,24 @@ class GrayscaleAdjust: FilterParent, Renderer
         case .Brightness:
             return "The brightness channel from the conversion to HSB. Also known as the brightness map."
             
+        case .MeanCMYK:
+            return "The mean CMYK channel value propagated to the red, green, and blue channels."
+            
+        case .MeanHSB:
+            return "The mean HSB value propagate to the red, green, and blue channels."
+            
+        case .CMYK_C:
+            return "The cyan channel after color is converted to CMYK. Propagated to the red, green, and blue channels."
+            
+        case .CMYK_M:
+            return "The magenta channel after color is converted to CMYK. Propagated to the red, green, and blue channels."
+            
+        case .CMYK_Y:
+            return "The yellow channel after color is converted to CMYK. Propagated to the red, green, and blue channels."
+            
+        case .CMYK_K:
+            return "The black channel after color is converted to CMYK. Propagated to the red, green, and blue channels."
+            
         case .ByParameters:
             return "Enter values below to multiply against the red, green, and blue channels. Values must add up to 1.0 or no action will be taken."
         }
@@ -565,7 +609,8 @@ class GrayscaleAdjust: FilterParent, Renderer
     public static func GrayscaleTypesInOrder() -> [GrayscaleTypes]
     {
         return [.Mean, .Luma, .Desaturation, .BT601, .BT709, .MaxDecomposition, .MinDecomposition,
-                .Red, .Green, .Blue, .Cyan, .Magenta, .Yellow, .Hue, .Saturation, .Brightness, .ByParameters]
+                .Red, .Green, .Blue, .Cyan, .Magenta, .Yellow, .CMYK_C, .CMYK_M, .CMYK_Y, .CMYK_K,
+                .Hue, .Saturation, .Brightness, .MeanCMYK, .MeanHSB, .ByParameters]
     }
     
     public static func GetGrayscaleTypeFromCommandIndex(_ Index: Int) -> GrayscaleTypes
@@ -578,9 +623,14 @@ class GrayscaleAdjust: FilterParent, Renderer
         return false
     }
     
-    func FilterTarget() -> [FilterTargets]
+    public static func FilterTarget() -> [FilterTargets]
     {
         return [.LiveView, .Video, .Still]
+    }
+    
+    func FilterTarget() -> [FilterTargets]
+    {
+        return GrayscaleAdjust.FilterTarget()
     }
     
     private var ImageRenderStart: Double = 0.0
@@ -652,8 +702,49 @@ class GrayscaleAdjust: FilterParent, Renderer
             return FilterManager.FilterKernelTypes.Metal
         }
     }
+    
+    /// Describes the available ports for the filter. Static version.
+    ///
+    /// - Returns: Array of ports.
+    static func Ports() -> [FilterPorts]
+    {
+        return [FilterPorts.Input, FilterPorts.Output]
+    }
+    
+    /// Describes the available ports for the filter.
+    ///
+    /// - Returns: Array of ports.
+    func Ports() -> [FilterPorts]
+    {
+        return GrayscaleAdjust.Ports()
+    }
 }
 
+/// Types of grayscale conversions supported by this filter.
+///
+/// - Mean: Takes the mean of the RGB channels.
+/// - Red: Propagates the red channel to the green and blue channels.
+/// - Green: Propagates the green channel to the red and blue channels.
+/// - Blue: Propagates the blue channel to the red and green channels.
+/// - Luma: Luminance of the color.
+/// - BT601: BT601 standard.
+/// - BT709: BT709 standard.
+/// - Desaturation: Desaturates the color to 0 saturation.
+/// - MaxDecomposition: Maximum of the RGB channels propagated to the other channels.
+/// - MinDecomposition: Minimum of the RGB channels propagated to the other channels.
+/// - Cyan: Propagates the cyan channel to the red, green, and blue channels.
+/// - Magenta: Propagates the magenta channel to the red, green, and blue channels.
+/// - Yellow: Propagates the yellow channel to the red, green, and blue channels.
+/// - Hue: Propagates the color's hue value to the red, green, and blue channels.
+/// - Saturation: Propagates the saturation value to the red, green, and blue channels.
+/// - Brightness: Propagates the brightness value to the red, geen, and blue channels.
+/// - MeanCMYK: Propagates the mean of the CMYK channels to the red, green, and blue channels.
+/// - MeanHSB: Propagates the mean of the HSB values to the red, green, and blue channels.
+/// - CMYK_C: Cyan channel after conversion to CMYK colorspace.
+/// - CMYK_M: Magenta channel after conversion to CMYK colorspace.
+/// - CMYK_Y: Yellow channel after conversion to CMYK colorspace.
+/// - CMYK_K: Black channel after conversion to CMYK colorspace.
+/// - ByParameters: Use user parameters to as multiplicative value against the red, green, and blue chanels.
 enum GrayscaleTypes: Int
 {
     case Mean = 0
@@ -672,5 +763,11 @@ enum GrayscaleTypes: Int
     case Hue = 13
     case Saturation = 14
     case Brightness = 15
+    case MeanCMYK = 16
+    case MeanHSB = 17
+    case CMYK_C = 18
+    case CMYK_M = 19
+    case CMYK_Y = 20
+    case CMYK_K = 21
     case ByParameters = 100
 }
