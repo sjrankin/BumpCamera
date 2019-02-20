@@ -34,11 +34,11 @@ class FilterSettingUIBase: UITableViewController, UIImagePickerControllerDelegat
         let Start = CACurrentMediaTime()
         
         /*
-        NotificationCenter.default.addObserver(self, selector: #selector(DefaultsChanged),
-                                               name: UserDefaults.didChangeNotification,
-                                               object: nil)
-*/
- 
+         NotificationCenter.default.addObserver(self, selector: #selector(DefaultsChanged),
+         name: UserDefaults.didChangeNotification,
+         object: nil)
+         */
+        
         SampleView = UIImageView(image: UIImage(named: "Norio"))
         SampleView.contentMode = .scaleAspectFit
         ShowingSample = _Settings.bool(forKey: "ShowFilterSampleImages")
@@ -219,36 +219,52 @@ class FilterSettingUIBase: UITableViewController, UIImagePickerControllerDelegat
         
         SampleView.image = nil
         var SampleImage: UIImage!
-        if let ImageName = _Settings.string(forKey: "SampleImage")
+        var FinalImage: UIImage?
+        if (SampleFilter?.Ports().contains(.Input))!
         {
-            if ImageName == "custom image"
+            if let ImageName = _Settings.string(forKey: "SampleImage")
             {
-                //print("Looking for custom image.")
-                if let UserSample = FileHandler.GetSampleImage()
+                if ImageName == "custom image"
                 {
-                    SampleImage = UserSample
-                    //print("Found custom image.")
+                    //print("Looking for custom image.")
+                    if let UserSample = FileHandler.GetSampleImage()
+                    {
+                        SampleImage = UserSample
+                        //print("Found custom image.")
+                    }
+                    else
+                    {
+                        SampleImage = UIImage(named: "Norio")
+                        _Settings.set("Norio", forKey: "SampleImage")
+                    }
                 }
                 else
                 {
-                    SampleImage = UIImage(named: "Norio")
-                    _Settings.set("Norio", forKey: "SampleImage")
+                    print("Loading sample image \(ImageName)")
+                    SampleImage = UIImage(named: ImageName)
                 }
             }
             else
             {
-                print("Loading sample image \(ImageName)")
-                SampleImage = UIImage(named: ImageName)
+                print("Sample image name invalid - loading default Norio image.")
+                SampleImage = UIImage(named: "Norio")
+                _Settings.set("Norio", forKey: "SampleImage")
             }
+            FinalImage = SampleFilter?.Render(Image: SampleImage)
         }
         else
         {
-            print("Sample image name invalid - loading default Norio image.")
-            SampleImage = UIImage(named: "Norio")
-            _Settings.set("Norio", forKey: "SampleImage")
+            if let CiImage = SampleFilter?.Generate()
+            {
+                FinalImage = UIImage(ciImage: CiImage)
+            }
+            else
+            {
+                print("Error converting generated image from CIImage to UIImage.")
+                return
+            }
         }
-        let FinalImage = SampleFilter?.Render(Image: SampleImage)
-        SampleView.image = FinalImage
+        SampleView.image = FinalImage!
         LastSampleImage = FinalImage
         #if false
         SizeHeaderToFit()
