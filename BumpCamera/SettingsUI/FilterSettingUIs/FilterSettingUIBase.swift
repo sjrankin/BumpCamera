@@ -33,12 +33,6 @@ class FilterSettingUIBase: UITableViewController, UIImagePickerControllerDelegat
         print("\(FilterType) start at \(CACurrentMediaTime())")
         let Start = CACurrentMediaTime()
         
-        /*
-         NotificationCenter.default.addObserver(self, selector: #selector(DefaultsChanged),
-         name: UserDefaults.didChangeNotification,
-         object: nil)
-         */
-        
         SampleView = UIImageView(image: UIImage(named: "Norio"))
         SampleView.contentMode = .scaleAspectFit
         ShowingSample = _Settings.bool(forKey: "ShowFilterSampleImages")
@@ -52,6 +46,14 @@ class FilterSettingUIBase: UITableViewController, UIImagePickerControllerDelegat
         FilterID = FilterManager.FilterInfoMap[Filter]!.0
         SampleFilter = Filters.CreateFilter(For: Filter)
         SampleFilter?.InitializeForImage()
+        if !(SampleFilter?.Ports().contains(.Input))!
+        {
+            //User can't change sample images if the filter doesn't accept input.
+            ShowingSample = false
+            SampleView.backgroundColor = UIColor.black
+            SampleView.image = nil
+            SampleView.isUserInteractionEnabled = false
+        }
         if ShowingSample
         {
             ImagePicker = UIImagePickerController()
@@ -73,9 +75,6 @@ class FilterSettingUIBase: UITableViewController, UIImagePickerControllerDelegat
                 RightSwipe.direction = UISwipeGestureRecognizer.Direction.right
                 SampleView.addGestureRecognizer(RightSwipe)
             }
-            #endif
-            #if false
-            AddSampleView()
             #endif
             ShowSampleView()
         }
@@ -140,9 +139,11 @@ class FilterSettingUIBase: UITableViewController, UIImagePickerControllerDelegat
     
     override func viewWillAppear(_ animated: Bool)
     {
+        #if false
         NotificationCenter.default.addObserver(self, selector: #selector(DefaultsChanged),
                                                name: UserDefaults.didChangeNotification,
                                                object: nil)
+        #endif
         if ShowingSample
         {
             if DoEnableSelect
@@ -164,10 +165,13 @@ class FilterSettingUIBase: UITableViewController, UIImagePickerControllerDelegat
     /// - Parameter animated: Passed unchanged to super.viewWillDisappear.
     override func viewWillDisappear(_ animated: Bool)
     {
+        #if false
         NotificationCenter.default.removeObserver(self, name: UserDefaults.didChangeNotification, object: nil)
+        #endif
         super.viewWillDisappear(animated)
     }
     
+    #if false
     /// Handle changes in the settings. Specifically, we look for changes to "SampleImage" and update the sample
     /// image as appropriate. Selecting the same image twice in a row results in no action taken.
     ///
@@ -182,6 +186,7 @@ class FilterSettingUIBase: UITableViewController, UIImagePickerControllerDelegat
             }
         }
     }
+    #endif
     
     #if false
     func AddSampleView()
@@ -222,6 +227,7 @@ class FilterSettingUIBase: UITableViewController, UIImagePickerControllerDelegat
         var FinalImage: UIImage?
         if (SampleFilter?.Ports().contains(.Input))!
         {
+            //The filter can take input images - we'll use the standard sample images.
             if let ImageName = _Settings.string(forKey: "SampleImage")
             {
                 if ImageName == "custom image"
@@ -254,8 +260,11 @@ class FilterSettingUIBase: UITableViewController, UIImagePickerControllerDelegat
         }
         else
         {
+            //The filter cannot take input images - we'll just call generated on the filter every time the
+            //descendent class shows the sample view.
             if let CiImage = SampleFilter?.Generate()
             {
+                LastGeneratedImage = CiImage
                 FinalImage = UIImage(ciImage: CiImage)
             }
             else
@@ -270,6 +279,8 @@ class FilterSettingUIBase: UITableViewController, UIImagePickerControllerDelegat
         SizeHeaderToFit()
         #endif
     }
+    
+    var LastGeneratedImage: CIImage!
     
     var CustomizedImageAvailable: Bool
     {
