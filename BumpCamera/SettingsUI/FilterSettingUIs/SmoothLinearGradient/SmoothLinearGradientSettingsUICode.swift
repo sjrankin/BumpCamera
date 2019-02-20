@@ -32,7 +32,7 @@ class SmoothLinearGradientSettingsUICode: FilterSettingUIBase, ColorPickerProtoc
                                 for: [.touchUpInside, .touchUpOutside])
         
         let Color0 = ParameterManager.GetColor(From: FilterID, Field: .Color0, Default: UIColor.black)
-        let Color1 = ParameterManager.GetColor(From: FilterID, Field: .Color0, Default: UIColor.white)
+        let Color1 = ParameterManager.GetColor(From: FilterID, Field: .Color1, Default: UIColor.white)
         Color0Sample.layer.borderColor = UIColor.black.cgColor
         Color0Sample.layer.borderWidth = 0.5
         Color0Sample.layer.cornerRadius = 5.0
@@ -45,12 +45,37 @@ class SmoothLinearGradientSettingsUICode: FilterSettingUIBase, ColorPickerProtoc
         Color1XSlider.value = Float(V0.x * 1000.0)
         Color1YSlider.value = Float(V0.y * 1000.0)
         Color1XValue.text = "\(V0.x.Round(To: 3))"
-                Color1YValue.text = "\(V0.y.Round(To: 3))"
+        Color1YValue.text = "\(V0.y.Round(To: 3))"
         let V1 = ParameterManager.GetVector(From: FilterID, Field: .Point1, Default: CIVector(x: 0, y: 0))
         Color2XSlider.value = Float(V1.x * 1000.0)
         Color2YSlider.value = Float(V1.y * 1000.0)
         Color2XValue.text = "\(V1.x.Round(To: 3))"
         Color2YValue.text = "\(V1.y.Round(To: 3))"
+        let ImageWidth = ParameterManager.GetInt(From: FilterID, Field: .IWidth, Default: 1024)
+        let ImageHeight = ParameterManager.GetInt(From: FilterID, Field: .IHeight, Default: 1024)
+        let WidthSegment = IndexOfClosestTo(ImageWidth, [256, 512, 1024, 2048, 4096])
+        let HeightSegment = IndexOfClosestTo(ImageHeight, [256, 512, 1024, 2048, 4096])
+        WidthSegments.selectedSegmentIndex = WidthSegment
+        HeightSegments.selectedSegmentIndex = HeightSegment
+    }
+    
+    func IndexOfClosestTo(_ Find: Int, _ List: [Int]) -> Int
+    {
+        var Delta = Int.max
+        var ClosestIndex = 0
+        
+        var Index = 0
+        for Value in List
+        {
+            let LoopDelta = abs(Value - Find)
+            if LoopDelta < Delta
+            {
+                Delta = LoopDelta
+                ClosestIndex = Index
+            }
+            Index = Index + 1
+        }
+        return ClosestIndex
     }
     
     /// Not implemented or used in this class.
@@ -181,6 +206,24 @@ class SmoothLinearGradientSettingsUICode: FilterSettingUIBase, ColorPickerProtoc
         Color2XValue.text = "\(SliderValue.Round(To: 3))"
     }
     
+    @IBAction func HandleHeightChanged(_ sender: Any)
+    {
+        let HeightIndex = HeightSegments.selectedSegmentIndex
+        let ImageHeight: Int = Int((pow(Double(2), Double(8 + HeightIndex))))
+        UpdateValue(WithValue: ImageHeight, ToField: .IHeight)
+        ShowSampleView()
+    }
+    
+    @IBAction func HandleWidthChanged(_ sender: Any)
+    {
+        let HeightIndex = HeightSegments.selectedSegmentIndex
+        let ImageHeight: Int = Int((pow(Double(2), Double(8 + HeightIndex))))
+        UpdateValue(WithValue: ImageHeight, ToField: .IHeight)
+        ShowSampleView()
+    }
+    
+    @IBOutlet weak var HeightSegments: UISegmentedControl!
+    @IBOutlet weak var WidthSegments: UISegmentedControl!
     @IBOutlet weak var Color0Sample: UIView!
     @IBOutlet weak var Color1Sample: UIView!
     @IBOutlet weak var Color1XSlider: UISlider!
