@@ -17,10 +17,12 @@ class GroupNodeManager
     /// - Parameters:
     ///   - InitialGroup: The initially-selected filter group.
     ///   - InitialFilter: The initially-selected filter.
-    init(InitialGroup: FilterManager.FilterGroups, InitialFilter: FilterManager.FilterTypes)
+    ///   - ForTargets: The list of filter targets each filter must support.
+    init(InitialGroup: FilterManager.FilterGroups, InitialFilter: FilterManager.FilterTypes,
+         ForTargets: [FilterTargets] = [.LiveView, .Video, .Still])
     {
         Groups = [GroupNode]()
-        LoadGroups(InitialGroup, InitialFilter)
+        LoadGroups(InitialGroup, InitialFilter, ForTargets)
     }
     
     /// Create the list of groups and populate them with their respective filters.
@@ -28,7 +30,9 @@ class GroupNodeManager
     /// - Parameters:
     ///   - InitialGroup: The initially-selected filter group.
     ///   - InitialFilter: The initially-selected filter.
-    func LoadGroups(_ InitialGroup: FilterManager.FilterGroups, _ InitialFilter: FilterManager.FilterTypes)
+    ///   - Targets: List of filter targets each filter must support.
+    func LoadGroups(_ InitialGroup: FilterManager.FilterGroups, _ InitialFilter: FilterManager.FilterTypes,
+                    _ Targets: [FilterTargets] = [.LiveView, .Video, .Still])
     {
         let GroupData = FilterManager.GetGroupNames()
         var Index = 0
@@ -42,7 +46,7 @@ class GroupNodeManager
             Node.ID = FilterManager.GetGroupID(ForGroup: GroupType)!
             Node.IsSelected = GroupType == InitialGroup
             Node.Color = FilterManager.ColorForGroup(GroupType)
-            Node.GroupFilters = LoadFilters(Parent: Node, FromGroup: GroupType, InitialFilter: InitialFilter)
+            Node.GroupFilters = LoadFilters(Parent: Node, FromGroup: GroupType, InitialFilter: InitialFilter, Targets)
             Node.GroupFilters!.sort{$0.SortOrder < $1.SortOrder}
             Groups?.append(Node)
             Index = Index + 1
@@ -58,16 +62,21 @@ class GroupNodeManager
     ///   - FromGroup: The type of group whose filters will be loaded.
     ///   - InitialFilter: The initially-selected filter.
     ///   - LoadOnlyImplmemented: If true, only implemented filters will be loaded.
+    ///   - Targets: List of filter targets the filter must support before it is included.
     /// - Returns: List of filter nodes for the specified group. If no filters were available for
     ///            the specified group, the list will be empty.
     func LoadFilters(Parent: GroupNode, FromGroup: FilterManager.FilterGroups, InitialFilter: FilterManager.FilterTypes,
-                     LoadOnlyImplmemented: Bool = true) -> [FilterNode]
+                     LoadOnlyImplmemented: Bool = true, _ Targets: [FilterTargets] = [.LiveView, .Video, .Still]) -> [FilterNode]
     {
         var FilterData = [FilterNode]()
         let FilterList = FilterManager.FiltersForGroup(FromGroup, InOrder: true)
         var Index = 0
         for FilterType in FilterList
         {
+            if !FilterManager.FilterSupportsTargets(Targets: Targets, ForFilter: FilterType)
+            {
+                continue
+            }
             if LoadOnlyImplmemented && !FilterManager.IsImplemented(FilterType)
             {
                 continue
@@ -360,3 +369,4 @@ class GroupNodeManager
         return (CurrentGroup(), CurrentFilter())
     }
 }
+
