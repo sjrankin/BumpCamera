@@ -89,7 +89,6 @@
 		174779FE220433CB00FD64EF /* CollapsibleTableViewHeaderDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 174779FD220433CB00FD64EF /* CollapsibleTableViewHeaderDelegate.swift */; };
 		17477A0022048C6600FD64EF /* FilterSectionData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 174779FF22048C6600FD64EF /* FilterSectionData.swift */; };
 		17477A0322049B1500FD64EF /* GrayscaleSettingsUI.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 17477A0222049B1500FD64EF /* GrayscaleSettingsUI.storyboard */; };
-		174B568A221AEBDA0059806E /* FilterPerformanceCode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 174B5689221AEBDA0059806E /* FilterPerformanceCode.swift */; };
 		174D6D5B220803E70066AE93 /* GroupNodeManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 174D6D5A220803E70066AE93 /* GroupNodeManager.swift */; };
 		174D6D5D220804000066AE93 /* GroupNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 174D6D5C220804000066AE93 /* GroupNode.swift */; };
 		174D6D5F220804AC0066AE93 /* FilterNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 174D6D5E220804AC0066AE93 /* FilterNode.swift */; };
@@ -112,6 +111,7 @@
 		1756F1192204A37100CC655D /* GrayscaleSettingsUICode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1756F1182204A37100CC655D /* GrayscaleSettingsUICode.swift */; };
 		175E260E21F4A5AB00B6BF8F /* HueAdjust.swift in Sources */ = {isa = PBXBuildFile; fileRef = 175E260D21F4A5AB00B6BF8F /* HueAdjust.swift */; };
 		1764FA8A21F1E6F90059FAFD /* FilterSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1764FA8921F1E6F90059FAFD /* FilterSettings.swift */; };
+		176D6829221D921C00BA6267 /* FilterPerformanceCode2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 176D6828221D921C00BA6267 /* FilterPerformanceCode2.swift */; };
 		17787F022202C43900D15761 /* HSBFilterSettingsUI.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 17787F012202C43900D15761 /* HSBFilterSettingsUI.storyboard */; };
 		17787F042202C6AE00D15761 /* HSBFilterSettingsUICode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17787F032202C6AE00D15761 /* HSBFilterSettingsUICode.swift */; };
 		17787F072202DC2A00D15761 /* ChannelMixerSettingsUI.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 17787F062202DC2A00D15761 /* ChannelMixerSettingsUI.storyboard */; };
@@ -309,7 +309,6 @@
 		174779FD220433CB00FD64EF /* CollapsibleTableViewHeaderDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollapsibleTableViewHeaderDelegate.swift; sourceTree = "<group>"; };
 		174779FF22048C6600FD64EF /* FilterSectionData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterSectionData.swift; sourceTree = "<group>"; };
 		17477A0222049B1500FD64EF /* GrayscaleSettingsUI.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = GrayscaleSettingsUI.storyboard; sourceTree = "<group>"; };
-		174B5689221AEBDA0059806E /* FilterPerformanceCode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterPerformanceCode.swift; sourceTree = "<group>"; };
 		174D6D5A220803E70066AE93 /* GroupNodeManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupNodeManager.swift; sourceTree = "<group>"; };
 		174D6D5C220804000066AE93 /* GroupNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupNode.swift; sourceTree = "<group>"; };
 		174D6D5E220804AC0066AE93 /* FilterNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterNode.swift; sourceTree = "<group>"; };
@@ -332,6 +331,7 @@
 		1756F1182204A37100CC655D /* GrayscaleSettingsUICode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrayscaleSettingsUICode.swift; sourceTree = "<group>"; };
 		175E260D21F4A5AB00B6BF8F /* HueAdjust.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HueAdjust.swift; sourceTree = "<group>"; };
 		1764FA8921F1E6F90059FAFD /* FilterSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterSettings.swift; sourceTree = "<group>"; };
+		176D6828221D921C00BA6267 /* FilterPerformanceCode2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterPerformanceCode2.swift; sourceTree = "<group>"; };
 		17787F012202C43900D15761 /* HSBFilterSettingsUI.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = HSBFilterSettingsUI.storyboard; sourceTree = "<group>"; };
 		17787F032202C6AE00D15761 /* HSBFilterSettingsUICode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HSBFilterSettingsUICode.swift; sourceTree = "<group>"; };
 		17787F062202DC2A00D15761 /* ChannelMixerSettingsUI.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = ChannelMixerSettingsUI.storyboard; sourceTree = "<group>"; };
@@ -1034,7 +1034,7 @@
 			isa = PBXGroup;
 			children = (
 				173B16A722015766005A5B0B /* About.storyboard */,
-				174B5689221AEBDA0059806E /* FilterPerformanceCode.swift */,
+				176D6828221D921C00BA6267 /* FilterPerformanceCode2.swift */,
 				170BFE72221BEFCF00754BF6 /* AboutCode.swift */,
 				17CDB9B522166B1700C708F5 /* SystemReport.swift */,
 				17CDB9B922168CB500C708F5 /* LicensingInformation.swift */,
@@ -1349,6 +1349,7 @@
 				17A409D72201E941003D4EC6 /* FilterSettingUIBase.swift in Sources */,
 				174D6D5D220804000066AE93 /* GroupNode.swift in Sources */,
 				174779FC2204338600FD64EF /* CollapsibleHeader.swift in Sources */,
+				176D6829221D921C00BA6267 /* FilterPerformanceCode2.swift in Sources */,
 				17CDB9B622166B1700C708F5 /* SystemReport.swift in Sources */,
 				178C75BC21F3247E00844FFF /* LiveMetalViewExtension.swift in Sources */,
 				1756CE0821FD737100C4E638 /* RGBtoSHB.metal in Sources */,
@@ -1496,7 +1497,6 @@
 				1740CEC82216B2FE00BFD1A0 /* Platform.swift in Sources */,
 				171F3D0D220AD3450098E2B7 /* Threshold.swift in Sources */,
 				17B2ED8421F1A5CF00E3B56A /* MainSettings.swift in Sources */,
-				174B568A221AEBDA0059806E /* FilterPerformanceCode.swift in Sources */,
 				1726243421F8964E00C7688C /* HSBAdjust.swift in Sources */,
 				17020ED921FDD25D006DE7ED /* GrayscaleKernel.metal in Sources */,
 				1756CE0C21FD73D200C4E638 /* RGBtoBHS.metal in Sources */,
