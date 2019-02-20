@@ -100,6 +100,89 @@ class FilterManager
             .SmoothLinearGradient: (SmoothLinearGradient.ID(), SmoothLinearGradient.FilterKernel, SmoothLinearGradient.Title()),
             ]
     
+    /// Determines if the specified filter supports the specified target type. Not all filters support all targets - slow
+    /// filters most likely do not support live views, and generates generally don't support live or video targets.
+    ///
+    /// - Parameters:
+    ///   - FilterType: The type of filter to query.
+    ///   - Target: The target type to determine support for.
+    /// - Returns: True if the specified filter supports the specified target type, false if not. Nil if invalid
+    ///            filter specified.
+    public static func FilterSupportsTarget(FilterType: FilterTypes, Target: FilterTargets) -> Bool?
+    {
+        if FilterTargetMap[FilterType] == nil
+        {
+            return nil
+        }
+        return FilterTargetMap[FilterType]?.contains(Target)
+    }
+    
+    /// Determines if the specified filter contains all of the filter targets in Targets. Order is irrelevent.
+    ///
+    /// - Parameters:
+    ///   - Targets: List of filter targets to compare to the specified filter.
+    ///   - ForFilter: The filter to check.
+    /// - Returns: True if the specified filter has all of the targets (order independent) as in Targets, false if not.
+    public static func FilterSupportsTargets(Targets: [FilterTargets], ForFilter: FilterTypes) -> Bool
+    {
+        if FilterTargetMap[ForFilter] == nil
+        {
+            return false
+        }
+        let StaticTargets = FilterTargetMap[ForFilter]
+        for Target in Targets
+        {
+            if !(StaticTargets?.contains(Target))!
+            {
+                return false
+            }
+        }
+        return true
+    }
+    
+    /// Map from filter types to filter targets supported.
+    public static let FilterTargetMap: [FilterTypes: [FilterTargets]] =
+        [
+            .Noir: Noir.FilterTarget(),
+            .LineScreen: LineScreen.FilterTarget(),
+            .CircularScreen: CircularScreen.FilterTarget(),
+            .DotScreen: DotScreen.FilterTarget(),
+            .HatchScreen: HatchScreen.FilterTarget(),
+            .Pixellate: Pixellate.FilterTarget(),
+            .CircleAndLines: CircleAndLines.FilterTarget(),
+            .CMYKHalftone: CMYKHalftone.FilterTarget(),
+            .PassThrough: PassThrough.FilterTarget(),
+            .Comic: Comic.FilterTarget(),
+            .XRay: XRay.FilterTarget(),
+            .LineOverlay: LineOverlay.FilterTarget(),
+            .HueAdjust: HueAdjust.FilterTarget(),
+            .HSBAdjust: HSBAdjust.FilterTarget(),
+            .ChannelMixer: ChannelMixer.FilterTarget(),
+            .DesaturateColors: DesaturateColors.FilterTarget(),
+            .GrayscaleKernel: GrayscaleAdjust.FilterTarget(),
+            .Kuwahara: KuwaharaEffect.FilterTarget(),
+            .PixellateMetal: Pixellate_Metal.FilterTarget(),
+            .Mirroring: MirroringDistortion.FilterTarget(),
+            .Grid: GridGenerator.FilterTarget(),
+            .Solarize: Solarize.FilterTarget(),
+            .Threshold: Threshold.FilterTarget(),
+            .Dither: Dithering.FilterTarget(),
+            .MonochromeColor: MonochromeColors.FilterTarget(),
+            .EdgeWork: EdgeWork.FilterTarget(),
+            .FalseColor: FalseColor.FilterTarget(),
+            .CornerGradient: CornerGradient.FilterTarget(),
+            .DilateErode: DilateErode.FilterTarget(),
+            .Posterize: Posterize.FilterTarget(),
+            .Chrome: Chrome.FilterTarget(),
+            .Instant: Instant.FilterTarget(),
+            .ProcessEffect: ProcessEffect.FilterTarget(),
+            .TransferEffect: TransferEffect.FilterTarget(),
+            .SepiaTone: SepiaTone.FilterTarget(),
+            .BayerDecode: BayerDecode.FilterTarget(),
+            .Thermal: ThermalEffect.FilterTarget(),
+            .SmoothLinearGradient: SmoothLinearGradient.FilterTarget(),
+            ]
+    
     /// Load all of the filter classes into the filter manager.
     private func PreloadFilters()
     {
@@ -1233,6 +1316,8 @@ class FilterManager
             .CumulativeLiveRenderDuration: .DoubleType,
             .Point0: .PointType,
             .Point1: .PointType,
+            .IWidth: .IntType,
+            .IHeight: .IntType,
             ]
     
     public static let FieldStorageMap: [InputFields: String] =
@@ -1352,6 +1437,8 @@ class FilterManager
             .CumulativeLiveRenderDuration: "_CumulativeLiveRenderDuration",
             .Point0: "_Point0",
             .Point1: "_Point1",
+            .IWidth: "_Width",
+            .IHeight: "_Height",
             ]
 }
 
