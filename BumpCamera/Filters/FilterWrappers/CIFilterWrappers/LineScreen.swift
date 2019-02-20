@@ -112,6 +112,7 @@ class LineScreen: FilterParent, Renderer
     {
         objc_sync_enter(AccessLock)
         defer{objc_sync_exit(AccessLock)}
+        
         guard let PrimaryFilter = PrimaryFilter,
             let Context = Context,
             Initialized else
@@ -180,6 +181,9 @@ class LineScreen: FilterParent, Renderer
     
     func Render(Image: UIImage) -> UIImage?
     {
+        objc_sync_enter(AccessLock)
+        defer{objc_sync_exit(AccessLock)}
+        
         if let CImage = CIImage(image: Image)
         {
             if let Result = Render(Image: CImage)
