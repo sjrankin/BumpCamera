@@ -46,7 +46,7 @@ extension MainUIViewer
             }
             _Settings.set(IDS, forKey: "CurrentFilter")
         }
-        GroupData = GroupNodeManager(InitialGroup: InitialGroup, InitialFilter: InitialFilter)
+        GroupData = GroupNodeManager(InitialGroup: InitialGroup, InitialFilter: InitialFilter, ForTargets: [.LiveView])
     }
     
     /// Update the visibility of the filter selection UI. This is essentially a toggle function.
