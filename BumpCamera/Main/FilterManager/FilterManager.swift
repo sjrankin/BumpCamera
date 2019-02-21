@@ -46,8 +46,8 @@ class FilterManager
                         (.LineOverlay, 9), (.EdgeWork, 10), (.Posterize, 13)],
             .Combined: [(.CircleAndLines, 0)],
             .Effects: [(.PixellateMetal, 0), (.DilateErode, 1), (.Kuwahara, 2), (.BayerDecode, 3)],
-            .PhotoEffects: [(.Noir, 0), (.Chrome, 1), (.XRay, 2), (.Instant, 2), (.ProcessEffect, 3),
-                            (.TransferEffect, 4), (.SepiaTone, 5), (.Thermal, 6)],
+            .PhotoEffects: [(.Noir, 0), (.Chrome, 1), (.Vibrance, 2), (.XRay, 3), (.Instant, 4), (.ProcessEffect, 5),
+                            (.TransferEffect, 6), (.SepiaTone, 7), (.Thermal, 8), (.TemperatureAndTint, 9)],
             .Colors: [(.HueAdjust, 0), (.HSBAdjust, 1), (.Solarize, 2), (.ChannelMixer, 3),
                       (.DesaturateColors, 4), (.Threshold, 5), (.MonochromeColor, 6), (.FalseColor, 7),
                       (.PaletteShifting, 8)],
@@ -98,6 +98,8 @@ class FilterManager
             .BayerDecode: (BayerDecode.ID(), BayerDecode.FilterKernel, BayerDecode.Title()),
             .Thermal: (ThermalEffect.ID(), ThermalEffect.FilterKernel, ThermalEffect.Title()),
             .SmoothLinearGradient: (SmoothLinearGradient.ID(), SmoothLinearGradient.FilterKernel, SmoothLinearGradient.Title()),
+            .TemperatureAndTint: (TemperatureAndTint.ID(), TemperatureAndTint.FilterKernel, TemperatureAndTint.Title()),
+            .Vibrance: (Vibrance.ID(), Vibrance.FilterKernel, Vibrance.Title()),
             ]
     
     /// Determines if the specified filter supports the specified target type. Not all filters support all targets - slow
@@ -181,6 +183,8 @@ class FilterManager
             .BayerDecode: BayerDecode.FilterTarget(),
             .Thermal: ThermalEffect.FilterTarget(),
             .SmoothLinearGradient: SmoothLinearGradient.FilterTarget(),
+            .TemperatureAndTint: TemperatureAndTint.FilterTarget(),
+            .Vibrance: Vibrance.FilterTarget(),
             ]
     
     /// Load all of the filter classes into the filter manager.
@@ -226,109 +230,6 @@ class FilterManager
             ParameterManager.ResetRenderAccumulator(ID: Info.0, ForImage: true)
             ParameterManager.ResetRenderAccumulator(ID: Info.0, ForImage: false)
         }
-    }
-    
-    /// Export filter performance statistics to a file. The file is saved off the top-level BumpCamera directory in
-    /// /PerformanceData.
-    ///
-    /// - Parameter AsType: Determines the format of the exported file.
-    /// - Returns: Tuple with the success flag and file name used.
-    public static func ExportPerformanceStatistics(AsType: ExportDataTypes) -> (Bool, String)
-    {
-        let DateString = Utility.MakeTimeStamp(FromDate: Date(), TimeSeparator: ".")
-        var FileName = "FilterPerformance." + DateString
-        let RawData = ParameterManager.DumpRenderData()
-        var Working = ""
-        let GPUName = Platform.MetalGPU()
-        let MetalDevice = Platform.MetalDeviceName()
-        let (CPUName, CPUFreq) = Platform.GetProcessorInfo()
-        let iOSVer = Platform.iOSVersion()
-        let NiceModel = Platform.NiceModelName()
-        let SysOSName = Platform.SystemOSName()
-        let SysPressure = Platform.GetSystemPressure()
-        let (UsedMem, FreeMem) = Platform.RAMSize()
-        let MetalSpace = Platform.MetalAllocatedSpace()
-        var DebugDeviceName = ""
-        var DebugIsOn = "NO"
-        #if DEBUG
-        DebugIsOn = "YES"
-        DebugDeviceName = Platform.SystemName()
-        #endif
-        switch AsType
-        {
-        case .CSV:
-            FileName = FileName + ".csv"
-            Working = "BumpCamera Filter Performance,\(DateString),,,,\n"
-            Working = Working + "Filter Type,Filter Name,Image Count,Image Total,Live Count,LiveTotal\n"
-            for (FilterType, KernelType, ImageCount, ImageTotal, LiveCount, LiveTotal) in RawData
-            {
-                var OneLine = KernelType.rawValue + "," + GetFilterTitle(FilterType)! + ","
-                OneLine = OneLine + "\(ImageCount),\(ImageTotal),\(LiveCount),\(LiveTotal)\n"
-                Working = Working + OneLine
-            }
-            break;
-            
-        case .XML:
-            FileName = FileName + ".xml"
-            Working = Working + "<FilterPerformance For=\"BumpCamera\" ExportedOn=\"\(DateString)\">\n"
-            Working = Working + "  <SystemReport DebugBuild=\"\(DebugIsOn)\">\n"
-            #if DEBUG
-            Working = Working + "    <Device Model=\"\(NiceModel)\" DeviceName=\"\(DebugDeviceName)\">\n"
-            #else
-            Working = Working + "    <Device Model=\"\(NiceModel)\">\n"
-            #endif
-            Working = Working + "    <CPU Name=\"\(CPUName)\" BaseFrequency=\"\(CPUFreq)\">\n"
-            Working = Working + "    <GPU Name=\"\(GPUName)\" Metal=\"\(MetalDevice)\">\n"
-            Working = Working + "    <Memory Used=\"\(UsedMem)\" Free=\"\(FreeMem)\" MetalAllocated=\"\(MetalSpace)\">\n"
-            Working = Working + "    <OS Name=\"\(SysOSName)\" Version=\"\(iOSVer)\">\n"
-            Working = Working + "    <Current SystemPressure=\"\(SysPressure)\">\n"
-            Working = Working + "  </SystemReport>\n"
-            for (FilterType, KernelType, ImageCount, ImageTotal, LiveCount, LiveTotal) in RawData
-            {
-                var OneLine = "  <Filter Name=\"\(GetFilterTitle(FilterType)!)\" KernelType=\"\(KernelType.rawValue)\">\n"
-                OneLine = OneLine + "    <ImagePerformance Count=\"\(ImageCount)\" TotalSeconds=\"\(ImageTotal)\"/>\n"
-                OneLine = OneLine + "    <LivePerformance Count=\"\(LiveCount)\" TotalSeconds=\"\(LiveTotal)\"/>\n"
-                OneLine = OneLine + "  </Filter>\n"
-                Working = Working + OneLine
-            }
-            Working = Working + "</FilterPerformance>\n"
-            break;
-            
-        case .JSON:
-            FileName = FileName + ".json"
-            Working = "{\n"
-            Working = Working + "  \"PerformanceFor\": \"BumpCamera\",\n"
-            Working = Working + "  \"ExportedOn\": \"\(DateString)\",\n"
-            Working = Working + "  \"Filter\":\n"
-            Working = Working + "  [\n"
-            
-            for (FilterType, KernelType, ImageCount, ImageTotal, LiveCount, LiveTotal) in RawData
-            {
-                var OneLine = "    {\n"
-                OneLine = OneLine + "      \"Name\": \"\(GetFilterTitle(FilterType)!)\",\n"
-                OneLine = OneLine + "      \"KernelType\": \"\(KernelType.rawValue)\",\n"
-                OneLine = OneLine + "      \"ImagePerformance\":\n"
-                OneLine = OneLine + "      {\n"
-                OneLine = OneLine + "        \"Count\": \"\(ImageCount)\",\n"
-                OneLine = OneLine + "        \"TotalSeconds\": \"\(ImageTotal)\",\n"
-                OneLine = OneLine + "      },\n"
-                OneLine = OneLine + "      \"LivePerformance\":\n"
-                OneLine = OneLine + "      {\n"
-                OneLine = OneLine + "        \"Count\": \"\(LiveCount)\",\n"
-                OneLine = OneLine + "        \"TotalSeconds\": \"\(LiveTotal)\",\n"
-                OneLine = OneLine + "      },\n"
-                OneLine = OneLine + "    },\n"
-                Working = Working + OneLine
-            }
-            
-            Working = Working + "  ]\n"
-            Working = Working + "}\n"
-            break
-        }
-        
-        FileHandler.SaveStringToFile(Working, FileName: FileName)
-        
-        return (true, FileName)
     }
     
     /// Returns the number of parameters for the passed filter type.
@@ -387,6 +288,8 @@ class FilterManager
         ParameterCount![.BayerDecode] = BayerDecode.SupportedFields().count
         ParameterCount![.Thermal] = ThermalEffect.SupportedFields().count
         ParameterCount![.SmoothLinearGradient] = SmoothLinearGradient.SupportedFields().count
+        ParameterCount![.TemperatureAndTint] = TemperatureAndTint.SupportedFields().count
+        ParameterCount![.Vibrance] = Vibrance.SupportedFields().count
     }
     
     private static var ParameterCount: [FilterManager.FilterTypes: Int]? = nil
@@ -447,6 +350,8 @@ class FilterManager
         StoryboardList![.BayerDecode] = BayerDecode.SettingsStoryboard()
         StoryboardList![.Thermal] = ThermalEffect.SettingsStoryboard()
         StoryboardList![.SmoothLinearGradient] = SmoothLinearGradient.SettingsStoryboard()
+        StoryboardList![.TemperatureAndTint] = TemperatureAndTint.SettingsStoryboard()
+        StoryboardList![.Vibrance] = Vibrance.SettingsStoryboard()
     }
     
     private static var StoryboardList: [FilterTypes: String?]? = nil
@@ -697,6 +602,12 @@ class FilterManager
             
         case .SmoothLinearGradient:
             return SmoothLinearGradient()
+            
+        case .TemperatureAndTint:
+            return TemperatureAndTint()
+            
+        case .Vibrance:
+            return Vibrance()
             
         default:
             return nil
@@ -1118,6 +1029,8 @@ class FilterManager
             .BayerDecode: "Bayer Decode",
             .Thermal: "Thermal Effect",
             .SmoothLinearGradient: "Linear Gradient",
+            .TemperatureAndTint: "Temp & Tint",
+            .Vibrance: "Vibrance",
             ]
     
     public static func GetFilterTitle(_ Filter: FilterTypes) -> String?
@@ -1176,8 +1089,10 @@ class FilterManager
             .SepiaTone: true,
             .BayerDecode: true,
             .Thermal: true,
-            .SmoothLinearGradient: true
-            ]
+            .SmoothLinearGradient: true,
+            .TemperatureAndTint: true,
+            .Vibrance: true,
+    ]
     
     /// Determines if the given filter type is implemented.
     ///
@@ -1217,6 +1132,7 @@ class FilterManager
         return Result
     }
     
+    /// Maps a filter kernel type to its name.
     public static let FilterKernelMap: [FilterKernelTypes: String] =
         [
             .CIFilter: "Core Image",
@@ -1226,6 +1142,19 @@ class FilterManager
             .Software: "CPU-Bound"
     ]
     
+    /// Map of file types to file type names.
+    public static let FieldNameMap: [InputTypes: String] =
+    [
+        .DoubleType: "Double",
+        .IntType: "Integer",
+        .BoolType: "Boolean",
+        .PointType: "CGPoint",
+        .StringType: "String",
+        .Normal: "Normal",
+        .ColorType: "UIColor"
+    ]
+    
+    /// Maps filter input fields to the type of data it expects.
     public static let FieldMap: [InputFields: InputTypes] =
         [
             .InputThreshold: .DoubleType,
@@ -1345,8 +1274,14 @@ class FilterManager
             .Point1: .PointType,
             .IWidth: .IntType,
             .IHeight: .IntType,
+            .SourcePoint: .PointType,
+            .TargetPoint: .PointType,
+            .AutoLocateSource: .BoolType,
+            .AutoLocateTarget: .BoolType,
+            .Amount: .DoubleType,
             ]
     
+    /// Maps fields to names used to store field data in user settings.
     public static let FieldStorageMap: [InputFields: String] =
         [
             .InputThreshold: "_InputThreshold",
@@ -1466,6 +1401,11 @@ class FilterManager
             .Point1: "_Point1",
             .IWidth: "_Width",
             .IHeight: "_Height",
+            .SourcePoint: "_SourcePoint",
+            .TargetPoint: "_TargetPoint",
+            .AutoLocateSource: "_AutoFindSource",
+            .AutoLocateTarget: "_AutoFindTarget",
+            .Amount: "_Amount",
             ]
 }
 
