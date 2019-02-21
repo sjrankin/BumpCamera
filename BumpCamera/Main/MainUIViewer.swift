@@ -74,6 +74,28 @@ class MainUIViewer: UIViewController,
         InitializeLabels()
         
         //Make sure the file structure is OK... If not, create expected directories.
+        #if true
+        if !FileHandler.CreateIfDoesNotExist(DirectoryName: FileHandler.SampleDirectory)
+        {
+            ShowFatalErrorMessage(Title: "Directory Error", Message: "Error getting or getting the sample directory. Unable to continue.")
+            fatalError("Error creating \(FileHandler.SampleDirectory).")
+        }
+        if !FileHandler.CreateIfDoesNotExist(DirectoryName: FileHandler.ScratchDirectory)
+        {
+            ShowFatalErrorMessage(Title: "Directory Error", Message: "Error getting or getting the scratch directory. Unable to continue.")
+            fatalError("Error creating \(FileHandler.ScratchDirectory).")
+        }
+        if !FileHandler.CreateIfDoesNotExist(DirectoryName: FileHandler.PerformanceDirectory)
+        {
+            ShowFatalErrorMessage(Title: "Directory Error", Message: "Error getting or getting the performance directory. Unable to continue.")
+            fatalError("Error creating \(FileHandler.PerformanceDirectory).")
+        }
+        if !FileHandler.CreateIfDoesNotExist(DirectoryName: FileHandler.RuntimeDirectory)
+        {
+            ShowFatalErrorMessage(Title: "Directory Error", Message: "Error getting or getting the runtime directory. Unable to continue.")
+            fatalError("Error creating \(FileHandler.SampleDirectory).")
+        }
+        #else
         if FileHandler.DirectoryExists(DirectoryName: FileHandler.SampleDirectory)
         {
             print("\(FileHandler.SampleDirectory) already exists.")
@@ -110,6 +132,7 @@ class MainUIViewer: UIViewController,
                 print("Error creating \(FileHandler.PerformanceDirectory)")
             }
         }
+        #endif
         
         //https://stackoverflow.com/questions/34883594/cant-make-uitoolbar-black-color-with-white-button-item-tint-ios-9-swift/34885377
         MainBottomToolbar.barTintColor = UIColor.black
@@ -144,6 +167,13 @@ class MainUIViewer: UIViewController,
                 self.SetupResult = self.ConfigureLiveView()
         }
         StartSettingsMonitor()
+    }
+    
+    func ShowFatalErrorMessage(Title: String, Message: String)
+    {
+        let Alert = UIAlertController(title: Title, message: Message, preferredStyle: UIAlertController.Style.alert)
+        Alert.addAction(UIAlertAction(title: "OK", style: UIAlertAction.Style.default, handler: nil))
+        present(Alert, animated: true)
     }
     
     let BufferCount: Int = 3
