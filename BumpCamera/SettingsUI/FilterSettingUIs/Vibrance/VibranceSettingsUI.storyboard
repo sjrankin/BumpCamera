@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14460.31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="VdW-oH-05Y">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14460.20"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--Vibrance Settings-->
+        <scene sceneID="OS1-7X-ePt">
+            <objects>
+                <tableViewController title="Vibrance Settings" id="MaZ-Tb-MFi" customClass="VibranceSettingsUICode" customModule="BumpCamera" customModuleProvider="target" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="static" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" id="20w-Jm-Pkm">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <sections>
+                            <tableViewSection id="sZq-wR-0Lf">
+                                <cells>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" rowHeight="89" id="JeR-EX-4pE">
+                                        <rect key="frame" x="0.0" y="0.0" width="375" height="89"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="JeR-EX-4pE" id="JND-jB-zZH">
+                                            <rect key="frame" x="0.0" y="0.0" width="375" height="88.5"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Amount" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="3ti-lA-hKs">
+                                                    <rect key="frame" x="16" y="11" width="65" height="21"/>
+                                                    <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" minValue="-2000" maxValue="2000" translatesAutoresizingMaskIntoConstraints="NO" id="AUg-XA-tjM">
+                                                    <rect key="frame" x="32" y="40" width="243" height="30"/>
+                                                    <connections>
+                                                        <action selector="HandleAmountSliderChanged:" destination="MaZ-Tb-MFi" eventType="primaryActionTriggered" id="ehU-O1-WNY"/>
+                                                    </connections>
+                                                </slider>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vYW-0s-HhX">
+                                                    <rect key="frame" x="289" y="44" width="70" height="21"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="width" constant="70" id="OZu-1F-nGB"/>
+                                                    </constraints>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstItem="3ti-lA-hKs" firstAttribute="top" secondItem="JND-jB-zZH" secondAttribute="topMargin" id="BqQ-Sj-wPI"/>
+                                                <constraint firstItem="vYW-0s-HhX" firstAttribute="trailing" secondItem="JND-jB-zZH" secondAttribute="trailingMargin" id="CVp-aL-Uh9"/>
+                                                <constraint firstItem="AUg-XA-tjM" firstAttribute="top" secondItem="3ti-lA-hKs" secondAttribute="bottom" constant="8" symbolic="YES" id="FAl-QC-iWd"/>
+                                                <constraint firstAttribute="bottomMargin" secondItem="AUg-XA-tjM" secondAttribute="bottom" constant="9" id="KAL-r8-deB"/>
+                                                <constraint firstItem="AUg-XA-tjM" firstAttribute="leading" secondItem="JND-jB-zZH" secondAttribute="leadingMargin" constant="18" id="QVd-2E-YRR"/>
+                                                <constraint firstItem="3ti-lA-hKs" firstAttribute="leading" secondItem="JND-jB-zZH" secondAttribute="leadingMargin" id="SHe-eC-bkJ"/>
+                                                <constraint firstItem="AUg-XA-tjM" firstAttribute="centerY" secondItem="vYW-0s-HhX" secondAttribute="centerY" id="cup-Hy-yl6"/>
+                                                <constraint firstItem="vYW-0s-HhX" firstAttribute="top" secondItem="JND-jB-zZH" secondAttribute="topMargin" constant="33" id="eFt-WA-R3C"/>
+                                                <constraint firstItem="vYW-0s-HhX" firstAttribute="leading" secondItem="AUg-XA-tjM" secondAttribute="trailing" constant="16" id="s59-oG-Sa9"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
+                                </cells>
+                            </tableViewSection>
+                        </sections>
+                        <connections>
+                            <outlet property="dataSource" destination="MaZ-Tb-MFi" id="YJ3-46-Bi8"/>
+                            <outlet property="delegate" destination="MaZ-Tb-MFi" id="haK-zg-hva"/>
+                        </connections>
+                    </tableView>
+                    <toolbarItems>
+                        <barButtonItem title="Item" image="CameraHome" id="fix-gc-Jb4">
+                            <connections>
+                                <action selector="HandleCameraButton:" destination="MaZ-Tb-MFi" id="WoN-Hq-EY3"/>
+                            </connections>
+                        </barButtonItem>
+                    </toolbarItems>
+                    <navigationItem key="navigationItem" title="Vibrance Settings" id="eDz-wY-pCk">
+                        <barButtonItem key="leftBarButtonItem" title="Back" id="lu7-HW-6hR">
+                            <connections>
+                                <action selector="HandleBackButton:" destination="MaZ-Tb-MFi" id="rLK-ZH-8nB"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
+                    <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
+                    <connections>
+                        <outlet property="AmountSlider" destination="AUg-XA-tjM" id="t65-as-5we"/>
+                        <outlet property="AmountValueLabel" destination="vYW-0s-HhX" id="C0a-41-Aag"/>
+                    </connections>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="fVx-qq-z0j" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="40.799999999999997" y="271.21439280359823"/>
+        </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="rV2-j7-TsR">
+            <objects>
+                <navigationController storyboardIdentifier="VibranceSettingsUI" toolbarHidden="NO" id="VdW-oH-05Y" sceneMemberID="viewController">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="jx3-kh-Mve">
+                        <rect key="frame" x="0.0" y="20" width="375" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <toolbar key="toolbar" opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="FVG-PC-NHZ">
+                        <rect key="frame" x="0.0" y="623" width="375" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </toolbar>
+                    <connections>
+                        <segue destination="MaZ-Tb-MFi" kind="relationship" relationship="rootViewController" id="Du3-mW-AZR"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="d71-DI-c3V" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-911" y="272"/>
+        </scene>
+    </scenes>
+    <resources>
+        <image name="CameraHome" width="96" height="96"/>
+    </resources>
+</document>
