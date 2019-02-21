@@ -22,6 +22,42 @@ class FileHandler
     /// Name of the directory where performance data is exported.
     static let PerformanceDirectory = "/Performance"
     
+    /// Name of the directory used at runtime.
+    static let RuntimeDirectory = "/Runtime"
+    
+    /// Determines if the passed directory exists. If it does not, it is created.
+    ///
+    /// - Note: A false return indicates something is terribly wrong and execution should stop.
+    ///
+    /// - Parameter DirectoryName: The name of the directory to test for existence. This name will be used
+    ///                            to create the directory if it does not exist.
+    /// - Returns: True on success (the directory already existed or was created successfully), false on error (the
+    ///            directory does not exist and could not be created). A false return value indicates a fatal error
+    ///            and execution should stop as soon as posible.
+    public static func CreateIfDoesNotExist(DirectoryName: String) -> Bool
+    {
+        if DirectoryExists(DirectoryName: DirectoryName)
+        {
+            #if DEBUG
+            print("\(DirectoryName) exists.")
+            #endif
+            return true
+        }
+        else
+        {
+            let DirURL = CreateDirectory(DirectoryName: DirectoryName)
+            if DirURL == nil
+            {
+                print("Error creating \(DirectoryName)")
+                return false
+            }
+        }
+        #if DEBUG
+        print("\(DirectoryName) created.")
+        #endif
+        return true
+    }
+    
     /// Returns an URL for the document directory.
     ///
     /// - Returns: Document directory URL on success, nil on error.
@@ -386,9 +422,33 @@ class FileHandler
     ///   - SaveMe: Contains the string to save.
     ///   - FileName: The name of the file to save.
     /// - Returns: True on success, false on failure.
-    public static func SaveStringToFile(_ SaveMe: String, FileName: String) -> Bool
+    @discardableResult public static func SaveStringToFile(_ SaveMe: String, FileName: String) -> Bool
     {
         let SaveDirectory = GetDirectoryURL(DirectoryName: PerformanceDirectory)
+        let FinalFile = SaveDirectory?.appendingPathComponent(FileName)
+        do
+        {
+            try SaveMe.write(to: FinalFile!, atomically: false, encoding: .utf8)
+        }
+        catch
+        {
+            print("Error saving string to \(FinalFile!.path): error: \(error.localizedDescription)")
+            return false
+        }
+        return true
+    }
+    
+    /// Save the contents of the passed string to a file with the passed file name. The file will be saved in the
+    /// indicated directory.
+    ///
+    /// - Parameters:
+    ///   - SaveMe: Contains the string to save.
+    ///   - FileName: The name of the file to save.
+    ///   - ToDirectory: The name of the directory.
+    /// - Returns: True on success, false on failure.
+    @discardableResult public static func SaveStringToFile(_ SaveMe: String, FileName: String, ToDirectory: String) -> Bool
+    {
+        let SaveDirectory = GetDirectoryURL(DirectoryName: ToDirectory)
         let FinalFile = SaveDirectory?.appendingPathComponent(FileName)
         do
         {
