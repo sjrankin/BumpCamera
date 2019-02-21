@@ -70,6 +70,8 @@ extension FilterManager
         case BayerDecode = 43
         case Thermal = 44
         case SmoothLinearGradient = 45
+        case TemperatureAndTint = 46
+        case Vibrance = 47
         case NotSet = 10000
     }
     
@@ -107,6 +109,9 @@ extension FilterManager
         case Video
     }
     
+    /// List of input fields used by filters. Some fields may be used by more than one filter
+    /// but do not refer to the same location in user settings because each field in user
+    /// settings is prefixed by its unique ID.
     public enum InputFields: Int
     {
         case InputThreshold = 0
@@ -226,6 +231,11 @@ extension FilterManager
         case Point1 = 114
         case IHeight = 115
         case IWidth = 116
+        case SourcePoint = 117
+        case TargetPoint = 118
+        case AutoLocateSource = 119
+        case AutoLocateTarget = 120
+        case Amount = 121
         case NoField = 10000
     }
     
