@@ -72,6 +72,9 @@ extension FilterManager
         case SmoothLinearGradient = 45
         case TemperatureAndTint = 46
         case Vibrance = 47
+        case Pointillize = 48
+        case Monochrome = 49
+        case GaussianBlur = 50
         case NotSet = 10000
     }
     
@@ -96,6 +99,7 @@ extension FilterManager
         case Generator = 7
         case Gray = 8
         case PhotoEffects = 9
+        case Blur = 10
         case NotSet = 10000
     }
     
@@ -236,6 +240,9 @@ extension FilterManager
         case AutoLocateSource = 119
         case AutoLocateTarget = 120
         case Amount = 121
+        case BackgroundType = 122
+        case Intensity = 123
+        case Sigma = 124
         case NoField = 10000
     }
     
