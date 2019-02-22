@@ -11,20 +11,30 @@ import UIKit
 
 extension FilterManager
 {
+    /// Save filter settings for the passed filter.
+    ///
+    /// - Parameters:
+    ///   - For: Instance of the filter to save settings for.
+    ///   - WithName: File name to use for the saved file. If not specified, "MostRecentFilter.xml" will be used.
+    ///   - InDirectory: Directory where to save the file. If not specified, the runtime directory will be used.
     public static func SaveFilterSettings(For: Renderer, WithName: String? = nil, InDirectory: String? = nil)
     {
         let FileName: String = WithName == nil ? "MostRecentFilter.xml" : WithName!
         let Directory: String = InDirectory == nil ? FileHandler.RuntimeDirectory : InDirectory!
         
         let ID = For.ID()
+        let FilterType = GetFilterTypeFrom(ID: ID)
         var Working = "<Filter Name=\(For.Title()) ID=\(For.ID())>\n"
         Working = Working + Versioning.EmitXML(4)
-        Working = Working + "    <Parameters>\n"
+        Working = Working + "    <Parameters Count=\"\(ParameterCountFor(FilterType!))\">\n"
         
         for SomeField in For.SupportedFields()
         {
-            let FieldName = FieldStorageMap[SomeField]
+            let FieldName = FieldStorageMap[SomeField]!
             let FieldType = FieldMap[SomeField]
+            let FieldTypeName = FieldTypeNameMap[FieldType!]!
+            let (_, _, FieldContents) = ParameterManager.GetFieldDataEx(From: ID, Field: SomeField)
+            Working = Working + "        <Parameter Name=\"\(FieldName)\" Type=\"\(FieldTypeName)\" Contents=\"\(FieldContents)\">\n"
         }
         
         Working = Working + "    </Parameters>\n"
