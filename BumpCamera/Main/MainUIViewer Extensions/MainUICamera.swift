@@ -463,7 +463,10 @@ extension MainUIViewer
         
         guard let FilteredBuffer = Filters?.VideoFilter?.Filter?.Render(PixelBuffer: FinalPixelBuffer) else
         {
-            print("Render for current filter returned nil - skipping frame. (Did you just change filters?)")
+            let FilterID = Filters?.VideoFilter?.Filter?.ID()
+            let FilterType = FilterManager.GetFilterTypeFrom(ID: FilterID!)
+            let FilterTitle: String = FilterManager.GetFilterTitle(FilterType!)!
+            Utility.print1("\"\(FilterTitle)\".Render returned nil - skipping frame. (Did you just change filters?)")
             return
         }
         
