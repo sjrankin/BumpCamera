@@ -43,19 +43,20 @@ class FilterManager
         [
             .Standard: [(.PassThrough, 0), (.LineScreen, 4), (.DotScreen, 5), (.CircularScreen, 7),
                         (.HatchScreen, 6), (.CMYKHalftone, 8), (.Pixellate, 11), (.Comic, 2),
-                        (.LineOverlay, 9), (.EdgeWork, 10), (.Posterize, 13)],
+                        (.LineOverlay, 9), (.EdgeWork, 10), (.Posterize, 14), (.Pointillize, 13)],
             .Combined: [(.CircleAndLines, 0)],
             .Effects: [(.PixellateMetal, 0), (.DilateErode, 1), (.Kuwahara, 2), (.BayerDecode, 3)],
             .PhotoEffects: [(.Noir, 0), (.Chrome, 1), (.Vibrance, 2), (.XRay, 3), (.Instant, 4), (.ProcessEffect, 5),
                             (.TransferEffect, 6), (.SepiaTone, 7), (.Thermal, 8), (.TemperatureAndTint, 9)],
             .Colors: [(.HueAdjust, 0), (.HSBAdjust, 1), (.Solarize, 2), (.ChannelMixer, 3),
                       (.DesaturateColors, 4), (.Threshold, 5), (.MonochromeColor, 6), (.FalseColor, 7),
-                      (.PaletteShifting, 8)],
+                      (.Monochrome, 8), (.PaletteShifting, 9)],
             .Gray: [(.GrayscaleKernel, 0), (.Dither, 1)],
             //.Bumpy: [(.BumpyPixels, 1), (.BumpyTriangles, 2), (.Embossed, 0)],
             //.Motion: [(.ColorDelta, 0), (.FilterDelta, 1), (.PatternDelta, 2)],
             .Tiles: [(.Mirroring, 0)],
-            .Generator: [(.Grid, 0), (.SmoothLinearGradient, 1), (.CornerGradient, 2)]
+            .Generator: [(.Grid, 0), (.SmoothLinearGradient, 1), (.CornerGradient, 2)],
+            .Blur: [(.GaussianBlur, 0)],
     ]
     
     public static let FilterInfoMap: [FilterTypes: (UUID, FilterKernelTypes, String)] =
@@ -100,6 +101,9 @@ class FilterManager
             .SmoothLinearGradient: (SmoothLinearGradient.ID(), SmoothLinearGradient.FilterKernel, SmoothLinearGradient.Title()),
             .TemperatureAndTint: (TemperatureAndTint.ID(), TemperatureAndTint.FilterKernel, TemperatureAndTint.Title()),
             .Vibrance: (Vibrance.ID(), Vibrance.FilterKernel, Vibrance.Title()),
+            .Pointillize: (Pointillize.ID(), Pointillize.FilterKernel, Pointillize.Title()),
+            .Monochrome: (Monochrome.ID(), Monochrome.FilterKernel, Monochrome.Title()),
+            .GaussianBlur: (GaussianBlur.ID(), GaussianBlur.FilterKernel, GaussianBlur.Title()),
             ]
     
     /// Determines if the specified filter supports the specified target type. Not all filters support all targets - slow
@@ -185,6 +189,9 @@ class FilterManager
             .SmoothLinearGradient: SmoothLinearGradient.FilterTarget(),
             .TemperatureAndTint: TemperatureAndTint.FilterTarget(),
             .Vibrance: Vibrance.FilterTarget(),
+            .Pointillize: Pointillize.FilterTarget(),
+            .Monochrome: Monochrome.FilterTarget(),
+            .GaussianBlur: GaussianBlur.FilterTarget(),
             ]
     
     /// Load all of the filter classes into the filter manager.
@@ -290,6 +297,9 @@ class FilterManager
         ParameterCount![.SmoothLinearGradient] = SmoothLinearGradient.SupportedFields().count
         ParameterCount![.TemperatureAndTint] = TemperatureAndTint.SupportedFields().count
         ParameterCount![.Vibrance] = Vibrance.SupportedFields().count
+        ParameterCount![.Pointillize] = Pointillize.SupportedFields().count
+        ParameterCount![.Monochrome] = Monochrome.SupportedFields().count
+        ParameterCount![.GaussianBlur] = GaussianBlur.SupportedFields().count
     }
     
     private static var ParameterCount: [FilterManager.FilterTypes: Int]? = nil
@@ -352,6 +362,9 @@ class FilterManager
         StoryboardList![.SmoothLinearGradient] = SmoothLinearGradient.SettingsStoryboard()
         StoryboardList![.TemperatureAndTint] = TemperatureAndTint.SettingsStoryboard()
         StoryboardList![.Vibrance] = Vibrance.SettingsStoryboard()
+        StoryboardList![.Pointillize] = Pointillize.SettingsStoryboard()
+        StoryboardList![.Monochrome] = Monochrome.SettingsStoryboard()
+        StoryboardList![.GaussianBlur] = GaussianBlur.SettingsStoryboard()
     }
     
     private static var StoryboardList: [FilterTypes: String?]? = nil
@@ -609,6 +622,15 @@ class FilterManager
         case .Vibrance:
             return Vibrance()
             
+        case .Pointillize:
+            return Pointillize()
+            
+        case .Monochrome:
+            return Monochrome()
+            
+        case .GaussianBlur:
+            return GaussianBlur()
+            
         default:
             return nil
         }
@@ -775,6 +797,7 @@ class FilterManager
             .Generator: UUID(uuidString: "fc757ea9-8300-47a9-9fa0-0855d86100bb")!,
             .Gray: UUID(uuidString: "d004805c-4571-40d1-b2af-fb6d9b680816")!,
             .PhotoEffects: UUID(uuidString: "a8a857f4-ddbf-4fbb-a998-e48395f3ca10")!,
+            .Blur: UUID(uuidString: "417aafdc-2264-404c-bfd8-a1420d627427")!,
             ]
     
     /// Given a group description, return its ID.
@@ -846,9 +869,10 @@ class FilterManager
             .Bumpy: ("3D", 7),
             .Motion: ("Motion", 8),
             .Tiles: ("Distortion", 6),
-            .Generator: ("Generators", 9),
+            .Generator: ("Generators", 10),
             .Gray: ("Mono- chrome", 3),
             .PhotoEffects: ("Photo Effects", 5),
+            .Blur: ("Blur", 9),
             ]
     
     /// Map between group type and group color.
@@ -864,6 +888,7 @@ class FilterManager
             .Motion: UIColor(named: "Gold")!,
             .Generator: UIColor(named: "Mauve")!,
             .Gray: UIColor(named: "PaleGray")!,
+            .Blur: UIColor.yellow,
             ]
     
     public func ColorForGroup(_ Group: FilterGroups) -> UIColor
@@ -1031,6 +1056,9 @@ class FilterManager
             .SmoothLinearGradient: "Linear Gradient",
             .TemperatureAndTint: "Temp & Tint",
             .Vibrance: "Vibrance",
+            .Pointillize: "Pointillize",
+            .Monochrome: "Monochrome",
+            .GaussianBlur: "Gaussian Blur",
             ]
     
     public static func GetFilterTitle(_ Filter: FilterTypes) -> String?
@@ -1092,6 +1120,9 @@ class FilterManager
             .SmoothLinearGradient: true,
             .TemperatureAndTint: true,
             .Vibrance: true,
+            .Pointillize: true,
+            .Monochrome: true,
+            .GaussianBlur: true,
     ]
     
     /// Determines if the given filter type is implemented.
@@ -1143,7 +1174,7 @@ class FilterManager
     ]
     
     /// Map of file types to file type names.
-    public static let FieldNameMap: [InputTypes: String] =
+    public static let FieldTypeNameMap: [InputTypes: String] =
     [
         .DoubleType: "Double",
         .IntType: "Integer",
@@ -1279,6 +1310,9 @@ class FilterManager
             .AutoLocateSource: .BoolType,
             .AutoLocateTarget: .BoolType,
             .Amount: .DoubleType,
+            .BackgroundType: .IntType,
+            .Intensity: .DoubleType,
+            .Sigma: .DoubleType,
             ]
     
     /// Maps fields to names used to store field data in user settings.
@@ -1406,6 +1440,9 @@ class FilterManager
             .AutoLocateSource: "_AutoFindSource",
             .AutoLocateTarget: "_AutoFindTarget",
             .Amount: "_Amount",
+            .BackgroundType: "_BackgroundType",
+            .Intensity: "_Intensity",
+            .Sigma: "_Sigma",
             ]
 }
 
