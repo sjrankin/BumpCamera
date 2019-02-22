@@ -30,7 +30,6 @@ class FilterPerformanceCode2: UIViewController, UITableViewDelegate, UITableView
             HeaderList.append(KernelName)
         }
         HeaderList.sort{$0 < $1}
-        HeaderList.append("Actions")
     }
     
     var FullList: [String: [FilterManager.FilterTypes]]!
@@ -49,10 +48,6 @@ class FilterPerformanceCode2: UIViewController, UITableViewDelegate, UITableView
      func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int
     {
         let HeaderTitle = HeaderList[section]
-        if HeaderTitle == "Actions"
-        {
-            return 1
-        }
         return FullList![HeaderTitle]!.count
     }
     
@@ -70,15 +65,6 @@ class FilterPerformanceCode2: UIViewController, UITableViewDelegate, UITableView
     {
         let Cell = PerformanceCell(style: UITableViewCell.CellStyle.default, reuseIdentifier: "PerformanceCell")
         let HTitle = HeaderList[indexPath.section]
-        #if false
-        if HTitle == "Actions"
-        {
-            let Cell = PerformanceActionCell(style: UITableViewCell.CellStyle.default, reuseIdentifier: "ActionCell")
-            Cell.selectionStyle = .none
-            Cell.delegate = self
-            return Cell
-        }
-        #endif
         let Filter = FullList[HTitle]![indexPath.row]
         let (Name, ImageCount, ImageTime, LiveCount, LiveTime) = GetFilterPerformance(FilterType: Filter)!
         Cell.SetData(FilterName: Name, ImageCount: ImageCount, ImageMean: ImageTime, LiveCount: LiveCount, LiveMean: LiveTime)
