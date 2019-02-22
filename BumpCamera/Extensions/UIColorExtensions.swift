@@ -31,6 +31,69 @@ extension UIColor
         return Result
     }
     
+    func ToCIColor() -> CIColor
+    {
+        var Red: CGFloat = 0.0
+        var Green: CGFloat = 0.0
+        var Blue: CGFloat = 0.0
+        var Alpha: CGFloat = 0.0
+        self.getRed(&Red, green: &Green, blue: &Blue, alpha: &Alpha)
+        let Result = CIColor(red: Red, green: Green, blue: Blue, alpha: Alpha)
+        return Result
+    }
+    
+    var r: CGFloat
+    {
+        get
+        {
+            var Red: CGFloat = 0.0
+            var Green: CGFloat = 0.0
+            var Blue: CGFloat = 0.0
+            var Alpha: CGFloat = 0.0
+            self.getRed(&Red, green: &Green, blue: &Blue, alpha: &Alpha)
+            return Red
+        }
+    }
+    
+    var g: CGFloat
+    {
+        get
+        {
+            var Red: CGFloat = 0.0
+            var Green: CGFloat = 0.0
+            var Blue: CGFloat = 0.0
+            var Alpha: CGFloat = 0.0
+            self.getRed(&Red, green: &Green, blue: &Blue, alpha: &Alpha)
+            return Green
+        }
+    }
+    
+    var b: CGFloat
+    {
+        get
+        {
+            var Red: CGFloat = 0.0
+            var Green: CGFloat = 0.0
+            var Blue: CGFloat = 0.0
+            var Alpha: CGFloat = 0.0
+            self.getRed(&Red, green: &Green, blue: &Blue, alpha: &Alpha)
+            return Blue
+        }
+    }
+    
+    var a: CGFloat
+    {
+        get
+        {
+            var Red: CGFloat = 0.0
+            var Green: CGFloat = 0.0
+            var Blue: CGFloat = 0.0
+            var Alpha: CGFloat = 0.0
+            self.getRed(&Red, green: &Green, blue: &Blue, alpha: &Alpha)
+            return Alpha
+        }
+    }
+    
     /// Convert a SIMD float4 structure into a UIColor.
     ///
     /// - Parameter Float4: The SIMD float4 structure whose values will be converted into a UIColor.
