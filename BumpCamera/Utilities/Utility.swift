@@ -367,12 +367,12 @@ class Utility
         }
         let Second = Cal.component(.second, from: FromDate)
         var Result = HourString + TimeSeparator + MinuteString
-            var SecondString = String(describing: Second)
-            if Second < 10
-            {
-                SecondString = "0" + SecondString
-            }
-            Result = Result + TimeSeparator + SecondString
+        var SecondString = String(describing: Second)
+        if Second < 10
+        {
+            SecondString = "0" + SecondString
+        }
+        Result = Result + TimeSeparator + SecondString
         return DatePart + Result
     }
     
@@ -1769,6 +1769,60 @@ class Utility
             let BString = "\(Billions.Round(To: 2))GB"
             return BString
         }
+    }
+    
+    /// Reduce a large number to smaller, suffixed number strings.
+    ///
+    /// - Parameters:
+    ///   - BigNum: The number to reduce then return as a string.
+    ///   - AsBytes: Determines the suffix style. If true, returned numbers are assumed by measure bytes of something
+    ///              and so the suffix reflects that (eg, KB, MB, GB). Otherwise, K, M, and G are used for suffixes.
+    ///   - ReturnUnchangedThreshold: Values less than this value will be returned as is and without a suffix.
+    /// - Returns: String value of the reduced number.
+    public static func ReduceBigNum(BigNum: Int64, AsBytes: Bool = true, ReturnUnchangedThreshold: Int64 = 0) -> String
+    {
+        if BigNum <= ReturnUnchangedThreshold
+        {
+            return "\(BigNum)"
+        }
+        var TrillionSuffix = "T"
+        var BillionSuffix = "G"
+        var MillionSuffix = "M"
+        var ThousandSuffix = "K"
+        if AsBytes
+        {
+            TrillionSuffix = "TB"
+            BillionSuffix = "GB"
+            MillionSuffix = "MB"
+            ThousandSuffix = "KB"
+        }
+        let Trillion: Int64 = 1000000000000
+        let Billion: Int64 = 1000000000
+        let Million: Int64 = 1000000
+        let Thousand: Int64 = 1000
+        let Trillions: Double = Double(Double(BigNum) / Double(Trillion))
+        let Billions: Double = Double(Double(BigNum) / Double(Billion))
+        let Millions: Double = Double(Double(BigNum) / Double(Million))
+        let Thousands: Double = Double(Double(BigNum) / Double(Thousand))
+        
+        if Trillions >= 1.0
+        {
+            let TrString = "\(Trillions.Round(To: 2))" + TrillionSuffix
+            return TrString
+        }
+        if Billions >= 1.0
+        {
+            let BString = "\(Billions.Round(To: 2))" + BillionSuffix
+            return BString
+        }
+        if Millions >= 1.0
+        {
+            let MString = "\(Millions.Round(To: 2))" + MillionSuffix
+            return MString
+        }
+        
+        let TString = "\(Thousands.Round(To: 2))" + ThousandSuffix
+        return TString
     }
 }
 
