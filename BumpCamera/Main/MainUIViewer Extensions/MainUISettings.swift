@@ -39,6 +39,7 @@ extension MainUIViewer
         _Settings.set("", forKey: "UserCopyrightString")
         _Settings.set("", forKey: "UserAuthorString")
         _Settings.set(true, forKey: "CollectPerformanceStatistics")
+        _Settings.set(false, forKey: "ClosedCleanly")
         let InitialGroupID = Filters?.GetGroupID(ForGroup: .Standard)
         _Settings.set(InitialGroupID?.uuidString, forKey: "CurrentGroup")
         let InitialFilterID = Filters?.GetFilterID(For: .PassThrough)
