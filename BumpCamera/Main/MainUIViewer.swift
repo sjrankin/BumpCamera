@@ -45,10 +45,18 @@ class MainUIViewer: UIViewController,
     var Filters: FilterManager? = nil
     var VideoIsAuthorized = false
     var DepthDataSupported = false
+    var ADelegate: AppDelegate? = nil
+    var OnDebugger = false
     
     override func viewDidLoad()
     {
         super.viewDidLoad()
+        
+        ADelegate = UIApplication.shared.delegate as? AppDelegate
+        
+        OnDebugger = (ADelegate?.OnDebugger)!
+        print("OnDebugger=\(OnDebugger)")
+
         VideoIsAuthorized = CheckAuthorization()
         //Filters must be created before checking for settings.
         Filters = FilterManager(FilterManager.FilterTypes.PassThrough)
@@ -167,6 +175,28 @@ class MainUIViewer: UIViewController,
                 self.SetupResult = self.ConfigureLiveView()
         }
         StartSettingsMonitor()
+    }
+    
+    override func viewDidAppear(_ animated: Bool)
+    {
+        super.viewDidAppear(animated)
+        
+        if (ADelegate?.DidCrash)!
+        {
+            let PreviousFilter: String = (ADelegate?.CrashedFilterName)!
+            var AlertTitle = "Crash Detected"
+            var LastSentence = ""
+            if OnDebugger
+            {
+                AlertTitle = "Possible Crash Detected"
+                LastSentence = " Because you were running with the debugger, it's possible the debugger closed BumpCamera uncleanly."
+            }
+            let Alert = UIAlertController(title: AlertTitle,
+                                          message: "BumpCamera crashed the last time it ran. (Previous filter: \(PreviousFilter).) Resetting the filter to Pass Through." + LastSentence,
+                preferredStyle: UIAlertController.Style.alert)
+            Alert.addAction(UIAlertAction(title: "OK", style: UIAlertAction.Style.default, handler: nil))
+            present(Alert, animated: true)
+        }
     }
     
     func ShowFatalErrorMessage(Title: String, Message: String)
