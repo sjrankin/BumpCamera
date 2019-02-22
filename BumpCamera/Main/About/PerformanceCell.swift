@@ -11,7 +11,7 @@ import UIKit
 
 class PerformanceCell: UITableViewCell
 {
-    public static var CellHeight: CGFloat = 70.0
+    public static var CellHeight: CGFloat = 75.0
     
     required init?(coder aDecoder: NSCoder)
     {
@@ -42,7 +42,7 @@ class PerformanceCell: UITableViewCell
         ImageTitle.text = "Image"
         self.contentView.addSubview(ImageTitle)
         ImageCountTitle = UILabel()
-        ImageCountTitle.frame = CGRect(x: 80, y: 30, width: 80, height: 20.0)
+        ImageCountTitle.frame = CGRect(x: 80, y: 30, width: 180, height: 20.0)
         ImageCountTitle.font = UIFont(name: "Avenir", size: 15.0)
         ImageCountTitle.text = "Count: xxxx"
         self.contentView.addSubview(ImageCountTitle)
@@ -58,7 +58,7 @@ class PerformanceCell: UITableViewCell
         LiveTitle.text = "Live"
         self.contentView.addSubview(LiveTitle)
         LiveCountTitle = UILabel()
-        LiveCountTitle.frame = CGRect(x: 80, y: 50, width: 80, height: 20.0)
+        LiveCountTitle.frame = CGRect(x: 80, y: 50, width: 180, height: 20.0)
         LiveCountTitle.font = UIFont(name: "Avenir", size: 15.0)
         LiveCountTitle.text = "Count: xxxx"
         self.contentView.addSubview(LiveCountTitle)
@@ -78,7 +78,8 @@ class PerformanceCell: UITableViewCell
         let ImageDivisor = ImageCount == 0 ? 1 : ImageCount
         let ImageMeanTime = ImageMean / Double(ImageDivisor)
         ImageTimeTitle.text = "Mean: \(ImageMeanTime.Round(To: 3))s"
-        LiveCountTitle.text = "Count: \(LiveCount)"
+        let LiveCountString = Utility.ReduceBigNum(BigNum: Int64(LiveCount), AsBytes: false, ReturnUnchangedThreshold: 100000)
+        LiveCountTitle.text = "Count: \(LiveCountString)"
         let LiveDivisor = LiveCount == 0 ? 1 : LiveCount
         let LiveMeanTime = LiveMean / Double(LiveDivisor)
         LiveTimeTitle.text = "Mean: \(LiveMeanTime.Round(To: 3))s"
