@@ -81,7 +81,41 @@ class FilterParent
         }
     }
     
-    //
+    /// Invert the colors of the passed image.
+    ///
+    /// - Parameter Image: The image whose colors will be inverted.
+    /// - Returns: New image based on inverted colors of the source image.
+    func InvertImage(Image: CIImage) -> CIImage?
+    {
+        let Inverter = CIFilter(name: "CIColorInvert")
+        Inverter?.setValue(Image, forKey: kCIInputImageKey)
+        return Inverter?.value(forKey: kCIOutputImageKey) as? CIImage
+    }
+    
+    /// Convert the colors of the passed image to grayscale.
+    ///
+    /// - Parameter Image: The image whose colors will be converted to grayscale.
+    /// - Returns: New image based on grayscale values of the source image.
+    func GrayscaleImage(Image: CIImage) -> CIImage?
+    {
+        let Gray = CIFilter(name: "CIPhotoEffectMono")
+        Gray?.setValue(Image, forKey: kCIInputImageKey)
+        return Gray?.value(forKey: kCIOutputImageKey) as? CIImage
+    }
+    
+    /// Return a new image with a solid color.
+    ///
+    /// - Parameters:
+    ///   - Image: The base image - only the exent will be used to determine the size of the returned image.
+    ///   - Color: The color of the new image.
+    /// - Returns: Image with a solid color.
+    func SolidColorImage(Image: CIImage, Color: UIColor) -> CIImage?
+    {
+        let Size = CGSize(width: Image.extent.width, height: Image.extent.height)
+        let NewImage = UIImage.MakeColorImage(SolidColor: Color, Size: Size)
+        let Result = CIImage(image: NewImage!)
+        return Result
+    }
     
     /// Get the pixel buffer from the passed image.
     ///
