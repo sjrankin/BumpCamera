@@ -51,7 +51,14 @@ import UIKit
                 DidCrash = true
             }
         }
-        _Settings.set(false, forKey: "ClosedCleanly")
+        if OnDebugger
+        {
+            _Settings.set(true, forKey: "ClosedCleanly")
+        }
+        else
+        {
+            _Settings.set(false, forKey: "ClosedCleanly")
+        }
         return true
     }
     
