@@ -38,6 +38,9 @@ class FilterManager
         }
     }
     
+    /// Holds a list of filter ratings.
+    public static var RatingsList: [FilterTypes: Ratings]? = nil
+    
     /// Map between group type and filters in the group.
     private static let GroupMap: [FilterGroups: [(FilterTypes, Int)]] =
         [
@@ -664,6 +667,7 @@ class FilterManager
         }
     }
     
+    #if false
     /// Return the name of the icon for the specified filter type.
     ///
     /// - Parameter Name: The filter type whose icon name will be returned.
@@ -677,6 +681,7 @@ class FilterManager
         }
         return ""
     }
+    #endif
     
     /// Return the human-readable title for the specified filter.
     ///
