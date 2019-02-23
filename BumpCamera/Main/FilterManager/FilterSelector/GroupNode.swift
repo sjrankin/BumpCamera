@@ -30,6 +30,10 @@ class GroupNode
     public var Prefix: String = ""
     /// List of filters in the group.
     public var GroupFilters: [FilterNode]!
+    /// If true, the group node is for favorites.
+    public var IsFavoriteList: Bool = false
+    /// If true, the group node is for five-starred filters.
+    public var IsFiveStarList: Bool = false
     
     /// Determines if the ordinal value is a valid index into the list of filters (eg, in range).
     ///
