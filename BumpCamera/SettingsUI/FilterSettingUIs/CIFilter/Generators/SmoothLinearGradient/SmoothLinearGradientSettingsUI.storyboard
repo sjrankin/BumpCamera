@@ -341,7 +341,7 @@
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="4" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Vbb-pS-wkl">
                                                     <rect key="frame" x="20" y="11" width="374" height="96"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                    <string key="text">This is a generator filter that takes no input. That is why you cannot change the sample image. To save the generated image, use the save button in the bottom toolbar.</string>
+                                                    <string key="text">This is a generator filter that takes no input. That is why you cannot change the sample image. To save the generated image, use the save button in the upper toolbar.</string>
                                                     <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                     <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                     <nil key="highlightedColor"/>
@@ -360,14 +360,14 @@
                     <toolbarItems>
                         <barButtonItem title="Item" image="CameraHome" id="JoQ-be-Omm"/>
                         <barButtonItem style="plain" systemItem="flexibleSpace" id="giL-qW-tNu"/>
-                        <barButtonItem systemItem="save" id="bdK-Vq-5JZ">
-                            <connections>
-                                <action selector="HandleSaveImageButton:" destination="X8G-CY-M0G" id="pVs-wP-wrr"/>
-                            </connections>
-                        </barButtonItem>
                     </toolbarItems>
                     <navigationItem key="navigationItem" title="Smooth Gradient Generator" id="uYY-Ss-t6T">
                         <barButtonItem key="leftBarButtonItem" title="Back" id="IXQ-jq-JDR"/>
+                        <barButtonItem key="rightBarButtonItem" title="Save" id="sWO-xc-Z3l">
+                            <connections>
+                                <action selector="HandleSaveImageButton:" destination="X8G-CY-M0G" id="mOK-RM-s3p"/>
+                            </connections>
+                        </barButtonItem>
                     </navigationItem>
                     <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
                     <connections>
