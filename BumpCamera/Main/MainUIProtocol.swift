@@ -8,7 +8,7 @@
 
 import Foundation
 
-protocol MainUIProtocol
+protocol MainUIProtocol: class
 {
     /// Notifies the main UI that user favorites were changed one way or another.
     func UserFavoritesChanged()
