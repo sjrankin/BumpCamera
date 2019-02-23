@@ -59,6 +59,7 @@ class MainUIViewer: UIViewController,
 
         VideoIsAuthorized = CheckAuthorization()
         //Filters must be created before checking for settings.
+        FilterManager.LoadFilterRatings()
         Filters = FilterManager(FilterManager.FilterTypes.PassThrough)
         if !_Settings.bool(forKey: "SettingsInstalled")
         {
