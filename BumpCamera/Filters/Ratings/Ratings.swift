@@ -49,6 +49,9 @@ class Ratings
     /// The string prefix to use for user defaults.
     private var FilterPrefix: String = ""
     
+    /// Delegate to the MainUI. Used to communicate changes in favorites and ratings.
+    public var delegate: MainUIProtocol? = nil
+    
     /// Holds the fave value for the filter.
     private var _Faved: Bool = false
     /// Get or set the fave value for the filter.
@@ -111,5 +114,6 @@ class Ratings
         _Settings.set(_Faved, forKey: FaveName)
         let StarName = FilterPrefix + "Stars"
         _Settings.set(_StarCount, forKey: StarName)
+        delegate?.UserFavoritesChanged()
     }
 }
