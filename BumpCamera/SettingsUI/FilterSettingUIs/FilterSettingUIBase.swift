@@ -80,6 +80,10 @@ class FilterSettingUIBase: UITableViewController,
             #endif
             ShowSampleView()
         }
+        let Cell = RatingCell(style: UITableViewCell.CellStyle.default, reuseIdentifier: "RatingCell")
+        Cell.SetData(FilterType: Filter)
+        tableView.tableFooterView = Cell
+        
         let End = CACurrentMediaTime()
         print("FilterSettingUIBase(Filter) start-up duration: \(End - Start) seconds")
     }
