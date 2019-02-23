@@ -44,6 +44,8 @@ class FilterManager
     /// Map between group type and filters in the group.
     private static let GroupMap: [FilterGroups: [(FilterTypes, Int)]] =
         [
+            .Favorites: [],
+            .FiveStar: [],
             .Standard: [(.PassThrough, 0), (.LineScreen, 4), (.DotScreen, 5), (.CircularScreen, 7),
                         (.HatchScreen, 6), (.CMYKHalftone, 8), (.Pixellate, 11), (.Comic, 2),
                         (.LineOverlay, 9), (.EdgeWork, 10), (.Posterize, 14), (.Pointillize, 13)],
@@ -803,6 +805,8 @@ class FilterManager
             .Gray: UUID(uuidString: "d004805c-4571-40d1-b2af-fb6d9b680816")!,
             .PhotoEffects: UUID(uuidString: "a8a857f4-ddbf-4fbb-a998-e48395f3ca10")!,
             .Blur: UUID(uuidString: "417aafdc-2264-404c-bfd8-a1420d627427")!,
+            .Favorites: UUID(uuidString: "8f5c963f-f009-40c9-80d9-a528506b7192")!,
+            .FiveStar: UUID(uuidString: "5045f4bc-5d07-4a0c-9ed7-7f5fd20354dd")!,
             ]
     
     /// Given a group description, return its ID.
@@ -894,6 +898,8 @@ class FilterManager
             .Generator: UIColor(named: "Mauve")!,
             .Gray: UIColor(named: "PaleGray")!,
             .Blur: UIColor.yellow,
+            .FiveStar: UIColor.green,
+            .Favorites: UIColor.white
             ]
     
     public func ColorForGroup(_ Group: FilterGroups) -> UIColor
