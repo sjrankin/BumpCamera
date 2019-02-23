@@ -303,13 +303,35 @@ class FilterParent
         PixelBuffers.removeAll()
     }
     
-    /// Images are rotated when they shouldn't be so we have to rotate them back.
+    /// Images are rotated when they shouldn't be so we have to rotate them back. Rotat the image right by
+    /// 90°.
     ///
     /// - Parameter Image: The image to rotate.
+    /// - Parameter AndMirror: If true, the image is mirrored left-to-right as well as
+    ///                        being rotated.
     /// - Returns: Properly oriented image.
-    func RotateImage(_ Image: CIImage) -> CIImage
+    func RotateImageRight(_ Image: CIImage, AndMirror: Bool = false) -> CIImage
     {
-        return Image.oriented(CGImagePropertyOrientation.right)
+        if AndMirror
+        {
+            var Rotated = Image.oriented(CGImagePropertyOrientation.downMirrored)
+            Rotated = Rotated.oriented(CGImagePropertyOrientation.right)
+            return Rotated
+        }
+        else
+        {
+            return Image.oriented(CGImagePropertyOrientation.right)
+        }
+    }
+    
+    /// Rotate the passed image by 180°.
+    ///
+    /// - Parameter Image: The image to rotate.
+    /// - Returns: Image rotated 180°.
+    func RotateImage180(_ Image: CIImage) -> CIImage
+    {
+        let Rotated = Image.oriented(CGImagePropertyOrientation.downMirrored)
+        return Rotated
     }
 }
 
@@ -344,7 +366,7 @@ extension RunFilterResults: Equatable
             
         case (.Failure, .Failure):
             return true
-        
+            
         default:
             return false
         }
