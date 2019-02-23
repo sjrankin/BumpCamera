@@ -381,7 +381,7 @@ class LiveMetalView: MTKView
                                                   &cvTextureOut)
         guard let cvTexture = cvTextureOut, let texture = CVMetalTextureGetTexture(cvTexture) else
         {
-            print("Failed to create preview texture")
+            print("LiveMetalView: Failed to create preview texture")
             
             CVMetalTextureCacheFlush(textureCache!, 0)
             return
