@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14460.31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="rhs-aW-svj">
+    <device id="retina5_5" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14460.20"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--Guassian Blue Settings-->
+        <scene sceneID="7iV-6G-RbE">
+            <objects>
+                <tableViewController id="z8p-ar-1rr" customClass="GaussianBlurSettingsUICode" customModule="BumpCamera" customModuleProvider="target" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="static" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" id="1XK-wS-9h5">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <sections>
+                            <tableViewSection id="DHC-1l-Aw3">
+                                <cells>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" rowHeight="88" id="m3W-vG-H39">
+                                        <rect key="frame" x="0.0" y="0.0" width="414" height="88"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="m3W-vG-H39" id="a7g-J7-47y">
+                                            <rect key="frame" x="0.0" y="0.0" width="414" height="87.666666666666671"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Sigma" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="HaE-pa-XlS">
+                                                    <rect key="frame" x="20" y="12" width="48" height="21"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="5000" minValue="0.0" maxValue="50000" translatesAutoresizingMaskIntoConstraints="NO" id="ku0-ds-h24">
+                                                    <rect key="frame" x="36" y="44" width="286" height="30"/>
+                                                    <connections>
+                                                        <action selector="HandleSigmaChanged:" destination="z8p-ar-1rr" eventType="primaryActionTriggered" id="9w1-CS-BYT"/>
+                                                    </connections>
+                                                </slider>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="JN0-qa-eaI">
+                                                    <rect key="frame" x="328" y="48" width="66" height="21"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="width" constant="66" id="kkA-xY-76U"/>
+                                                    </constraints>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstItem="JN0-qa-eaI" firstAttribute="trailing" secondItem="a7g-J7-47y" secondAttribute="trailingMargin" id="2z9-ea-G3m"/>
+                                                <constraint firstItem="HaE-pa-XlS" firstAttribute="top" secondItem="a7g-J7-47y" secondAttribute="topMargin" constant="1" id="53a-iK-Xit"/>
+                                                <constraint firstItem="JN0-qa-eaI" firstAttribute="top" secondItem="a7g-J7-47y" secondAttribute="topMargin" constant="37" id="ISG-HT-pQy"/>
+                                                <constraint firstItem="ku0-ds-h24" firstAttribute="centerY" secondItem="JN0-qa-eaI" secondAttribute="centerY" id="IgM-c0-r4F"/>
+                                                <constraint firstItem="HaE-pa-XlS" firstAttribute="leading" secondItem="a7g-J7-47y" secondAttribute="leadingMargin" id="Ive-x8-mWt"/>
+                                                <constraint firstAttribute="bottomMargin" secondItem="ku0-ds-h24" secondAttribute="bottom" constant="4" id="R1H-PW-RNw"/>
+                                                <constraint firstItem="ku0-ds-h24" firstAttribute="leading" secondItem="a7g-J7-47y" secondAttribute="leadingMargin" constant="18" id="gYE-4M-EQg"/>
+                                                <constraint firstItem="JN0-qa-eaI" firstAttribute="leading" secondItem="ku0-ds-h24" secondAttribute="trailing" constant="8" symbolic="YES" id="qzn-sk-ZFq"/>
+                                                <constraint firstItem="ku0-ds-h24" firstAttribute="top" secondItem="HaE-pa-XlS" secondAttribute="bottom" constant="11" id="y5J-5m-pjE"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
+                                </cells>
+                            </tableViewSection>
+                        </sections>
+                        <connections>
+                            <outlet property="dataSource" destination="z8p-ar-1rr" id="ViX-cR-efF"/>
+                            <outlet property="delegate" destination="z8p-ar-1rr" id="Abl-Ms-6PB"/>
+                        </connections>
+                    </tableView>
+                    <toolbarItems>
+                        <barButtonItem title="Item" image="CameraHome" id="utX-TC-W9A">
+                            <connections>
+                                <action selector="HandleCameraButton:" destination="z8p-ar-1rr" id="u0g-nj-fW7"/>
+                            </connections>
+                        </barButtonItem>
+                    </toolbarItems>
+                    <navigationItem key="navigationItem" title="Guassian Blue Settings" id="gEI-hK-UbE">
+                        <barButtonItem key="leftBarButtonItem" title="Back" id="rFb-xw-dQN">
+                            <connections>
+                                <action selector="HandleBackButton:" destination="z8p-ar-1rr" id="itT-4F-crR"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
+                    <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
+                    <connections>
+                        <outlet property="SigmaSlider" destination="ku0-ds-h24" id="8Ei-H8-gF8"/>
+                        <outlet property="SigmaValueLabel" destination="JN0-qa-eaI" id="rfi-s3-B2O"/>
+                    </connections>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="5bj-S1-emU" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-423.19999999999999" y="89.505247376311857"/>
+        </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="8PE-yZ-KP3">
+            <objects>
+                <navigationController storyboardIdentifier="GaussianBlurSettingsUI" toolbarHidden="NO" id="rhs-aW-svj" sceneMemberID="viewController">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="F9J-9p-y1y">
+                        <rect key="frame" x="0.0" y="20" width="414" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <toolbar key="toolbar" opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="Pv8-G3-E76">
+                        <rect key="frame" x="0.0" y="692" width="414" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </toolbar>
+                    <connections>
+                        <segue destination="z8p-ar-1rr" kind="relationship" relationship="rootViewController" id="UDr-5f-BaW"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="XCv-Dy-wyt" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-1375" y="90"/>
+        </scene>
+    </scenes>
+    <resources>
+        <image name="CameraHome" width="144" height="144"/>
+    </resources>
+</document>
