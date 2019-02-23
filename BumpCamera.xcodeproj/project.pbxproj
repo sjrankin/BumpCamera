@@ -126,6 +126,7 @@
 		1756CE1421FD87CB00C4E638 /* HSBSwizzling.metal in Sources */ = {isa = PBXBuildFile; fileRef = 1756CE1321FD87CB00C4E638 /* HSBSwizzling.metal */; };
 		1756F1192204A37100CC655D /* GrayscaleSettingsUICode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1756F1182204A37100CC655D /* GrayscaleSettingsUICode.swift */; };
 		175E260E21F4A5AB00B6BF8F /* HueAdjust.swift in Sources */ = {isa = PBXBuildFile; fileRef = 175E260D21F4A5AB00B6BF8F /* HueAdjust.swift */; };
+		1763F0722221443B00E1E2E8 /* MainUIProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1763F0712221443B00E1E2E8 /* MainUIProtocol.swift */; };
 		1764FA8A21F1E6F90059FAFD /* FilterSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1764FA8921F1E6F90059FAFD /* FilterSettings.swift */; };
 		176D6829221D921C00BA6267 /* FilterPerformanceCode2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 176D6828221D921C00BA6267 /* FilterPerformanceCode2.swift */; };
 		17787F022202C43900D15761 /* HSBFilterSettingsUI.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 17787F012202C43900D15761 /* HSBFilterSettingsUI.storyboard */; };
@@ -366,6 +367,7 @@
 		1756CE1321FD87CB00C4E638 /* HSBSwizzling.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = HSBSwizzling.metal; sourceTree = "<group>"; };
 		1756F1182204A37100CC655D /* GrayscaleSettingsUICode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrayscaleSettingsUICode.swift; sourceTree = "<group>"; };
 		175E260D21F4A5AB00B6BF8F /* HueAdjust.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HueAdjust.swift; sourceTree = "<group>"; };
+		1763F0712221443B00E1E2E8 /* MainUIProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainUIProtocol.swift; sourceTree = "<group>"; };
 		1764FA8921F1E6F90059FAFD /* FilterSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterSettings.swift; sourceTree = "<group>"; };
 		176D6828221D921C00BA6267 /* FilterPerformanceCode2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterPerformanceCode2.swift; sourceTree = "<group>"; };
 		17787F012202C43900D15761 /* HSBFilterSettingsUI.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = HSBFilterSettingsUI.storyboard; sourceTree = "<group>"; };
@@ -694,6 +696,7 @@
 				17D7510F21F41B820050A2B5 /* MainUIViewer Extensions */,
 				171E542A21E44E170045ED77 /* Main.storyboard */,
 				171D625A21EDA5B6004D3545 /* LiveMetalView.swift */,
+				1763F0712221443B00E1E2E8 /* MainUIProtocol.swift */,
 				171E542621E44E170045ED77 /* AppDelegate.swift */,
 				171E542F21E44E180045ED77 /* LaunchScreen.storyboard */,
 				17CE37372213AEDB0070ED87 /* GeneralResults.swift */,
@@ -1670,6 +1673,7 @@
 				1779F3C22218265500140EEA /* Posterize.swift in Sources */,
 				1799C89621FF15750069D5AC /* Pixellatekernel.metal in Sources */,
 				17CE373A2213AF330070ED87 /* ColorPickerProtocol.swift in Sources */,
+				1763F0722221443B00E1E2E8 /* MainUIProtocol.swift in Sources */,
 				17D60D84220FEA7700933F15 /* MonochromeColorsSettingUICode.swift in Sources */,
 				17D7511321F41CD40050A2B5 /* MainUIPhoto.swift in Sources */,
 				171D626F21EDD143004D3545 /* CircularScreen.swift in Sources */,
