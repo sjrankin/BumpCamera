@@ -9,6 +9,8 @@
 import Foundation
 import UIKit
 
+/// Set of controls that allows the user to rate and set as favorite filters. This is a UITableViewCell which is used as a
+/// table footer view for all filter setting UIs.
 class RatingCell: UITableViewCell
 {
     required init?(coder aDecoder: NSCoder)
