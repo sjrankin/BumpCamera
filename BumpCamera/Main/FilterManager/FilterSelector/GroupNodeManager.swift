@@ -47,12 +47,145 @@ class GroupNodeManager
             Node.IsSelected = GroupType == InitialGroup
             Node.Color = FilterManager.ColorForGroup(GroupType)
             Node.GroupFilters = LoadFilters(Parent: Node, FromGroup: GroupType, InitialFilter: InitialFilter, Targets)
+            if Node.GroupFilters.count == 0
+            {
+                continue
+            }
             Node.GroupFilters!.sort{$0.SortOrder < $1.SortOrder}
             Groups?.append(Node)
             Index = Index + 1
         }
         
         Groups!.sort{$0.SortOrder < $1.SortOrder}
+        LoadFavoriteFilters(ForTargets: Targets)
+        LoadFiveStarFilters(ForTargets: Targets)
+    }
+    
+    func RemoveFiveStarGroup()
+    {
+        var GroupIndex = -1
+        for Index in 0 ..< (Groups?.count)!
+        {
+            if (Groups?[Index].IsFiveStarList)!
+            {
+                GroupIndex = Index
+                break
+            }
+        }
+        if GroupIndex < 0
+        {
+            return
+        }
+        Groups?.remove(at: GroupIndex)
+    }
+    
+    func RemoveFavoriteGroup()
+    {
+        var GroupIndex = -1
+        for Index in 0 ..< (Groups?.count)!
+        {
+            if (Groups?[Index].IsFavoriteList)!
+            {
+                GroupIndex = Index
+                break
+            }
+        }
+        if GroupIndex < 0
+        {
+            return
+        }
+        Groups?.remove(at: GroupIndex)
+    }
+    
+    func LoadFiveStarFilters(ForTargets: [FilterTargets])
+    {
+        RemoveFiveStarGroup()
+        let FiveStarred = FilterManager.GetFiltersWith(StarCount: 5)
+        if FiveStarred.count == 0
+        {
+            return
+        }
+        let Node = GroupNode()
+        Node.Title = "Five Stars"
+        Node.GroupType = FilterManager.FilterGroups.FiveStar
+        Node.SortOrder = 0
+        Node.NodeID = -100
+        Node.ID = FilterManager.GetGroupID(ForGroup: Node.GroupType)
+        Node.IsSelected = false
+        Node.IsFiveStarList = true
+        Node.Color = FilterManager.ColorForGroup(Node.GroupType)
+        var InsertIndex = 0
+        if (Groups?.first?.IsFavoriteList)!
+        {
+            InsertIndex = 1
+        }
+        let FiveStarFilters = AddFiltersTo(Parent: Node, List: FiveStarred, ForTargets: ForTargets)
+        if FiveStarFilters.count < 1
+        {
+                    Node.GroupFilters = [FilterNode]()
+            return
+        }
+        Node.GroupFilters = FiveStarFilters
+
+        Groups?.insert(Node, at: InsertIndex)
+    }
+    
+    func LoadFavoriteFilters(ForTargets: [FilterTargets])
+    {
+        RemoveFavoriteGroup()
+        let Favorite = FilterManager.GetFiltersWithFave(Value: true)
+        if Favorite.count == 0
+        {
+            return
+        }
+        let Node = GroupNode()
+        Node.Title = "Favorite"
+        Node.GroupType = FilterManager.FilterGroups.Favorites
+        Node.SortOrder = 0
+        Node.NodeID = -101
+        Node.ID = FilterManager.GetGroupID(ForGroup: Node.GroupType)
+        Node.IsSelected = false
+        Node.IsFavoriteList = true
+        Node.Color = FilterManager.ColorForGroup(Node.GroupType)
+        let FavoriteFilters = AddFiltersTo(Parent: Node, List: Favorite, ForTargets: ForTargets)
+        if FavoriteFilters.count < 1
+        {
+                    Node.GroupFilters = [FilterNode]()
+            return
+        }
+        Node.GroupFilters = FavoriteFilters
+        
+        Groups?.insert(Node, at: 0)
+    }
+    
+    func AddFiltersTo(Parent: GroupNode, List: [(FilterManager.FilterTypes, Ratings)], ForTargets: [FilterTargets]) -> [FilterNode]
+    {
+        var FilterData = [FilterNode]()
+        var Index = 0
+        for (FilterType, _) in List
+        {
+            if !FilterManager.FilterSupportsTargets(Targets: ForTargets, ForFilter: FilterType)
+            {
+                continue
+            }
+            if !FilterManager.IsImplemented(FilterType)
+            {
+                continue
+            }
+            let Node = FilterNode()
+            Node.NodeID = Index
+            Node.FilterType = FilterType
+            Node.ID = FilterManager.GetFilterID(For: FilterType)
+            Node.Title = FilterManager.GetFilterTitle(FilterType)!
+            Node.IsImplemented = FilterManager.IsImplemented(FilterType)
+            Node.IsSelected = false
+            Node.SortOrder = Index
+            Node.delegate = Parent
+            Index = Index + 1
+            FilterData.append(Node)
+        }
+
+        return FilterData
     }
     
     /// Load the list of filters for the specified parent group.
