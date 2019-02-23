@@ -26,9 +26,6 @@ protocol Renderer: class
     /// Get the initialized flag for the filter.
     var Initialized: Bool {get}
     
-    /// Get the icon name for the filter.
-    var IconName: String {get}
-    
     /// Initialize the filter.
     ///
     /// - Parameters:
