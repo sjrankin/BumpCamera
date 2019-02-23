@@ -35,7 +35,8 @@ class MainUIViewer: UIViewController,
     AVCaptureDepthDataOutputDelegate,
     AVCaptureDataOutputSynchronizerDelegate,
     UICollectionViewDelegate,
-    UICollectionViewDataSource
+    UICollectionViewDataSource,
+    MainUIProtocol
 {
     let _Settings = UserDefaults.standard
     
@@ -56,10 +57,10 @@ class MainUIViewer: UIViewController,
         
         OnDebugger = (ADelegate?.OnDebugger)!
         print("OnDebugger=\(OnDebugger)")
-
+        
         VideoIsAuthorized = CheckAuthorization()
         //Filters must be created before checking for settings.
-        FilterManager.LoadFilterRatings()
+        FilterManager.LoadFilterRatings(self) 
         Filters = FilterManager(FilterManager.FilterTypes.PassThrough)
         if !_Settings.bool(forKey: "SettingsInstalled")
         {
@@ -194,9 +195,25 @@ class MainUIViewer: UIViewController,
             }
             let Alert = UIAlertController(title: AlertTitle,
                                           message: "BumpCamera crashed the last time it ran. (Previous filter: \(PreviousFilter).) Resetting the filter to Pass Through." + LastSentence,
-                preferredStyle: UIAlertController.Style.alert)
+                                          preferredStyle: UIAlertController.Style.alert)
             Alert.addAction(UIAlertAction(title: "OK", style: UIAlertAction.Style.default, handler: nil))
             present(Alert, animated: true)
+        }
+    }
+    
+    /// Handles changes to user favorites and settings.
+    func UserFavoritesChanged()
+    {
+        let OldFiltersShowing = FiltersAreShowing
+        if FiltersAreShowing
+        {
+            UpdateFilterSelectionVisibility(HideDuration: 0.0)
+        }
+        GroupData.LoadFavoriteFilters(ForTargets: [.LiveView])
+        GroupData.LoadFiveStarFilters(ForTargets: [.LiveView])
+        if OldFiltersShowing
+        {
+            UpdateFilterSelectionVisibility(ShowDuration: 0.0)
         }
     }
     
@@ -254,7 +271,7 @@ class MainUIViewer: UIViewController,
                 }
                 self.DataOutputQueue.async
                     {
-                self.RenderingEnabled = true
+                        self.RenderingEnabled = true
                 }
                 self.CaptureSession.startRunning()
                 self.IsSessionRunning = self.CaptureSession.isRunning
