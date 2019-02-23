@@ -100,6 +100,8 @@ extension FilterManager
         case Gray = 8
         case PhotoEffects = 9
         case Blur = 10
+        case Favorites = 11
+        case FiveStar = 12
         case NotSet = 10000
     }
     
