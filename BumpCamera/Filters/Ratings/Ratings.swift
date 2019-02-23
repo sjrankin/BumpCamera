@@ -50,7 +50,7 @@ class Ratings
     private var FilterPrefix: String = ""
     
     /// Delegate to the MainUI. Used to communicate changes in favorites and ratings.
-    public var delegate: MainUIProtocol? = nil
+    public weak var delegate: MainUIProtocol? = nil 
     
     /// Holds the fave value for the filter.
     private var _Faved: Bool = false
