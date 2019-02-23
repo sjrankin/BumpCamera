@@ -11,7 +11,9 @@ import UIKit
 import Photos
 
 /// Base class for filter setting UIs.
-class FilterSettingUIBase: UITableViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate
+class FilterSettingUIBase: UITableViewController,
+    UIImagePickerControllerDelegate,
+    UINavigationControllerDelegate
 {
     let _Settings = UserDefaults.standard
     var Filter = FilterManager.FilterTypes.PassThrough
