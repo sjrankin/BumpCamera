@@ -355,6 +355,7 @@ class FilterSettingUIBase: UITableViewController,
         let NewImage = SampleImageList[SampleIndex]
         print("NewImage=\(NewImage) at index \(SampleIndex)")
         _Settings.set(NewImage, forKey: "SampleImage")
+        ShowSampleView()
     }
     
     var LastSampleImage: UIImage? = nil
