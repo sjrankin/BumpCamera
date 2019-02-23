@@ -13,13 +13,14 @@ import UIKit
 extension FilterManager
 {
     /// Load ratings for each filter.
-    public static func LoadFilterRatings()
+    public static func LoadFilterRatings(_ Delegate: MainUIProtocol)
     {
         print("Loading filter ratings.")
         FilterManager.RatingsList = [FilterTypes: Ratings]()
         for (Filter_Type, _) in FilterManager.FilterInfoMap
         {
             let Rating = Ratings(Filter: Filter_Type)
+            Rating.delegate = Delegate
             FilterManager.RatingsList![Filter_Type] = Rating
         }
     }
