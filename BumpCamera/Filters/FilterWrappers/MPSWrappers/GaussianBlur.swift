@@ -17,6 +17,7 @@ class GaussianBlur: FilterParent, Renderer
 {
     required override init()
     {
+        #if false
         let DefaultLibrary = MetalDevice?.makeDefaultLibrary()
         let KernelFunction = DefaultLibrary?.makeFunction(name: "SolarizeKernel")
         do
@@ -27,6 +28,7 @@ class GaussianBlur: FilterParent, Renderer
         {
             print("Unable to create pipeline state: \(error.localizedDescription)")
         }
+        #endif
     }
     
     static let _ID: UUID = UUID(uuidString: "5ccbc7e0-7422-498c-a99a-ff1679399d9b")!
