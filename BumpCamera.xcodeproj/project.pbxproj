@@ -127,6 +127,8 @@
 		1756F1192204A37100CC655D /* GrayscaleSettingsUICode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1756F1182204A37100CC655D /* GrayscaleSettingsUICode.swift */; };
 		175E260E21F4A5AB00B6BF8F /* HueAdjust.swift in Sources */ = {isa = PBXBuildFile; fileRef = 175E260D21F4A5AB00B6BF8F /* HueAdjust.swift */; };
 		1763F0722221443B00E1E2E8 /* MainUIProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1763F0712221443B00E1E2E8 /* MainUIProtocol.swift */; };
+		1763F076222167AB00E1E2E8 /* GaussianBlurSettingsUI.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1763F075222167AB00E1E2E8 /* GaussianBlurSettingsUI.storyboard */; };
+		1763F0782221687500E1E2E8 /* GaussianBlurSettingsUICode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1763F0772221687500E1E2E8 /* GaussianBlurSettingsUICode.swift */; };
 		1764FA8A21F1E6F90059FAFD /* FilterSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1764FA8921F1E6F90059FAFD /* FilterSettings.swift */; };
 		176D6829221D921C00BA6267 /* FilterPerformanceCode2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 176D6828221D921C00BA6267 /* FilterPerformanceCode2.swift */; };
 		17787F022202C43900D15761 /* HSBFilterSettingsUI.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 17787F012202C43900D15761 /* HSBFilterSettingsUI.storyboard */; };
@@ -368,6 +370,8 @@
 		1756F1182204A37100CC655D /* GrayscaleSettingsUICode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrayscaleSettingsUICode.swift; sourceTree = "<group>"; };
 		175E260D21F4A5AB00B6BF8F /* HueAdjust.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HueAdjust.swift; sourceTree = "<group>"; };
 		1763F0712221443B00E1E2E8 /* MainUIProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainUIProtocol.swift; sourceTree = "<group>"; };
+		1763F075222167AB00E1E2E8 /* GaussianBlurSettingsUI.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = GaussianBlurSettingsUI.storyboard; sourceTree = "<group>"; };
+		1763F0772221687500E1E2E8 /* GaussianBlurSettingsUICode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GaussianBlurSettingsUICode.swift; sourceTree = "<group>"; };
 		1764FA8921F1E6F90059FAFD /* FilterSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterSettings.swift; sourceTree = "<group>"; };
 		176D6828221D921C00BA6267 /* FilterPerformanceCode2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterPerformanceCode2.swift; sourceTree = "<group>"; };
 		17787F012202C43900D15761 /* HSBFilterSettingsUI.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = HSBFilterSettingsUI.storyboard; sourceTree = "<group>"; };
@@ -1057,6 +1061,23 @@
 			path = ToHSB;
 			sourceTree = "<group>";
 		};
+		1763F0732221676F00E1E2E8 /* MPS */ = {
+			isa = PBXGroup;
+			children = (
+				1763F0742221677D00E1E2E8 /* GaussianBlur */,
+			);
+			path = MPS;
+			sourceTree = "<group>";
+		};
+		1763F0742221677D00E1E2E8 /* GaussianBlur */ = {
+			isa = PBXGroup;
+			children = (
+				1763F075222167AB00E1E2E8 /* GaussianBlurSettingsUI.storyboard */,
+				1763F0772221687500E1E2E8 /* GaussianBlurSettingsUICode.swift */,
+			);
+			path = GaussianBlur;
+			sourceTree = "<group>";
+		};
 		17787EFE2202C3C700D15761 /* HSB */ = {
 			isa = PBXGroup;
 			children = (
@@ -1339,6 +1360,7 @@
 				174779FF22048C6600FD64EF /* FilterSectionData.swift */,
 				174779FB2204338600FD64EF /* CollapsibleHeader.swift */,
 				174779FD220433CB00FD64EF /* CollapsibleTableViewHeaderDelegate.swift */,
+				1763F0732221676F00E1E2E8 /* MPS */,
 				174F82E4221FDB6D009A004C /* CIFilter */,
 				174F82E3221FDB0C009A004C /* Metal */,
 				174779F622042FCD00FD64EF /* NoParameters */,
@@ -1387,6 +1409,7 @@
 				171E542021E44E170045ED77 /* Frameworks */,
 				171E542121E44E170045ED77 /* Resources */,
 				17BA6042221E685400AEC044 /* ShellScript */,
+				1763F07922218F5400E1E2E8 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -1457,6 +1480,7 @@
 				174F82DE221FBD3A009A004C /* PointillizeSettingsUI.storyboard in Resources */,
 				171F3D02220AAE270098E2B7 /* LineOverlaySettingsUI.storyboard in Resources */,
 				17E9F0E1220173CD00BA7B46 /* KuwaharaFilterSettingsUI.storyboard in Resources */,
+				1763F076222167AB00E1E2E8 /* GaussianBlurSettingsUI.storyboard in Resources */,
 				170BFE7A221C33EE00754BF6 /* SmoothLinearGradientSettingsUI.storyboard in Resources */,
 				171F3CF82209444B0098E2B7 /* GridSettingsUI.storyboard in Resources */,
 				173F5D04220BE82E00067ABB /* ThresholdSettingsUI.storyboard in Resources */,
@@ -1481,6 +1505,23 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		1763F07922218F5400E1E2E8 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "#if which swiftlint >/dev/null; then\n#    swiftlint\n#else\n#    echo \"SwiftLint not installed.\"\n#fi\n";
+		};
 		17BA6042221E685400AEC044 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -1616,6 +1657,7 @@
 				17E15FE722053A620037B35F /* GrayscaleAdjustChannelMultipliersCode.swift in Sources */,
 				17D60D8E221162F100933F15 /* Pixellate2SettingsUICode.swift in Sources */,
 				171F3CFC220967D70098E2B7 /* UIColorExtensions.swift in Sources */,
+				1763F0782221687500E1E2E8 /* GaussianBlurSettingsUICode.swift in Sources */,
 				171D627321EDD415004D3545 /* CMYKHalftone.swift in Sources */,
 				17CE37472213D6590070ED87 /* CornerGradient.swift in Sources */,
 				171375F822192732000E49C2 /* BayerDecode.swift in Sources */,
