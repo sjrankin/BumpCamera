@@ -17,18 +17,7 @@ class GaussianBlur: FilterParent, Renderer
 {
     required override init()
     {
-        #if false
-        let DefaultLibrary = MetalDevice?.makeDefaultLibrary()
-        let KernelFunction = DefaultLibrary?.makeFunction(name: "SolarizeKernel")
-        do
-        {
-            ComputePipelineState = try MetalDevice?.makeComputePipelineState(function: KernelFunction!)
-        }
-        catch
-        {
-            print("Unable to create pipeline state: \(error.localizedDescription)")
-        }
-        #endif
+        super.init()
     }
     
     static let _ID: UUID = UUID(uuidString: "5ccbc7e0-7422-498c-a99a-ff1679399d9b")!
@@ -62,8 +51,6 @@ class GaussianBlur: FilterParent, Renderer
     
     private let MetalDevice = MTLCreateSystemDefaultDevice()
     
-    //private var ComputePipelineState: MTLComputePipelineState? = nil
-    
     private lazy var CommandQueue: MTLCommandQueue? =
     {
         return self.MetalDevice?.makeCommandQueue()
@@ -73,14 +60,15 @@ class GaussianBlur: FilterParent, Renderer
     
     private(set) var InputFormatDescription: CMFormatDescription? = nil
     
-    //private var BufferPool: CVPixelBufferPool? = nil
-    
     var Initialized = false
+    
+    var bciContext: CIContext!
     
     func Initialize(With FormatDescription: CMFormatDescription, BufferCountHint: Int)
     {
         Reset("GaussianBlur.Initialize")
         CommandQueue = MetalDevice?.makeCommandQueue()
+        bciContext = CIContext()
         Initialized = true
     }
     
@@ -88,10 +76,11 @@ class GaussianBlur: FilterParent, Renderer
     {
         objc_sync_enter(AccessLock)
         defer{objc_sync_exit(AccessLock)}
-        //BufferPool = nil
         OutputFormatDescription = nil
         InputFormatDescription = nil
         TextureCache = nil
+        ciContext = nil
+        bciContext = nil
         Initialized = false
     }
     
@@ -102,9 +91,6 @@ class GaussianBlur: FilterParent, Renderer
     
     var AccessLock = NSObject()
     
-    //var ParameterBuffer: MTLBuffer! = nil
-    //var PreviousDebug = ""
-    
     //From MPSUnaryImageKernel.MPSCopyAllocator documentation.
     let SomeAllocator: MPSCopyAllocator =
     {
@@ -114,6 +100,10 @@ class GaussianBlur: FilterParent, Renderer
         return buffer.device.makeTexture(descriptor: descriptor)!
     }
     
+    /// Render the buffer passed with the Gaussian Blur MPS filter. The buffer is assumed to be from the live view.
+    ///
+    /// - Parameter PixelBuffer: The (assumedly) live view buffer.
+    /// - Returns: Pixel buffer with the rendered image.
     func Render(PixelBuffer: CVPixelBuffer) -> CVPixelBuffer?
     {
         objc_sync_enter(AccessLock)
@@ -132,9 +122,8 @@ class GaussianBlur: FilterParent, Renderer
             return nil
         }
         let CiImage = CIImage(cvPixelBuffer: PixelBuffer)
-        let ciContext = CIContext()
         var InputTexture: MTLTexture!
-        if let CgImage = ciContext.createCGImage(CiImage, from: CiImage.extent)
+        if let CgImage = bciContext.createCGImage(CiImage, from: CiImage.extent)
         {
             do
             {
@@ -165,8 +154,7 @@ class GaussianBlur: FilterParent, Renderer
             var PixelBuffer: CVPixelBuffer? = nil
             CVPixelBufferCreate(kCFAllocatorDefault, Int(Final.extent.width), Int(Final.extent.height),
                                 kCVPixelFormatType_32BGRA, nil, &PixelBuffer)
-            
-            ciContext.render(Final, to: PixelBuffer!)
+            bciContext.render(Final, to: PixelBuffer!)
             return PixelBuffer
         }
         return Final.pixelBuffer
@@ -174,9 +162,7 @@ class GaussianBlur: FilterParent, Renderer
     
     var ImageDevice: MTLDevice? = nil
     var InitializedForImage = false
-    #if false
-    private var ImageComputePipelineState: MTLComputePipelineState? = nil
-    #endif
+
     private lazy var ImageCommandQueue: MTLCommandQueue? =
     {
         return self.ImageDevice?.makeCommandQueue()
@@ -191,7 +177,10 @@ class GaussianBlur: FilterParent, Renderer
         CommandQueue = ImageDevice?.makeCommandQueue()
         IGTextureLoader = MTKTextureLoader(device: MetalDevice!)
         InitializedForImage = true
+        ciContext = CIContext()
     }
+    
+    var ciContext: CIContext!
     
     /// Renders the image with the wrapper's MPS image filter. In our case, the MPSImageGaussianBlur.
     ///
@@ -215,7 +204,7 @@ class GaussianBlur: FilterParent, Renderer
             return nil
         }
         let CiImage = CIImage(image: Image)
-        let ciContext = CIContext()
+        //let ciContext = CIContext()
         var InputTexture: MTLTexture!
         if let CgImage = ciContext.createCGImage(CiImage!, from: CiImage!.extent)
         {
