@@ -132,7 +132,7 @@ class FileHandler
     ///
     /// - Parameter Name: Name of the directory whose contents will be deleted.
     /// - Returns: True on success, false on failure.
-    public static func ClearDirectory(_ Name: String) -> Bool
+    @discardableResult public static func ClearDirectory(_ Name: String) -> Bool
     {
         if !DirectoryExists(DirectoryName: Name)
         {
@@ -199,6 +199,11 @@ class FileHandler
     /// - Returns: UIImage form of the image at the passed URL. Nil on error or file not found.
     public static func LoadImage(_ From: URL) -> UIImage?
     {
+        if InMaximumPrivacy()
+        {
+            print("In Maximum Privacy mode. No reading of directories allowed.")
+            return nil
+        }
         do
         {
             let ImageData = try Data(contentsOf: From)
@@ -222,6 +227,11 @@ class FileHandler
     /// - Returns: True on success, nil on failure.
     public static func SaveImage(_ Image: UIImage, WithName: String, InDirectory: URL, AsJPG: Bool = true) -> Bool
     {
+        if InMaximumPrivacy()
+        {
+            print("In Maximum Privacy mode. No image writing allowed.")
+            return false
+        }
         if AsJPG
         {
             if let Data = Image.jpegData(compressionQuality: 1.0)
@@ -300,6 +310,11 @@ class FileHandler
     /// - Returns: The sample image as a UIImage on success, nil if not found or on failure.
     public static func GetSampleImage() -> UIImage?
     {
+        if InMaximumPrivacy()
+        {
+            print("In Maximum Privacy mode. No sample images allowed.")
+            return nil
+        }
         if !DirectoryExists(DirectoryName: SampleDirectory)
         {
             CreateDirectory(DirectoryName: SampleDirectory)
@@ -333,6 +348,11 @@ class FileHandler
     /// - Returns: The name of the sample image on success, nil on failure.
     public static func GetSampleImageName() -> String?
     {
+        if InMaximumPrivacy()
+        {
+            print("In Maximum Privacy mode. No sample images allowed.")
+            return nil
+        }
         if !DirectoryExists(DirectoryName: SampleDirectory)
         {
             return nil
@@ -424,6 +444,11 @@ class FileHandler
     /// - Returns: True on success, false on failure.
     @discardableResult public static func SaveStringToFile(_ SaveMe: String, FileName: String) -> Bool
     {
+        if InMaximumPrivacy()
+        {
+            print("In Maximum Privacy mode. No writing allowed.")
+            return false
+        }
         let SaveDirectory = GetDirectoryURL(DirectoryName: PerformanceDirectory)
         let FinalFile = SaveDirectory?.appendingPathComponent(FileName)
         do
@@ -448,6 +473,11 @@ class FileHandler
     /// - Returns: True on success, false on failure.
     @discardableResult public static func SaveStringToFile(_ SaveMe: String, FileName: String, ToDirectory: String) -> Bool
     {
+        if InMaximumPrivacy()
+        {
+            print("In Maximum Privacy mode. No writing allowed.")
+            return false
+        }
         let SaveDirectory = GetDirectoryURL(DirectoryName: ToDirectory)
         let FinalFile = SaveDirectory?.appendingPathComponent(FileName)
         do
@@ -460,5 +490,28 @@ class FileHandler
             return false
         }
         return true
+    }
+    
+    /// Returns the current state of the maximum privacy flag in user settings.
+    ///
+    /// - Returns: Current maximum privacy state. If false, nothing should be written.
+    private static func InMaximumPrivacy() -> Bool
+    {
+        return UserDefaults.standard.bool(forKey: "MaximumPrivacy")
+    }
+    
+    /// This function should be called to delete all data in all directories created by BumpCamera. It is called by
+    /// the Privacy view controller when the user enables Maximum Privacy.
+    public static func ClearAllDirectories()
+    {
+        print("Clearing all directories.")
+        ClearDirectory(SampleDirectory)
+        print("Sample directory cleared.")
+        ClearDirectory(ScratchDirectory)
+        print("Scratch directory cleared.")
+        ClearDirectory(PerformanceDirectory)
+        print("Performance directory cleared.")
+        ClearDirectory(RuntimeDirectory)
+        print("Runtime directory cleared.")
     }
 }
