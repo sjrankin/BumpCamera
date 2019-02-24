@@ -53,6 +53,21 @@ extension MainUIViewer
         #else
         _Settings.set(true, forKey: "MaximumPrivacy")
         #endif
+        #if DEBUG
+        _Settings.set(false, forKey: "ClearRuntimeAtStartup")
+        #else
+        _Settings.set(true, forKey: "ClearRuntimeAtStartup")
+        #endif
+        #if DEBUG
+        _Settings.set(false, forKey: "ClearScratchAtStartup")
+        #else
+        _Settings.set(true, forKey: "ClearScratchAtStartup")
+        #endif
+        #if DEBUG
+        _Settings.set(false, forKey: "ShowFramerateOverlay")
+        _Settings.set(true, forKey: "IngorePriorCrashes")
+        _Settings.set("", forKey: "LastCrashedFilter")
+        #endif
         let InitialGroupID = Filters?.GetGroupID(ForGroup: .Standard)
         _Settings.set(InitialGroupID?.uuidString, forKey: "CurrentGroup")
         let InitialFilterID = Filters?.GetFilterID(For: .PassThrough)
