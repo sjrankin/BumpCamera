@@ -14,10 +14,7 @@ import AVFoundation
 import Photos
 import MobileCoreServices
 
-//https://medium.com/@rizwanm/https-medium-com-rizwanm-swift-camera-part-1-c38b8b773b2
-//https://github.com/codepath/ios_guides/wiki/Creating-a-Custom-Camera-View
-
-/// Code to run the main UI for the Bumpy Camera. Large sections of the code for the UI are in extensions to the MainUIView class.
+//// Code to run the main UI for the Bumpy Camera. Large sections of the code for the UI are in extensions to the MainUIView class.
 /// - Extension map
 ///     - *MainUICamera*: Code to get images from the camera. Code to run the live view. Code to react to device settings changes.
 ///     - *MainUIPhoto*: Code related to getting and saving photos to the camera roll.
@@ -29,6 +26,13 @@ import MobileCoreServices
 ///     - *MainUIDebug*: Debug code and visual debug code.
 ///     - *MainUILabelManagement*: Code related to showing and animating the visibility of transient labels on the main UI.
 ///     - *MainUIUserInteractions*: Code to handle taps for focus/exposure and hiding parts of the UI.
+///     - *MainUIExif*: Code related to EXIF handling.
+/// - Protocols
+///     - *MainUIProtocol*: Used by classes to communicate with the Main UI.
+///
+///  - Notes:
+///    - [Creating a Custom Camera View](https://github.com/codepath/ios_guides/wiki/Creating-a-Custom-Camera-View)
+///    - [Swift Camera Part 1](https://medium.com/@rizwanm/https-medium-com-rizwanm-swift-camera-part-1-c38b8b773b2)
 class MainUIViewer: UIViewController,
     AVCapturePhotoCaptureDelegate,
     AVCaptureVideoDataOutputSampleBufferDelegate,
@@ -52,6 +56,11 @@ class MainUIViewer: UIViewController,
     override func viewDidLoad()
     {
         super.viewDidLoad()
+        
+        FrameCountLabel.textColor = UIColor.clear
+        FrameCountLabel.backgroundColor = UIColor.clear
+        FPSLabel.textColor = UIColor.clear
+        FPSLabel.backgroundColor = UIColor.clear
         
         ADelegate = UIApplication.shared.delegate as? AppDelegate
         
@@ -105,6 +114,15 @@ class MainUIViewer: UIViewController,
             fatalError("Error creating \(FileHandler.SampleDirectory).")
         }
         
+        if _Settings.bool(forKey: "ClearRuntimeAtStartup")
+        {
+            FileHandler.ClearDirectory(FileHandler.RuntimeDirectory)
+        }
+        if _Settings.bool(forKey: "ClearScratchAtStartup")
+        {
+            FileHandler.ClearDirectory(FileHandler.ScratchDirectory)
+        }
+        
         //https://stackoverflow.com/questions/34883594/cant-make-uitoolbar-black-color-with-white-button-item-tint-ios-9-swift/34885377
         MainBottomToolbar.barTintColor = UIColor.black
         MainBottomToolbar.tintColor = UIColor.white
@@ -140,13 +158,39 @@ class MainUIViewer: UIViewController,
         StartSettingsMonitor()
     }
     
+    #if false
+    override func viewWillLayoutSubviews()
+    {
+        FrameCountLabel.textColor = UIColor.clear
+        FrameCountLabel.backgroundColor = UIColor.clear
+        FPSLabel.textColor = UIColor.clear
+        FPSLabel.backgroundColor = UIColor.clear
+    }
+    #endif
+    
+    var ShowedCrashDialog = false
+    
     override func viewDidAppear(_ animated: Bool)
     {
         super.viewDidAppear(animated)
         
+        if ShowedCrashDialog
+        {
+            return
+        }
         if (ADelegate?.DidCrash)!
         {
+            ShowedCrashDialog = true
+            #if DEBUG
+            if _Settings.bool(forKey: "IgnorePriorCrashes")
+            {
+                return
+            }
+            #endif
             let PreviousFilter: String = (ADelegate?.CrashedFilterName)!
+            #if DEBUG
+            _Settings.set(PreviousFilter, forKey: "LastCrashedFilter")
+            #endif
             var AlertTitle = "Crash Detected"
             var LastSentence = ""
             if OnDebugger
@@ -481,30 +525,47 @@ class MainUIViewer: UIViewController,
         #if DEBUG
         DispatchQueue.main.async
             {
-                if self.StartedUpdatingFrameCounts
+                if self._Settings.bool(forKey: "ShowFramerateOverlay")
                 {
-                    let Now = Date()
-                    let SecondsDelta = Now.timeIntervalSince(self.LastUpdateTime)
-                    if SecondsDelta >= 1.0
+                    self.FrameCountLabel.textColor = UIColor.white
+                    self.FrameCountLabel.backgroundColor = UIColor.black
+                    self.FPSLabel.textColor = UIColor.white
+                    self.FPSLabel.backgroundColor = UIColor.black
+                    
+                    if self.StartedUpdatingFrameCounts
                     {
-                        self.LastUpdateTime = Now
-                        let FrameDelta = self.FrameCount - self.LastFrameCount
-                        self.LastFrameCount = self.FrameCount
-                        let FPS = Double(FrameDelta) / SecondsDelta
-                        self.FPSLabel.text = "\(FPS.Round(To: 1)) fps"
+                        let Now = Date()
+                        let SecondsDelta = Now.timeIntervalSince(self.LastUpdateTime)
+                        if SecondsDelta >= 1.0
+                        {
+                            self.LastUpdateTime = Now
+                            let FrameDelta = self.FrameCount - self.LastFrameCount
+                            self.LastFrameCount = self.FrameCount
+                            let FPS = Double(FrameDelta) / SecondsDelta
+                            self.FPSLabel.text = "\(FPS.Round(To: 1)) fps"
+                        }
                     }
+                    else
+                    {
+                        self.StartedUpdatingFrameCounts = true
+                        self.LastUpdateTime = Date()
+                        self.FPSLabel.text = ""
+                    }
+                    let Final = Utility.ReduceBigNum(BigNum: Int64(self.FrameCount), AsBytes: false, ReturnUnchangedThreshold: 1000000)
+                    self.FrameCountLabel.text = "\(Final)"
                 }
                 else
                 {
-                    self.StartedUpdatingFrameCounts = true
-                    self.LastUpdateTime = Date()
-                    self.FPSLabel.text = ""
+                    //Reset the UI and frame counting to initial, non-visible states.
+                    self.FrameCountLabel.textColor = UIColor.clear
+                    self.FrameCountLabel.backgroundColor = UIColor.clear
+                    self.FPSLabel.textColor = UIColor.clear
+                    self.FPSLabel.backgroundColor = UIColor.clear
+                    self.StartedUpdatingFrameCounts = false
+                    self.FrameCount = 0
                 }
-                let Final = Utility.ReduceBigNum(BigNum: Int64(self.FrameCount), AsBytes: false, ReturnUnchangedThreshold: 1000000)
-                self.FrameCountLabel.text = "\(Final)"
         }
         #else
-        //If we're in a release build, hide the labels.
         DispatchQueue.main.async
             {
                 self.FrameCountLabel.textColor = UIColor.clear
