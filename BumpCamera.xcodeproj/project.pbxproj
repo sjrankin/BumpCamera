@@ -151,11 +151,18 @@
 		178C75BE21F337C100844FFF /* AVCaptureVideoOrientationExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 178C75BD21F337C100844FFF /* AVCaptureVideoOrientationExtension.swift */; };
 		178CF92621F5B98D007229FD /* ParameterManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 178CF92521F5B98D007229FD /* ParameterManager.swift */; };
 		178CF92821F5F286007229FD /* FilterManagerEnums.swift in Sources */ = {isa = PBXBuildFile; fileRef = 178CF92721F5F286007229FD /* FilterManagerEnums.swift */; };
+		1797BCF12222CB3900C47510 /* DebugSettings.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1797BCF02222CB3900C47510 /* DebugSettings.storyboard */; };
+		1797BCF32222CC0800C47510 /* DebugSettingsCode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1797BCF22222CC0800C47510 /* DebugSettingsCode.swift */; };
+		1797BCF52222CF7900C47510 /* ManageFilterRatings.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1797BCF42222CF7900C47510 /* ManageFilterRatings.storyboard */; };
+		1797BCF82222CFD800C47510 /* ManageFilterRatingsCode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1797BCF72222CFD800C47510 /* ManageFilterRatingsCode.swift */; };
+		1797BCFA2222D0BA00C47510 /* ManageFavoritesCode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1797BCF92222D0BA00C47510 /* ManageFavoritesCode.swift */; };
+		1797BCFC2222D0F200C47510 /* ManageFavorites.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1797BCFB2222D0F200C47510 /* ManageFavorites.storyboard */; };
 		1799C89621FF15750069D5AC /* Pixellatekernel.metal in Sources */ = {isa = PBXBuildFile; fileRef = 1799C89521FF15750069D5AC /* Pixellatekernel.metal */; };
 		1799C89821FF17260069D5AC /* KuwaharaKernel.metal in Sources */ = {isa = PBXBuildFile; fileRef = 1799C89721FF17260069D5AC /* KuwaharaKernel.metal */; };
 		1799C89A21FF1B890069D5AC /* KuwaharaEffect.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1799C89921FF1B890069D5AC /* KuwaharaEffect.swift */; };
 		1799C8A221FF2F9C0069D5AC /* Pixellate_Metal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1799C8A121FF2F9C0069D5AC /* Pixellate_Metal.swift */; };
 		179B599421EF0AC200905058 /* FilterCollectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 179B599321EF0AC200905058 /* FilterCollectionCell.swift */; };
+		17A1615C222293F600278240 /* DirectorySettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17A1615B222293F600278240 /* DirectorySettings.swift */; };
 		17A409D72201E941003D4EC6 /* FilterSettingUIBase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17A409D62201E941003D4EC6 /* FilterSettingUIBase.swift */; };
 		17A686E921F81E5B00F252CA /* HueAdjustTable.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 17A686E821F81E5B00F252CA /* HueAdjustTable.storyboard */; };
 		17A686EB21F824AA00F252CA /* HueAdustTableCode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17A686EA21F824AA00F252CA /* HueAdustTableCode.swift */; };
@@ -397,11 +404,18 @@
 		178C75BD21F337C100844FFF /* AVCaptureVideoOrientationExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AVCaptureVideoOrientationExtension.swift; sourceTree = "<group>"; };
 		178CF92521F5B98D007229FD /* ParameterManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParameterManager.swift; sourceTree = "<group>"; };
 		178CF92721F5F286007229FD /* FilterManagerEnums.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterManagerEnums.swift; sourceTree = "<group>"; };
+		1797BCF02222CB3900C47510 /* DebugSettings.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = DebugSettings.storyboard; sourceTree = "<group>"; };
+		1797BCF22222CC0800C47510 /* DebugSettingsCode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebugSettingsCode.swift; sourceTree = "<group>"; };
+		1797BCF42222CF7900C47510 /* ManageFilterRatings.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = ManageFilterRatings.storyboard; sourceTree = "<group>"; };
+		1797BCF72222CFD800C47510 /* ManageFilterRatingsCode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManageFilterRatingsCode.swift; sourceTree = "<group>"; };
+		1797BCF92222D0BA00C47510 /* ManageFavoritesCode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManageFavoritesCode.swift; sourceTree = "<group>"; };
+		1797BCFB2222D0F200C47510 /* ManageFavorites.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = ManageFavorites.storyboard; sourceTree = "<group>"; };
 		1799C89521FF15750069D5AC /* Pixellatekernel.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = Pixellatekernel.metal; sourceTree = "<group>"; };
 		1799C89721FF17260069D5AC /* KuwaharaKernel.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = KuwaharaKernel.metal; sourceTree = "<group>"; };
 		1799C89921FF1B890069D5AC /* KuwaharaEffect.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KuwaharaEffect.swift; sourceTree = "<group>"; };
 		1799C8A121FF2F9C0069D5AC /* Pixellate_Metal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Pixellate_Metal.swift; sourceTree = "<group>"; };
 		179B599321EF0AC200905058 /* FilterCollectionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterCollectionCell.swift; sourceTree = "<group>"; };
+		17A1615B222293F600278240 /* DirectorySettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DirectorySettings.swift; sourceTree = "<group>"; };
 		17A409D62201E941003D4EC6 /* FilterSettingUIBase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterSettingUIBase.swift; sourceTree = "<group>"; };
 		17A686E821F81E5B00F252CA /* HueAdjustTable.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = HueAdjustTable.storyboard; sourceTree = "<group>"; };
 		17A686EA21F824AA00F252CA /* HueAdustTableCode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HueAdustTableCode.swift; sourceTree = "<group>"; };
@@ -1131,6 +1145,26 @@
 			path = SepiaTone;
 			sourceTree = "<group>";
 		};
+		1797BCF62222CFB800C47510 /* RatingsAndFavorites */ = {
+			isa = PBXGroup;
+			children = (
+				1797BCF42222CF7900C47510 /* ManageFilterRatings.storyboard */,
+				1797BCF72222CFD800C47510 /* ManageFilterRatingsCode.swift */,
+				1797BCFB2222D0F200C47510 /* ManageFavorites.storyboard */,
+				1797BCF92222D0BA00C47510 /* ManageFavoritesCode.swift */,
+			);
+			path = RatingsAndFavorites;
+			sourceTree = "<group>";
+		};
+		1797BCFD2222D5BC00C47510 /* DebugSettings */ = {
+			isa = PBXGroup;
+			children = (
+				1797BCF02222CB3900C47510 /* DebugSettings.storyboard */,
+				1797BCF22222CC0800C47510 /* DebugSettingsCode.swift */,
+			);
+			path = DebugSettings;
+			sourceTree = "<group>";
+		};
 		1799C89421FF15530069D5AC /* External */ = {
 			isa = PBXGroup;
 			children = (
@@ -1188,6 +1222,8 @@
 			children = (
 				17E9F0DE2201721F00BA7B46 /* FilterSettingUIs */,
 				17A686E321F8166400F252CA /* FilterTables */,
+				1797BCF62222CFB800C47510 /* RatingsAndFavorites */,
+				1797BCFD2222D5BC00C47510 /* DebugSettings */,
 				17F51B0421EA03EB00843092 /* Settings.storyboard */,
 				17B2ED8321F1A5CF00E3B56A /* MainSettings.swift */,
 				17C93EAA2222582500B7F697 /* GeneralSettings.swift */,
@@ -1243,6 +1279,7 @@
 				170BFE6E221BD51200754BF6 /* PerformanceCell.swift */,
 				170BFE72221BEFCF00754BF6 /* AboutCode.swift */,
 				17C93EA522224C2B00B7F697 /* Privacy.swift */,
+				17A1615B222293F600278240 /* DirectorySettings.swift */,
 				17CDB9B522166B1700C708F5 /* SystemReport.swift */,
 				17CDB9B922168CB500C708F5 /* LicensingInformation.swift */,
 				1740CEC52216A4A300BFD1A0 /* LicensingList.swift */,
@@ -1481,6 +1518,7 @@
 				173F5D0E220C67B600067ABB /* ColorChipPicker.storyboard in Resources */,
 				17AA10542212E2D200EF72DA /* EdgeWorkSettingsUI.storyboard in Resources */,
 				17A686E921F81E5B00F252CA /* HueAdjustTable.storyboard in Resources */,
+				1797BCF12222CB3900C47510 /* DebugSettings.storyboard in Resources */,
 				17477A0322049B1500FD64EF /* GrayscaleSettingsUI.storyboard in Resources */,
 				17110DE3221EC24E00223990 /* VibranceSettingsUI.storyboard in Resources */,
 				171E543121E44E180045ED77 /* LaunchScreen.storyboard in Resources */,
@@ -1489,6 +1527,7 @@
 				17110DD9221E910500223990 /* TemperatureAndTintSettingsUI.storyboard in Resources */,
 				17D60D87220FEAD000933F15 /* MonochromeColorsSettingsUI.storyboard in Resources */,
 				1726241721F840E500C7688C /* PixellateTable.storyboard in Resources */,
+				1797BCF52222CF7900C47510 /* ManageFilterRatings.storyboard in Resources */,
 				173F633422001800006CB67C /* Pixellate2Table.storyboard in Resources */,
 				1779F3D42218347800140EEA /* SepiaToneSettingsUI.storyboard in Resources */,
 				173F632F22000045006CB67C /* PixellateMetalTable.storyboard in Resources */,
@@ -1511,6 +1550,7 @@
 				174F82E8221FDBD0009A004C /* MonochromeSettingsUI.storyboard in Resources */,
 				171E542C21E44E170045ED77 /* Main.storyboard in Resources */,
 				17F51B0521EA03EB00843092 /* Settings.storyboard in Resources */,
+				1797BCFC2222D0F200C47510 /* ManageFavorites.storyboard in Resources */,
 				17C392652215A4480049B8FD /* DilateErodeSettingsUI.storyboard in Resources */,
 				17787F0C2203069A00D15761 /* HalftoneSettingsUI.storyboard in Resources */,
 				17CE37362213AB5E0070ED87 /* FalseColorSettingsUI.storyboard in Resources */,
@@ -1578,6 +1618,7 @@
 				171F3D16220AF9CA0098E2B7 /* SolarizeSettingsUICode.swift in Sources */,
 				17C3926022159D960049B8FD /* ErodeDilate.metal in Sources */,
 				17C3925E22159D480049B8FD /* DEParameters.swift in Sources */,
+				1797BCFA2222D0BA00C47510 /* ManageFavoritesCode.swift in Sources */,
 				174F82E2221FD3B8009A004C /* Monochrome.swift in Sources */,
 				171F3D0B220AD2D30098E2B7 /* Solarize.swift in Sources */,
 				17D7511721F423DD0050A2B5 /* MainUICamera.swift in Sources */,
@@ -1636,6 +1677,7 @@
 				17CE37402213C38F0070ED87 /* ColorSpaceGradient.swift in Sources */,
 				171D626421EDBE4B004D3545 /* RenderPacket.swift in Sources */,
 				173F5D06220BEABF00067ABB /* ThresholdSettingsUICode.swift in Sources */,
+				17A1615C222293F600278240 /* DirectorySettings.swift in Sources */,
 				17AA10562212E40700EF72DA /* EdgeWorkSettingsUICode.swift in Sources */,
 				17787F0E22031BD100D15761 /* HalftoneSettingsUICode.swift in Sources */,
 				171D626821EDC45E004D3545 /* CameraFilter.swift in Sources */,
@@ -1741,9 +1783,11 @@
 				171D626F21EDD143004D3545 /* CircularScreen.swift in Sources */,
 				1779F3D1221833A900140EEA /* SepiaTone.swift in Sources */,
 				17E9F0E722017E9600BA7B46 /* FilterSettingsUICode.swift in Sources */,
+				1797BCF32222CC0800C47510 /* DebugSettingsCode.swift in Sources */,
 				171F3D0F220AD5AA0098E2B7 /* Solarize.metal in Sources */,
 				17C392672215A5CB0049B8FD /* DilateErodeSettingsUICode.swift in Sources */,
 				1764FA8A21F1E6F90059FAFD /* FilterSettings.swift in Sources */,
+				1797BCF82222CFD800C47510 /* ManageFilterRatingsCode.swift in Sources */,
 				17D7511921F461DA0050A2B5 /* DepthToGrayscaleConverter.swift in Sources */,
 				17BEE0B421FC2F8500A9370B /* DesaturationKernelParameters.swift in Sources */,
 				173B16A622014F8B005A5B0B /* HighlightBrightness.swift in Sources */,
