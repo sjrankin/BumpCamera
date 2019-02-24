@@ -226,9 +226,9 @@ class ParameterManager
     /// - Parameters:
     ///   - From: The ID of the filter.
     ///   - Field: The type of input field.
-    /// - Returns: Tuple in the form (input type, data) where input type is one of FilterManager.InputTypes and data is
-    ///            of type Any?. On error, the input type will be .NoType. If the data is nil but the input type is
-    ///            valid, that just means the user hasn't set a value for the given field.
+    /// - Returns: Tuple in the form (input type, actual value, storage name of the value) where input type is one of
+    ///            FilterManager.InputTypes and data is of type Any?. On error, the input type will be .NoType. If the data is
+    ///            nil but the input type is valid, that just means the user hasn't set a value for the given field.
     public static func GetFieldDataEx(From: UUID, Field: FilterManager.InputFields) -> (FilterManager.InputTypes, Any?, String)
     {
         objc_sync_enter(CacheLock)
@@ -734,7 +734,7 @@ class ParameterManager
     ///   - Raw: The value to convert.
     ///   - OfType: The type of the value.
     /// - Returns: The converted value as a String.
-    private static func ConvertAny(_ Raw: Any?, OfType: FilterManager.InputTypes) -> String
+    public static func ConvertAny(_ Raw: Any?, OfType: FilterManager.InputTypes) -> String
     {
         if Raw == nil
         {
