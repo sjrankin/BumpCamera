@@ -17,15 +17,26 @@ extension FilterManager
     ///   - For: Instance of the filter to save settings for.
     ///   - WithName: File name to use for the saved file. If not specified, "MostRecentFilter.xml" will be used.
     ///   - InDirectory: Directory where to save the file. If not specified, the runtime directory will be used.
-    public static func SaveFilterSettings(For: Renderer, WithName: String? = nil, InDirectory: String? = nil)
+    public static func SaveFilterSettings(For: Renderer, WithName: String? = nil, InDirectory: String? = nil,
+                                          FrameNumber: Int? = nil, TimeStamp: Date? = nil)
     {
         let FileName: String = WithName == nil ? "MostRecentFilter.xml" : WithName!
         let Directory: String = InDirectory == nil ? FileHandler.RuntimeDirectory : InDirectory!
         
         let ID = For.ID()
         let FilterType = GetFilterTypeFrom(ID: ID)
-        var Working = "<Filter Name=\(For.Title()) ID=\(For.ID())>\n"
-        Working = Working + Versioning.EmitXML(4)
+        var Aux = ""
+        if let FrameCount = FrameNumber
+        {
+            Aux = " Frame=\"\(FrameCount)\""
+        }
+        if let When = TimeStamp
+        {
+            let WhenS = Utility.MakeTimeStamp(FromDate: When)
+            Aux = Aux + " TimeStamp=\"\(WhenS)\""
+        }
+        var Working = "<Filter Name=\(For.Title()) ID=\(For.ID())\(Aux)>\n"
+        Working = Working + Versioning.EmitXML(4) + "\n"
         Working = Working + "    <Parameters Count=\"\(ParameterCountFor(FilterType!))\">\n"
         
         for SomeField in For.SupportedFields()
@@ -33,7 +44,8 @@ extension FilterManager
             let FieldName = FieldStorageMap[SomeField]!
             let FieldType = FieldMap[SomeField]
             let FieldTypeName = FieldTypeNameMap[FieldType!]!
-            let (_, _, FieldContents) = ParameterManager.GetFieldDataEx(From: ID, Field: SomeField)
+            let (_, Anything, _) = ParameterManager.GetFieldDataEx(From: ID, Field: SomeField)
+            let FieldContents = ParameterManager.ConvertAny(Anything, OfType: FieldType!)
             Working = Working + "        <Parameter Name=\"\(FieldName)\" Type=\"\(FieldTypeName)\" Contents=\"\(FieldContents)\">\n"
         }
         
