@@ -50,6 +50,13 @@ extension MainUIViewer
         }
     }
     
+    /// Handle the focus delegate.
+    ///
+    /// - Parameters:
+    ///   - focusMode: The focus mode.
+    ///   - exposureMode: The exposure mode.
+    ///   - devicePoint: Where the user tapped the display to set the focus.
+    ///   - monitorSubjectAreaChange: Determines if the area is monitored for changes over the course of a live view.
     func focus(with focusMode: AVCaptureDevice.FocusMode, exposureMode: AVCaptureDevice.ExposureMode,
                at devicePoint: CGPoint, monitorSubjectAreaChange: Bool)
     {
@@ -59,12 +66,14 @@ extension MainUIViewer
                 
                 do {
                     try videoDevice.lockForConfiguration()
-                    if videoDevice.isFocusPointOfInterestSupported && videoDevice.isFocusModeSupported(focusMode) {
+                    if videoDevice.isFocusPointOfInterestSupported && videoDevice.isFocusModeSupported(focusMode)
+                    {
                         videoDevice.focusPointOfInterest = devicePoint
                         videoDevice.focusMode = focusMode
                     }
                     
-                    if videoDevice.isExposurePointOfInterestSupported && videoDevice.isExposureModeSupported(exposureMode) {
+                    if videoDevice.isExposurePointOfInterestSupported && videoDevice.isExposureModeSupported(exposureMode)
+                    {
                         videoDevice.exposurePointOfInterest = devicePoint
                         videoDevice.exposureMode = exposureMode
                     }
@@ -93,12 +102,18 @@ extension MainUIViewer
     }
     #endif
     
+    /// Prepare for moving to a live view.
     func PrepareForLiveView()
     {
         let InterfaceOrientation = UIApplication.shared.statusBarOrientation
         StatusBarOrientation = InterfaceOrientation
     }
     
+    /// Update the preview layer. Called when the device orientation changes.
+    ///
+    /// - Parameters:
+    ///   - Layer: The AV capture connection.
+    ///   - Orientation: New device orientation.
     func UpdatePreviewLayer(Layer: AVCaptureConnection, Orientation: AVCaptureVideoOrientation)
     {
         Layer.videoOrientation = Orientation
@@ -106,6 +121,8 @@ extension MainUIViewer
     }
     
     /// Configure the device for live view.
+    ///
+    /// - Note: If running on a simulator, Configuraton failed is always returned. Simulators don't support cameras and live views.
     ///
     /// - Returns: Value indicating success. If the configuration failed, the resultant enum also contains
     ///            a string describing why the failure occurred.
@@ -366,6 +383,11 @@ extension MainUIViewer
         }
     }
     
+    /// Data output synchronizer delegate.
+    ///
+    /// - Parameters:
+    ///   - synchronizer: The synchronizer.
+    ///   - synchronizedDataCollection: Collection of objects that need to be synchronized.
     func dataOutputSynchronizer(_ synchronizer: AVCaptureDataOutputSynchronizer, didOutput synchronizedDataCollection: AVCaptureSynchronizedDataCollection)
     {
         if let SyncedDepthData: AVCaptureSynchronizedDepthData = synchronizedDataCollection.synchronizedData(for: DepthDataOutput) as? AVCaptureSynchronizedDepthData
@@ -386,12 +408,22 @@ extension MainUIViewer
         }
     }
     
+    /// Depth data output (for those devices that support it) delegate.
+    ///
+    /// - Parameters:
+    ///   - depthDataOutput: Not used.
+    ///   - depthData: Depth data. Passed to the function that does all of the work.
+    ///   - timestamp: Not used.
+    ///   - connection: Not used.
     func depthDataOutput(_ depthDataOutput: AVCaptureDepthDataOutput, didOutput depthData: AVDepthData,
                          timestamp: CMTime, connection: AVCaptureConnection)
     {
         processDepth(depthData: depthData)
     }
     
+    /// Process depth data from the camera. Not all devices support depth data.
+    ///
+    /// - Parameter depthData: The depth data to process.
     func processDepth(depthData: AVDepthData)
     {
         if !RenderingEnabled
@@ -417,6 +449,10 @@ extension MainUIViewer
         CurrentDepthPixelBuffer = DepthPixelBuffer
     }
     
+    /// Return the camera in the specified position.
+    ///
+    /// - Parameter Position: The position of the desired camera on the device.
+    /// - Returns: The camera device.
     func CameraWithPosition(_ Position: AVCaptureDevice.Position) -> AVCaptureDevice?
     {
         let DeviceDiscoverySession = AVCaptureDevice.DiscoverySession(deviceTypes: [.builtInWideAngleCamera, .builtInWideAngleCamera],
@@ -432,11 +468,24 @@ extension MainUIViewer
         return nil
     }
     
+    /// Delegate called when live view output is ready for processing from AVFoundation.
+    ///
+    /// - Parameters:
+    ///   - output: Not used.
+    ///   - sampleBuffer: The buffer with the image data from the live view frame.
+    ///   - connection: Not used.
     func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection)
     {
         ProcessLiveViewFrame(Buffer: sampleBuffer)
     }
     
+    /// Process the buffer from the live view frame capture.
+    ///
+    /// - Note: If the video frame buffer filter returns nil for any reason (most likely due to transition synchronization) the
+    ///         view will not be updated for the given frame. If there is a major issue with a filter, it will be seen as a frozen
+    ///         live view as the live view won't be updated until a new (and working) filter is put into place.
+    ///
+    /// - Parameter Buffer: The buffer with the data from the live view frame.
     func ProcessLiveViewFrame(Buffer: CMSampleBuffer)
     {
         guard let VideoPixelBuffer = CMSampleBufferGetImageBuffer(Buffer) else
@@ -459,17 +508,23 @@ extension MainUIViewer
         if !(Filters?.VideoFilter?.Filter?.Initialized)!
         {
             Filters?.VideoFilter?.Filter?.Initialize(With: FormatDescription, BufferCountHint: BufferCount)
+            let Name = "FilterAtFrame_\(FrameCount).xml"
+            FilterManager.SaveFilterSettings(For: (Filters?.VideoFilter?.Filter!)!, WithName: Name)
         }
         
         guard let FilteredBuffer = Filters?.VideoFilter?.Filter?.Render(PixelBuffer: FinalPixelBuffer) else
         {
+            //Filters commonly return nil during a transition to a new filter. They also return nil if they fail cleanly
+            //enough. Either way, print a message to the log and return without updating the live view (which means many
+            //successive failures will lead to a frozen live view).
             let FilterID = Filters?.VideoFilter?.Filter?.ID()
             let FilterType = FilterManager.GetFilterTypeFrom(ID: FilterID!)
             let FilterTitle: String = FilterManager.GetFilterTitle(FilterType!)!
-            Utility.print1("\"\(FilterTitle)\".Render returned nil - skipping frame. (Did you just change filters?)")
+            Utility.print1("\"\(FilterTitle)\".Render returned nil. Frame skipped.")
             return
         }
         
+        UpdateFrameCount()
         LiveView.pixelBuffer = FilteredBuffer
     }
 }
