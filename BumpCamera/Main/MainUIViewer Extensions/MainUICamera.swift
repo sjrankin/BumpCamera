@@ -509,7 +509,11 @@ extension MainUIViewer
         {
             Filters?.VideoFilter?.Filter?.Initialize(With: FormatDescription, BufferCountHint: BufferCount)
             let Name = "FilterAtFrame_\(FrameCount).xml"
-            FilterManager.SaveFilterSettings(For: (Filters?.VideoFilter?.Filter!)!, WithName: Name)
+            if !PrivacyManager.IsPrivacyViolation(For: .Runtime)
+            {
+                FilterManager.SaveFilterSettings(For: (Filters?.VideoFilter?.Filter!)!, WithName: Name, FrameNumber: FrameCount,
+                                                 TimeStamp: Date())
+            }
         }
         
         guard let FilteredBuffer = Filters?.VideoFilter?.Filter?.Render(PixelBuffer: FinalPixelBuffer) else
