@@ -19,6 +19,98 @@
             </objects>
             <point key="canvasLocation" x="675" y="355"/>
         </scene>
+        <!--Privacy-->
+        <scene sceneID="HIK-10-erp">
+            <objects>
+                <tableViewController title="Privacy" id="shp-af-GXj" customClass="Privacy" customModule="BumpCamera" customModuleProvider="target" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="static" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" id="s8H-i7-Wzr">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <sections>
+                            <tableViewSection id="j3F-Wv-G5W">
+                                <cells>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" rowHeight="337" id="zk5-g9-Bbn">
+                                        <rect key="frame" x="0.0" y="0.0" width="414" height="337"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="zk5-g9-Bbn" id="foe-My-MXx">
+                                            <rect key="frame" x="0.0" y="0.0" width="414" height="336.66666666666669"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" fixedFrame="YES" editable="NO" usesAttributedText="YES" selectable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="NcB-Zy-lUt">
+                                                    <rect key="frame" x="20" y="11" width="383" height="315"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                    <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                    <attributedString key="attributedText">
+                                                        <fragment>
+                                                            <mutableString key="content">BumpCamera respects your privacy. Therefore: 1) No data of any kind is transmitted by BumpCamera to any other device. 2) BumpCamera may save data in a directory visible with the Files app. 3) Personally identifying information is encrypted regardless of where it is saved. 4) No third party libraries were used. 5) If you select the option shown below, you will ensure maximum privacy (at the cost of some minor functionality). 6) BumpCamera writes EXIF information to saved images. You can disable this if you desire. 7) The images you take are your responsibility alone.</mutableString>
+                                                            <attributes>
+                                                                <color key="NSColor" name="textColor" catalog="System" colorSpace="catalog"/>
+                                                                <font key="NSFont" size="17" name=".AppleSystemUIFont"/>
+                                                                <paragraphStyle key="NSParagraphStyle" alignment="left" lineBreakMode="wordWrapping" baseWritingDirection="natural" tighteningFactorForTruncation="0.0"/>
+                                                            </attributes>
+                                                        </fragment>
+                                                    </attributedString>
+                                                    <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                                                </textView>
+                                            </subviews>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" rowHeight="127" id="YgZ-Fi-pQK">
+                                        <rect key="frame" x="0.0" y="337" width="414" height="127"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="YgZ-Fi-pQK" id="y4C-RY-bai">
+                                            <rect key="frame" x="0.0" y="0.0" width="414" height="126.66666666666667"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Maximum privacy" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="dgh-yt-l3k">
+                                                    <rect key="frame" x="20" y="12" width="134" height="21"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="GZO-Fd-0BN">
+                                                    <rect key="frame" x="345" y="7" width="51" height="31"/>
+                                                    <connections>
+                                                        <action selector="HandlePrivacySwitchChanged:" destination="shp-af-GXj" eventType="primaryActionTriggered" id="rAz-xo-cPR"/>
+                                                    </connections>
+                                                </switch>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="4" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="saR-eT-e52">
+                                                    <rect key="frame" x="20" y="46" width="372" height="70"/>
+                                                    <string key="text">Setting this disables all functions that write information that may identify you. If you set this to on, it takes effect immediately and any data saved in the app's directories will be deleted. Your images will remain unchanged.</string>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstItem="saR-eT-e52" firstAttribute="top" secondItem="GZO-Fd-0BN" secondAttribute="bottom" constant="8" symbolic="YES" id="09H-0I-yCJ"/>
+                                                <constraint firstItem="GZO-Fd-0BN" firstAttribute="trailing" secondItem="y4C-RY-bai" secondAttribute="trailingMargin" id="De6-sr-dJ9"/>
+                                                <constraint firstItem="dgh-yt-l3k" firstAttribute="centerY" secondItem="GZO-Fd-0BN" secondAttribute="centerY" id="RDu-Jj-Tc6"/>
+                                                <constraint firstItem="dgh-yt-l3k" firstAttribute="leading" secondItem="saR-eT-e52" secondAttribute="leading" id="RyQ-4p-J9d"/>
+                                                <constraint firstAttribute="trailingMargin" secondItem="saR-eT-e52" secondAttribute="trailing" constant="2" id="ZmP-dN-M2j"/>
+                                                <constraint firstItem="dgh-yt-l3k" firstAttribute="leading" secondItem="y4C-RY-bai" secondAttribute="leadingMargin" id="bsh-fV-vBT"/>
+                                                <constraint firstItem="saR-eT-e52" firstAttribute="bottom" secondItem="y4C-RY-bai" secondAttribute="bottomMargin" id="fgo-3M-tQO"/>
+                                                <constraint firstItem="dgh-yt-l3k" firstAttribute="top" secondItem="y4C-RY-bai" secondAttribute="topMargin" constant="1" id="pn8-d6-rDr"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
+                                </cells>
+                            </tableViewSection>
+                        </sections>
+                        <connections>
+                            <outlet property="dataSource" destination="shp-af-GXj" id="GtW-ty-rff"/>
+                            <outlet property="delegate" destination="shp-af-GXj" id="BTl-hL-f2e"/>
+                        </connections>
+                    </tableView>
+                    <connections>
+                        <outlet property="PrivacySwitch" destination="GZO-Fd-0BN" id="Fvi-R0-8UH"/>
+                    </connections>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="AQe-jz-tRF" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="173.91304347826087" y="1619.8369565217392"/>
+        </scene>
         <!--About Code-->
         <scene sceneID="Rzu-gp-jp6">
             <objects>
@@ -208,8 +300,32 @@
                                             <segue destination="ysf-7R-GfW" kind="show" id="Led-vp-Cz9"/>
                                         </connections>
                                     </tableViewCell>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" accessoryType="disclosureIndicator" indentationWidth="10" id="8qI-Dk-SqQ">
+                                        <rect key="frame" x="0.0" y="417" width="414" height="44"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="8qI-Dk-SqQ" id="JpS-5V-DAf">
+                                            <rect key="frame" x="0.0" y="0.0" width="376" height="43.666666666666664"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Privacy" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vaz-xd-vrn">
+                                                    <rect key="frame" x="20" y="11" width="56" height="21"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstItem="vaz-xd-vrn" firstAttribute="top" secondItem="JpS-5V-DAf" secondAttribute="topMargin" id="5bS-Ap-OLc"/>
+                                                <constraint firstAttribute="bottomMargin" secondItem="vaz-xd-vrn" secondAttribute="bottom" constant="1" id="eeq-uj-cD8"/>
+                                                <constraint firstItem="vaz-xd-vrn" firstAttribute="leading" secondItem="JpS-5V-DAf" secondAttribute="leadingMargin" id="mZl-xP-d8b"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                        <connections>
+                                            <segue destination="shp-af-GXj" kind="show" id="NKi-Iv-saV"/>
+                                        </connections>
+                                    </tableViewCell>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" accessoryType="disclosureIndicator" indentationWidth="10" rowHeight="45" id="74w-Pw-CEB">
-                                        <rect key="frame" x="0.0" y="417" width="414" height="45"/>
+                                        <rect key="frame" x="0.0" y="461" width="414" height="45"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="74w-Pw-CEB" id="9ob-g6-ekv">
                                             <rect key="frame" x="0.0" y="0.0" width="376" height="44.666666666666664"/>
@@ -233,7 +349,7 @@
                                         </connections>
                                     </tableViewCell>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" accessoryType="disclosureIndicator" indentationWidth="10" rowHeight="45" id="sXQ-jz-P0f">
-                                        <rect key="frame" x="0.0" y="462" width="414" height="45"/>
+                                        <rect key="frame" x="0.0" y="506" width="414" height="45"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="sXQ-jz-P0f" id="sjB-5e-wcl">
                                             <rect key="frame" x="0.0" y="0.0" width="376" height="44.666666666666664"/>
