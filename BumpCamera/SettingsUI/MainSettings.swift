@@ -29,10 +29,12 @@ class MainSettings: UITableViewController
         FilterName = Filters.GetFilterTitle(CurrentFilter!)
         CurrentFilterLabel.text = "Current: " + FilterName
 
-        HideFilterNameSwitch.isOn = _Settings.bool(forKey: "HideFilterName")
-        SaveOriginalSwitch.isOn = _Settings.bool(forKey: "SaveOriginalImage")
-        ConfirmSaveSwitch.isOn = _Settings.bool(forKey: "ShowSaveAlert")
-        HideFiltersSwitch.isOn = _Settings.bool(forKey: "HideFilterSelectionUI")
+        if PrivacyManager.InMaximumPrivacy()
+        {
+            SaveUserImagesTitle.isEnabled = false
+            CanSaveUserSampleImagesSwitch.isEnabled = false
+            CanSaveUserSampleImagesSwitch.isOn = false
+        }
         
         let Cells = tableView.visibleCells 
         for Cell in Cells
@@ -43,28 +45,13 @@ class MainSettings: UITableViewController
                 break
             }
         }
+        
+        #if false
+        #else
+        self.tableView.deleteRows(at: [IndexPath(row: 1, section: 2)], with: UITableView.RowAnimation.automatic)
+        self.tableView.reloadData()
+        #endif
     }
-    
-    @IBAction func HandleHideFilterNameChanged(_ sender: Any)
-    {
-        _Settings.set(HideFilterNameSwitch.isOn, forKey: "HideFilterName")
-    }
-    
-    @IBOutlet weak var HideFilterNameSwitch: UISwitch!
-    
-    @IBAction func HandleSaveOriginalChanged(_ sender: Any)
-    {
-        _Settings.set(SaveOriginalSwitch.isOn, forKey: "SaveOriginalImage")
-    }
-    
-    @IBOutlet weak var SaveOriginalSwitch: UISwitch!
-    
-    @IBAction func HandleConfirmSaveChanged(_ sender: Any)
-    {
-        _Settings.set(ConfirmSaveSwitch.isOn, forKey: "ShowSaveAlert")
-    }
-    
-    @IBOutlet weak var ConfirmSaveSwitch: UISwitch!
     
     @IBAction func HandleDoneButton(_ sender: Any)
     {
@@ -73,14 +60,15 @@ class MainSettings: UITableViewController
     
     @IBOutlet weak var FilterTitleLabel: UILabel!
     
-    @IBAction func HideFiltersChanged(_ sender: Any)
-    {
-        _Settings.set(HideFiltersSwitch.isOn, forKey: "HideFilterSelectionUI")
-    }
-    
-    @IBOutlet weak var HideFiltersSwitch: UISwitch!
-    
     @IBOutlet weak var CurrentFilterLabel: UILabel!
+    
+    @IBOutlet weak var SaveUserImagesTitle: UILabel!
+    @IBOutlet weak var CanSaveUserSampleImagesSwitch: UISwitch!
+    
+    @IBAction func HandleSaveUserImagesChanged(_ sender: Any)
+    {
+        _Settings.set(CanSaveUserSampleImagesSwitch.isOn, forKey: "AllowUserSampleImages")
+    }
     
     override func shouldPerformSegue(withIdentifier identifier: String, sender: Any?) -> Bool
     {
