@@ -46,11 +46,27 @@ class MainSettings: UITableViewController
             }
         }
         
-        #if false
-        #else
-        self.tableView.deleteRows(at: [IndexPath(row: 1, section: 2)], with: UITableView.RowAnimation.automatic)
-        self.tableView.reloadData()
-        #endif
+        tableView.tableFooterView = UIView()
+    }
+    
+    /// Hack to hide the Debug cell item when running in release mode. This hack doesn't actually remove the
+    /// cell but hides it by giving it a height of 0.
+    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat
+    {
+        if indexPath.section == 1 && indexPath.row == 2
+        {
+            //This cell is taller to contain explantory text.
+            return 120.0
+        }
+        if indexPath.section == 2 && indexPath.row == 1
+        {
+            #if DEBUG
+            return 45.0
+            #else
+            return 0.0
+            #endif
+        }
+        return 45.0
     }
     
     @IBAction func HandleDoneButton(_ sender: Any)
