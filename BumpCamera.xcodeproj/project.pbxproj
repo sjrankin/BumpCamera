@@ -175,6 +175,9 @@
 		17C3926222159FBC0049B8FD /* DilateErode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17C3926122159FBC0049B8FD /* DilateErode.swift */; };
 		17C392652215A4480049B8FD /* DilateErodeSettingsUI.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 17C392642215A4480049B8FD /* DilateErodeSettingsUI.storyboard */; };
 		17C392672215A5CB0049B8FD /* DilateErodeSettingsUICode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17C392662215A5CB0049B8FD /* DilateErodeSettingsUICode.swift */; };
+		17C93EA622224C2B00B7F697 /* Privacy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17C93EA522224C2B00B7F697 /* Privacy.swift */; };
+		17C93EA82222523200B7F697 /* PrivacyManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17C93EA72222523200B7F697 /* PrivacyManager.swift */; };
+		17C93EAB2222582500B7F697 /* GeneralSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17C93EAA2222582500B7F697 /* GeneralSettings.swift */; };
 		17CDB9B622166B1700C708F5 /* SystemReport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17CDB9B522166B1700C708F5 /* SystemReport.swift */; };
 		17CDB9B822167A7E00C708F5 /* StringExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17CDB9B722167A7E00C708F5 /* StringExtensions.swift */; };
 		17CDB9BA22168CB500C708F5 /* LicensingInformation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17CDB9B922168CB500C708F5 /* LicensingInformation.swift */; };
@@ -418,6 +421,9 @@
 		17C3926122159FBC0049B8FD /* DilateErode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DilateErode.swift; sourceTree = "<group>"; };
 		17C392642215A4480049B8FD /* DilateErodeSettingsUI.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = DilateErodeSettingsUI.storyboard; sourceTree = "<group>"; };
 		17C392662215A5CB0049B8FD /* DilateErodeSettingsUICode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DilateErodeSettingsUICode.swift; sourceTree = "<group>"; };
+		17C93EA522224C2B00B7F697 /* Privacy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Privacy.swift; sourceTree = "<group>"; };
+		17C93EA72222523200B7F697 /* PrivacyManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrivacyManager.swift; sourceTree = "<group>"; };
+		17C93EAA2222582500B7F697 /* GeneralSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneralSettings.swift; sourceTree = "<group>"; };
 		17CDB9B522166B1700C708F5 /* SystemReport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemReport.swift; sourceTree = "<group>"; };
 		17CDB9B722167A7E00C708F5 /* StringExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringExtensions.swift; sourceTree = "<group>"; };
 		17CDB9B922168CB500C708F5 /* LicensingInformation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LicensingInformation.swift; sourceTree = "<group>"; };
@@ -703,6 +709,7 @@
 				1763F0712221443B00E1E2E8 /* MainUIProtocol.swift */,
 				171E542621E44E170045ED77 /* AppDelegate.swift */,
 				171E542F21E44E180045ED77 /* LaunchScreen.storyboard */,
+				17C93EA72222523200B7F697 /* PrivacyManager.swift */,
 				17CE37372213AEDB0070ED87 /* GeneralResults.swift */,
 				17CDB9B42216697800C708F5 /* About */,
 				171D626921EDCBAB004D3545 /* FilterManager */,
@@ -738,6 +745,7 @@
 				171D625C21EDB409004D3545 /* AVCamShaders */,
 				17D7512321F4679D0050A2B5 /* ObjectiveC */,
 				17D7512421F46B4D0050A2B5 /* Extensions */,
+				17C93EA92222561800B7F697 /* DebugUI */,
 				17B2ED8221F1A5A700E3B56A /* SettingsUI */,
 				17F51B0021E9E44F00843092 /* BackgroundServer.swift */,
 				17F51B0221E9E86E00843092 /* Times.swift */,
@@ -1182,6 +1190,7 @@
 				17A686E321F8166400F252CA /* FilterTables */,
 				17F51B0421EA03EB00843092 /* Settings.storyboard */,
 				17B2ED8321F1A5CF00E3B56A /* MainSettings.swift */,
+				17C93EAA2222582500B7F697 /* GeneralSettings.swift */,
 				1764FA8921F1E6F90059FAFD /* FilterSettings.swift */,
 				1726242021F8503E00C7688C /* NewFieldSettingProtocol.swift */,
 				1740CEC72216B2FE00BFD1A0 /* Platform.swift */,
@@ -1218,6 +1227,13 @@
 			path = DilateErode;
 			sourceTree = "<group>";
 		};
+		17C93EA92222561800B7F697 /* DebugUI */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = DebugUI;
+			sourceTree = "<group>";
+		};
 		17CDB9B42216697800C708F5 /* About */ = {
 			isa = PBXGroup;
 			children = (
@@ -1226,6 +1242,7 @@
 				176D6828221D921C00BA6267 /* FilterPerformanceCode2.swift */,
 				170BFE6E221BD51200754BF6 /* PerformanceCell.swift */,
 				170BFE72221BEFCF00754BF6 /* AboutCode.swift */,
+				17C93EA522224C2B00B7F697 /* Privacy.swift */,
 				17CDB9B522166B1700C708F5 /* SystemReport.swift */,
 				17CDB9B922168CB500C708F5 /* LicensingInformation.swift */,
 				1740CEC52216A4A300BFD1A0 /* LicensingList.swift */,
@@ -1578,6 +1595,7 @@
 				1709A7002221030500D9B43D /* FilterManagerRatings.swift in Sources */,
 				171375FF22194363000E49C2 /* MainUIExif.swift in Sources */,
 				17CDB9B822167A7E00C708F5 /* StringExtensions.swift in Sources */,
+				17C93EA622224C2B00B7F697 /* Privacy.swift in Sources */,
 				170BFE75221C2DDF00754BF6 /* SmoothLinearGradient.swift in Sources */,
 				178C75BE21F337C100844FFF /* AVCaptureVideoOrientationExtension.swift in Sources */,
 				1756CE1221FD874800C4E638 /* ChannelSwizzleParameters.swift in Sources */,
@@ -1664,6 +1682,7 @@
 				171D627821EDF017004D3545 /* PassThrough.swift in Sources */,
 				171D626021EDB46D004D3545 /* Mixer.metal in Sources */,
 				172B87A7221BCC6100F0A508 /* ThermalEffect.swift in Sources */,
+				17C93EAB2222582500B7F697 /* GeneralSettings.swift in Sources */,
 				174F82EA221FDDC7009A004C /* MonochromeSettingsUICode.swift in Sources */,
 				17FA09AE21E8A8DD00405B2D /* PixelatorKernel.swift in Sources */,
 				171375F6221926BD000E49C2 /* BayerDecodeParameters.swift in Sources */,
@@ -1672,6 +1691,7 @@
 				171F3D11220ADC780098E2B7 /* SolarizeParameters.swift in Sources */,
 				17E15FF6220585EE0037B35F /* MirroringDistortion.swift in Sources */,
 				1756CE0121FD646600C4E638 /* RGBtoHSB.metal in Sources */,
+				17C93EA82222523200B7F697 /* PrivacyManager.swift in Sources */,
 				17477A0022048C6600FD64EF /* FilterSectionData.swift in Sources */,
 				17CDB9BA22168CB500C708F5 /* LicensingInformation.swift in Sources */,
 				17E15FF122057E5E0037B35F /* Mirroring.metal in Sources */,
