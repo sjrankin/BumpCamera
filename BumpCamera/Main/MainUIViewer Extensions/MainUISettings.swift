@@ -38,8 +38,21 @@ extension MainUIViewer
         _Settings.set(true, forKey: "ShowClosestColor")
         _Settings.set("", forKey: "UserCopyrightString")
         _Settings.set("", forKey: "UserAuthorString")
+        #if DEBUG
+        _Settings.set(true, forKey: "SaveRuntimeInformation")
+        #else
+        _Settings.set(false, forKey: "SaveRuntimeInformation")
+        #endif
+        _Settings.set(true, forKey: "AllowUserSampleImages")
+        _Settings.set(true, forKey: "SaveUserInformationInEXIF")
         _Settings.set(true, forKey: "CollectPerformanceStatistics")
+        _Settings.set(true, forKey: "SaveGPSCoordinatesWithImage")
         _Settings.set(false, forKey: "ClosedCleanly")
+        #if DEBUG
+        _Settings.set(false, forKey: "MaximumPrivacy")
+        #else
+        _Settings.set(true, forKey: "MaximumPrivacy")
+        #endif
         let InitialGroupID = Filters?.GetGroupID(ForGroup: .Standard)
         _Settings.set(InitialGroupID?.uuidString, forKey: "CurrentGroup")
         let InitialFilterID = Filters?.GetFilterID(For: .PassThrough)
