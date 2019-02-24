@@ -84,7 +84,6 @@ class MainUIViewer: UIViewController,
         InitializeLabels()
         
         //Make sure the file structure is OK... If not, create expected directories.
-        #if true
         if !FileHandler.CreateIfDoesNotExist(DirectoryName: FileHandler.SampleDirectory)
         {
             ShowFatalErrorMessage(Title: "Directory Error", Message: "Error getting or getting the sample directory. Unable to continue.")
@@ -105,44 +104,6 @@ class MainUIViewer: UIViewController,
             ShowFatalErrorMessage(Title: "Directory Error", Message: "Error getting or getting the runtime directory. Unable to continue.")
             fatalError("Error creating \(FileHandler.SampleDirectory).")
         }
-        #else
-        if FileHandler.DirectoryExists(DirectoryName: FileHandler.SampleDirectory)
-        {
-            print("\(FileHandler.SampleDirectory) already exists.")
-        }
-        else
-        {
-            let SampleURL = FileHandler.CreateDirectory(DirectoryName: FileHandler.SampleDirectory)
-            if SampleURL == nil
-            {
-                print("Error creating \(FileHandler.SampleDirectory)")
-            }
-        }
-        if FileHandler.DirectoryExists(DirectoryName: FileHandler.ScratchDirectory)
-        {
-            print("\(FileHandler.ScratchDirectory) already exists.")
-        }
-        else
-        {
-            let ScratchURL = FileHandler.CreateDirectory(DirectoryName: FileHandler.ScratchDirectory)
-            if ScratchURL == nil
-            {
-                print("Error creating \(FileHandler.ScratchDirectory)") 
-            }
-        }
-        if FileHandler.DirectoryExists(DirectoryName: FileHandler.PerformanceDirectory)
-        {
-            print("\(FileHandler.PerformanceDirectory) already exists.")
-        }
-        else
-        {
-            let ScratchURL = FileHandler.CreateDirectory(DirectoryName: FileHandler.PerformanceDirectory)
-            if ScratchURL == nil
-            {
-                print("Error creating \(FileHandler.PerformanceDirectory)")
-            }
-        }
-        #endif
         
         //https://stackoverflow.com/questions/34883594/cant-make-uitoolbar-black-color-with-white-button-item-tint-ios-9-swift/34885377
         MainBottomToolbar.barTintColor = UIColor.black
@@ -507,10 +468,62 @@ class MainUIViewer: UIViewController,
         performSegue(withIdentifier: "ToSettings", sender: self)
     }
     
+    /// Update the frame count display. The frame count is updated by one every time this function is called. This
+    /// is intended as a debug display and should not be used in production code.
+    ///
+    /// - Note: To prevent the code from being useful when compiled for release, most of this function is surrounded by
+    ///         `#if DEBUG` to prevent it from being included. The only code executed here in release versions is code to
+    ///         hide the controls.
+    func UpdateFrameCount()
+    {
+        FrameCount = FrameCount + 1
+        
+        #if DEBUG
+        DispatchQueue.main.async
+            {
+                if self.StartedUpdatingFrameCounts
+                {
+                    let Now = Date()
+                    let SecondsDelta = Now.timeIntervalSince(self.LastUpdateTime)
+                    if SecondsDelta >= 1.0
+                    {
+                        self.LastUpdateTime = Now
+                        let FrameDelta = self.FrameCount - self.LastFrameCount
+                        self.LastFrameCount = self.FrameCount
+                        let FPS = Double(FrameDelta) / SecondsDelta
+                        self.FPSLabel.text = "\(FPS.Round(To: 1)) fps"
+                    }
+                }
+                else
+                {
+                    self.StartedUpdatingFrameCounts = true
+                    self.LastUpdateTime = Date()
+                    self.FPSLabel.text = ""
+                }
+                let Final = Utility.ReduceBigNum(BigNum: Int64(self.FrameCount), AsBytes: false, ReturnUnchangedThreshold: 1000000)
+                self.FrameCountLabel.text = "\(Final)"
+        }
+        #else
+        //If we're in a release build, hide the labels.
+        DispatchQueue.main.async
+            {
+                self.FrameCountLabel.textColor = UIColor.clear
+                self.FrameCountLabel.backgroundColor = UIColor.clear
+                self.FPSLabel.textColor = UIColor.clear
+                self.FPSLabel.backgroundColor = UIColor.clear
+        }
+        #endif
+    }
+    
+    var FrameCount: Int = 0
+    var LastUpdateTime: Date!
+    var LastFrameCount: Int = 0
+    var StartedUpdatingFrameCounts = false
+    
+    @IBOutlet weak var FPSLabel: UILabel!
+    @IBOutlet weak var FrameCountLabel: UILabel!
     @IBOutlet weak var StatusLabel: UILabel!
-    
     @IBOutlet weak var FilterLabel: UILabel!
-    
     @IBOutlet weak var MainBottomToolbar: UIToolbar!
     
     /// MARK: Stored properties for filter selection extension.
