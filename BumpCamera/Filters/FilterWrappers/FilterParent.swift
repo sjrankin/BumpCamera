@@ -183,6 +183,12 @@ class FilterParent
     
     var TextureCache: CVMetalTextureCache!
     
+    /// Return a metal texture from a pixel buffer.
+    ///
+    /// - Parameters:
+    ///   - pixelBuffer: The pixel buffer that serves as the source for the resultant metal texture.
+    ///   - textureFormat: Format description of the texture.
+    /// - Returns: Metal texture with the contents as the pixel buffer.
     func MakeTextureFromCVPixelBuffer(pixelBuffer: CVPixelBuffer, textureFormat: MTLPixelFormat) -> MTLTexture?
     {
         let width = CVPixelBufferGetWidth(pixelBuffer)
@@ -194,7 +200,6 @@ class FilterParent
         
         guard let cvTexture = cvTextureOut, let texture = CVMetalTextureGetTexture(cvTexture) else {
             CVMetalTextureCacheFlush(TextureCache, 0)
-            
             return nil
         }
         
@@ -285,6 +290,11 @@ class FilterParent
         return(BufferPool, GColorSpace, OutFormatDesc)
     }
     
+    /// Allocate buffers before use.
+    ///
+    /// - Parameters:
+    ///   - Pool: The pool of pixel buffers.
+    ///   - AllocationThreshold: Threshold value for allocation.
     func PreAllocateBuffers(Pool: CVPixelBufferPool, AllocationThreshold: Int)
     {
         var PixelBuffers = [CVPixelBuffer]()
