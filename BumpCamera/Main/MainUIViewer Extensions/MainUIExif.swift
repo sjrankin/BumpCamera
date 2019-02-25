@@ -11,9 +11,20 @@ import UIKit
 
 extension MainUIViewer
 {
-    func AddExifData(To: CFDictionary, Keywords: [String], Description: String? = nil, Title: String? = nil, Author: String? = nil, Copyright: String? = nil)
+    /// Add Exif data to the passed dictionary. What gets added is controlled by passed parameters and the Privacy Manager.
+    ///
+    /// - Parameters:
+    ///   - ExifData: The dictionary of Exif data to modify.
+    ///   - Keywords: List of keywords to add.
+    ///   - Description: Description string to add.
+    ///   - Title: Title string to add.
+    ///   - Author: Author name.
+    ///   - Copyright: Copyright data.
+    ///   - AddLocation: Determines if location is added or not.
+    func AddExifData(To ExifData: inout CFDictionary, Keywords: [String], Description: String? = nil, Title: String? = nil,
+                     Author: String? = nil, Copyright: String? = nil, AddLocation: Bool = false)
     {
-        let Metadata = To
+        let Metadata = ExifData
         var KeywordList = ""
         for Index in 0 ..< KeywordList.count
         {
@@ -23,9 +34,19 @@ extension MainUIViewer
                 KeywordList = KeywordList + "; "
             }
         }
-        if let Copyright = Copyright
+        if !PrivacyManager.IsPrivacyViolation(For: .EXIFUserName)
         {
-            
+            if let Copyright = Copyright
+            {
+                
+            }
+        }
+        if AddLocation
+        {
+            if !PrivacyManager.IsPrivacyViolation(For: .EXIFLocation)
+            {
+                
+            }
         }
     }
 }
