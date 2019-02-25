@@ -1824,5 +1824,35 @@ class Utility
         let TString = "\(Thousands.Round(To: 2))" + ThousandSuffix
         return TString
     }
+    
+    /// Replace multiple occurrences of spaces with the specified string.
+    ///
+    /// - Parameters:
+    ///   - From: Source string.
+    ///   - With: String to replace multiple spaces - defaults to a single space.
+    ///   - Max: Maximum space sequence size. Defaults to 10.
+    /// - Returns: New string with sequences of multiple spaces removed.
+    static func ReplaceMultipleSpaces(From: String, With: String = " ", Max: Int = 10) -> String
+    {
+        var Result = From
+        for Count in stride(from: Max, to: 2, by: -1)
+        {
+            let FindMe = String(repeating: " ", count: Count)
+            Result = Result.replacingOccurrences(of: FindMe, with: With)
+        }
+        return Result
+    }
+    
+    /// Remove all non-essential (eg, tabs, returns, multiple spaces) from the passed string.
+    ///
+    /// - Parameter From: Source string.
+    /// - Returns: New string based on Source with non-essential spaces removed.
+    static func StripNonEssentialWhitespace(From: String) -> String
+    {
+        var Result = From.replacingOccurrences(of: "\n", with: "")
+        Result = From.replacingOccurrences(of: "\t", with: " ")
+        Result = ReplaceMultipleSpaces(From: Result)
+        return Result
+    }
 }
 
