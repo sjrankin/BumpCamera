@@ -131,7 +131,9 @@ class LineScreen: FilterParent, Renderer
         let DoMerge = ParameterManager.GetBool(From: ID(), Field: .MergeWithBackground, Default: true)
         
         let Angle = ParameterManager.GetDouble(From: ID(), Field: .Angle, Default: 90.0)
-        PrimaryFilter.setValue(Angle, forKey: kCIInputAngleKey)
+        //CILineScreen expects radians, not angles.
+        let Radians = Angle * Double.pi / 180.0
+        PrimaryFilter.setValue(Radians, forKey: kCIInputAngleKey)
         
         let Width = ParameterManager.GetDouble(From: ID(), Field: .Width, Default: 2.0)
         PrimaryFilter.setValue(Width, forKey: kCIInputWidthKey)
@@ -221,7 +223,9 @@ class LineScreen: FilterParent, Renderer
         let DoMerge = ParameterManager.GetBool(From: ID(), Field: .MergeWithBackground, Default: true)
         
         let Angle = ParameterManager.GetDouble(From: ID(), Field: .Angle, Default: 90.0)
-        PrimaryFilter?.setValue(Angle, forKey: kCIInputAngleKey)
+        //CILineScreen expects radians, not angles.
+        let Radians = Angle * Double.pi / 180.0
+        PrimaryFilter?.setValue(Radians, forKey: kCIInputAngleKey)
         
         let Width = ParameterManager.GetDouble(From: ID(), Field: .Width, Default: 2.0)
         PrimaryFilter?.setValue(Width, forKey: kCIInputWidthKey)
