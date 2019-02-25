@@ -25,6 +25,8 @@
 		17110DE3221EC24E00223990 /* VibranceSettingsUI.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 17110DE2221EC24E00223990 /* VibranceSettingsUI.storyboard */; };
 		17110DE5221EC31200223990 /* VibranceSettingsUICode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17110DE4221EC31200223990 /* VibranceSettingsUICode.swift */; };
 		17110DE7221EC56C00223990 /* FilterManagerWriter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17110DE6221EC56C00223990 /* FilterManagerWriter.swift */; };
+		1712980E222396FC000D5EF5 /* RunFilterResults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1712980D222396FC000D5EF5 /* RunFilterResults.swift */; };
+		17129810222398B2000D5EF5 /* WrapperPacket.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1712980F222398B2000D5EF5 /* WrapperPacket.swift */; };
 		171375F42218FA84000E49C2 /* BayerDecode.metal in Sources */ = {isa = PBXBuildFile; fileRef = 171375F32218FA84000E49C2 /* BayerDecode.metal */; };
 		171375F6221926BD000E49C2 /* BayerDecodeParameters.swift in Sources */ = {isa = PBXBuildFile; fileRef = 171375F5221926BD000E49C2 /* BayerDecodeParameters.swift */; };
 		171375F822192732000E49C2 /* BayerDecode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 171375F722192732000E49C2 /* BayerDecode.swift */; };
@@ -275,6 +277,8 @@
 		17110DE2221EC24E00223990 /* VibranceSettingsUI.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = VibranceSettingsUI.storyboard; sourceTree = "<group>"; };
 		17110DE4221EC31200223990 /* VibranceSettingsUICode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VibranceSettingsUICode.swift; sourceTree = "<group>"; };
 		17110DE6221EC56C00223990 /* FilterManagerWriter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterManagerWriter.swift; sourceTree = "<group>"; };
+		1712980D222396FC000D5EF5 /* RunFilterResults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RunFilterResults.swift; sourceTree = "<group>"; };
+		1712980F222398B2000D5EF5 /* WrapperPacket.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WrapperPacket.swift; sourceTree = "<group>"; };
 		171375F32218FA84000E49C2 /* BayerDecode.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = BayerDecode.metal; sourceTree = "<group>"; };
 		171375F5221926BD000E49C2 /* BayerDecodeParameters.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BayerDecodeParameters.swift; sourceTree = "<group>"; };
 		171375F722192732000E49C2 /* BayerDecode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BayerDecode.swift; sourceTree = "<group>"; };
@@ -709,6 +713,8 @@
 				172A902A221FEBBF002015CD /* MPSWrappers */,
 				171D625621ED974A004D3545 /* Renderer.swift */,
 				17D7512521F497DF0050A2B5 /* FilterParent.swift */,
+				1712980D222396FC000D5EF5 /* RunFilterResults.swift */,
+				1712980F222398B2000D5EF5 /* WrapperPacket.swift */,
 			);
 			path = FilterWrappers;
 			sourceTree = "<group>";
@@ -1648,6 +1654,7 @@
 				17CE37432213CEF80070ED87 /* CornerGradient.metal in Sources */,
 				171E542921E44E170045ED77 /* MainUIViewer.swift in Sources */,
 				17CE37452213D5DB0070ED87 /* CornerGradientParameters.swift in Sources */,
+				17129810222398B2000D5EF5 /* WrapperPacket.swift in Sources */,
 				1756CDFE21FD63D800C4E638 /* RGBtoBGR.metal in Sources */,
 				17787F092202E2E400D15761 /* ChannelMixerSettingsUICode.swift in Sources */,
 				172D98C921F9A53A005A5275 /* ChannelMixer.swift in Sources */,
@@ -1738,6 +1745,7 @@
 				17CDB9BA22168CB500C708F5 /* LicensingInformation.swift in Sources */,
 				17E15FF122057E5E0037B35F /* Mirroring.metal in Sources */,
 				17D60D7E220FCDF800933F15 /* MonochromeColors.metal in Sources */,
+				1712980E222396FC000D5EF5 /* RunFilterResults.swift in Sources */,
 				17110DE5221EC31200223990 /* VibranceSettingsUICode.swift in Sources */,
 				17D7510821F410BF0050A2B5 /* MainUIFilterSelection.swift in Sources */,
 				171F3CF1220862B80098E2B7 /* GridParameters.swift in Sources */,
