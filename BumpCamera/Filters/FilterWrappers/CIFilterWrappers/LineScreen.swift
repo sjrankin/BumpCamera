@@ -12,13 +12,16 @@ import CoreMedia
 import CoreVideo
 import CoreImage
 
+/// Wrapper around CILineScreen.
+///
+/// - Note: [Calling static methods vs explicit class name](https://stackoverflow.com/questions/42260337/swift-calling-static-methods-typeof-self-vs-explicit-class-name)
 class LineScreen: FilterParent, Renderer
 {
     static let _ID: UUID = UUID(uuidString: "03d25ebe-1536-4088-9af6-150490262467")!
     
     func ID() -> UUID
     {
-        return LineScreen._ID
+        return type(of: self)._ID
     }
     
     static func ID() -> UUID
@@ -33,7 +36,7 @@ class LineScreen: FilterParent, Renderer
     
     func Title() -> String
     {
-        return LineScreen.Title()
+        return type(of: self).Title()
     }
     
     var InstanceID: UUID
@@ -303,7 +306,7 @@ class LineScreen: FilterParent, Renderer
     
     func SupportedFields() -> [FilterManager.InputFields]
     {
-        return LineScreen.SupportedFields()
+        return type(of: self).SupportedFields()
     }
     
     public static func SupportedFields() -> [FilterManager.InputFields]
@@ -322,7 +325,7 @@ class LineScreen: FilterParent, Renderer
     
     func SettingsStoryboard() -> String?
     {
-        return LineScreen.SettingsStoryboard()
+        return type(of: self).SettingsStoryboard()
     }
     
     public static func SettingsStoryboard() -> String?
@@ -342,7 +345,7 @@ class LineScreen: FilterParent, Renderer
     
     func FilterTarget() -> [FilterTargets]
     {
-        return LineScreen.FilterTarget()
+        return type(of: self).FilterTarget()
     }
     
     private var ImageRenderTime: Double = 0.0
@@ -401,7 +404,7 @@ class LineScreen: FilterParent, Renderer
     {
         get
         {
-            return LineScreen.FilterKernel
+            return type(of: self).FilterKernel
         }
     }
     
@@ -426,6 +429,6 @@ class LineScreen: FilterParent, Renderer
     /// - Returns: Array of ports.
     func Ports() -> [FilterPorts]
     {
-        return LineScreen.Ports()
+        return type(of: self).Ports()
     }
 }
