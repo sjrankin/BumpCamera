@@ -231,11 +231,19 @@ class FilterSettingUIBase: UITableViewController,
         SampleView.image = nil
         var SampleImage: UIImage!
         var FinalImage: UIImage?
+        
         if (SampleFilter?.Ports().contains(.Input))!
         {
             //The filter can take input images - we'll use the standard sample images.
-            if let ImageName = _Settings.string(forKey: "SampleImage")
+            if var ImageName = _Settings.string(forKey: "SampleImage")
             {
+                if PrivacyManager.IsPrivacyViolation(For: .SampleImage) && ImageName == "custom image"
+                {
+                    //If the user set privacy to not use sample images but previously had a sample
+                    //image, reset it to Norio.
+                    ImageName = "Norio"
+                    _Settings.set("Norio", forKey: "SampleImage")
+                }
                 if ImageName == "custom image"
                 {
                     //print("Looking for custom image.")
@@ -252,7 +260,7 @@ class FilterSettingUIBase: UITableViewController,
                 }
                 else
                 {
-                    print("Loading sample image \(ImageName)")
+                    //print("Loading sample image \(ImageName)")
                     SampleImage = UIImage(named: ImageName)
                 }
             }
