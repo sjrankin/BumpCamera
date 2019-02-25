@@ -27,6 +27,13 @@
 		17110DE7221EC56C00223990 /* FilterManagerWriter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17110DE6221EC56C00223990 /* FilterManagerWriter.swift */; };
 		1712980E222396FC000D5EF5 /* RunFilterResults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1712980D222396FC000D5EF5 /* RunFilterResults.swift */; };
 		17129810222398B2000D5EF5 /* WrapperPacket.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1712980F222398B2000D5EF5 /* WrapperPacket.swift */; };
+		171298132223AF52000D5EF5 /* ExifViewer.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 171298122223AF52000D5EF5 /* ExifViewer.storyboard */; };
+		171298152223B20A000D5EF5 /* ExifViewerCode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 171298142223B20A000D5EF5 /* ExifViewerCode.swift */; };
+		171298172223B445000D5EF5 /* ImageMetadata.swift in Sources */ = {isa = PBXBuildFile; fileRef = 171298162223B445000D5EF5 /* ImageMetadata.swift */; };
+		171298192223B71B000D5EF5 /* ImageMetadataReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 171298182223B71B000D5EF5 /* ImageMetadataReader.swift */; };
+		1712981B2223E348000D5EF5 /* ExifDataCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1712981A2223E348000D5EF5 /* ExifDataCell.swift */; };
+		1712982022240605000D5EF5 /* UILabelExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1712981F22240605000D5EF5 /* UILabelExtensions.swift */; };
+		1712982222240FC5000D5EF5 /* OverflowExifViewerCode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1712982122240FC5000D5EF5 /* OverflowExifViewerCode.swift */; };
 		171375F42218FA84000E49C2 /* BayerDecode.metal in Sources */ = {isa = PBXBuildFile; fileRef = 171375F32218FA84000E49C2 /* BayerDecode.metal */; };
 		171375F6221926BD000E49C2 /* BayerDecodeParameters.swift in Sources */ = {isa = PBXBuildFile; fileRef = 171375F5221926BD000E49C2 /* BayerDecodeParameters.swift */; };
 		171375F822192732000E49C2 /* BayerDecode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 171375F722192732000E49C2 /* BayerDecode.swift */; };
@@ -279,6 +286,13 @@
 		17110DE6221EC56C00223990 /* FilterManagerWriter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterManagerWriter.swift; sourceTree = "<group>"; };
 		1712980D222396FC000D5EF5 /* RunFilterResults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RunFilterResults.swift; sourceTree = "<group>"; };
 		1712980F222398B2000D5EF5 /* WrapperPacket.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WrapperPacket.swift; sourceTree = "<group>"; };
+		171298122223AF52000D5EF5 /* ExifViewer.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = ExifViewer.storyboard; sourceTree = "<group>"; };
+		171298142223B20A000D5EF5 /* ExifViewerCode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExifViewerCode.swift; sourceTree = "<group>"; };
+		171298162223B445000D5EF5 /* ImageMetadata.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageMetadata.swift; sourceTree = "<group>"; };
+		171298182223B71B000D5EF5 /* ImageMetadataReader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageMetadataReader.swift; sourceTree = "<group>"; };
+		1712981A2223E348000D5EF5 /* ExifDataCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExifDataCell.swift; sourceTree = "<group>"; };
+		1712981F22240605000D5EF5 /* UILabelExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UILabelExtensions.swift; sourceTree = "<group>"; };
+		1712982122240FC5000D5EF5 /* OverflowExifViewerCode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverflowExifViewerCode.swift; sourceTree = "<group>"; };
 		171375F32218FA84000E49C2 /* BayerDecode.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = BayerDecode.metal; sourceTree = "<group>"; };
 		171375F5221926BD000E49C2 /* BayerDecodeParameters.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BayerDecodeParameters.swift; sourceTree = "<group>"; };
 		171375F722192732000E49C2 /* BayerDecode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BayerDecode.swift; sourceTree = "<group>"; };
@@ -555,32 +569,18 @@
 			isa = PBXGroup;
 			children = (
 				170BFE77221C2ED400754BF6 /* Generators */,
-				171D625821ED98AE004D3545 /* Noir.swift */,
+				1712981C2223E8AE000D5EF5 /* Halftone */,
+				1712981D2223E8DB000D5EF5 /* Combined */,
+				1712981E2223E906000D5EF5 /* PhotoEffects */,
 				17AA10502212DE7C00EF72DA /* EdgeWork.swift */,
 				1779F3C12218265500140EEA /* Posterize.swift */,
-				1779F3D0221833A900140EEA /* SepiaTone.swift */,
-				1779F3C822182DCA00140EEA /* Chrome.swift */,
 				171D627721EDF017004D3545 /* PassThrough.swift */,
-				1779F3CA2218306400140EEA /* Instant.swift */,
-				1779F3CC2218314A00140EEA /* ProcessEffect.swift */,
-				1779F3CE2218324100140EEA /* TransferEffect.swift */,
-				171D626C21EDCF6D004D3545 /* LineScreen.swift */,
-				17110DDF221EBFF700223990 /* Vibrance.swift */,
-				171D627021EDD1C2004D3545 /* HatchScreen.swift */,
-				171D626121EDB66F004D3545 /* DotScreen.swift */,
-				171D626E21EDD143004D3545 /* CircularScreen.swift */,
 				175E260D21F4A5AB00B6BF8F /* HueAdjust.swift */,
 				17EC44D121F027B500197804 /* LineOverlay.swift */,
-				171D627521EDD52D004D3545 /* CircleAndLines.swift */,
-				171D627221EDD415004D3545 /* CMYKHalftone.swift */,
-				17EC44CD21F0245100197804 /* XRay.swift */,
 				174F82E1221FD3B8009A004C /* Monochrome.swift */,
 				174F82DA221FBB1A009A004C /* Pointillize.swift */,
 				1726243321F8964E00C7688C /* HSBAdjust.swift */,
-				172B87A6221BCC6100F0A508 /* ThermalEffect.swift */,
 				17AA10572212F98C00EF72DA /* FalseColor.swift */,
-				17110DDD221EA21C00223990 /* TemperatureAndTint.swift */,
-				17EC44CF21F0250C00197804 /* Comic.swift */,
 				171D626A21EDCE62004D3545 /* Pixellate.swift */,
 			);
 			path = CIFilterWrappers;
@@ -626,6 +626,57 @@
 				17110DE4221EC31200223990 /* VibranceSettingsUICode.swift */,
 			);
 			path = Vibrance;
+			sourceTree = "<group>";
+		};
+		171298112223AF37000D5EF5 /* ImageMetadata */ = {
+			isa = PBXGroup;
+			children = (
+				171298122223AF52000D5EF5 /* ExifViewer.storyboard */,
+				171298142223B20A000D5EF5 /* ExifViewerCode.swift */,
+				1712982122240FC5000D5EF5 /* OverflowExifViewerCode.swift */,
+				171298162223B445000D5EF5 /* ImageMetadata.swift */,
+				1712981A2223E348000D5EF5 /* ExifDataCell.swift */,
+				171298182223B71B000D5EF5 /* ImageMetadataReader.swift */,
+			);
+			path = ImageMetadata;
+			sourceTree = "<group>";
+		};
+		1712981C2223E8AE000D5EF5 /* Halftone */ = {
+			isa = PBXGroup;
+			children = (
+				171D627021EDD1C2004D3545 /* HatchScreen.swift */,
+				171D627221EDD415004D3545 /* CMYKHalftone.swift */,
+				171D626121EDB66F004D3545 /* DotScreen.swift */,
+				171D626C21EDCF6D004D3545 /* LineScreen.swift */,
+				171D626E21EDD143004D3545 /* CircularScreen.swift */,
+			);
+			path = Halftone;
+			sourceTree = "<group>";
+		};
+		1712981D2223E8DB000D5EF5 /* Combined */ = {
+			isa = PBXGroup;
+			children = (
+				171D627521EDD52D004D3545 /* CircleAndLines.swift */,
+			);
+			path = Combined;
+			sourceTree = "<group>";
+		};
+		1712981E2223E906000D5EF5 /* PhotoEffects */ = {
+			isa = PBXGroup;
+			children = (
+				171D625821ED98AE004D3545 /* Noir.swift */,
+				1779F3D0221833A900140EEA /* SepiaTone.swift */,
+				1779F3CE2218324100140EEA /* TransferEffect.swift */,
+				1779F3CA2218306400140EEA /* Instant.swift */,
+				17110DDF221EBFF700223990 /* Vibrance.swift */,
+				172B87A6221BCC6100F0A508 /* ThermalEffect.swift */,
+				17EC44CF21F0250C00197804 /* Comic.swift */,
+				17EC44CD21F0245100197804 /* XRay.swift */,
+				17110DDD221EA21C00223990 /* TemperatureAndTint.swift */,
+				1779F3CC2218314A00140EEA /* ProcessEffect.swift */,
+				1779F3C822182DCA00140EEA /* Chrome.swift */,
+			);
+			path = PhotoEffects;
 			sourceTree = "<group>";
 		};
 		1712A85321FB23F4001E9D2B /* BumpyKernels */ = {
@@ -918,6 +969,7 @@
 		173F5D07220C66FA00067ABB /* CommonUI */ = {
 			isa = PBXGroup;
 			children = (
+				171298112223AF37000D5EF5 /* ImageMetadata */,
 				173F5D08220C671700067ABB /* ColorPicker */,
 			);
 			path = CommonUI;
@@ -1373,6 +1425,7 @@
 			children = (
 				17FA09A721E8814700405B2D /* UIImageExtensions.swift */,
 				171F3CFB220967D70098E2B7 /* UIColorExtensions.swift */,
+				1712981F22240605000D5EF5 /* UILabelExtensions.swift */,
 				178C75BD21F337C100844FFF /* AVCaptureVideoOrientationExtension.swift */,
 				178C75BB21F3247E00844FFF /* LiveMetalViewExtension.swift */,
 				1726243121F8640100C7688C /* Numeric.swift */,
@@ -1533,6 +1586,7 @@
 				17110DD9221E910500223990 /* TemperatureAndTintSettingsUI.storyboard in Resources */,
 				17D60D87220FEAD000933F15 /* MonochromeColorsSettingsUI.storyboard in Resources */,
 				1726241721F840E500C7688C /* PixellateTable.storyboard in Resources */,
+				171298132223AF52000D5EF5 /* ExifViewer.storyboard in Resources */,
 				1797BCF52222CF7900C47510 /* ManageFilterRatings.storyboard in Resources */,
 				173F633422001800006CB67C /* Pixellate2Table.storyboard in Resources */,
 				1779F3D42218347800140EEA /* SepiaToneSettingsUI.storyboard in Resources */,
@@ -1622,10 +1676,12 @@
 				178CF92621F5B98D007229FD /* ParameterManager.swift in Sources */,
 				17D7511C21F462CE0050A2B5 /* MinMaxFromBuffer.m in Sources */,
 				171F3D16220AF9CA0098E2B7 /* SolarizeSettingsUICode.swift in Sources */,
+				1712982022240605000D5EF5 /* UILabelExtensions.swift in Sources */,
 				17C3926022159D960049B8FD /* ErodeDilate.metal in Sources */,
 				17C3925E22159D480049B8FD /* DEParameters.swift in Sources */,
 				1797BCFA2222D0BA00C47510 /* ManageFavoritesCode.swift in Sources */,
 				174F82E2221FD3B8009A004C /* Monochrome.swift in Sources */,
+				171298192223B71B000D5EF5 /* ImageMetadataReader.swift in Sources */,
 				171F3D0B220AD2D30098E2B7 /* Solarize.swift in Sources */,
 				17D7511721F423DD0050A2B5 /* MainUICamera.swift in Sources */,
 				1756CDF421FD61C700C4E638 /* RelativeStrengthParameters.swift in Sources */,
@@ -1647,6 +1703,7 @@
 				178C75BE21F337C100844FFF /* AVCaptureVideoOrientationExtension.swift in Sources */,
 				1756CE1221FD874800C4E638 /* ChannelSwizzleParameters.swift in Sources */,
 				17D60D892210511800933F15 /* SampleContainerView.swift in Sources */,
+				1712981B2223E348000D5EF5 /* ExifDataCell.swift in Sources */,
 				171F3D09220AD1990098E2B7 /* Dithering.swift in Sources */,
 				1726241A21F844DF00C7688C /* FilterTableBase.swift in Sources */,
 				171F3CEF220861800098E2B7 /* GridGenerator.metal in Sources */,
@@ -1658,7 +1715,9 @@
 				1756CDFE21FD63D800C4E638 /* RGBtoBGR.metal in Sources */,
 				17787F092202E2E400D15761 /* ChannelMixerSettingsUICode.swift in Sources */,
 				172D98C921F9A53A005A5275 /* ChannelMixer.swift in Sources */,
+				1712982222240FC5000D5EF5 /* OverflowExifViewerCode.swift in Sources */,
 				17E15FF4220585950037B35F /* MirroringParameters.swift in Sources */,
+				171298172223B445000D5EF5 /* ImageMetadata.swift in Sources */,
 				174D6D5F220804AC0066AE93 /* FilterNode.swift in Sources */,
 				17D7511521F41DE40050A2B5 /* MainUIDebug.swift in Sources */,
 				1756F1192204A37100CC655D /* GrayscaleSettingsUICode.swift in Sources */,
@@ -1711,6 +1770,7 @@
 				171F3D04220AB0470098E2B7 /* LineOverlaySettingsUICode.swift in Sources */,
 				174779FE220433CB00FD64EF /* CollapsibleTableViewHeaderDelegate.swift in Sources */,
 				17110DDE221EA21C00223990 /* TemperatureAndTint.swift in Sources */,
+				171298152223B20A000D5EF5 /* ExifViewerCode.swift in Sources */,
 				171F3CFF2209CB3F0098E2B7 /* FileHandling.swift in Sources */,
 				173B16A42201437B005A5B0B /* Pixellate2TableCode.swift in Sources */,
 				171D626221EDB66F004D3545 /* DotScreen.swift in Sources */,
