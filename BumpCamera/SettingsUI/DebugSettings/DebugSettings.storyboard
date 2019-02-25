@@ -132,6 +132,37 @@
                                     </tableViewCell>
                                 </cells>
                             </tableViewSection>
+                            <tableViewSection headerTitle="Exif Debug" id="23X-sH-nob">
+                                <cells>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" accessoryType="disclosureIndicator" indentationWidth="10" rowHeight="45" id="NZh-gK-alY">
+                                        <rect key="frame" x="0.0" y="266" width="375" height="45"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="NZh-gK-alY" id="KXU-4s-KsE">
+                                            <rect key="frame" x="0.0" y="0.0" width="341" height="44.5"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="View exif data" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="eT5-IQ-3lF">
+                                                    <rect key="frame" x="16" y="11" width="118" height="24"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="width" constant="118" id="OMs-vc-FLM"/>
+                                                    </constraints>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstItem="eT5-IQ-3lF" firstAttribute="leading" secondItem="KXU-4s-KsE" secondAttribute="leadingMargin" id="Al2-so-eUE"/>
+                                                <constraint firstItem="eT5-IQ-3lF" firstAttribute="top" secondItem="KXU-4s-KsE" secondAttribute="topMargin" id="U6W-2G-8eA"/>
+                                                <constraint firstAttribute="bottomMargin" secondItem="eT5-IQ-3lF" secondAttribute="bottom" constant="-1" id="pFh-eD-6sk"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                        <connections>
+                                            <segue destination="cUK-Oc-L3B" kind="show" id="dgw-wq-Z7W"/>
+                                        </connections>
+                                    </tableViewCell>
+                                </cells>
+                            </tableViewSection>
                         </sections>
                         <connections>
                             <outlet property="dataSource" destination="cVK-YC-yNn" id="B7C-79-n10"/>
@@ -154,6 +185,14 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="3IJ-NX-Z3w" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1436" y="-58.020989505247378"/>
+        </scene>
+        <!--ExifViewer-->
+        <scene sceneID="N12-cS-nsm">
+            <objects>
+                <viewControllerPlaceholder storyboardName="ExifViewer" id="cUK-Oc-L3B" sceneMemberID="viewController"/>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Hwe-ej-gBt" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2201" y="4"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="FWZ-0Y-FQ7">
