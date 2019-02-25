@@ -9,6 +9,7 @@
 import Foundation
 import UIKit
 
+/// Code to run settings for all half-tone related CIFilters.
 class HalftoneSettingsUICode: FilterSettingUIBase
 {
     override func viewDidLoad()
@@ -49,7 +50,7 @@ class HalftoneSettingsUICode: FilterSettingUIBase
         let Adjust = ParameterManager.GetBool(From: FilterID, Field: .AdjustInLandscape, Default: true)
         
         WidthLabel.text = "\(W.Round(To: 1))"
-        WidthSlider.value = Float(W) * 50.0
+        WidthSlider.value = Float(W) * 10.0
         AngleLabel.text = "\(A.Round(To: 1))°"
         AngleSlider.value = Float(A) * 10.0
         MergeWithOriginalSwitch.isOn = Merge
@@ -66,7 +67,7 @@ class HalftoneSettingsUICode: FilterSettingUIBase
     
     @objc func WidthDoneSliding()
     {
-        let SliderValue: Double = Double(WidthSlider.value / 20.0)
+        let SliderValue: Double = Double(WidthSlider.value / 10.0)
         WidthLabel.text = "\(SliderValue.Round(To: 1))"
         UpdateValue(WithValue: SliderValue, ToField: .Width)
         ShowSampleView()
@@ -76,12 +77,16 @@ class HalftoneSettingsUICode: FilterSettingUIBase
     {
         let SliderValue: Double = Double(AngleSlider.value / 10.0)
         AngleLabel.text = "\(SliderValue.Round(To: 1))°"
+        UpdateValue(WithValue: SliderValue, ToField: .Angle)
+        ShowSampleView()
     }
     
     @IBAction func HandleWidthSliderChanged(_ sender: Any)
     {
-        let SliderValue: Double = Double(WidthSlider.value / 20.0)
+        let SliderValue: Double = Double(WidthSlider.value / 10.0)
         WidthLabel.text = "\(SliderValue.Round(To: 1))"
+        UpdateValue(WithValue: SliderValue, ToField: .Width)
+        ShowSampleView()
     }
     
     @IBAction func HandleMergeWithOriginalChanged(_ sender: Any)
