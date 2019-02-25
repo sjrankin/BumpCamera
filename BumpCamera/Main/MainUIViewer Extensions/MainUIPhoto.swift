@@ -185,6 +185,7 @@ extension MainUIViewer
     //https://medium.com/@emiswelt/exporting-images-with-metadata-to-the-photo-gallery-in-swift-3-ios-10-66210bbad5d2
     func SaveImageAsJPeg2(PixelBuffer: CVPixelBuffer, MetaData: [String: Any]) -> Bool
     {
+        DumpMetaData(MetaData, Title: "Initial", 0)
         guard let JData = MainUIViewer.JpegData(WithPixelBuffer: PixelBuffer, Attachments: MetaData) else
         {
             print("Error creating jpeg image.")
