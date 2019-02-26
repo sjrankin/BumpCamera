@@ -115,13 +115,14 @@ class ImageMetadataReader
         Metadata = ImageMetadata()
         let Top = Metadata?.AddGroup(ImageMetadata.TopLevelName)
         
+        var NiceGroupName = ""
         for (Key, Value) in Raw
         {
             if GroupNames.contains(Key)
             {
                 if let GroupDictionary = Value as? [String: Any]
                 {
-                    var NiceGroupName = ""
+                    NiceGroupName = ""
                     if ReadableNames[Key] == nil
                     {
                         NiceGroupName = Key
@@ -141,7 +142,7 @@ class ImageMetadataReader
             }
             else
             {
-                Top!.TagList.append(TagTypes(Key, "\(Value)"))
+                Top!.TagList.append(TagTypes(Key, "\(Value)", NiceGroupName))
             }
         }
         return true
