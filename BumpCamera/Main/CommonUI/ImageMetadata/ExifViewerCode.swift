@@ -155,6 +155,7 @@ class ExifViewerCode: UIViewController, UITableViewDelegate, UITableViewDataSour
                 LoadedImageView.image = nil
             }
             ImageNameLabel.text = "Loaded Image"
+            LoadedImageFileName = ""
             //https://stackoverflow.com/questions/27854937/ios8-photos-framework-how-to-get-the-nameor-filename-of-a-phasset
             if let Asset = info[UIImagePickerController.InfoKey.phAsset] as? PHAsset
             {
@@ -169,6 +170,7 @@ class ExifViewerCode: UIViewController, UITableViewDelegate, UITableViewDataSour
                                 if let Path = Info[NSString(string: "PHImageFileURLKey")] as? NSURL
                                 {
                                     let OriginalFileName = Path.lastPathComponent!
+                                    self.LoadedImageFileName = OriginalFileName
                                     self.ImageNameLabel.text = OriginalFileName
                                 }
                             }
@@ -186,6 +188,8 @@ class ExifViewerCode: UIViewController, UITableViewDelegate, UITableViewDataSour
         picker.dismiss(animated: true, completion: nil)
     }
     
+    var LoadedImageFileName: String = ""
+    
     var MetadataReader: ImageMetadataReader? = nil
     
     @IBAction func HandleBackButton(_ sender: Any)
@@ -200,49 +204,51 @@ class ExifViewerCode: UIViewController, UITableViewDelegate, UITableViewDataSour
         present(ACV, animated: true)
     }
     
-    func activityViewControllerPlaceholderItem(_ activityViewController: UIActivityViewController) -> Any
+    @objc func activityViewControllerPlaceholderItem(_ activityViewController: UIActivityViewController) -> Any
     {
         return ""
     }
     
-    func activityViewController(_ activityViewController: UIActivityViewController, subjectForActivityType activityType: UIActivity.ActivityType?) -> String
+    @objc func activityViewController(_ activityViewController: UIActivityViewController, subjectForActivityType activityType: UIActivity.ActivityType?) -> String
     {
-        return "Metadata for Image"
+        return "Metadata for \(LoadedImageFileName)"
     }
     
-    func activityViewController(_ activityViewController: UIActivityViewController, itemForActivityType activityType: UIActivity.ActivityType?) -> Any?
+    @objc func activityViewController(_ activityViewController: UIActivityViewController, itemForActivityType activityType: UIActivity.ActivityType?) -> Any?
     {
+        let MetadataContents = (MetadataReader?.Metadata?.Export(As: .XML, ImageName: LoadedImageFileName))!
+        
         switch activityType!
         {
         case .postToTwitter:
-            return "Tweeted"
+            return MetadataContents
             
         case .airDrop:
-            return "Hiya"
+            return MetadataContents
             
         case .copyToPasteboard:
-            return "test text"
+            return MetadataContents
             
         case .mail:
-            return "test"
+            return MetadataContents
             
         case .postToTencentWeibo:
-            return "test"
+            return MetadataContents
             
         case .postToWeibo:
-            return "test"
+            return MetadataContents
             
         case .print:
-            return "test"
+            return MetadataContents
             
         case .markupAsPDF:
-            return "test"
+            return MetadataContents
             
         case .message:
-            return "test"
+            return MetadataContents
             
         default:
-            return "Test text"
+            return MetadataContents
         }
     }
     
