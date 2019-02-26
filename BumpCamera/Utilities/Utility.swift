@@ -1854,5 +1854,73 @@ class Utility
         Result = ReplaceMultipleSpaces(From: Result)
         return Result
     }
+    
+    /// List of most common XML entities and their raw equivalent.
+    static let XMLEntities =
+    [
+        "&" : "&amp;",
+        "\"": "&quot;",
+        "'" : "&apos;",
+        "<" : "&lt;",
+        ">" : "&gt;"
+    ]
+    
+    /// Table of characters that must be quoted in XML. "&" must be first.
+    static let XMLEntityTable =
+    [
+        "&", "\"", "'", "<", ">"
+    ]
+    
+    /// Replaces all instances of characters in the source string that are not valid XML characters
+    /// without special processing marks.
+    ///
+    /// - Note: The source string is assumed to have *not* been processed for XML characters prior
+    ///         to calling this function. If it was, the result is undefined.
+    ///
+    /// - Parameter Source: Source string.
+    /// - Returns: New string with any needed substitutions made.
+    static func ReplaceXMLEntities(_ Source: String) -> String
+    {
+        var Result = Source
+        for SomeChar in XMLEntityTable
+        {
+            if Result.contains(SomeChar)
+            {
+                Result = Result.replacingOccurrences(of: SomeChar, with: XMLEntities[SomeChar]!)
+            }
+        }
+        return Result
+    }
+    
+    /// Need to define a JSON quotation mark separately and not directly as a dictionary entry due to some strange
+    /// Swift compiler quirk.
+    static let JSONQuote = """
+\"
+"""
+    /// List of JSON text entries to replace.
+    static let JSONEntities =
+    [
+        "\"" : JSONQuote
+    ]
+    
+    /// Replaces all instances of characters in the source string that are not valid stand-alone JSON characters.
+    ///
+    /// - Note: The source string is assumed to have *not* been processed for JSON characters prior to calling
+    ///         this function. If it was, the result is undefined.
+    ///
+    /// - Parameter Source: Source string.
+    /// - Returns: New string with any needed substitutions made.
+    static func ReplaceJSONEntities(_ Source: String) -> String
+    {
+        var Result = Source
+        for (SomeChar, Entity) in JSONEntities
+        {
+            if Result.contains(SomeChar)
+            {
+                Result = Result.replacingOccurrences(of: SomeChar, with: Entity)
+            }
+        }
+        return Result
+    }
 }
 
