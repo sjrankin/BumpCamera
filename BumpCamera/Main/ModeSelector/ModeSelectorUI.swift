@@ -33,14 +33,20 @@ class ModeSelectorUI: UIView, ButtonActionProtocol
     
     /// Initializes the mode selection UI.
     ///
+    /// - Note: Due to constraint wackiness and inconsistency, we handle positioning the mode selection UI ourself.
+    ///
     /// - Note: Perhaps move this to a "normal" initializer...
     ///
     /// - Parameter SelectedButton: The button to select on start up.
-    /// - Parameter InitialFrame: The frame of the UI before it's hidden.
-    func Initialize(SelectedButton: Int, InitialFrame: CGRect)
+    /// - Parameter TopOfToolBar: Coordinate of the top of the bottom toolbar.
+    func Initialize(SelectedButton: Int, TopOfToolBar: CGFloat)
     {
-        VisibleFrame = InitialFrame
-        print("Mode selection UI VisibleFrame=\((VisibleFrame)!)")
+        let Height: CGFloat = 450.0
+        let DynamicY = TopOfToolBar + 10.0 - Height
+        //print("DynamicY = \(TopOfToolBar) + 10 - \(Height) = \(DynamicY)")
+        VisibleFrame = CGRect(x: -10, y: DynamicY, width: 110, height: Height)
+        HiddenFrame = CGRect(x: -120, y: DynamicY, width: 110, height: Height)
+        //print("VisibleFrame=\((VisibleFrame)!), HiddenFrame=\((HiddenFrame)!)")
         layer.borderColor = UIColor.white.cgColor
         layer.borderWidth = 0.5
         layer.cornerRadius = 5.0
@@ -66,6 +72,7 @@ class ModeSelectorUI: UIView, ButtonActionProtocol
     }
     
     var VisibleFrame: CGRect!
+    var HiddenFrame: CGRect!
     
     /// Handle button press events from the UI's set of buttons (which are really
     /// nothing more than UIViews with pictures).
@@ -73,7 +80,9 @@ class ModeSelectorUI: UIView, ButtonActionProtocol
     /// - Parameter ButtonType: Determines which button was pressed.
     func ButtonPressed(_ ButtonType: ModeButtonTypes)
     {
+        #if DEBUG
         print("Button \(ButtonType.rawValue) pressed.")
+        #endif
         MainDelegate?.ModeButtonPressed(ButtonType: ButtonType)
         for SomeView in subviews
         {
@@ -110,28 +119,30 @@ class ModeSelectorUI: UIView, ButtonActionProtocol
         UIView.animate(withDuration: Duration, delay: 0.0,
                        options: [UIView.AnimationOptions.curveEaseIn],
                        animations: {
-                        self.frame = CGRect(x: -10, y: 233, width: 110, height: 450)
+                        self.frame = self.VisibleFrame
                         }, completion:
             {
                 _ in
                 self.isHidden = false
+                //print("Show: self.frame=\(self.frame)")
         })
     }
     
     /// Hide the mode selection UI.
     ///
     /// - Parameter Duration: Duration of the animation used to hide the UI.
-    func Hide()
+    func Hide(Duration: Double = 0.3)
     {
         IsShowing = false
         UIView.animate(withDuration: 0.3, delay: 0.0,
                        options: [UIView.AnimationOptions.curveEaseIn],
                        animations: {
-                        self.frame = CGRect(x: -120, y: 233, width: 110, height: 450)
+                        self.frame = self.HiddenFrame
         }, completion:
             {
                 _ in
                 self.isHidden = true
+                //print("Hide: self.frame=\(self.frame)")
         })
     }
     
