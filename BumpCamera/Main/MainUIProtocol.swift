@@ -13,4 +13,9 @@ protocol MainUIProtocol: class
 {
     /// Notifies the main UI that user favorites were changed one way or another.
     func UserFavoritesChanged()
+    
+    /// Notifies the main UI that a mode button was pressed.
+    ///
+    /// - Parameter ButtonType: Indicates the button that was pressed.
+    func ModeButtonPressed(ButtonType: ModeButtonTypes)
 }
