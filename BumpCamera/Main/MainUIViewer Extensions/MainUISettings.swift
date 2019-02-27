@@ -68,6 +68,8 @@ extension MainUIViewer
         _Settings.set(true, forKey: "IngorePriorCrashes")
         _Settings.set("", forKey: "LastCrashedFilter")
         #endif
+        _Settings.set(0, forKey: "ProgramMode")
+        _Settings.set(true, forKey: "ShowModeUI")
         let InitialGroupID = Filters?.GetGroupID(ForGroup: .Standard)
         _Settings.set(InitialGroupID?.uuidString, forKey: "CurrentGroup")
         let InitialFilterID = Filters?.GetFilterID(For: .PassThrough)
