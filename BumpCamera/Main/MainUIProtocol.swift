@@ -17,5 +17,5 @@ protocol MainUIProtocol: class
     /// Notifies the main UI that a mode button was pressed.
     ///
     /// - Parameter ButtonType: Indicates the button that was pressed.
-    func ModeButtonPressed(ButtonType: ModeButtonTypes)
+    func ModeButtonPressed(ButtonType: CameraModeTypes)
 }
