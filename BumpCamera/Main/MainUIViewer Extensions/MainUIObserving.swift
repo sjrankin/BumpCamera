@@ -150,6 +150,10 @@ extension MainUIViewer
                             self.LiveView.rotation = VRotation
                         }
                 }
+                DispatchQueue.main.async
+                    {
+                    self.FilterUIOrientationChange()
+                }
         }
             , completion: nil)
     }
