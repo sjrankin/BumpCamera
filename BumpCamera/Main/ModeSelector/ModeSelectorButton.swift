@@ -101,9 +101,9 @@ class ModeSelectorButton: UIView, ButtonActionProtocol
     }
     
     /// Stores the button type.
-    private var _ButtonMode: ModeButtonTypes = .About
+    private var _ButtonMode: CameraModeTypes = .About
     /// Get or set the button mode type.
-    public var ButtonMode: ModeButtonTypes
+    public var ButtonMode: CameraModeTypes
     {
         get
         {
@@ -117,7 +117,7 @@ class ModeSelectorButton: UIView, ButtonActionProtocol
     {
         willSet
         {
-            if let Value = ModeButtonTypes(rawValue: newValue?.lowercased() ?? "")
+            if let Value = CameraModeTypes(rawValue: newValue?.lowercased() ?? "")
             {
                 _ButtonMode = Value
             }
@@ -128,7 +128,7 @@ class ModeSelectorButton: UIView, ButtonActionProtocol
     weak var ParentDelegate: ButtonActionProtocol? = nil
     
     /// Not executed in this class.
-    func ButtonPressed(_ ButtonType: ModeButtonTypes)
+    func ButtonPressed(_ ButtonType: CameraModeTypes)
     {
         //Not intended to be executed in this class.
     }
