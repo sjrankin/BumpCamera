@@ -64,6 +64,10 @@ extension MainUIViewer: CAAnimationDelegate
             {
                 self.FilterCollectionView.frame = self.HiddenFilter
                 self.GroupCollectionView.frame = self.GroupHidden
+                self.FilterCollectionView.alpha = 0.0
+                self.GroupCollectionView.alpha = 0.0
+                //self.FilterCollectionView.layer.borderColor = UIColor.black.cgColor
+                //self.GroupCollectionView.layer.borderColor = UIColor.black.cgColor
         }
             , completion:
             {
@@ -93,6 +97,10 @@ extension MainUIViewer: CAAnimationDelegate
             {
                 self.FilterCollectionView.frame = self.FilterRect
                 self.GroupCollectionView.frame = self.GroupRect
+                self.FilterCollectionView.alpha = 1.0
+                self.GroupCollectionView.alpha = 1.0
+                //self.FilterCollectionView.layer.borderColor = UIColor.white.cgColor
+                //self.GroupCollectionView.layer.borderColor = UIColor.white.cgColor
         }
             , completion:
             {
