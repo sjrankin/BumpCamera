@@ -427,7 +427,7 @@
                                 <rect key="frame" x="0.0" y="692" width="414" height="44"/>
                                 <viewLayoutGuide key="safeArea" id="6Wx-kA-AiO"/>
                                 <items>
-                                    <barButtonItem title="Export" id="dXD-Jt-gfi">
+                                    <barButtonItem systemItem="action" id="dXD-Jt-gfi">
                                         <connections>
                                             <action selector="HandleExportButton:" destination="O5W-Vl-KH1" id="JIa-ix-GaA"/>
                                         </connections>
