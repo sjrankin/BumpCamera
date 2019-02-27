@@ -12,7 +12,7 @@ import UIKit
 /// This extension adds code to allow the user to select filter groups and filters via the main UI. The only reason
 /// why this is in an extension is to reduce the size of the file where the main implementation of the UI lives. Due
 /// to some Swift limitation, all stored properties are in the main file.
-extension MainUIViewer
+extension MainUIViewer: CAAnimationDelegate
 {
     // MARK: Filter collection view code.
     
@@ -49,35 +49,78 @@ extension MainUIViewer
         GroupData = GroupNodeManager(InitialGroup: InitialGroup, InitialFilter: InitialFilter, ForTargets: [.LiveView])
     }
     
-    /// Update the visibility of the filter selection UI. This is essentially a toggle function.
+    /// Hide the filter selection UI.
     ///
-    /// - Parameters:
-    ///   - ShowDuration: Animation duration for showing the UI.
-    ///   - HideDuration: Animation duration for hiding the UI.
-    func UpdateFilterSelectionVisibility(ShowDuration: Double = 0.25, HideDuration: Double = 0.4)
+    /// - Parameter WithDuration: The duration of the hiding animation.
+    func HideFilterUI(WithDuration: Double = 0.4)
     {
-        if FiltersAreShowing
+        if !FiltersAreShowing
         {
-            UIView.animate(withDuration: HideDuration)
+            return
+        }
+        
+        UIView.setAnimationRepeatAutoreverses(false)
+        UIView.animate(withDuration: WithDuration, animations:
             {
                 self.FilterCollectionView.frame = self.HiddenFilter
                 self.GroupCollectionView.frame = self.GroupHidden
-            }
-            FiltersAreShowing = false
         }
-        else
+            , completion:
+            {
+                _ in
+                self.FilterCollectionView.isHidden = true
+                self.GroupCollectionView.isHidden = true
+                self.FiltersAreShowing = false
+                self.StopHideTimer()
+        }
+        )
+    }
+    
+    /// Show the filter selection UI.
+    ///
+    /// - Parameter WithDuration: The duration of the showing animation.
+    func ShowFilterUI(WithDuration: Double = 0.25)
+    {
+        if FiltersAreShowing
         {
-            FilterCollectionView.isHidden = false
-            GroupCollectionView.isHidden = false
-            UIView.animate(withDuration: ShowDuration)
+            return
+        }
+        
+        FilterCollectionView.isHidden = false
+        GroupCollectionView.isHidden = false
+        UIView.setAnimationRepeatAutoreverses(false)
+        UIView.animate(withDuration: WithDuration, animations:
             {
                 self.FilterCollectionView.frame = self.FilterRect
                 self.GroupCollectionView.frame = self.GroupRect
-            }
-            FiltersAreShowing = true
-            FilterCollectionView.reloadData()
-            GroupCollectionView.reloadData()
-            StartHidingTimer()
+        }
+            , completion:
+            {
+                _ in
+                self.FiltersAreShowing = true
+                self.StartHidingTimer()
+        }
+        )
+    }
+    
+    /// Handle device orientation changes by updating the rectangles for the two controls in the filter settings UI.
+    func FilterUIOrientationChange()
+    {
+        FilterRect = CGRect(x: 10, y: AvailableBottom - UIHeight - 5,
+                            width: UIScreen.main.bounds.width - (2.0 * HMargin), height: UIHeight)
+        HiddenFilter = CGRect(x: 10, y: view.frame.height + HideOffset, width: FilterRect.width, height: FilterRect.height)
+        GroupRect = CGRect(x: 10, y: FilterRect.minY - UIHeight - 5,
+                           width: UIScreen.main.bounds.width - (2.0 * HMargin), height: UIHeight)
+        GroupHidden = CGRect(x: 10, y: view.frame.height + HideOffset, width: GroupRect.width, height: GroupRect.height)
+        if FiltersAreShowing
+        {
+            FilterCollectionView.frame = FilterRect
+            GroupCollectionView.frame = GroupRect
+        }
+        else
+        {
+            FilterCollectionView.frame = HiddenFilter
+            GroupCollectionView.frame = GroupRect
         }
     }
     
@@ -94,13 +137,6 @@ extension MainUIViewer
         FilterCollectionView.allowsSelection = true
         FilterCollectionView.allowsMultipleSelection = false
         FilterCollectionView.layer.zPosition = 501
-        FilterRect = FilterCollectionView.frame
-        HiddenFilter = CGRect(x: FilterCollectionView.frame.minX, y: view.frame.height,
-                              width: FilterCollectionView.frame.width, height: FilterCollectionView.frame.height)
-        UIView.animate(withDuration: 0.1) {
-            self.FilterCollectionView.frame = self.HiddenFilter
-        }
-        FilterCollectionView.isHidden = true
         FilterCollectionView.delegate = self
         FilterCollectionView.dataSource = self
         FilterCollectionView.layer.borderWidth = 0.5
@@ -108,19 +144,16 @@ extension MainUIViewer
         FilterCollectionView.layer.cornerRadius = 5.0
         FilterCollectionView.clipsToBounds = true
         FilterCollectionView.backgroundColor = UIColor(red: 1.0, green: 1.0, blue: 1.0, alpha: 0.35)
+        FilterRect = CGRect(x: 10, y: AvailableBottom - UIHeight - 5,
+                            width: UIScreen.main.bounds.width - (2.0 * HMargin), height: UIHeight)
+        HiddenFilter = CGRect(x: 10, y: view.frame.height + HideOffset, width: FilterRect.width, height: FilterRect.height)
+        FilterCollectionView.frame = HiddenFilter
         
         LastSelectedGroup = 0
         GroupCollectionView.register(FilterCollectionCell.self, forCellWithReuseIdentifier: "GroupCell")
         GroupCollectionView.allowsSelection = true
         GroupCollectionView.allowsMultipleSelection = false
         GroupCollectionView.layer.zPosition = 500
-        GroupRect = GroupCollectionView.frame
-        GroupHidden = CGRect(x: GroupCollectionView.frame.minX, y: view.frame.height,
-                             width: GroupCollectionView.frame.width, height: GroupCollectionView.frame.height)
-        UIView.animate(withDuration: 0.1) {
-            self.GroupCollectionView.frame = self.GroupHidden
-        }
-        GroupCollectionView.isHidden = true
         GroupCollectionView.delegate = self
         GroupCollectionView.dataSource = self
         GroupCollectionView.layer.borderWidth = 0.5
@@ -128,6 +161,10 @@ extension MainUIViewer
         GroupCollectionView.layer.cornerRadius = 5.0
         GroupCollectionView.clipsToBounds = true
         GroupCollectionView.backgroundColor = UIColor(red: 1.0, green: 1.0, blue: 1.0, alpha: 0.35)
+        GroupRect = CGRect(x: 10, y: FilterRect.minY - UIHeight - 5,
+                           width: UIScreen.main.bounds.width - (2.0 * HMargin), height: UIHeight)
+        GroupHidden = CGRect(x: 10, y: view.frame.height + HideOffset, width: GroupRect.width, height: GroupRect.height)
+        GroupCollectionView.frame = GroupHidden
     }
     
     /// Programmatically select a filter and show the UI.
@@ -232,7 +269,7 @@ extension MainUIViewer
             return GroupCell
         }
     }
-
+    
     /// Handle selection events in the UI for group and filter selections. Handles selection events for both
     /// group and filter selections.
     ///
@@ -287,7 +324,7 @@ extension MainUIViewer
             StartHidingTimer()
         }
     }
-
+    
     /// Handles deselection events for filter deselections.
     ///
     /// - Parameters:
@@ -335,7 +372,8 @@ extension MainUIViewer
     {
         HideTimer?.invalidate()
         HideTimer = nil
-        UpdateFilterSelectionVisibility()
+        HideFilterUI()
+        //UpdateFilterSelectionVisibility()
     }
     
     /// Event triggered when the scroll view started moving (via the user). When this happens, stop the hide UI timer.
@@ -349,7 +387,7 @@ extension MainUIViewer
         }
         StopHideTimer()
     }
-
+    
     /// Event triggered when the scroll view stopped moving (via the user). When this happens, start the hide UI timer.
     ///
     /// - Parameter scrollView: The scroll view control (or control with this protocol) that stopped moving.
