@@ -232,7 +232,7 @@ extension MainUIViewer
             return GroupCell
         }
     }
-    
+
     /// Handle selection events in the UI for group and filter selections. Handles selection events for both
     /// group and filter selections.
     ///
@@ -287,7 +287,7 @@ extension MainUIViewer
             StartHidingTimer()
         }
     }
-    
+
     /// Handles deselection events for filter deselections.
     ///
     /// - Parameters:
@@ -349,7 +349,7 @@ extension MainUIViewer
         }
         StopHideTimer()
     }
-    
+
     /// Event triggered when the scroll view stopped moving (via the user). When this happens, start the hide UI timer.
     ///
     /// - Parameter scrollView: The scroll view control (or control with this protocol) that stopped moving.
