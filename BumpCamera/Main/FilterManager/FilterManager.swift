@@ -1048,7 +1048,7 @@ class FilterManager
             .Kuwahara: "Kuwahara",
             .PixellateMetal: "Pixellate Metal",
             .Grid: "Grid Generator",
-            .Dither: "Dithing",
+            .Dither: "Dithering",
             .Solarize: "Solarize",
             .Threshold: "Threshold",
             .MonochromeColor: "Mono- Colors",
