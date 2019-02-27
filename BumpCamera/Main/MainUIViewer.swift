@@ -488,7 +488,7 @@ class MainUIViewer: UIViewController,
         }
     }
     
-    func ModeButtonPressed(ButtonType: ModeButtonTypes)
+    func ModeButtonPressed(ButtonType: CameraModeTypes)
     {
         switch ButtonType
         {
@@ -715,6 +715,15 @@ class MainUIViewer: UIViewController,
     let HMargin: CGFloat = 10
     let HideOffset: CGFloat = 10
     var AvailableBottom: CGFloat = 0
+    let ModeIconTable: [CameraModeTypes: [String]] =
+    [
+        CameraModeTypes.LiveView: ["", "", "", ""],
+        CameraModeTypes.GIF: ["", "", "", ""],
+        CameraModeTypes.Video: ["", "", "", ""],
+        CameraModeTypes.Editor: ["", "", "", ""],
+        CameraModeTypes.OnTheFly: ["", "", "", ""],
+    ]
+    var CurrentCameraMode: CameraModeTypes = .LiveView
 }
 
 public enum SetupResults
