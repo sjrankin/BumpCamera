@@ -57,6 +57,8 @@ class MainUIViewer: UIViewController,
     {
         super.viewDidLoad()
         
+        MainBottomToolbar.layer.zPosition = 1000
+        
         FrameCountLabel.textColor = UIColor.clear
         FrameCountLabel.backgroundColor = UIColor.clear
         FPSLabel.textColor = UIColor.clear
@@ -80,6 +82,9 @@ class MainUIViewer: UIViewController,
         DepthDataSupported = PhotoOutput.isDepthDataDeliverySupported
         print("DepthDataSupported = \(DepthDataSupported)")
         
+        FilterCollectionView.register(FilterCollectionCell.self, forCellWithReuseIdentifier: "FilterItem")
+        GroupCollectionView.register(FilterCollectionCell.self, forCellWithReuseIdentifier: "GroupCell")
+        
         InitializeFilterSelector()
         #if targetEnvironment(simulator)
         OnSimulator = true
@@ -90,6 +95,12 @@ class MainUIViewer: UIViewController,
         Tap.numberOfTapsRequired = 1
         self.LiveView.addGestureRecognizer(Tap)
         
+        ModeSelection.Initialize(SelectedButton: _Settings.integer(forKey: "ProgramMode"), InitialFrame: ModeSelection.frame)
+        ModeSelection.MainDelegate = self
+        if !_Settings.bool(forKey: "ShowModeUI")
+        {
+            DoHandleModeButtonPressed()
+        }
         InitializeLabels()
         
         //Make sure the file structure is OK... If not, create expected directories.
@@ -158,15 +169,7 @@ class MainUIViewer: UIViewController,
         StartSettingsMonitor()
     }
     
-    #if false
-    override func viewWillLayoutSubviews()
-    {
-        FrameCountLabel.textColor = UIColor.clear
-        FrameCountLabel.backgroundColor = UIColor.clear
-        FPSLabel.textColor = UIColor.clear
-        FPSLabel.backgroundColor = UIColor.clear
-    }
-    #endif
+    @IBOutlet weak var ModeSelection: ModeSelectorUI!
     
     var ShowedCrashDialog = false
     
@@ -461,6 +464,85 @@ class MainUIViewer: UIViewController,
     @IBOutlet weak var BackgroundView: UIView!
     @IBOutlet var MainUIView: UIView!
     
+    // MARK: Mode selection and UI.
+    
+    /// Sets the enable state on bottom toolbar buttons. The first button is not changed. This function should be called
+    /// when the user opens the mode UI and called again when the mode UI closes.
+    ///
+    /// - Parameter To: Value to set the enable state to.
+    func SetButtonEnableState(To: Bool)
+    {
+        let ButtonCount = MainBottomToolbar.items!.count
+        for Index in 1 ..< ButtonCount
+        {
+            let Item = MainBottomToolbar.items![Index]
+            Item.isEnabled = To
+        }
+    }
+    
+    func ModeButtonPressed(ButtonType: ModeButtonTypes)
+    {
+        switch ButtonType
+        {
+        case .About:
+            performSegue(withIdentifier: "ToSettings", sender: self)
+            
+        case .Editor:
+            _Settings.set(3, forKey: "ProgramMode")
+            
+        case .GIF:
+            _Settings.set(2, forKey: "ProgramMode")
+            
+        case .LiveView:
+            _Settings.set(0, forKey: "ProgramMode")
+            
+        case .OnTheFly:
+            _Settings.set(4, forKey: "ProgramMode")
+            
+        case .Video:
+            _Settings.set(1, forKey: "ProgramMode")
+        }
+    }
+    
+    func DoHandleModeButtonPressed()
+    {
+        if ModeUIShowing
+        {
+            //Hide mode UI.
+            ModeSelection.Hide()
+            SetButtonEnableState(To: true)
+            ModeUIShowing = false
+            ModeSelectorButton.image = UIImage(named: "ModeOpen")
+            _Settings.set(false, forKey: "ShowModeUI")
+        }
+        else
+        {
+            //Show mode UI.
+            ModeSelection.Show()
+            if FiltersAreShowing
+            {
+                UpdateFilterSelectionVisibility()
+            }
+            SetButtonEnableState(To: false)
+            ModeUIShowing = true
+            ModeSelectorButton.image = UIImage(named: "ModeClose")
+            _Settings.set(true, forKey: "ShowModeUI")
+        }
+    }
+    
+    @IBAction func HandleModeButtonPressed(_ sender: Any)
+    {
+        DoHandleModeButtonPressed()
+    }
+    
+    @IBOutlet weak var ModeSelectorButton: UIBarButtonItem!
+    var ModeUIShowing: Bool = true
+    var ModeRect: CGRect!
+    var HiddenMode: CGRect!
+    var ModeList = [UIModes]()
+    
+    // MARK: Current filter settings button.
+    
     @IBAction func HandleCurrentFilterSettingsPressed(_ sender: Any)
     {
         if let RawID = _Settings.string(forKey: "CurrentFilter")
@@ -505,11 +587,6 @@ class MainUIViewer: UIViewController,
         {
             print("Error getting ID of current filter.")
         }
-    }
-    
-    @IBAction func HandleSettingsButtonPressed(_ sender: Any)
-    {
-        performSegue(withIdentifier: "ToSettings", sender: self)
     }
     
     /// Update the frame count display. The frame count is updated by one every time this function is called. This
