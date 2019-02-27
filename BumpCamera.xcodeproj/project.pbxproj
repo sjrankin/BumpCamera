@@ -191,6 +191,7 @@
 		17C3926222159FBC0049B8FD /* DilateErode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17C3926122159FBC0049B8FD /* DilateErode.swift */; };
 		17C392652215A4480049B8FD /* DilateErodeSettingsUI.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 17C392642215A4480049B8FD /* DilateErodeSettingsUI.storyboard */; };
 		17C392672215A5CB0049B8FD /* DilateErodeSettingsUICode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17C392662215A5CB0049B8FD /* DilateErodeSettingsUICode.swift */; };
+		17C7F4BB22255F77001F05F3 /* MainUIModes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17C7F4BA22255F77001F05F3 /* MainUIModes.swift */; };
 		17C93EA622224C2B00B7F697 /* Privacy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17C93EA522224C2B00B7F697 /* Privacy.swift */; };
 		17C93EA82222523200B7F697 /* PrivacyManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17C93EA72222523200B7F697 /* PrivacyManager.swift */; };
 		17C93EAB2222582500B7F697 /* GeneralSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17C93EAA2222582500B7F697 /* GeneralSettings.swift */; };
@@ -241,6 +242,8 @@
 		17E15FF6220585EE0037B35F /* MirroringDistortion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17E15FF5220585EE0037B35F /* MirroringDistortion.swift */; };
 		17E15FF822058C5A0037B35F /* MirroringFilterSettingsUICode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17E15FF722058C5A0037B35F /* MirroringFilterSettingsUICode.swift */; };
 		17E1856721F2C8E800192D03 /* FilterCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17E1856621F2C8E800192D03 /* FilterCell.swift */; };
+		17E7E94E22262B0600B3BB39 /* ModeSelectorUI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17E7E94D22262B0600B3BB39 /* ModeSelectorUI.swift */; };
+		17E7E950222631BF00B3BB39 /* ModeSelectorButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17E7E94F222631BF00B3BB39 /* ModeSelectorButton.swift */; };
 		17E9F0DD2201719600BA7B46 /* FilterSettingsUI.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 17E9F0DC2201719600BA7B46 /* FilterSettingsUI.storyboard */; };
 		17E9F0E1220173CD00BA7B46 /* KuwaharaFilterSettingsUI.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 17E9F0E0220173CD00BA7B46 /* KuwaharaFilterSettingsUI.storyboard */; };
 		17E9F0E52201784700BA7B46 /* KuwaharaFilterSettingsCode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17E9F0E42201784700BA7B46 /* KuwaharaFilterSettingsCode.swift */; };
@@ -453,6 +456,7 @@
 		17C3926122159FBC0049B8FD /* DilateErode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DilateErode.swift; sourceTree = "<group>"; };
 		17C392642215A4480049B8FD /* DilateErodeSettingsUI.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = DilateErodeSettingsUI.storyboard; sourceTree = "<group>"; };
 		17C392662215A5CB0049B8FD /* DilateErodeSettingsUICode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DilateErodeSettingsUICode.swift; sourceTree = "<group>"; };
+		17C7F4BA22255F77001F05F3 /* MainUIModes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainUIModes.swift; sourceTree = "<group>"; };
 		17C93EA522224C2B00B7F697 /* Privacy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Privacy.swift; sourceTree = "<group>"; };
 		17C93EA72222523200B7F697 /* PrivacyManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrivacyManager.swift; sourceTree = "<group>"; };
 		17C93EAA2222582500B7F697 /* GeneralSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneralSettings.swift; sourceTree = "<group>"; };
@@ -504,6 +508,8 @@
 		17E15FF5220585EE0037B35F /* MirroringDistortion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MirroringDistortion.swift; sourceTree = "<group>"; };
 		17E15FF722058C5A0037B35F /* MirroringFilterSettingsUICode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MirroringFilterSettingsUICode.swift; sourceTree = "<group>"; };
 		17E1856621F2C8E800192D03 /* FilterCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterCell.swift; sourceTree = "<group>"; };
+		17E7E94D22262B0600B3BB39 /* ModeSelectorUI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModeSelectorUI.swift; sourceTree = "<group>"; };
+		17E7E94F222631BF00B3BB39 /* ModeSelectorButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModeSelectorButton.swift; sourceTree = "<group>"; };
 		17E9F0DC2201719600BA7B46 /* FilterSettingsUI.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = FilterSettingsUI.storyboard; sourceTree = "<group>"; };
 		17E9F0E0220173CD00BA7B46 /* KuwaharaFilterSettingsUI.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = KuwaharaFilterSettingsUI.storyboard; sourceTree = "<group>"; };
 		17E9F0E42201784700BA7B46 /* KuwaharaFilterSettingsCode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KuwaharaFilterSettingsCode.swift; sourceTree = "<group>"; };
@@ -744,7 +750,6 @@
 		171D626921EDCBAB004D3545 /* FilterManager */ = {
 			isa = PBXGroup;
 			children = (
-				179B599221EF0A9F00905058 /* FilterSelector */,
 				171D626321EDBE4B004D3545 /* RenderPacket.swift */,
 				178CF92521F5B98D007229FD /* ParameterManager.swift */,
 				171D626521EDC409004D3545 /* FilterManager.swift */,
@@ -774,8 +779,11 @@
 			isa = PBXGroup;
 			children = (
 				171E542821E44E170045ED77 /* MainUIViewer.swift */,
+				17C7F4BA22255F77001F05F3 /* MainUIModes.swift */,
 				17D7510F21F41B820050A2B5 /* MainUIViewer Extensions */,
 				171E542A21E44E170045ED77 /* Main.storyboard */,
+				179B599221EF0A9F00905058 /* FilterSelector */,
+				17C7F4B522252F02001F05F3 /* ModeSelector */,
 				171D625A21EDA5B6004D3545 /* LiveMetalView.swift */,
 				1763F0712221443B00E1E2E8 /* MainUIProtocol.swift */,
 				171E542621E44E170045ED77 /* AppDelegate.swift */,
@@ -1321,6 +1329,15 @@
 			path = DilateErode;
 			sourceTree = "<group>";
 		};
+		17C7F4B522252F02001F05F3 /* ModeSelector */ = {
+			isa = PBXGroup;
+			children = (
+				17E7E94D22262B0600B3BB39 /* ModeSelectorUI.swift */,
+				17E7E94F222631BF00B3BB39 /* ModeSelectorButton.swift */,
+			);
+			path = ModeSelector;
+			sourceTree = "<group>";
+		};
 		17C93EA92222561800B7F697 /* DebugUI */ = {
 			isa = PBXGroup;
 			children = (
@@ -1765,6 +1782,7 @@
 				17FA09A621E863C800405B2D /* Pixelator.swift in Sources */,
 				171D625E21EDB446004D3545 /* PassThrough.metal in Sources */,
 				17EC44D421F05B6600197804 /* FilterSelectorBlock.swift in Sources */,
+				17C7F4BB22255F77001F05F3 /* MainUIModes.swift in Sources */,
 				1756CE1421FD87CB00C4E638 /* HSBSwizzling.metal in Sources */,
 				17E15FF822058C5A0037B35F /* MirroringFilterSettingsUICode.swift in Sources */,
 				171F3D04220AB0470098E2B7 /* LineOverlaySettingsUICode.swift in Sources */,
@@ -1782,6 +1800,7 @@
 				17E15FEC2205638F0037B35F /* DesaturateSettingsUICode.swift in Sources */,
 				1756CE0E21FD740300C4E638 /* RGBtoBSH.metal in Sources */,
 				17E15FE722053A620037B35F /* GrayscaleAdjustChannelMultipliersCode.swift in Sources */,
+				17E7E950222631BF00B3BB39 /* ModeSelectorButton.swift in Sources */,
 				17D60D8E221162F100933F15 /* Pixellate2SettingsUICode.swift in Sources */,
 				171F3CFC220967D70098E2B7 /* UIColorExtensions.swift in Sources */,
 				1763F0782221687500E1E2E8 /* GaussianBlurSettingsUICode.swift in Sources */,
@@ -1818,6 +1837,7 @@
 				173FDCBF220EA61300EFA90D /* VideoMixer.swift in Sources */,
 				1779F3C922182DCA00140EEA /* Chrome.swift in Sources */,
 				17D5F32521FC1DC00093DFFF /* DesaturationKernel.metal in Sources */,
+				17E7E94E22262B0600B3BB39 /* ModeSelectorUI.swift in Sources */,
 				170BFE6F221BD51200754BF6 /* PerformanceCell.swift in Sources */,
 				174F82DB221FBB1A009A004C /* Pointillize.swift in Sources */,
 				17E9F0E52201784700BA7B46 /* KuwaharaFilterSettingsCode.swift in Sources */,
