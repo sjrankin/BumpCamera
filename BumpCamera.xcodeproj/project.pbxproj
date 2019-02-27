@@ -99,6 +99,7 @@
 		173F633422001800006CB67C /* Pixellate2Table.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 173F633322001800006CB67C /* Pixellate2Table.storyboard */; };
 		173FDCBF220EA61300EFA90D /* VideoMixer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 173FDCBE220EA61300EFA90D /* VideoMixer.swift */; };
 		173FDCC1220EB86C00EFA90D /* MainUIUserInteractions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 173FDCC0220EB86C00EFA90D /* MainUIUserInteractions.swift */; };
+		1740131E2226BE0300EAF157 /* MainUIModeHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1740131D2226BE0300EAF157 /* MainUIModeHandler.swift */; };
 		1740CEC42216A10A00BFD1A0 /* LicenseViewer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1740CEC32216A10A00BFD1A0 /* LicenseViewer.swift */; };
 		1740CEC62216A4A300BFD1A0 /* LicensingList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1740CEC52216A4A300BFD1A0 /* LicensingList.swift */; };
 		1740CEC82216B2FE00BFD1A0 /* Platform.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1740CEC72216B2FE00BFD1A0 /* Platform.swift */; };
@@ -364,6 +365,7 @@
 		173F633322001800006CB67C /* Pixellate2Table.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Pixellate2Table.storyboard; sourceTree = "<group>"; };
 		173FDCBE220EA61300EFA90D /* VideoMixer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoMixer.swift; sourceTree = "<group>"; };
 		173FDCC0220EB86C00EFA90D /* MainUIUserInteractions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainUIUserInteractions.swift; sourceTree = "<group>"; };
+		1740131D2226BE0300EAF157 /* MainUIModeHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainUIModeHandler.swift; sourceTree = "<group>"; };
 		1740CEC32216A10A00BFD1A0 /* LicenseViewer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LicenseViewer.swift; sourceTree = "<group>"; };
 		1740CEC52216A4A300BFD1A0 /* LicensingList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LicensingList.swift; sourceTree = "<group>"; };
 		1740CEC72216B2FE00BFD1A0 /* Platform.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Platform.swift; sourceTree = "<group>"; };
@@ -1420,6 +1422,7 @@
 				17D7510721F410BF0050A2B5 /* MainUIFilterSelection.swift */,
 				17D7511021F41BB90050A2B5 /* MainUIJpegDataClass.swift */,
 				171375FE22194363000E49C2 /* MainUIExif.swift */,
+				1740131D2226BE0300EAF157 /* MainUIModeHandler.swift */,
 				17D7510921F414390050A2B5 /* MainUILabelManagement.swift */,
 				173FDCC0220EB86C00EFA90D /* MainUIUserInteractions.swift */,
 				17D7511421F41DE40050A2B5 /* MainUIDebug.swift */,
@@ -1864,6 +1867,7 @@
 				1779F3CD2218314A00140EEA /* ProcessEffect.swift in Sources */,
 				1779F3C22218265500140EEA /* Posterize.swift in Sources */,
 				1799C89621FF15750069D5AC /* Pixellatekernel.metal in Sources */,
+				1740131E2226BE0300EAF157 /* MainUIModeHandler.swift in Sources */,
 				17CE373A2213AF330070ED87 /* ColorPickerProtocol.swift in Sources */,
 				1763F0722221443B00E1E2E8 /* MainUIProtocol.swift in Sources */,
 				17D60D84220FEA7700933F15 /* MonochromeColorsSettingUICode.swift in Sources */,
