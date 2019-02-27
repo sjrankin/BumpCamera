@@ -9,7 +9,8 @@
 import Foundation
 import UIKit
 
-class FilterPerformanceCode2: UIViewController, UITableViewDelegate, UITableViewDataSource
+class FilterPerformanceCode2: UIViewController, UITableViewDelegate, UITableViewDataSource,
+    UIActivityItemSource
 {
     override func viewDidLoad()
     {
@@ -143,6 +144,11 @@ class FilterPerformanceCode2: UIViewController, UITableViewDelegate, UITableView
     
     @IBAction func HandleExportButton(_ sender: Any)
     {
+        #if true
+        let Items: [Any] = [self]
+        let ACV = UIActivityViewController(activityItems: Items, applicationActivities: nil)
+        present(ACV, animated: true)
+        #else
         let Alert = UIAlertController(title: "Export Filter Performance Data",
                                       message: "Select the format of your exported data. Files are stored in the PerformanceData directory off of the BumpCamera top-level directory, viewable with Apple's Files app.",
                                       preferredStyle: UIAlertController.Style.alert)
@@ -151,8 +157,58 @@ class FilterPerformanceCode2: UIViewController, UITableViewDelegate, UITableView
         Alert.addAction(UIAlertAction(title: "Save as JSON", style: UIAlertAction.Style.default, handler: HandleExportActions))
         Alert.addAction(UIAlertAction(title: "Cancel", style: UIAlertAction.Style.cancel, handler: HandleExportActions))
         present(Alert, animated: true)
+        #endif
     }
     
+    @objc func activityViewControllerPlaceholderItem(_ activityViewController: UIActivityViewController) -> Any
+    {
+        return ""
+    }
+    
+    @objc func activityViewController(_ activityViewController: UIActivityViewController, subjectForActivityType activityType: UIActivity.ActivityType?) -> String
+    {
+        return "Filter Performance Data"
+    }
+    
+    @objc func activityViewController(_ activityViewController: UIActivityViewController, itemForActivityType activityType: UIActivity.ActivityType?) -> Any?
+    {
+        let PerfData: String = FilterManager.GeneratePerformanceStatistics(AsType: .XML)
+        
+        switch activityType!
+        {
+        case .postToTwitter:
+            return PerfData
+            
+        case .airDrop:
+            return PerfData
+            
+        case .copyToPasteboard:
+            return PerfData
+            
+        case .mail:
+            return PerfData
+            
+        case .postToTencentWeibo:
+            return PerfData
+            
+        case .postToWeibo:
+            return PerfData
+            
+        case .print:
+            return PerfData
+            
+        case .markupAsPDF:
+            return PerfData
+            
+        case .message:
+            return PerfData
+            
+        default:
+            return PerfData
+        }
+    }
+    
+    #if false
     @objc func HandleExportActions(Action: UIAlertAction)
     {
         var ShowResult = false
@@ -204,4 +260,5 @@ class FilterPerformanceCode2: UIViewController, UITableViewDelegate, UITableView
             }
         }
     }
+    #endif
 }
