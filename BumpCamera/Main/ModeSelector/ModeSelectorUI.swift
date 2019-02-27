@@ -78,7 +78,7 @@ class ModeSelectorUI: UIView, ButtonActionProtocol
     /// nothing more than UIViews with pictures).
     ///
     /// - Parameter ButtonType: Determines which button was pressed.
-    func ButtonPressed(_ ButtonType: ModeButtonTypes)
+    func ButtonPressed(_ ButtonType: CameraModeTypes)
     {
         #if DEBUG
         print("Button \(ButtonType.rawValue) pressed.")
@@ -112,7 +112,7 @@ class ModeSelectorUI: UIView, ButtonActionProtocol
     /// Show the mode selection UI.
     ///
     /// - Parameter Duration: Duration of the animation used to show the UI.
-    func Show(Duration: Double = 0.15)
+    func Show(Duration: Double = 0.1)
     {
         IsShowing = true
         self.isHidden = false
@@ -120,6 +120,7 @@ class ModeSelectorUI: UIView, ButtonActionProtocol
                        options: [UIView.AnimationOptions.curveEaseIn],
                        animations: {
                         self.frame = self.VisibleFrame
+                        self.alpha = 1.0
                         }, completion:
             {
                 _ in
@@ -131,13 +132,14 @@ class ModeSelectorUI: UIView, ButtonActionProtocol
     /// Hide the mode selection UI.
     ///
     /// - Parameter Duration: Duration of the animation used to hide the UI.
-    func Hide(Duration: Double = 0.3)
+    func Hide(Duration: Double = 0.25)
     {
         IsShowing = false
-        UIView.animate(withDuration: 0.3, delay: 0.0,
+        UIView.animate(withDuration: Duration, delay: 0.0,
                        options: [UIView.AnimationOptions.curveEaseIn],
                        animations: {
                         self.frame = self.HiddenFrame
+                        self.alpha = 0.0
         }, completion:
             {
                 _ in
@@ -149,11 +151,11 @@ class ModeSelectorUI: UIView, ButtonActionProtocol
     /// Map from integer mode values to enum mode values.
     public static let ModeMap =
     [
-        0: ModeButtonTypes.LiveView,
-        1: ModeButtonTypes.Video,
-        2: ModeButtonTypes.GIF,
-        3: ModeButtonTypes.Editor,
-        4: ModeButtonTypes.OnTheFly
+        0: CameraModeTypes.LiveView,
+        1: CameraModeTypes.Video,
+        2: CameraModeTypes.GIF,
+        3: CameraModeTypes.Editor,
+        4: CameraModeTypes.OnTheFly
     ]
 }
 
@@ -165,7 +167,7 @@ class ModeSelectorUI: UIView, ButtonActionProtocol
 /// - GIF: Animated GIF mode button.
 /// - Editor: Editor mode button.
 /// - OnTheFly: On-the-fly mode button.
-enum ModeButtonTypes: String
+enum CameraModeTypes: String
 {
     case About = "about"
     case LiveView = "liveview"
@@ -181,7 +183,7 @@ protocol ButtonActionProtocol: class
     /// Called when a button is pressed.
     ///
     /// - Parameter ButtonType: Describes the pressed button.
-    func ButtonPressed(_ ButtonType: ModeButtonTypes)
+    func ButtonPressed(_ ButtonType: CameraModeTypes)
     
     /// Change the state of a button.
     ///
