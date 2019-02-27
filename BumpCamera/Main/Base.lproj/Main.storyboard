@@ -20,7 +20,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="9Hm-3f-Kzi">
-                                <rect key="frame" x="0.0" y="20" width="414" height="656"/>
+                                <rect key="frame" x="0.0" y="28" width="414" height="648"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             </view>
                             <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" translatesAutoresizingMaskIntoConstraints="NO" id="0yY-vc-s0Q">
@@ -30,9 +30,15 @@
                                 </constraints>
                                 <viewLayoutGuide key="safeArea" id="sVh-Gh-940"/>
                                 <items>
-                                    <barButtonItem title="Item" image="CameraRawIcon" id="If5-uR-elY">
+                                    <barButtonItem title="Mode" image="ModeClose" id="67U-R8-ezl">
                                         <connections>
-                                            <action selector="HandleSaveButtonPressed:" destination="BYZ-38-t0r" id="w0z-Lv-XX3"/>
+                                            <action selector="HandleModeButtonPressed:" destination="BYZ-38-t0r" id="E3D-bq-blK"/>
+                                        </connections>
+                                    </barButtonItem>
+                                    <barButtonItem style="plain" systemItem="flexibleSpace" id="rm5-BG-tAF"/>
+                                    <barButtonItem image="FilterRawIcon" id="u5k-xP-67e">
+                                        <connections>
+                                            <action selector="HandleFilterButtonPressed:" destination="BYZ-38-t0r" id="I2Z-ld-7EI"/>
                                         </connections>
                                     </barButtonItem>
                                     <barButtonItem style="plain" systemItem="flexibleSpace" id="GTh-2i-8Q3"/>
@@ -42,9 +48,9 @@
                                         </connections>
                                     </barButtonItem>
                                     <barButtonItem style="plain" systemItem="flexibleSpace" id="E8O-Hl-rxO"/>
-                                    <barButtonItem image="FilterRawIcon" id="u5k-xP-67e">
+                                    <barButtonItem title="Item" image="CameraRawIcon" id="If5-uR-elY">
                                         <connections>
-                                            <action selector="HandleFilterButtonPressed:" destination="BYZ-38-t0r" id="I2Z-ld-7EI"/>
+                                            <action selector="HandleSaveButtonPressed:" destination="BYZ-38-t0r" id="w0z-Lv-XX3"/>
                                         </connections>
                                     </barButtonItem>
                                     <barButtonItem style="plain" systemItem="flexibleSpace" id="nH7-Uf-lNR"/>
@@ -53,14 +59,13 @@
                                             <action selector="HandleCurrentFilterSettingsPressed:" destination="BYZ-38-t0r" id="rpd-IW-MSM"/>
                                         </connections>
                                     </barButtonItem>
-                                    <barButtonItem style="plain" systemItem="flexibleSpace" id="eii-x5-aRj"/>
-                                    <barButtonItem title="Settings" image="GearRawIcon" id="sdo-w2-IXK">
-                                        <connections>
-                                            <action selector="HandleSettingsButtonPressed:" destination="BYZ-38-t0r" id="kdG-Gt-AeW"/>
-                                        </connections>
-                                    </barButtonItem>
                                 </items>
                                 <color key="tintColor" red="0.016804177310000001" green="0.19835099580000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.zPosition">
+                                        <integer key="value" value="1000"/>
+                                    </userDefinedRuntimeAttribute>
+                                </userDefinedRuntimeAttributes>
                             </toolbar>
                             <view contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" translatesAutoresizingMaskIntoConstraints="NO" id="mes-Tv-s3d" customClass="LiveMetalView" customModule="BumpCamera" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="20" width="414" height="656"/>
@@ -80,6 +85,122 @@
                                 <nil key="highlightedColor"/>
                                 <size key="shadowOffset" width="0.0" height="0.0"/>
                             </label>
+                            <view contentMode="scaleToFill" fixedFrame="YES" preservesSuperviewLayoutMargins="YES" translatesAutoresizingMaskIntoConstraints="NO" id="MQa-3B-H7c" customClass="ModeSelectorUI" customModule="BumpCamera" customModuleProvider="target">
+                                <rect key="frame" x="-10" y="233" width="110" height="450"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES"/>
+                                <subviews>
+                                    <view contentMode="scaleToFill" fixedFrame="YES" preservesSuperviewLayoutMargins="YES" translatesAutoresizingMaskIntoConstraints="NO" id="CIp-V7-n2U" customClass="ModeSelectorButton" customModule="BumpCamera" customModuleProvider="target">
+                                        <rect key="frame" x="20" y="8" width="80" height="60"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxY="YES"/>
+                                        <subviews>
+                                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" preservesSuperviewLayoutMargins="YES" image="SettingsMode" translatesAutoresizingMaskIntoConstraints="NO" id="Obd-Ni-8Jg">
+                                                <rect key="frame" x="4" y="7" width="72" height="48"/>
+                                                <autoresizingMask key="autoresizingMask"/>
+                                                <viewLayoutGuide key="safeArea" id="cgU-8O-0mA"/>
+                                            </imageView>
+                                        </subviews>
+                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <viewLayoutGuide key="safeArea" id="1g3-dB-I9E"/>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="string" keyPath="Name" value="AboutButton"/>
+                                            <userDefinedRuntimeAttribute type="boolean" keyPath="IsTogglable" value="NO"/>
+                                            <userDefinedRuntimeAttribute type="string" keyPath="ButtonType" value="About"/>
+                                        </userDefinedRuntimeAttributes>
+                                    </view>
+                                    <view contentMode="scaleToFill" fixedFrame="YES" preservesSuperviewLayoutMargins="YES" translatesAutoresizingMaskIntoConstraints="NO" id="IYu-j2-BJo" customClass="ModeSelectorButton" customModule="BumpCamera" customModuleProvider="target">
+                                        <rect key="frame" x="20" y="76" width="80" height="60"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxY="YES"/>
+                                        <subviews>
+                                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" preservesSuperviewLayoutMargins="YES" image="LiveViewMode" translatesAutoresizingMaskIntoConstraints="NO" id="Zue-xy-WGi">
+                                                <rect key="frame" x="4" y="7" width="72" height="48"/>
+                                                <autoresizingMask key="autoresizingMask"/>
+                                                <viewLayoutGuide key="safeArea" id="4rM-aD-gxf"/>
+                                            </imageView>
+                                        </subviews>
+                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <viewLayoutGuide key="safeArea" id="IBf-2x-DLG"/>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="string" keyPath="Name" value="LiveView"/>
+                                            <userDefinedRuntimeAttribute type="boolean" keyPath="IsTogglable" value="YES"/>
+                                            <userDefinedRuntimeAttribute type="string" keyPath="ButtonType" value="LiveView"/>
+                                        </userDefinedRuntimeAttributes>
+                                    </view>
+                                    <view contentMode="scaleToFill" fixedFrame="YES" preservesSuperviewLayoutMargins="YES" translatesAutoresizingMaskIntoConstraints="NO" id="sCC-wh-axQ" customClass="ModeSelectorButton" customModule="BumpCamera" customModuleProvider="target">
+                                        <rect key="frame" x="20" y="144" width="80" height="60"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxY="YES"/>
+                                        <subviews>
+                                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" preservesSuperviewLayoutMargins="YES" image="VideoMode" translatesAutoresizingMaskIntoConstraints="NO" id="6Zz-xx-hYo">
+                                                <rect key="frame" x="4" y="7" width="72" height="48"/>
+                                                <autoresizingMask key="autoresizingMask"/>
+                                                <viewLayoutGuide key="safeArea" id="LhM-IA-Uao"/>
+                                            </imageView>
+                                        </subviews>
+                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <viewLayoutGuide key="safeArea" id="Q5q-dx-ea3"/>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="string" keyPath="Name" value="VideoButton"/>
+                                            <userDefinedRuntimeAttribute type="boolean" keyPath="IsTogglable" value="YES"/>
+                                            <userDefinedRuntimeAttribute type="string" keyPath="ButtonType" value="Video"/>
+                                        </userDefinedRuntimeAttributes>
+                                    </view>
+                                    <view contentMode="scaleToFill" fixedFrame="YES" preservesSuperviewLayoutMargins="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Vut-Nc-aWx" customClass="ModeSelectorButton" customModule="BumpCamera" customModuleProvider="target">
+                                        <rect key="frame" x="20" y="212" width="80" height="60"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxY="YES"/>
+                                        <subviews>
+                                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" preservesSuperviewLayoutMargins="YES" image="AnimatedGIFMode" translatesAutoresizingMaskIntoConstraints="NO" id="Kzx-FY-om2">
+                                                <rect key="frame" x="4" y="7" width="72" height="48"/>
+                                                <autoresizingMask key="autoresizingMask"/>
+                                                <viewLayoutGuide key="safeArea" id="4Fd-nx-yP5"/>
+                                            </imageView>
+                                        </subviews>
+                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <viewLayoutGuide key="safeArea" id="z3O-bu-QCT"/>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="string" keyPath="Name" value="GIFButton"/>
+                                            <userDefinedRuntimeAttribute type="boolean" keyPath="IsTogglable" value="YES"/>
+                                            <userDefinedRuntimeAttribute type="string" keyPath="ButtonType" value="GIF"/>
+                                        </userDefinedRuntimeAttributes>
+                                    </view>
+                                    <view contentMode="scaleToFill" fixedFrame="YES" preservesSuperviewLayoutMargins="YES" translatesAutoresizingMaskIntoConstraints="NO" id="rGJ-R9-xl2" customClass="ModeSelectorButton" customModule="BumpCamera" customModuleProvider="target">
+                                        <rect key="frame" x="20" y="280" width="80" height="60"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxY="YES"/>
+                                        <subviews>
+                                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" preservesSuperviewLayoutMargins="YES" image="EditorMode" translatesAutoresizingMaskIntoConstraints="NO" id="bmd-th-eT8">
+                                                <rect key="frame" x="4" y="7" width="72" height="48"/>
+                                                <autoresizingMask key="autoresizingMask"/>
+                                                <viewLayoutGuide key="safeArea" id="sfi-XN-gty"/>
+                                            </imageView>
+                                        </subviews>
+                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <viewLayoutGuide key="safeArea" id="WXu-c6-B1E"/>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="string" keyPath="Name" value="EditorButton"/>
+                                            <userDefinedRuntimeAttribute type="boolean" keyPath="IsTogglable" value="YES"/>
+                                            <userDefinedRuntimeAttribute type="string" keyPath="ButtonType" value="Edit"/>
+                                        </userDefinedRuntimeAttributes>
+                                    </view>
+                                    <view contentMode="scaleToFill" fixedFrame="YES" preservesSuperviewLayoutMargins="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Pwf-ZL-xUO" customClass="ModeSelectorButton" customModule="BumpCamera" customModuleProvider="target">
+                                        <rect key="frame" x="20" y="348" width="80" height="60"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxY="YES"/>
+                                        <subviews>
+                                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" preservesSuperviewLayoutMargins="YES" image="OnTheFly" translatesAutoresizingMaskIntoConstraints="NO" id="5RY-Lr-Fle">
+                                                <rect key="frame" x="4" y="7" width="72" height="48"/>
+                                                <autoresizingMask key="autoresizingMask"/>
+                                                <viewLayoutGuide key="safeArea" id="56U-Zc-4pv"/>
+                                            </imageView>
+                                        </subviews>
+                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <viewLayoutGuide key="safeArea" id="Nag-r0-aMp"/>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="string" keyPath="Name" value="OnTheFlyButton"/>
+                                            <userDefinedRuntimeAttribute type="boolean" keyPath="IsTogglable" value="YES"/>
+                                            <userDefinedRuntimeAttribute type="string" keyPath="ButtonType" value="OnTheFly"/>
+                                        </userDefinedRuntimeAttributes>
+                                    </view>
+                                </subviews>
+                                <color key="backgroundColor" name="PastelYellow"/>
+                                <viewLayoutGuide key="safeArea" id="lvk-np-LxZ"/>
+                            </view>
                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="Vw7-Vk-0rN">
                                 <rect key="frame" x="20" y="611" width="374" height="60"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -206,6 +327,8 @@
                         <outlet property="LiveView" destination="mes-Tv-s3d" id="P0q-gE-IOx"/>
                         <outlet property="MainBottomToolbar" destination="0yY-vc-s0Q" id="cuq-ch-LRE"/>
                         <outlet property="MainUIView" destination="8bC-Xf-vdC" id="oBR-QF-UQr"/>
+                        <outlet property="ModeSelection" destination="MQa-3B-H7c" id="HZI-Sc-zfR"/>
+                        <outlet property="ModeSelectorButton" destination="67U-R8-ezl" id="djN-GD-IMf"/>
                         <outlet property="SaveButton" destination="If5-uR-elY" id="vR8-WF-zDN"/>
                         <outlet property="StatusLabel" destination="AoI-5y-9h0" id="gt1-iL-eHZ"/>
                         <segue destination="aQc-7v-Nth" kind="show" identifier="ToSettings" id="MpJ-te-UpX"/>
@@ -225,13 +348,22 @@
         </scene>
     </scenes>
     <resources>
+        <image name="AnimatedGIFMode" width="15.359999656677246" height="15.359999656677246"/>
         <image name="CameraRawIcon" width="48" height="48"/>
+        <image name="EditorMode" width="15.359999656677246" height="15.359999656677246"/>
         <image name="FilterRawIcon" width="48" height="48"/>
-        <image name="GearRawIcon" width="48" height="48"/>
+        <image name="LiveViewMode" width="64" height="64"/>
+        <image name="ModeClose" width="48" height="48"/>
+        <image name="OnTheFly" width="48" height="48"/>
+        <image name="SettingsMode" width="15.359999656677246" height="15.359999656677246"/>
         <image name="SwapRawIcon" width="48" height="48"/>
+        <image name="VideoMode" width="15.359999656677246" height="15.359999656677246"/>
         <image name="WrenchIcon" width="96" height="96"/>
         <namedColor name="OrangePastel">
             <color red="0.97254901960784312" green="0.72156862745098038" blue="0.54509803921568623" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+        <namedColor name="PastelYellow">
+            <color red="0.99215686274509807" green="0.99215686274509807" blue="0.58823529411764708" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>
     </resources>
 </document>
