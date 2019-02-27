@@ -85,6 +85,7 @@ class MainUIViewer: UIViewController,
         FilterCollectionView.register(FilterCollectionCell.self, forCellWithReuseIdentifier: "FilterItem")
         GroupCollectionView.register(FilterCollectionCell.self, forCellWithReuseIdentifier: "GroupCell")
         
+        AvailableBottom = MainBottomToolbar.frame.minY - 1
         InitializeFilterSelector()
         #if targetEnvironment(simulator)
         OnSimulator = true
@@ -95,11 +96,11 @@ class MainUIViewer: UIViewController,
         Tap.numberOfTapsRequired = 1
         self.LiveView.addGestureRecognizer(Tap)
         
-        ModeSelection.Initialize(SelectedButton: _Settings.integer(forKey: "ProgramMode"), InitialFrame: ModeSelection.frame)
+        ModeSelection.Initialize(SelectedButton: _Settings.integer(forKey: "ProgramMode"), TopOfToolBar: MainBottomToolbar.frame.minY)
         ModeSelection.MainDelegate = self
         if !_Settings.bool(forKey: "ShowModeUI")
         {
-            DoHandleModeButtonPressed()
+            DoHandleModeButtonPressed(Duration: 0.001)
         }
         InitializeLabels()
         
@@ -215,13 +216,13 @@ class MainUIViewer: UIViewController,
         let OldFiltersShowing = FiltersAreShowing
         if FiltersAreShowing
         {
-            UpdateFilterSelectionVisibility(HideDuration: 0.0)
+            HideFilterUI(WithDuration: 0.1)
         }
         GroupData.LoadFavoriteFilters(ForTargets: [.LiveView])
         GroupData.LoadFiveStarFilters(ForTargets: [.LiveView])
         if OldFiltersShowing
         {
-            UpdateFilterSelectionVisibility(ShowDuration: 0.0)
+            ShowFilterUI(WithDuration: 0.1)
         }
     }
     
@@ -454,7 +455,14 @@ class MainUIViewer: UIViewController,
     
     @IBAction func HandleFilterButtonPressed(_ sender: Any)
     {
-        UpdateFilterSelectionVisibility()
+        if FiltersAreShowing
+        {
+            HideFilterUI()
+        }
+        else
+        {
+            ShowFilterUI()
+        }
     }
     
     @IBOutlet weak var LiveView: LiveMetalView!
@@ -504,12 +512,17 @@ class MainUIViewer: UIViewController,
         }
     }
     
-    func DoHandleModeButtonPressed()
+    func DoHandleModeButtonPressed(Duration: Double? = nil)
     {
         if ModeUIShowing
         {
             //Hide mode UI.
-            ModeSelection.Hide()
+            var FinalDuration = 0.3
+            if Duration != nil
+            {
+                FinalDuration = Duration!
+            }
+            ModeSelection.Hide(Duration: FinalDuration)
             SetButtonEnableState(To: true)
             ModeUIShowing = false
             ModeSelectorButton.image = UIImage(named: "ModeOpen")
@@ -518,10 +531,15 @@ class MainUIViewer: UIViewController,
         else
         {
             //Show mode UI.
-            ModeSelection.Show()
+            var FinalDuration = 0.3
+            if Duration != nil
+            {
+                FinalDuration = Duration!
+            }
+            ModeSelection.Show(Duration: FinalDuration)
             if FiltersAreShowing
             {
-                UpdateFilterSelectionVisibility()
+                HideFilterUI()
             }
             SetButtonEnableState(To: false)
             ModeUIShowing = true
@@ -692,6 +710,11 @@ class MainUIViewer: UIViewController,
     var SetupResult: SetupResults = .Success
     
     var FinalPixelBuffer: CVPixelBuffer!
+    
+    let UIHeight: CGFloat = 60
+    let HMargin: CGFloat = 10
+    let HideOffset: CGFloat = 10
+    var AvailableBottom: CGFloat = 0
 }
 
 public enum SetupResults
