@@ -1329,6 +1329,8 @@ class FilterManager
             .Sigma: .DoubleType,
             .Sharpness: .DoubleType,
             .PatternBlockWidth: .DoubleType,
+            .Color2: .ColorType,
+            .Color3: .ColorType,
             ]
     
     /// Maps fields to names used to store field data in user settings.
@@ -1461,6 +1463,8 @@ class FilterManager
             .Sigma: "_Sigma",
             .Sharpness: "_Sharpness",
             .PatternBlockWidth: "_PatternBlockWidth",
+            .Color2: "_Color2",
+            .Color3: "_Color3",
             ]
 }
 
