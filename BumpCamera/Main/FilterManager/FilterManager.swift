@@ -52,7 +52,8 @@ class FilterManager
             .Combined: [(.CircleAndLines, 0)],
             .Effects: [(.PixellateMetal, 0), (.DilateErode, 1), (.Kuwahara, 2), (.BayerDecode, 3)],
             .PhotoEffects: [(.Noir, 0), (.Chrome, 1), (.Vibrance, 2), (.XRay, 3), (.Instant, 4), (.ProcessEffect, 5),
-                            (.TransferEffect, 6), (.SepiaTone, 7), (.Thermal, 8), (.TemperatureAndTint, 9)],
+                            (.TransferEffect, 6), (.SepiaTone, 7), (.Thermal, 8), (.TemperatureAndTint, 9),
+                            (.Tonal, 10),],
             .Colors: [(.HueAdjust, 0), (.HSBAdjust, 1), (.Solarize, 2), (.ChannelMixer, 3),
                       (.DesaturateColors, 4), (.Threshold, 5), (.MonochromeColor, 6), (.FalseColor, 7),
                       (.Monochrome, 8), (.PaletteShifting, 9)],
@@ -60,7 +61,7 @@ class FilterManager
             //.Bumpy: [(.BumpyPixels, 1), (.BumpyTriangles, 2), (.Embossed, 0)],
             //.Motion: [(.ColorDelta, 0), (.FilterDelta, 1), (.PatternDelta, 2)],
             .Tiles: [(.Mirroring, 0)],
-            .Generator: [(.Grid, 0), (.SmoothLinearGradient, 1), (.CornerGradient, 2)],
+            .Generator: [(.Grid, 0), (.SmoothLinearGradient, 1), (.CornerGradient, 2), (.Checkerboard, 3)],
             .Blur: [(.GaussianBlur, 0)],
     ]
     
@@ -109,6 +110,8 @@ class FilterManager
             .Pointillize: (Pointillize.ID(), Pointillize.FilterKernel, Pointillize.Title()),
             .Monochrome: (Monochrome.ID(), Monochrome.FilterKernel, Monochrome.Title()),
             .GaussianBlur: (GaussianBlur.ID(), GaussianBlur.FilterKernel, GaussianBlur.Title()),
+            .Tonal: (TonalEffect.ID(), TonalEffect.FilterKernel, TonalEffect.Title()),
+            .Checkerboard: (CheckerboardGenerator.ID(), CheckerboardGenerator.FilterKernel, CheckerboardGenerator.Title())
             ]
     
     /// Determines if the specified filter supports the specified target type. Not all filters support all targets - slow
@@ -197,6 +200,8 @@ class FilterManager
             .Pointillize: Pointillize.FilterTarget(),
             .Monochrome: Monochrome.FilterTarget(),
             .GaussianBlur: GaussianBlur.FilterTarget(),
+            .Tonal: TonalEffect.FilterTarget(),
+            .Checkerboard: CheckerboardGenerator.FilterTarget()
             ]
     
     /// Load all of the filter classes into the filter manager.
@@ -305,6 +310,8 @@ class FilterManager
         ParameterCount![.Pointillize] = Pointillize.SupportedFields().count
         ParameterCount![.Monochrome] = Monochrome.SupportedFields().count
         ParameterCount![.GaussianBlur] = GaussianBlur.SupportedFields().count
+        ParameterCount![.Tonal] = TonalEffect.SupportedFields().count
+        ParameterCount![.Checkerboard] = CheckerboardGenerator.SupportedFields().count
     }
     
     private static var ParameterCount: [FilterManager.FilterTypes: Int]? = nil
@@ -370,6 +377,8 @@ class FilterManager
         StoryboardList![.Pointillize] = Pointillize.SettingsStoryboard()
         StoryboardList![.Monochrome] = Monochrome.SettingsStoryboard()
         StoryboardList![.GaussianBlur] = GaussianBlur.SettingsStoryboard()
+        StoryboardList![.Tonal] = TonalEffect.SettingsStoryboard()
+        StoryboardList![.Checkerboard] = CheckerboardGenerator.SettingsStoryboard()
     }
     
     private static var StoryboardList: [FilterTypes: String?]? = nil
@@ -636,6 +645,12 @@ class FilterManager
         case .GaussianBlur:
             return GaussianBlur()
             
+        case .Tonal:
+            return TonalEffect()
+            
+        case .Checkerboard:
+            return CheckerboardGenerator()
+            
         default:
             return nil
         }
@@ -668,22 +683,6 @@ class FilterManager
             _VideoFilterList = newValue
         }
     }
-    
-    #if false
-    /// Return the name of the icon for the specified filter type.
-    ///
-    /// - Parameter Name: The filter type whose icon name will be returned.
-    /// - Parameter For: The location of where the filter will be applied.
-    /// - Returns: The name of the icon on success, empty string if no filter found.
-    public func FilterIconName(_ Name: FilterTypes, _ For: FilterLocations) -> String
-    {
-        if let Camera = GetFilter(Name: Name, For)
-        {
-            return (Camera.Filter?.IconName)!
-        }
-        return ""
-    }
-    #endif
     
     /// Return the human-readable title for the specified filter.
     ///
@@ -1070,6 +1069,8 @@ class FilterManager
             .Pointillize: "Pointillize",
             .Monochrome: "Monochrome",
             .GaussianBlur: "Gaussian Blur",
+            .Tonal: "Tonal Effect",
+            .Checkerboard: "Checkerboard",
             ]
     
     public static func GetFilterTitle(_ Filter: FilterTypes) -> String?
@@ -1134,6 +1135,8 @@ class FilterManager
             .Pointillize: true,
             .Monochrome: true,
             .GaussianBlur: true,
+            .Tonal: true,
+            .Checkerboard: true,
     ]
     
     /// Determines if the given filter type is implemented.
@@ -1324,6 +1327,8 @@ class FilterManager
             .BackgroundType: .IntType,
             .Intensity: .DoubleType,
             .Sigma: .DoubleType,
+            .Sharpness: .DoubleType,
+            .PatternBlockWidth: .DoubleType,
             ]
     
     /// Maps fields to names used to store field data in user settings.
@@ -1454,6 +1459,8 @@ class FilterManager
             .BackgroundType: "_BackgroundType",
             .Intensity: "_Intensity",
             .Sigma: "_Sigma",
+            .Sharpness: "_Sharpness",
+            .PatternBlockWidth: "_PatternBlockWidth",
             ]
 }
 
