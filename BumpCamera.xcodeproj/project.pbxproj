@@ -10,6 +10,10 @@
 		17020ED921FDD25D006DE7ED /* GrayscaleKernel.metal in Sources */ = {isa = PBXBuildFile; fileRef = 17020ED821FDD25D006DE7ED /* GrayscaleKernel.metal */; };
 		17020EDB21FDD607006DE7ED /* GrayscaleKernelParameters.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17020EDA21FDD607006DE7ED /* GrayscaleKernelParameters.swift */; };
 		17020EDD21FDD6C5006DE7ED /* GrayscaleAdjust.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17020EDC21FDD6C5006DE7ED /* GrayscaleAdjust.swift */; };
+		1705D97F22280C9400B95262 /* MetalCheckerboardGeneratorSettingsUICode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1705D97E22280C9400B95262 /* MetalCheckerboardGeneratorSettingsUICode.swift */; };
+		1705D981222818DA00B95262 /* MetalCheckerboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1705D980222818DA00B95262 /* MetalCheckerboard.swift */; };
+		1705D98422281ADE00B95262 /* CheckerboardParameters.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1705D98322281ADE00B95262 /* CheckerboardParameters.swift */; };
+		1705D98622281B8700B95262 /* MetalCheckerboard.metal in Sources */ = {isa = PBXBuildFile; fileRef = 1705D98522281B8700B95262 /* MetalCheckerboard.metal */; };
 		1709A6FB2220FBC600D9B43D /* RatingCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1709A6FA2220FBC600D9B43D /* RatingCell.swift */; };
 		1709A6FE2220FDED00D9B43D /* Ratings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1709A6FD2220FDED00D9B43D /* Ratings.swift */; };
 		1709A7002221030500D9B43D /* FilterManagerRatings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1709A6FF2221030500D9B43D /* FilterManagerRatings.swift */; };
@@ -278,6 +282,10 @@
 		17020ED821FDD25D006DE7ED /* GrayscaleKernel.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = GrayscaleKernel.metal; sourceTree = "<group>"; };
 		17020EDA21FDD607006DE7ED /* GrayscaleKernelParameters.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrayscaleKernelParameters.swift; sourceTree = "<group>"; };
 		17020EDC21FDD6C5006DE7ED /* GrayscaleAdjust.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrayscaleAdjust.swift; sourceTree = "<group>"; };
+		1705D97E22280C9400B95262 /* MetalCheckerboardGeneratorSettingsUICode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetalCheckerboardGeneratorSettingsUICode.swift; sourceTree = "<group>"; };
+		1705D980222818DA00B95262 /* MetalCheckerboard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetalCheckerboard.swift; sourceTree = "<group>"; };
+		1705D98322281ADE00B95262 /* CheckerboardParameters.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckerboardParameters.swift; sourceTree = "<group>"; };
+		1705D98522281B8700B95262 /* MetalCheckerboard.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = MetalCheckerboard.metal; sourceTree = "<group>"; };
 		1709A6FA2220FBC600D9B43D /* RatingCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RatingCell.swift; sourceTree = "<group>"; };
 		1709A6FD2220FDED00D9B43D /* Ratings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Ratings.swift; sourceTree = "<group>"; };
 		1709A6FF2221030500D9B43D /* FilterManagerRatings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterManagerRatings.swift; sourceTree = "<group>"; };
@@ -575,6 +583,15 @@
 			path = Desaturation;
 			sourceTree = "<group>";
 		};
+		1705D98222281AB100B95262 /* Checkerboard */ = {
+			isa = PBXGroup;
+			children = (
+				1705D98322281ADE00B95262 /* CheckerboardParameters.swift */,
+				1705D98522281B8700B95262 /* MetalCheckerboard.metal */,
+			);
+			path = Checkerboard;
+			sourceTree = "<group>";
+		};
 		1709A6FC2220FDD800D9B43D /* Ratings */ = {
 			isa = PBXGroup;
 			children = (
@@ -851,6 +868,7 @@
 		171E5B0C2205D09D004E60F1 /* Generators */ = {
 			isa = PBXGroup;
 			children = (
+				1705D98222281AB100B95262 /* Checkerboard */,
 				17CE37412213CEE60070ED87 /* Gradients */,
 				171E5B0D2205D0A9004E60F1 /* Grid */,
 			);
@@ -870,6 +888,7 @@
 			isa = PBXGroup;
 			children = (
 				171F3CF3220863760098E2B7 /* GridGenerator.swift */,
+				1705D980222818DA00B95262 /* MetalCheckerboard.swift */,
 				17CE37462213D6590070ED87 /* CornerGradient.swift */,
 			);
 			path = Generators;
@@ -1330,6 +1349,7 @@
 			isa = PBXGroup;
 			children = (
 				17BA12E82227D34E0035A1FC /* MetalCheckerboardGeneratorSettingsUI.storyboard */,
+				1705D97E22280C9400B95262 /* MetalCheckerboardGeneratorSettingsUICode.swift */,
 			);
 			path = MetalCheckerboard;
 			sourceTree = "<group>";
@@ -1742,6 +1762,7 @@
 				1726241521F840D200C7688C /* PixellateTableCode.swift in Sources */,
 				17A409D72201E941003D4EC6 /* FilterSettingUIBase.swift in Sources */,
 				174D6D5D220804000066AE93 /* GroupNode.swift in Sources */,
+				1705D97F22280C9400B95262 /* MetalCheckerboardGeneratorSettingsUICode.swift in Sources */,
 				174779FC2204338600FD64EF /* CollapsibleHeader.swift in Sources */,
 				176D6829221D921C00BA6267 /* FilterPerformanceCode2.swift in Sources */,
 				17CDB9B622166B1700C708F5 /* SystemReport.swift in Sources */,
@@ -1837,6 +1858,7 @@
 				1756CE0E21FD740300C4E638 /* RGBtoBSH.metal in Sources */,
 				17E15FE722053A620037B35F /* GrayscaleAdjustChannelMultipliersCode.swift in Sources */,
 				17E7E950222631BF00B3BB39 /* ModeSelectorButton.swift in Sources */,
+				1705D98422281ADE00B95262 /* CheckerboardParameters.swift in Sources */,
 				17D60D8E221162F100933F15 /* Pixellate2SettingsUICode.swift in Sources */,
 				17BA12DF22278B1A0035A1FC /* TonalEffect.swift in Sources */,
 				171F3CFC220967D70098E2B7 /* UIColorExtensions.swift in Sources */,
@@ -1895,6 +1917,7 @@
 				17EC44CE21F0245100197804 /* XRay.swift in Sources */,
 				1799C8A221FF2F9C0069D5AC /* Pixellate_Metal.swift in Sources */,
 				17D7512221F466CF0050A2B5 /* DepthToGrayscale.metal in Sources */,
+				1705D981222818DA00B95262 /* MetalCheckerboard.swift in Sources */,
 				17F236A3221533190091B865 /* ColorListPickerCode.swift in Sources */,
 				171F3CF4220863760098E2B7 /* GridGenerator.swift in Sources */,
 				17F51B0321E9E86F00843092 /* Times.swift in Sources */,
@@ -1930,6 +1953,7 @@
 				1756CDFA21FD633C00C4E638 /* RGBtoGBR.metal in Sources */,
 				171D627621EDD52D004D3545 /* CircleAndLines.swift in Sources */,
 				17CDB9BC22168CEF00C708F5 /* License.swift in Sources */,
+				1705D98622281B8700B95262 /* MetalCheckerboard.metal in Sources */,
 				1740CEC42216A10A00BFD1A0 /* LicenseViewer.swift in Sources */,
 				174779FA2204309600FD64EF /* NoParametersSettingsUICode.swift in Sources */,
 				175E260E21F4A5AB00B6BF8F /* HueAdjust.swift in Sources */,
