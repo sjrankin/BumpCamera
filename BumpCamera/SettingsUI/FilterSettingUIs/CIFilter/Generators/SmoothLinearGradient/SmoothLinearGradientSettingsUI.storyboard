@@ -360,6 +360,7 @@
                     <toolbarItems>
                         <barButtonItem title="Item" image="CameraHome" id="JoQ-be-Omm"/>
                         <barButtonItem style="plain" systemItem="flexibleSpace" id="giL-qW-tNu"/>
+                        <barButtonItem systemItem="action" id="Abj-mt-ARE"/>
                     </toolbarItems>
                     <navigationItem key="navigationItem" title="Smooth Gradient Generator" id="uYY-Ss-t6T">
                         <barButtonItem key="leftBarButtonItem" title="Back" id="IXQ-jq-JDR"/>
