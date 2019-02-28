@@ -228,6 +228,7 @@ class SmoothLinearGradientSettingsUICode: FilterSettingUIBase, ColorPickerProtoc
         ShowSampleView()
     }
     
+    #if false
     @IBAction func HandleSaveImageButton(_ sender: Any)
     {
         //Need to convert the generated image from a CIImage to a UIImage first...
@@ -252,6 +253,71 @@ class SmoothLinearGradientSettingsUICode: FilterSettingUIBase, ColorPickerProtoc
             present(Alert, animated: true)
         }
     }
+    #endif
+    
+    @IBAction func HandleBackButton(_ sender: Any)
+    {
+        dismiss(animated: true, completion: nil)
+    }
+    
+    @IBAction func HandleCameraButton(_ sender: Any)
+    {
+    }
+    
+    @IBAction func HandleActionButton(_ sender: Any)
+    {
+        let Items: [Any] = [self]
+        let ACV = UIActivityViewController(activityItems: Items, applicationActivities: nil)
+        present(ACV, animated: true)
+    }
+    
+    @objc func activityViewControllerPlaceholderItem(_ activityViewController: UIActivityViewController) -> Any
+    {
+        return UIImage()
+    }
+    
+    @objc func activityViewController(_ activityViewController: UIActivityViewController, subjectForActivityType activityType: UIActivity.ActivityType?) -> String
+    {
+        return "Smooth Linear Gradient Generator Output"
+    }
+    
+    @objc func activityViewController(_ activityViewController: UIActivityViewController, itemForActivityType activityType: UIActivity.ActivityType?) -> Any?
+    {
+        let Generated: UIImage = GetLastGeneratedImage()!
+        
+        switch activityType!
+        {
+        case .postToTwitter:
+            return Generated
+            
+        case .airDrop:
+            return Generated
+            
+        case .copyToPasteboard:
+            return Generated
+            
+        case .mail:
+            return Generated
+            
+        case .postToTencentWeibo:
+            return Generated
+            
+        case .postToWeibo:
+            return Generated
+            
+        case .print:
+            return Generated
+            
+        case .markupAsPDF:
+            return Generated
+            
+        case .message:
+            return Generated
+            
+        default:
+            return Generated
+        }
+    }
     
     @IBOutlet weak var HeightSegments: UISegmentedControl!
     @IBOutlet weak var WidthSegments: UISegmentedControl!
@@ -265,4 +331,6 @@ class SmoothLinearGradientSettingsUICode: FilterSettingUIBase, ColorPickerProtoc
     @IBOutlet weak var Color1YValue: UILabel!
     @IBOutlet weak var Color2XValue: UILabel!
     @IBOutlet weak var Color2YValue: UILabel!
+    
+    
 }
