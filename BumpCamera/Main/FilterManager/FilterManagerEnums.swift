@@ -75,6 +75,8 @@ extension FilterManager
         case Pointillize = 48
         case Monochrome = 49
         case GaussianBlur = 50
+        case Tonal = 51
+        case Checkerboard = 52
         case NotSet = 10000
     }
     
@@ -245,6 +247,8 @@ extension FilterManager
         case BackgroundType = 122
         case Intensity = 123
         case Sigma = 124
+        case Sharpness = 125
+        case PatternBlockWidth = 126
         case NoField = 10000
     }
     
