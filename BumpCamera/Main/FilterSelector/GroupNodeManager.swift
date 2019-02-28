@@ -61,6 +61,7 @@ class GroupNodeManager
         LoadFiveStarFilters(ForTargets: Targets)
     }
     
+    /// Remove the five-star group.
     func RemoveFiveStarGroup()
     {
         var GroupIndex = -1
@@ -79,6 +80,7 @@ class GroupNodeManager
         Groups?.remove(at: GroupIndex)
     }
     
+    /// Remove the favorite filters group.
     func RemoveFavoriteGroup()
     {
         var GroupIndex = -1
@@ -97,6 +99,9 @@ class GroupNodeManager
         Groups?.remove(at: GroupIndex)
     }
     
+    /// Load the five-star filter group for filters that fall into the specified filter targets.
+    ///
+    /// - Parameter ForTargets: Valid filter targets.
     func LoadFiveStarFilters(ForTargets: [FilterTargets])
     {
         RemoveFiveStarGroup()
@@ -122,14 +127,17 @@ class GroupNodeManager
         let FiveStarFilters = AddFiltersTo(Parent: Node, List: FiveStarred, ForTargets: ForTargets)
         if FiveStarFilters.count < 1
         {
-                    Node.GroupFilters = [FilterNode]()
+            Node.GroupFilters = [FilterNode]()
             return
         }
         Node.GroupFilters = FiveStarFilters
-
+        
         Groups?.insert(Node, at: InsertIndex)
     }
     
+    /// Load the favorite filter group for filters that fall into the specified filter targets.
+    ///
+    /// - Parameter ForTargets: Valid filter targets.
     func LoadFavoriteFilters(ForTargets: [FilterTargets])
     {
         RemoveFavoriteGroup()
@@ -150,7 +158,7 @@ class GroupNodeManager
         let FavoriteFilters = AddFiltersTo(Parent: Node, List: Favorite, ForTargets: ForTargets)
         if FavoriteFilters.count < 1
         {
-                    Node.GroupFilters = [FilterNode]()
+            Node.GroupFilters = [FilterNode]()
             return
         }
         Node.GroupFilters = FavoriteFilters
@@ -158,6 +166,13 @@ class GroupNodeManager
         Groups?.insert(Node, at: 0)
     }
     
+    /// Add filters to the specified group node that acts as the parent.
+    ///
+    /// - Parameters:
+    ///   - Parent: The parent of the filters that will be added to it.
+    ///   - List: List of filter types to add to the parent group.
+    ///   - ForTargets: Valid targets the filters must be in in order for them to be added.
+    /// - Returns: List of filter nodes.
     func AddFiltersTo(Parent: GroupNode, List: [(FilterManager.FilterTypes, Ratings)], ForTargets: [FilterTargets]) -> [FilterNode]
     {
         var FilterData = [FilterNode]()
@@ -166,10 +181,13 @@ class GroupNodeManager
         {
             if !FilterManager.FilterSupportsTargets(Targets: ForTargets, ForFilter: FilterType)
             {
+                //Filters not in the list of valid filter targets are not added. This is so filters that cannot
+                //process live views are not used in live view mode, and the like.
                 continue
             }
             if !FilterManager.IsImplemented(FilterType)
             {
+                //Unimplemented filters are not added.
                 continue
             }
             let Node = FilterNode()
@@ -184,7 +202,7 @@ class GroupNodeManager
             Index = Index + 1
             FilterData.append(Node)
         }
-
+        
         return FilterData
     }
     
