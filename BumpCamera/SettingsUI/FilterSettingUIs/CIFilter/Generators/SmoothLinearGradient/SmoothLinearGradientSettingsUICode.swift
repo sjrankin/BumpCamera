@@ -216,7 +216,6 @@ class SmoothLinearGradientSettingsUICode: FilterSettingUIBase, ColorPickerProtoc
     {
         let HeightIndex = HeightSegments.selectedSegmentIndex
         let ImageHeight: Int = Int((pow(Double(2), Double(8 + HeightIndex))))
-        //print("New image height is \(ImageHeight)")
         UpdateValue(WithValue: ImageHeight, ToField: .IHeight)
         ShowSampleView()
     }
@@ -226,7 +225,6 @@ class SmoothLinearGradientSettingsUICode: FilterSettingUIBase, ColorPickerProtoc
         let WidthIndex = WidthSegments.selectedSegmentIndex
         let ImageWidth: Int = Int((pow(Double(2), Double(8 + WidthIndex))))
         UpdateValue(WithValue: ImageWidth, ToField: .IWidth)
-        //print("New image width is \(ImageWidth)")
         ShowSampleView()
     }
     
