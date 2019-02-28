@@ -358,15 +358,22 @@
                         </connections>
                     </tableView>
                     <toolbarItems>
-                        <barButtonItem title="Item" image="CameraHome" id="JoQ-be-Omm"/>
+                        <barButtonItem title="Item" image="CameraHome" id="JoQ-be-Omm">
+                            <connections>
+                                <action selector="HandleCameraButton:" destination="X8G-CY-M0G" id="deM-Dh-Zgp"/>
+                            </connections>
+                        </barButtonItem>
                         <barButtonItem style="plain" systemItem="flexibleSpace" id="giL-qW-tNu"/>
-                        <barButtonItem systemItem="action" id="Abj-mt-ARE"/>
+                        <barButtonItem systemItem="action" id="Abj-mt-ARE">
+                            <connections>
+                                <action selector="HandleActionButton:" destination="X8G-CY-M0G" id="xqI-TN-tJt"/>
+                            </connections>
+                        </barButtonItem>
                     </toolbarItems>
                     <navigationItem key="navigationItem" title="Smooth Gradient Generator" id="uYY-Ss-t6T">
-                        <barButtonItem key="leftBarButtonItem" title="Back" id="IXQ-jq-JDR"/>
-                        <barButtonItem key="rightBarButtonItem" title="Save" id="sWO-xc-Z3l">
+                        <barButtonItem key="leftBarButtonItem" title="Back" id="IXQ-jq-JDR">
                             <connections>
-                                <action selector="HandleSaveImageButton:" destination="X8G-CY-M0G" id="mOK-RM-s3p"/>
+                                <action selector="HandleBackButton:" destination="X8G-CY-M0G" id="kuy-WJ-zY0"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
