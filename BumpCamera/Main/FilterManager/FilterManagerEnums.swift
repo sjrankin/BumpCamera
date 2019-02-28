@@ -77,6 +77,7 @@ extension FilterManager
         case GaussianBlur = 50
         case Tonal = 51
         case Checkerboard = 52
+        case MetalCheckerboard = 53
         case NotSet = 10000
     }
     
@@ -249,6 +250,8 @@ extension FilterManager
         case Sigma = 124
         case Sharpness = 125
         case PatternBlockWidth = 126
+        case Color2 = 127
+        case Color3 = 128
         case NoField = 10000
     }
     
