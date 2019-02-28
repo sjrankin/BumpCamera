@@ -50,9 +50,11 @@ class FilterSettingUIBase: UITableViewController,
         SampleFilter?.InitializeForImage()
         if !(SampleFilter?.Ports().contains(.Input))!
         {
-            //User can't change sample images if the filter doesn't accept input.
+            //User can't change sample images if the filter doesn't accept input. In that case,
+            //the generated image is shown instead. Until the image is actually generated, just
+            //show a solid color.
             ShowingSample = false
-            SampleView.backgroundColor = UIColor.black
+            SampleView.backgroundColor = UIColor.darkGray
             SampleView.image = nil
             SampleView.isUserInteractionEnabled = false
         }
@@ -295,6 +297,29 @@ class FilterSettingUIBase: UITableViewController,
     }
     
     var LastGeneratedImage: CIImage!
+    
+    /// Return the most recently generated image. Before the image is returned, it is turned into a CG-backed
+    /// image to let it be saved and sent without silent failures.
+    ///
+    /// - Returns: Most recently generated image on success, nil on error (such as no recently generated image,
+    ///            conversion errors, and the like).
+    func GetLastGeneratedImage() -> UIImage?
+    {
+        if let Source = LastGeneratedImage
+        {
+            let ciContext = CIContext()
+            let cgImg = ciContext.createCGImage(Source, from: Source.extent)
+            if let Final = cgImg
+            {
+            return UIImage(cgImage: Final)
+            }
+            return nil
+        }
+        else
+        {
+            return nil
+        }
+    }
     
     var CustomizedImageAvailable: Bool
     {
