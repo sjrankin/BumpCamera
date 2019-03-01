@@ -60,7 +60,7 @@ class ColorPicker: UITableViewController, UINavigationControllerDelegate, ColorP
         print("New color from picker: \(NewColor)")
         CurrentColor = NewColor
         ShowCurrentColor(NewColor)
-        AdjustSliderFor(NewHue: Double(NewColor.Hue()))
+        AdjustSliderFor(NewHue: Double(NewColor.Hue))
     }
     
     override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat
