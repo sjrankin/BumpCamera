@@ -128,22 +128,20 @@ class MetalCheckerboard: FilterParent, Renderer
         }
         
         let Start = CACurrentMediaTime()
-        let GX = ParameterManager.GetInt(From: ID(), Field: .GridX, Default: 10)
-        let GY = ParameterManager.GetInt(From: ID(), Field: .GridY, Default: 10)
-        let GColor = ParameterManager.GetColor(From: ID(), Field: .GridColor, Default: UIColor.black)
-        let GBG = ParameterManager.GetColor(From: ID(), Field: .GridBackground, Default: UIColor.clear)
-        let InvertGColor = ParameterManager.GetBool(From: ID(), Field: .InvertColor, Default: false)
-        let InvertBGColor = ParameterManager.GetBool(From: ID(), Field: .InvertBackgroundColor, Default: false)
-        let Parameter = GridParameters(GridX: simd_uint1(GX),
-                                       GridY: simd_uint1(GY),
-                                       Width: simd_uint1(1),
-                                       GridColor: GColor.ToFloat4(),
-                                       BackgroundColor: GBG.ToFloat4(),
-                                       InvertGridColor: simd_bool(InvertGColor),
-                                       InvertBackgroundColor: simd_bool(InvertBGColor))
+        let C1 = ParameterManager.GetColor(From: ID(), Field: .Color0, Default: UIColor.black)
+        let C2 = ParameterManager.GetColor(From: ID(), Field: .Color1, Default: UIColor.white)
+        let C3 = ParameterManager.GetColor(From: ID(), Field: .Color2, Default: UIColor.black)
+        let C4 = ParameterManager.GetColor(From: ID(), Field: .Color3, Default: UIColor.white)
+        let BlockSize = ParameterManager.GetDouble(From: ID(), Field: .PatternBlockWidth, Default: 32.0)
+ 
+        let Parameter = CheckerboardParameters(Q1Color: C1.ToFloat4(),
+                                               Q2Color: C2.ToFloat4(),
+                                               Q3Color: C3.ToFloat4(),
+                                               Q4Color: C4.ToFloat4(),
+                                               BlockSize: simd_float1(BlockSize))
         let Parameters = [Parameter]
-        ParameterBuffer = MetalDevice!.makeBuffer(length: MemoryLayout<GridParameters>.size, options: [])
-        memcpy(ParameterBuffer.contents(), Parameters, MemoryLayout<GridParameters>.size)
+        ParameterBuffer = MetalDevice!.makeBuffer(length: MemoryLayout<CheckerboardParameters>.size, options: [])
+        memcpy(ParameterBuffer.contents(), Parameters, MemoryLayout<CheckerboardParameters>.size)
         
         var NewPixelBuffer: CVPixelBuffer? = nil
         CVPixelBufferPoolCreatePixelBuffer(kCFAllocatorDefault, BufferPool!, &NewPixelBuffer)
@@ -256,22 +254,20 @@ class MetalCheckerboard: FilterParent, Renderer
         CommandEncoder?.setTexture(Texture, index: 0)
         CommandEncoder?.setTexture(OutputTexture, index: 1)
         
-        let GX = ParameterManager.GetInt(From: ID(), Field: .GridX, Default: 10)
-        let GY = ParameterManager.GetInt(From: ID(), Field: .GridY, Default: 10)
-        let GColor = ParameterManager.GetColor(From: ID(), Field: .GridColor, Default: UIColor.black)
-        let GBG = ParameterManager.GetColor(From: ID(), Field: .GridBackground, Default: UIColor.clear)
-        let InvertGColor = ParameterManager.GetBool(From: ID(), Field: .InvertColor, Default: false)
-        let InvertBGColor = ParameterManager.GetBool(From: ID(), Field: .InvertBackgroundColor, Default: false)
-        let Parameter = GridParameters(GridX: simd_uint1(GX),
-                                       GridY: simd_uint1(GY),
-                                       Width: simd_uint1(1),
-                                       GridColor: GColor.ToFloat4(),
-                                       BackgroundColor: GBG.ToFloat4(),
-                                       InvertGridColor: simd_bool(InvertGColor),
-                                       InvertBackgroundColor: simd_bool(InvertBGColor))
+        let C1 = ParameterManager.GetColor(From: ID(), Field: .Color0, Default: UIColor.black)
+        let C2 = ParameterManager.GetColor(From: ID(), Field: .Color1, Default: UIColor.white)
+        let C3 = ParameterManager.GetColor(From: ID(), Field: .Color2, Default: UIColor.black)
+        let C4 = ParameterManager.GetColor(From: ID(), Field: .Color3, Default: UIColor.white)
+        let BlockSize = ParameterManager.GetDouble(From: ID(), Field: .PatternBlockWidth, Default: 32.0)
+        
+        let Parameter = CheckerboardParameters(Q1Color: C1.ToFloat4(),
+                                               Q2Color: C2.ToFloat4(),
+                                               Q3Color: C3.ToFloat4(),
+                                               Q4Color: C4.ToFloat4(),
+                                               BlockSize: simd_float1(BlockSize))
         let Parameters = [Parameter]
-        InputParameterBuffer = MetalDevice!.makeBuffer(length: MemoryLayout<GridParameters>.size, options: [])
-        memcpy(InputParameterBuffer.contents(), Parameters, MemoryLayout<GridParameters>.size)
+        ParameterBuffer = MetalDevice!.makeBuffer(length: MemoryLayout<CheckerboardParameters>.size, options: [])
+        memcpy(ParameterBuffer.contents(), Parameters, MemoryLayout<CheckerboardParameters>.size)
         CommandEncoder?.setBuffer(InputParameterBuffer, offset: 0, index: 0)
         
         let ThreadGroupCount  = MTLSizeMake(8, 8, 1)
@@ -336,7 +332,106 @@ class MetalCheckerboard: FilterParent, Renderer
     /// - Returns: Nil is always returned.
     func Generate() -> CIImage?
     {
-        return nil
+        if !InitializedForImage
+        {
+            fatalError("Not initialized.")
+        }
+        
+        let Start = CACurrentMediaTime()
+        let IWidth = ParameterManager.GetInt(From: ID(), Field: .IWidth, Default: 512)
+        let IHeight = ParameterManager.GetInt(From: ID(), Field: .IHeight, Default: 512)
+        
+        let TextureDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .rgba8Unorm,
+                                                                         width: Int(IWidth), height: Int(IHeight), mipmapped: true)
+        guard let Texture = ImageDevice?.makeTexture(descriptor: TextureDescriptor) else
+        {
+            print("Error creating input texture in MetalCheckerboard.Generate.")
+            return nil
+        }
+        
+        let ResultCount = 10
+        let ResultsBuffer = MetalDevice!.makeBuffer(length: MemoryLayout<ReturnBufferType>.stride * ResultCount, options: [])
+        let Results = UnsafeBufferPointer<ReturnBufferType>(start: UnsafePointer(ResultsBuffer!.contents().assumingMemoryBound(to: ReturnBufferType.self)),
+                                                            count: ResultCount)
+        
+        let Region = MTLRegionMake2D(0, 0, Int(IWidth), Int(IHeight))
+        var RawData = [UInt8](repeating: 0, count: Int(IWidth * IHeight * 4))
+        let IBytesPerRow = 4 * IWidth
+        Texture.replace(region: Region, mipmapLevel: 0, withBytes: &RawData, bytesPerRow: IBytesPerRow)
+        let OutputTextureDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: Texture.pixelFormat,
+                                                                               width: Texture.width, height: Texture.height,
+                                                                               mipmapped: true)
+        OutputTextureDescriptor.usage = MTLTextureUsage.shaderWrite
+        let OutputTexture = ImageDevice?.makeTexture(descriptor: OutputTextureDescriptor)
+        
+        let CommandBuffer = ImageCommandQueue?.makeCommandBuffer()
+        let CommandEncoder = CommandBuffer?.makeComputeCommandEncoder()
+        
+        CommandEncoder?.setComputePipelineState(ImageComputePipelineState!)
+        CommandEncoder?.setTexture(OutputTexture, index: 0)
+        
+        let C1 = ParameterManager.GetColor(From: ID(), Field: .Color0, Default: UIColor.black)
+        let C2 = ParameterManager.GetColor(From: ID(), Field: .Color1, Default: UIColor.white)
+        let C3 = ParameterManager.GetColor(From: ID(), Field: .Color2, Default: UIColor.black)
+        let C4 = ParameterManager.GetColor(From: ID(), Field: .Color3, Default: UIColor.white)
+        let BlockSize = ParameterManager.GetDouble(From: ID(), Field: .PatternBlockWidth, Default: 32.0)
+        
+        let Parameter = CheckerboardParameters(Q1Color: C1.ToFloat4(),
+                                               Q2Color: C2.ToFloat4(),
+                                               Q3Color: C3.ToFloat4(),
+                                               Q4Color: C4.ToFloat4(),
+                                               BlockSize: simd_float1(BlockSize))
+        let Parameters = [Parameter]
+        ParameterBuffer = MetalDevice!.makeBuffer(length: MemoryLayout<CheckerboardParameters>.stride, options: [])
+        memcpy(ParameterBuffer.contents(), Parameters, MemoryLayout<CheckerboardParameters>.stride)
+        
+        CommandEncoder?.setBuffer(InputParameterBuffer, offset: 0, index: 0)
+        CommandEncoder?.setBuffer(ResultsBuffer, offset: 0, index: 1)
+        
+        let ThreadGroupCount  = MTLSizeMake(8, 8, 1)
+        let ThreadGroups = MTLSizeMake(Texture.width / ThreadGroupCount.width,
+                                       Texture.height / ThreadGroupCount.height,
+                                       1)
+        
+        ImageCommandQueue = ImageDevice?.makeCommandQueue()
+        
+        CommandEncoder!.dispatchThreadgroups(ThreadGroups, threadsPerThreadgroup: ThreadGroupCount)
+        CommandEncoder!.endEncoding()
+        CommandBuffer?.commit()
+        CommandBuffer?.waitUntilCompleted()
+        
+        //Get the result of the generated image.
+        let ImageSize = CGSize(width: Texture.width, height: Texture.height)
+        let ImageByteCount = Int(ImageSize.width * ImageSize.height * 4)
+        //let BytesPerRow = CgImage?.bytesPerRow
+        var ImageBytes = [UInt8](repeating: 0, count: ImageByteCount)
+        let ORegion = MTLRegionMake2D(0, 0, Int(ImageSize.width), Int(ImageSize.height))
+        OutputTexture?.getBytes(&ImageBytes, bytesPerRow: IBytesPerRow, from: ORegion, mipmapLevel: 0)
+        
+        let SizeOfUInt8 = UInt8.SizeOf()
+        let Provider = CGDataProvider(data: NSData(bytes: &ImageBytes, length: ImageBytes.count * SizeOfUInt8))
+        let OBitmapInfo = CGBitmapInfo(rawValue: CGBitmapInfo.byteOrder32Big.rawValue | CGImageAlphaInfo.premultipliedLast.rawValue)
+        let RenderingIntent = CGColorRenderingIntent.defaultIntent
+        let FinalImage = CGImage(width: Int(ImageSize.width), height: Int(ImageSize.height),
+                                 bitsPerComponent: 8, bitsPerPixel: 32,
+                                 bytesPerRow: IBytesPerRow, space: CGColorSpaceCreateDeviceRGB(),
+                                 bitmapInfo: OBitmapInfo, provider: Provider!,
+                                 decode: nil, shouldInterpolate: false, intent: RenderingIntent)
+        LastUIImage = UIImage(cgImage: FinalImage!)
+        
+        #if DEBUG
+        for V in Results
+        {
+            if V > 0
+            {
+                print("V=\(V)")
+            }
+        }
+        #endif
+        
+        ImageRenderTime = CACurrentMediaTime() - Start
+        ParameterManager.UpdateRenderAccumulator(NewValue: ImageRenderTime, ID: ID(), ForImage: true)
+        return LastUIImage?.ciImage
     }
     
     var LastUIImage: UIImage? = nil
@@ -496,7 +591,7 @@ class MetalCheckerboard: FilterParent, Renderer
     /// - Returns: Array of ports.
     static func Ports() -> [FilterPorts]
     {
-        return [FilterPorts.Input, FilterPorts.Output]
+        return [FilterPorts.Output]
     }
     
     /// Describes the available ports for the filter.
