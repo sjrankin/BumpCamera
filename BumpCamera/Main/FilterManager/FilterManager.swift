@@ -61,7 +61,8 @@ class FilterManager
             //.Bumpy: [(.BumpyPixels, 1), (.BumpyTriangles, 2), (.Embossed, 0)],
             //.Motion: [(.ColorDelta, 0), (.FilterDelta, 1), (.PatternDelta, 2)],
             .Tiles: [(.Mirroring, 0)],
-            .Generator: [(.Grid, 0), (.SmoothLinearGradient, 1), (.CornerGradient, 2), (.Checkerboard, 3)],
+            .Generator: [(.Grid, 0), (.SmoothLinearGradient, 1), (.CornerGradient, 2), (.Checkerboard, 3),
+                         (.MetalCheckerboard, 4)],
             .Blur: [(.GaussianBlur, 0)],
     ]
     
@@ -111,7 +112,8 @@ class FilterManager
             .Monochrome: (Monochrome.ID(), Monochrome.FilterKernel, Monochrome.Title()),
             .GaussianBlur: (GaussianBlur.ID(), GaussianBlur.FilterKernel, GaussianBlur.Title()),
             .Tonal: (TonalEffect.ID(), TonalEffect.FilterKernel, TonalEffect.Title()),
-            .Checkerboard: (CheckerboardGenerator.ID(), CheckerboardGenerator.FilterKernel, CheckerboardGenerator.Title())
+            .Checkerboard: (CheckerboardGenerator.ID(), CheckerboardGenerator.FilterKernel, CheckerboardGenerator.Title()),
+            .MetalCheckerboard: (MetalCheckerboard.ID(), MetalCheckerboard.FilterKernel, MetalCheckerboard.Title()),
             ]
     
     /// Determines if the specified filter supports the specified target type. Not all filters support all targets - slow
@@ -201,7 +203,8 @@ class FilterManager
             .Monochrome: Monochrome.FilterTarget(),
             .GaussianBlur: GaussianBlur.FilterTarget(),
             .Tonal: TonalEffect.FilterTarget(),
-            .Checkerboard: CheckerboardGenerator.FilterTarget()
+            .Checkerboard: CheckerboardGenerator.FilterTarget(),
+            .MetalCheckerboard: MetalCheckerboard.FilterTarget(),
             ]
     
     /// Load all of the filter classes into the filter manager.
@@ -312,6 +315,7 @@ class FilterManager
         ParameterCount![.GaussianBlur] = GaussianBlur.SupportedFields().count
         ParameterCount![.Tonal] = TonalEffect.SupportedFields().count
         ParameterCount![.Checkerboard] = CheckerboardGenerator.SupportedFields().count
+        ParameterCount![.MetalCheckerboard] = MetalCheckerboard.SupportedFields().count
     }
     
     private static var ParameterCount: [FilterManager.FilterTypes: Int]? = nil
@@ -379,6 +383,7 @@ class FilterManager
         StoryboardList![.GaussianBlur] = GaussianBlur.SettingsStoryboard()
         StoryboardList![.Tonal] = TonalEffect.SettingsStoryboard()
         StoryboardList![.Checkerboard] = CheckerboardGenerator.SettingsStoryboard()
+        StoryboardList![.MetalCheckerboard] = MetalCheckerboard.SettingsStoryboard()
     }
     
     private static var StoryboardList: [FilterTypes: String?]? = nil
@@ -650,6 +655,9 @@ class FilterManager
             
         case .Checkerboard:
             return CheckerboardGenerator()
+            
+        case .MetalCheckerboard:
+            return MetalCheckerboard()
             
         default:
             return nil
@@ -1071,6 +1079,7 @@ class FilterManager
             .GaussianBlur: "Gaussian Blur",
             .Tonal: "Tonal Effect",
             .Checkerboard: "Checkerboard",
+            .MetalCheckerboard: "Metal Checkerboard",
             ]
     
     public static func GetFilterTitle(_ Filter: FilterTypes) -> String?
@@ -1137,6 +1146,7 @@ class FilterManager
             .GaussianBlur: true,
             .Tonal: true,
             .Checkerboard: true,
+            .MetalCheckerboard: true,
     ]
     
     /// Determines if the given filter type is implemented.
