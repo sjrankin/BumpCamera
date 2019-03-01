@@ -249,6 +249,7 @@ class GridGenerator: FilterParent, Renderer
         Texture.replace(region: Region, mipmapLevel: 0, withBytes: &RawData, bytesPerRow: Int((CgImage?.bytesPerRow)!))
         let OutputTextureDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: Texture.pixelFormat,
                                                                                width: Texture.width, height: Texture.height, mipmapped: true)
+        OutputTextureDescriptor.usage = MTLTextureUsage.shaderWrite
         let OutputTexture = ImageDevice?.makeTexture(descriptor: OutputTextureDescriptor)
         
         let CommandBuffer = ImageCommandQueue?.makeCommandBuffer()
@@ -272,8 +273,8 @@ class GridGenerator: FilterParent, Renderer
                                        InvertGridColor: simd_bool(InvertGColor),
                                        InvertBackgroundColor: simd_bool(InvertBGColor))
         let Parameters = [Parameter]
-        InputParameterBuffer = MetalDevice!.makeBuffer(length: MemoryLayout<GridParameters>.size, options: [])
-        memcpy(InputParameterBuffer.contents(), Parameters, MemoryLayout<GridParameters>.size)
+        InputParameterBuffer = MetalDevice!.makeBuffer(length: MemoryLayout<GridParameters>.stride, options: [])
+        memcpy(InputParameterBuffer.contents(), Parameters, MemoryLayout<GridParameters>.stride)
         CommandEncoder?.setBuffer(InputParameterBuffer, offset: 0, index: 0)
         
         let ThreadGroupCount  = MTLSizeMake(8, 8, 1)
@@ -283,6 +284,7 @@ class GridGenerator: FilterParent, Renderer
         
         ImageCommandQueue = ImageDevice?.makeCommandQueue()
         
+        print("Parameters size: \(MemoryLayout<GridParameters>.size), Parameters stride: \(MemoryLayout<GridParameters>.stride)")
         CommandEncoder!.dispatchThreadgroups(ThreadGroups, threadsPerThreadgroup: ThreadGroupCount)
         CommandEncoder!.endEncoding()
         CommandBuffer?.commit()
