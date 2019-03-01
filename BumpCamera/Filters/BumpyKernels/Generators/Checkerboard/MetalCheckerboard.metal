@@ -15,20 +15,47 @@ struct CheckerboardParameters
     float4 Q2Color;
     float4 Q3Color;
     float4 Q4Color;
-    uint BlockSize;
+    float BlockSize;
 };
 
 
-kernel void MetalCheckerboard(texture2d<float, access::read> InTexture [[texture(0)]],
-                              texture2d<float, access::write> OutTexture [[texture(1)]],
+kernel void MetalCheckerboard(texture2d<float, access::write> OutTexture [[texture(0)]],
                               constant CheckerboardParameters &Checker [[buffer(0)]],
-                              device float *Output [[buffer(1)]],
-                              uint2 gid [[thead_position_in_grid]])
+                              device float *Results [[buffer(1)]],
+                              uint2 gid [[thread_position_in_grid]])
 {
-    float4 OriginalColor = InTexture.read(gid);
-    
-    float4 FinalColor = OriginalColor;
+    float4 FinalColor = float4(0.0, 0.0, 0.0, 1.0);
     
     int XCell = (int)(gid.x / Checker.BlockSize);
     int YCell = (int)(gid.y / Checker.BlockSize);
+    int XQ = XCell % 2;
+    int YQ = YCell % 2;
+    if (XQ == 0 && YQ == 0)
+        {
+        //In Quadrant I
+        FinalColor = Checker.Q1Color;
+        }
+    else
+        {
+        if (XQ == 1 && YQ == 0)
+            {
+            //In Quadrant II
+            FinalColor = Checker.Q2Color;
+            }
+        else
+            {
+            if (XQ == 1 && YQ == 1)
+                {
+                //In Quadrant III
+                FinalColor = Checker.Q3Color;
+                }
+            else
+                {
+                //In Quadrant IV.
+                FinalColor = Checker.Q4Color;
+                }
+            }
+        }
+    
+    OutTexture.write(FinalColor, gid);
 }
