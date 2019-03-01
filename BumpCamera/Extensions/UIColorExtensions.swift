@@ -31,6 +31,9 @@ extension UIColor
         return Result
     }
     
+    /// Convert the instance color to a CIColor.
+    ///
+    /// - Returns: CIColor equivalent of the UIColor instance.
     func ToCIColor() -> CIColor
     {
         var Red: CGFloat = 0.0
@@ -42,6 +45,7 @@ extension UIColor
         return Result
     }
     
+    /// Returns the normalized red value.
     var r: CGFloat
     {
         get
@@ -55,6 +59,7 @@ extension UIColor
         }
     }
     
+    /// Returns the normalized green value.
     var g: CGFloat
     {
         get
@@ -68,6 +73,7 @@ extension UIColor
         }
     }
     
+    /// Returns the normalized blue value.
     var b: CGFloat
     {
         get
@@ -81,6 +87,7 @@ extension UIColor
         }
     }
     
+    /// Returns the normalized alpha value.
     var a: CGFloat
     {
         get
@@ -91,6 +98,48 @@ extension UIColor
             var Alpha: CGFloat = 0.0
             self.getRed(&Red, green: &Green, blue: &Blue, alpha: &Alpha)
             return Alpha
+        }
+    }
+    
+    /// Returns the normalized hue value.
+    var Hue: CGFloat
+    {
+        get
+        {
+            var H: CGFloat = 0.0
+            var S: CGFloat = 0.0
+            var B: CGFloat = 0.0
+            var A: CGFloat = 0.0
+            self.getHue(&H, saturation: &S, brightness: &B, alpha: &A)
+            return H
+        }
+    }
+    
+    /// Returns the normalized saturation value.
+    var Saturation: CGFloat
+    {
+        get
+        {
+            var H: CGFloat = 0.0
+            var S: CGFloat = 0.0
+            var B: CGFloat = 0.0
+            var A: CGFloat = 0.0
+            self.getHue(&H, saturation: &S, brightness: &B, alpha: &A)
+            return S
+        }
+    }
+    
+    /// Returns the normalized brightness value.
+    var Brightness: CGFloat
+    {
+        get
+        {
+            var H: CGFloat = 0.0
+            var S: CGFloat = 0.0
+            var B: CGFloat = 0.0
+            var A: CGFloat = 0.0
+            self.getHue(&H, saturation: &S, brightness: &B, alpha: &A)
+            return B
         }
     }
     
@@ -138,15 +187,6 @@ extension UIColor
         var Alpha: CGFloat = 1.0
         self.getHue(&Hue, saturation: &Saturation, brightness: &Brightness, alpha: &Alpha)
         return (Hue, Saturation, Brightness, Alpha)
-    }
-    
-    /// Return the hue of the instance color.
-    ///
-    /// - Returns: Normalized value of the hue of the color.
-    func Hue() -> CGFloat
-    {
-        let (TheHue, _, _, _) = self.AsHSBA()
-        return TheHue
     }
     
     /// Change the alpha component of the color to the passed value.
