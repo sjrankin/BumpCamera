@@ -146,8 +146,8 @@ class GrayscaleAdjust: FilterParent, Renderer
         let Parameter = GrayscaleParameters(Command: simd_int1(FinalCommand), RMultiplier: simd_float1(RMul),
                                             GMultiplier: simd_float1(GMul), BMultiplier: simd_float1(BMul))
         let Parameters = [Parameter]
-        ParameterBuffer = MetalDevice!.makeBuffer(length: MemoryLayout<GrayscaleParameters>.size, options: [])
-        memcpy(ParameterBuffer.contents(), Parameters, MemoryLayout<GrayscaleParameters>.size)
+        ParameterBuffer = MetalDevice!.makeBuffer(length: MemoryLayout<GrayscaleParameters>.stride, options: [])
+        memcpy(ParameterBuffer.contents(), Parameters, MemoryLayout<GrayscaleParameters>.stride)
         
         var NewPixelBuffer: CVPixelBuffer? = nil
         CVPixelBufferPoolCreatePixelBuffer(kCFAllocatorDefault, BufferPool!, &NewPixelBuffer)
@@ -296,8 +296,8 @@ class GrayscaleAdjust: FilterParent, Renderer
         let Parameter = GrayscaleParameters(Command: simd_int1(FinalCommand), RMultiplier: simd_float1(RMul),
                                             GMultiplier: simd_float1(GMul), BMultiplier: simd_float1(BMul))
         let Parameters = [Parameter]
-        ParameterBuffer = MetalDevice!.makeBuffer(length: MemoryLayout<GrayscaleParameters>.size, options: [])
-        memcpy(ParameterBuffer.contents(), Parameters, MemoryLayout<GrayscaleParameters>.size)
+        ParameterBuffer = MetalDevice!.makeBuffer(length: MemoryLayout<GrayscaleParameters>.stride, options: [])
+        memcpy(ParameterBuffer.contents(), Parameters, MemoryLayout<GrayscaleParameters>.stride)
         CommandEncoder!.setBuffer(ParameterBuffer, offset: 0, index: 0)
         /*
         let ReturnBufferCount = 10

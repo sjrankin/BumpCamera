@@ -142,8 +142,8 @@ class BayerDecode: FilterParent, Renderer
         let Start = CACurrentMediaTime()
         let Parameter = BayerDecodeParameters(Order: 0, Method: 0)
         let Parameters = [Parameter]
-        ParameterBuffer = MetalDevice!.makeBuffer(length: MemoryLayout<BayerDecodeParameters>.size, options: [])
-        memcpy(ParameterBuffer.contents(), Parameters, MemoryLayout<BayerDecodeParameters>.size)
+        ParameterBuffer = MetalDevice!.makeBuffer(length: MemoryLayout<BayerDecodeParameters>.stride, options: [])
+        memcpy(ParameterBuffer.contents(), Parameters, MemoryLayout<BayerDecodeParameters>.stride)
         
         let ResultCount = 10
         let ResultsBuffer = MetalDevice!.makeBuffer(length: MemoryLayout<ReturnBufferType>.stride * ResultCount, options: [])
@@ -286,8 +286,8 @@ class BayerDecode: FilterParent, Renderer
         
         let Parameter = BayerDecodeParameters(Order: 0, Method: 0)
         let Parameters = [Parameter]
-        ParameterBuffer = MetalDevice!.makeBuffer(length: MemoryLayout<BayerDecodeParameters>.size, options: [])
-        memcpy(ParameterBuffer.contents(), Parameters, MemoryLayout<BayerDecodeParameters>.size)
+        ParameterBuffer = MetalDevice!.makeBuffer(length: MemoryLayout<BayerDecodeParameters>.stride, options: [])
+        memcpy(ParameterBuffer.contents(), Parameters, MemoryLayout<BayerDecodeParameters>.stride)
         CommandEncoder!.setBuffer(ParameterBuffer, offset: 0, index: 0)
         
         let ThreadGroupCount  = MTLSizeMake(8, 8, 1)

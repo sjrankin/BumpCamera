@@ -142,8 +142,8 @@ class DesaturateColors: FilterParent, Renderer
         let FinalDesat = ParameterManager.GetDouble(From: ID(), Field: .Normal, Default: 0.4)
         let Parameter = DesaturationKernelParameters(DesaturationValue: simd_float1(FinalDesat))
         let Parameters = [Parameter]
-        ParameterBuffer = MetalDevice!.makeBuffer(length: MemoryLayout<DesaturationKernelParameters>.size, options: [])
-        memcpy(ParameterBuffer.contents(), Parameters, MemoryLayout<DesaturationKernelParameters>.size)
+        ParameterBuffer = MetalDevice!.makeBuffer(length: MemoryLayout<DesaturationKernelParameters>.stride, options: [])
+        memcpy(ParameterBuffer.contents(), Parameters, MemoryLayout<DesaturationKernelParameters>.stride)
         
         var NewPixelBuffer: CVPixelBuffer? = nil
         CVPixelBufferPoolCreatePixelBuffer(kCFAllocatorDefault, BufferPool!, &NewPixelBuffer)
@@ -273,8 +273,8 @@ class DesaturateColors: FilterParent, Renderer
         let FinalDesat = ParameterManager.GetDouble(From: ID(), Field: .Normal, Default: 0.4)
         let Parameter = DesaturationKernelParameters(DesaturationValue: simd_float1(FinalDesat))
         let Parameters = [Parameter]
-        ParameterBuffer = MetalDevice!.makeBuffer(length: MemoryLayout<DesaturationKernelParameters>.size, options: [])
-        memcpy(ParameterBuffer.contents(), Parameters, MemoryLayout<DesaturationKernelParameters>.size)
+        ParameterBuffer = MetalDevice!.makeBuffer(length: MemoryLayout<DesaturationKernelParameters>.stride, options: [])
+        memcpy(ParameterBuffer.contents(), Parameters, MemoryLayout<DesaturationKernelParameters>.stride)
         CommandEncoder!.setBuffer(ParameterBuffer, offset: 0, index: 0)
         
         let ThreadGroupCount  = MTLSizeMake(8, 8, 1)

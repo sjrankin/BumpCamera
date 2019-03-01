@@ -142,8 +142,8 @@ class Pixellate_Metal: FilterParent, Renderer
         let FinalHeight = ParameterManager.GetInt(From: ID(), Field: .BlockHeight, Default: 20)
         let Buffer0 = BlockInfoParameters(Width: uint(FinalWidth), Height: uint(FinalHeight))
         let Buffers = [Buffer0]
-        ParameterBuffer = MetalDevice!.makeBuffer(length: MemoryLayout<BlockInfoParameters>.size, options: [])
-        memcpy(ParameterBuffer?.contents(), Buffers, MemoryLayout<BlockInfoParameters>.size)
+        ParameterBuffer = MetalDevice!.makeBuffer(length: MemoryLayout<BlockInfoParameters>.stride, options: [])
+        memcpy(ParameterBuffer?.contents(), Buffers, MemoryLayout<BlockInfoParameters>.stride)
         
         var NewPixelBuffer: CVPixelBuffer? = nil
         CVPixelBufferPoolCreatePixelBuffer(kCFAllocatorDefault, BufferPool!, &NewPixelBuffer)
@@ -276,8 +276,8 @@ class Pixellate_Metal: FilterParent, Renderer
         let FinalHeight = ParameterManager.GetInt(From: ID(), Field: .BlockHeight, Default: 20)
         let Buffer0 = BlockInfoParameters(Width: uint(FinalWidth), Height: uint(FinalHeight))
         let Buffers = [Buffer0]
-        ImageParameterBuffer = MetalDevice!.makeBuffer(length: MemoryLayout<BlockInfoParameters>.size, options: [])
-        memcpy(ImageParameterBuffer?.contents(), Buffers, MemoryLayout<BlockInfoParameters>.size)
+        ImageParameterBuffer = MetalDevice!.makeBuffer(length: MemoryLayout<BlockInfoParameters>.stride, options: [])
+        memcpy(ImageParameterBuffer?.contents(), Buffers, MemoryLayout<BlockInfoParameters>.stride)
         CommandEncoder!.setBuffer(ImageParameterBuffer, offset: 0, index: 0)
         
         let ThreadGroupCount  = MTLSizeMake(8, 8, 1)

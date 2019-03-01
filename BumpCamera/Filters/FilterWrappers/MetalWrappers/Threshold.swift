@@ -150,8 +150,8 @@ class Threshold: FilterParent, Renderer
                                             LowColor: LowColor.ToFloat4(),
                                             HighColor: HighColor.ToFloat4())
         let Parameters = [Parameter]
-        ParameterBuffer = MetalDevice!.makeBuffer(length: MemoryLayout<ThresholdParameters>.size, options: [])
-        memcpy(ParameterBuffer.contents(), Parameters, MemoryLayout<ThresholdParameters>.size)
+        ParameterBuffer = MetalDevice!.makeBuffer(length: MemoryLayout<ThresholdParameters>.stride, options: [])
+        memcpy(ParameterBuffer.contents(), Parameters, MemoryLayout<ThresholdParameters>.stride)
         
         var NewPixelBuffer: CVPixelBuffer? = nil
         CVPixelBufferPoolCreatePixelBuffer(kCFAllocatorDefault, BufferPool!, &NewPixelBuffer)
@@ -290,8 +290,8 @@ class Threshold: FilterParent, Renderer
                                             LowColor: LowColor.ToFloat4(),
                                             HighColor: HighColor.ToFloat4())
         let Parameters = [Parameter]
-        ParameterBuffer = MetalDevice!.makeBuffer(length: MemoryLayout<ThresholdParameters>.size, options: [])
-        memcpy(ParameterBuffer.contents(), Parameters, MemoryLayout<ThresholdParameters>.size)
+        ParameterBuffer = MetalDevice!.makeBuffer(length: MemoryLayout<ThresholdParameters>.stride, options: [])
+        memcpy(ParameterBuffer.contents(), Parameters, MemoryLayout<ThresholdParameters>.stride)
         CommandEncoder!.setBuffer(ParameterBuffer, offset: 0, index: 0)
         
         let ThreadGroupCount  = MTLSizeMake(8, 8, 1)

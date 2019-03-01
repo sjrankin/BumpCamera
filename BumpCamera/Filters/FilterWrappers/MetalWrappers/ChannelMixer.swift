@@ -172,8 +172,8 @@ class ChannelMixer: FilterParent, Renderer
                                         InvertRed: simd_bool(InvertRed), InvertGreen: simd_bool(InvertGreen),
                                         InvertBlue: simd_bool(InvertBlue))
         let Parameters = [Parameter]
-        ParameterBuffer = MetalDevice!.makeBuffer(length: MemoryLayout<ChannelSwizzles>.size, options: [])
-        memcpy(ParameterBuffer.contents(), Parameters, MemoryLayout<ChannelSwizzles>.size)
+        ParameterBuffer = MetalDevice!.makeBuffer(length: MemoryLayout<ChannelSwizzles>.stride, options: [])
+        memcpy(ParameterBuffer.contents(), Parameters, MemoryLayout<ChannelSwizzles>.stride)
         
         var NewPixelBuffer: CVPixelBuffer? = nil
         CVPixelBufferPoolCreatePixelBuffer(kCFAllocatorDefault, BufferPool!, &NewPixelBuffer)
@@ -318,8 +318,8 @@ class ChannelMixer: FilterParent, Renderer
                                         InvertRed: simd_bool(InvertRed), InvertGreen: simd_bool(InvertGreen),
                                         InvertBlue: simd_bool(InvertBlue))
         let Parameters = [Parameter]
-        ParameterBuffer = MetalDevice!.makeBuffer(length: MemoryLayout<ChannelSwizzles>.size, options: [])
-        memcpy(ParameterBuffer.contents(), Parameters, MemoryLayout<ChannelSwizzles>.size)
+        ParameterBuffer = MetalDevice!.makeBuffer(length: MemoryLayout<ChannelSwizzles>.stride, options: [])
+        memcpy(ParameterBuffer.contents(), Parameters, MemoryLayout<ChannelSwizzles>.stride)
         CommandEncoder!.setBuffer(ParameterBuffer, offset: 0, index: 0)
         
         let ThreadGroupCount  = MTLSizeMake(8, 8, 1)

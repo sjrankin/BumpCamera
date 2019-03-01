@@ -155,8 +155,8 @@ class Solarize: FilterParent, Renderer
                                            SaturationThreshold: simd_float1(SThreshold),
                                            SolarizeIfGreater: simd_bool(IfGreater))
         let Parameters = [Parameter]
-        ParameterBuffer = MetalDevice!.makeBuffer(length: MemoryLayout<SolarizeParameters>.size, options: [])
-        memcpy(ParameterBuffer.contents(), Parameters, MemoryLayout<SolarizeParameters>.size)
+        ParameterBuffer = MetalDevice!.makeBuffer(length: MemoryLayout<SolarizeParameters>.stride, options: [])
+        memcpy(ParameterBuffer.contents(), Parameters, MemoryLayout<SolarizeParameters>.stride)
         
         var NewPixelBuffer: CVPixelBuffer? = nil
         CVPixelBufferPoolCreatePixelBuffer(kCFAllocatorDefault, BufferPool!, &NewPixelBuffer)
@@ -298,8 +298,8 @@ class Solarize: FilterParent, Renderer
                                            SaturationThreshold: simd_float1(SThreshold),
                                            SolarizeIfGreater: simd_bool(IfGreater))
         let Parameters = [Parameter]
-        ParameterBuffer = MetalDevice!.makeBuffer(length: MemoryLayout<SolarizeParameters>.size, options: [])
-        memcpy(ParameterBuffer.contents(), Parameters, MemoryLayout<SolarizeParameters>.size)
+        ParameterBuffer = MetalDevice!.makeBuffer(length: MemoryLayout<SolarizeParameters>.stride, options: [])
+        memcpy(ParameterBuffer.contents(), Parameters, MemoryLayout<SolarizeParameters>.stride)
         CommandEncoder!.setBuffer(ParameterBuffer, offset: 0, index: 0)
         
         let ThreadGroupCount  = MTLSizeMake(8, 8, 1)

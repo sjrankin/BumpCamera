@@ -200,8 +200,8 @@ class Dithering: FilterParent, Renderer
                                          Quadrant: simd_uint1(Quadrant),
                                          IsAVRotated: simd_bool(true))
         let Parameters = [Parameter]
-        ParameterBuffer = MetalDevice!.makeBuffer(length: MemoryLayout<MirrorParameters>.size, options: [])
-        memcpy(ParameterBuffer.contents(), Parameters, MemoryLayout<MirrorParameters>.size)
+        ParameterBuffer = MetalDevice!.makeBuffer(length: MemoryLayout<MirrorParameters>.stride, options: [])
+        memcpy(ParameterBuffer.contents(), Parameters, MemoryLayout<MirrorParameters>.stride)
         
         var NewPixelBuffer: CVPixelBuffer? = nil
         CVPixelBufferPoolCreatePixelBuffer(kCFAllocatorDefault, BufferPool!, &NewPixelBuffer)
@@ -339,8 +339,8 @@ class Dithering: FilterParent, Renderer
                                          Quadrant: simd_uint1(Quadrant),
                                          IsAVRotated: simd_bool(false))
         let Parameters = [Parameter]
-        ParameterBuffer = MetalDevice!.makeBuffer(length: MemoryLayout<MirrorParameters>.size, options: [])
-        memcpy(ParameterBuffer.contents(), Parameters, MemoryLayout<MirrorParameters>.size)
+        ParameterBuffer = MetalDevice!.makeBuffer(length: MemoryLayout<MirrorParameters>.stride, options: [])
+        memcpy(ParameterBuffer.contents(), Parameters, MemoryLayout<MirrorParameters>.stride)
         CommandEncoder!.setBuffer(ParameterBuffer, offset: 0, index: 0)
         
         let ThreadGroupCount  = MTLSizeMake(8, 8, 1)

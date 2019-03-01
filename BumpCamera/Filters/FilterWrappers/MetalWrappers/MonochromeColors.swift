@@ -154,8 +154,8 @@ class MonochromeColors: FilterParent, Renderer
                                                   ForCyan: ForCyan, ForMagenta: ForMagenta, ForYellow: ForYellow, ForBlack: ForBlack,
                                                   HueSegmentCount: HueSegmentCount, SelectedIndex: SelectedSegment)
         let Parameters = [Parameter]
-        ParameterBuffer = MetalDevice!.makeBuffer(length: MemoryLayout<MonochromeColorParameters>.size, options: [])
-        memcpy(ParameterBuffer.contents(), Parameters, MemoryLayout<MonochromeColorParameters>.size)
+        ParameterBuffer = MetalDevice!.makeBuffer(length: MemoryLayout<MonochromeColorParameters>.stride, options: [])
+        memcpy(ParameterBuffer.contents(), Parameters, MemoryLayout<MonochromeColorParameters>.stride)
         
         var NewPixelBuffer: CVPixelBuffer? = nil
         CVPixelBufferPoolCreatePixelBuffer(kCFAllocatorDefault, BufferPool!, &NewPixelBuffer)
@@ -298,8 +298,8 @@ class MonochromeColors: FilterParent, Renderer
                                                   ForCyan: ForCyan, ForMagenta: ForMagenta, ForYellow: ForYellow, ForBlack: ForBlack,
                                                   HueSegmentCount: HueSegmentCount, SelectedIndex: SelectedSegment)
         let Parameters = [Parameter]
-        ParameterBuffer = MetalDevice!.makeBuffer(length: MemoryLayout<MonochromeColorParameters>.size, options: [])
-        memcpy(ParameterBuffer.contents(), Parameters, MemoryLayout<MonochromeColorParameters>.size)
+        ParameterBuffer = MetalDevice!.makeBuffer(length: MemoryLayout<MonochromeColorParameters>.stride, options: [])
+        memcpy(ParameterBuffer.contents(), Parameters, MemoryLayout<MonochromeColorParameters>.stride)
         CommandEncoder!.setBuffer(ParameterBuffer, offset: 0, index: 0)
         
         let ThreadGroupCount  = MTLSizeMake(8, 8, 1)

@@ -145,8 +145,8 @@ class DilateErode: FilterParent, Renderer
         let Op = ParameterManager.GetUInt1(From: ID(), Field: .Operation, Default: 0)
         let Parameter = DEParameters(WindowSize: WindowSize, ValueDetermination: ValDet, Operation: Op)
         let Parameters = [Parameter]
-        ParameterBuffer = MetalDevice!.makeBuffer(length: MemoryLayout<DEParameters>.size, options: [])
-        memcpy(ParameterBuffer.contents(), Parameters, MemoryLayout<DEParameters>.size)
+        ParameterBuffer = MetalDevice!.makeBuffer(length: MemoryLayout<DEParameters>.stride, options: [])
+        memcpy(ParameterBuffer.contents(), Parameters, MemoryLayout<DEParameters>.stride)
         
         let ResultCount = 10
         let ResultsBuffer = MetalDevice!.makeBuffer(length: MemoryLayout<ReturnBufferType>.stride * ResultCount, options: [])
@@ -304,8 +304,8 @@ class DilateErode: FilterParent, Renderer
         let Op = ParameterManager.GetUInt1(From: ID(), Field: .Operation, Default: 0)
         let Parameter = DEParameters(WindowSize: WindowSize, ValueDetermination: ValDet, Operation: Op)
         let Parameters = [Parameter]
-        ParameterBuffer = MetalDevice!.makeBuffer(length: MemoryLayout<DEParameters>.size, options: [])
-        memcpy(ParameterBuffer.contents(), Parameters, MemoryLayout<DEParameters>.size)
+        ParameterBuffer = MetalDevice!.makeBuffer(length: MemoryLayout<DEParameters>.stride, options: [])
+        memcpy(ParameterBuffer.contents(), Parameters, MemoryLayout<DEParameters>.stride)
         CommandEncoder!.setBuffer(ParameterBuffer, offset: 0, index: 0)
         
         let ThreadGroupCount  = MTLSizeMake(8, 8, 1)

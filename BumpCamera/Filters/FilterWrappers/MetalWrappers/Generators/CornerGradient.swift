@@ -249,6 +249,7 @@ class CornerGradient: FilterParent, Renderer
         Texture.replace(region: Region, mipmapLevel: 0, withBytes: &RawData, bytesPerRow: Int((CgImage?.bytesPerRow)!))
         let OutputTextureDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: Texture.pixelFormat,
                                                                                width: Texture.width, height: Texture.height, mipmapped: true)
+        OutputTextureDescriptor.usage = MTLTextureUsage.shaderWrite
         let OutputTexture = ImageDevice?.makeTexture(descriptor: OutputTextureDescriptor)
         
         let CommandBuffer = ImageCommandQueue?.makeCommandBuffer()
