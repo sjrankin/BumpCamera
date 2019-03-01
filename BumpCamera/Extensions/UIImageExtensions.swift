@@ -42,12 +42,20 @@ extension UIImage
     public static func MakeColorImage(SolidColor: UIColor, Size: CGSize) -> UIImage?
     {
         let Rect = CGRect(x: 0, y: 0, width: Size.width, height: Size.height)
-        UIGraphicsBeginImageContextWithOptions(Size, true, 0)
-        SolidColor.setFill()
-        UIRectFill(Rect)
-        let Result: UIImage? = UIGraphicsGetImageFromCurrentImageContext()
-        UIGraphicsEndImageContext()
-        return Result
+        
+        let FinalColor = CIColor(red: SolidColor.r, green: SolidColor.g, blue: SolidColor.b, alpha: SolidColor.a)
+        var ciImage = CIImage(color: FinalColor)
+        ciImage = ciImage.cropped(to: Rect)
+        let ciContext = CIContext()
+        if let cgImg = ciContext.createCGImage(ciImage, from: ciImage.extent)
+        {
+        let uiImg = UIImage(cgImage: cgImg)
+            return uiImg
+        }
+        else
+        {
+            fatalError("Error backing image with CG.")
+        }
     }
     
     /// Convert an array of UInt8 values into a UIImage.
