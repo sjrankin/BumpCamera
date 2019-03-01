@@ -21,6 +21,7 @@ class MetalCheckerboardGeneratorSettingsUICode: FilterSettingUIBase, UIActivityI
         QuadrantContainer.layer.borderColor = UIColor.black.cgColor
         QuadrantContainer.layer.borderWidth = 1.0
         QuadrantContainer.layer.cornerRadius = 5.0
+        QuadrantContainer.clipsToBounds = true
         QuadrantIButton.layer.borderColor = UIColor.black.cgColor
         QuadrantIButton.layer.borderWidth = 0.5
         QuadrantIIButton.layer.borderColor = UIColor.black.cgColor
@@ -59,22 +60,22 @@ class MetalCheckerboardGeneratorSettingsUICode: FilterSettingUIBase, UIActivityI
         {
         case 1:
             QuadrantIButton.backgroundColor = Color
-            let TintColor = Color.HighestContrastTo(Method: .YIQ)
+            let TintColor = Color.HighestContrastTo(Method: .Brightness)
             QuadrantIButton.tintColor = TintColor
             
         case 2:
             QuadrantIIButton.backgroundColor = Color
-            let TintColor = Color.HighestContrastTo(Method: .YIQ)
+            let TintColor = Color.HighestContrastTo(Method: .Brightness)
             QuadrantIIButton.tintColor = TintColor
             
         case 3:
             QuadrantIIIButton.backgroundColor = Color
-            let TintColor = Color.HighestContrastTo(Method: .YIQ)
+            let TintColor = Color.HighestContrastTo(Method: .Brightness)
             QuadrantIIIButton.tintColor = TintColor
             
         case 4:
             QuadrantIVButton.backgroundColor = Color
-            let TintColor = Color.HighestContrastTo(Method: .YIQ)
+            let TintColor = Color.HighestContrastTo(Method: .Brightness)
             QuadrantIVButton.tintColor = TintColor
             
         default:
@@ -202,7 +203,7 @@ class MetalCheckerboardGeneratorSettingsUICode: FilterSettingUIBase, UIActivityI
     
     @IBAction func HandleBlockSizeChanged(_ sender: Any)
     {
-        let SliderValue = Double(BlockSizeSlider.value / 1000.0)
+        let SliderValue = Double(BlockSizeSlider.value / 100.0)
         BlockSizeValue.text = "\(SliderValue.Round(To: 0))"
         UpdateValue(WithValue: SliderValue, ToField: .PatternBlockWidth)
         ShowSampleView()
