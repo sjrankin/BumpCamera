@@ -45,9 +45,9 @@
                                                         <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="4Hm-gh-noS">
                                                             <rect key="frame" x="0.0" y="0.0" width="80" height="80"/>
                                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                            <fontDescription key="fontDescription" name="Baskerville-Bold" family="Baskerville" pointSize="32"/>
+                                                            <fontDescription key="fontDescription" name="Courier-Bold" family="Courier" pointSize="32"/>
                                                             <color key="tintColor" white="0.33333333329999998" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                                            <state key="normal" title="I"/>
+                                                            <state key="normal" title="1"/>
                                                             <connections>
                                                                 <action selector="QuadrantIPressed:" destination="5bJ-Zl-dNC" eventType="primaryActionTriggered" id="KLr-0S-cs0"/>
                                                             </connections>
@@ -55,9 +55,9 @@
                                                         <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="5zS-jm-gtk">
                                                             <rect key="frame" x="80" y="0.0" width="80" height="80"/>
                                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                            <fontDescription key="fontDescription" name="Baskerville-Bold" family="Baskerville" pointSize="32"/>
+                                                            <fontDescription key="fontDescription" name="Courier-Bold" family="Courier" pointSize="32"/>
                                                             <color key="tintColor" white="0.33333333329999998" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                                            <state key="normal" title="II"/>
+                                                            <state key="normal" title="2"/>
                                                             <connections>
                                                                 <action selector="QuadrantIIPressed:" destination="5bJ-Zl-dNC" eventType="primaryActionTriggered" id="i69-jA-gDq"/>
                                                             </connections>
@@ -65,19 +65,19 @@
                                                         <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="uqj-wu-6nk">
                                                             <rect key="frame" x="80" y="80" width="80" height="80"/>
                                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                            <fontDescription key="fontDescription" name="Baskerville-Bold" family="Baskerville" pointSize="32"/>
+                                                            <fontDescription key="fontDescription" name="Courier-Bold" family="Courier" pointSize="32"/>
                                                             <color key="tintColor" white="0.33333333329999998" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                                            <state key="normal" title="III"/>
+                                                            <state key="normal" title="3"/>
                                                             <connections>
                                                                 <action selector="QuadrantIIIPressed:" destination="5bJ-Zl-dNC" eventType="primaryActionTriggered" id="Yiv-mY-EWS"/>
                                                             </connections>
                                                         </button>
                                                         <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="a9h-wF-f97">
-                                                            <rect key="frame" x="0.0" y="81" width="80" height="80"/>
+                                                            <rect key="frame" x="0.0" y="80" width="80" height="80"/>
                                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                            <fontDescription key="fontDescription" name="Baskerville-Bold" family="Baskerville" pointSize="32"/>
+                                                            <fontDescription key="fontDescription" name="Courier-Bold" family="Courier" pointSize="32"/>
                                                             <color key="tintColor" white="0.33333333329999998" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                                            <state key="normal" title="IV"/>
+                                                            <state key="normal" title="4"/>
                                                             <connections>
                                                                 <action selector="QuadrantIVPressed:" destination="5bJ-Zl-dNC" eventType="primaryActionTriggered" id="lGt-cJ-7s9"/>
                                                             </connections>
