@@ -15,5 +15,5 @@ struct CheckerboardParameters
     let Q2Color: simd_float4
     let Q3Color: simd_float4
     let Q4Color: simd_float4
-    let BlockSize: simd_uint1
+    let BlockSize: simd_float1
 }
