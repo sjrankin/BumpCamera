@@ -19,7 +19,8 @@ struct CheckerboardParameters
 };
 
 
-kernel void MetalCheckerboard(texture2d<float, access::write> OutTexture [[texture(0)]],
+kernel void MetalCheckerboard(texture2d<float, access::read> NotUsed [[texture(0)]],
+                              texture2d<float, access::write> OutTexture [[texture(1)]],
                               constant CheckerboardParameters &Checker [[buffer(0)]],
                               device float *Results [[buffer(1)]],
                               uint2 gid [[thread_position_in_grid]])
