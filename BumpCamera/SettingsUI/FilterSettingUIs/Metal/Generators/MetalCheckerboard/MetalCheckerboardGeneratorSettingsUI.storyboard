@@ -287,7 +287,7 @@
         <!--MainColorPicker-->
         <scene sceneID="WAv-8G-ITc">
             <objects>
-                <viewControllerPlaceholder storyboardName="ColorPicker" referencedIdentifier="MainColorPicker" id="Zgl-qs-ROX" sceneMemberID="viewController"/>
+                <viewControllerPlaceholder storyboardName="ColorPicker2" referencedIdentifier="MainColorPicker" id="Zgl-qs-ROX" sceneMemberID="viewController"/>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="6ri-bj-auT" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="2258" y="-121"/>
