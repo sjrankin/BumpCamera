@@ -370,6 +370,11 @@
                                 <action selector="HandleBackPressed:" destination="4Gh-Po-Jgh" id="lYM-zE-HVX"/>
                             </connections>
                         </barButtonItem>
+                        <barButtonItem key="rightBarButtonItem" title="Help" id="EaT-0r-Hhr">
+                            <connections>
+                                <segue destination="zoi-Gl-qxc" kind="show" id="Qgc-aX-RzA"/>
+                            </connections>
+                        </barButtonItem>
                     </navigationItem>
                     <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
                     <connections>
@@ -602,4 +607,7 @@
             <color red="0.94117647058823528" green="0.94117647058823528" blue="0.94117647058823528" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>
     </resources>
+    <inferredMetricsTieBreakers>
+        <segue reference="ZRx-Af-5zX"/>
+    </inferredMetricsTieBreakers>
 </document>
