@@ -76,6 +76,9 @@ class MetalCheckerboard: FilterParent, Renderer
     
     func Initialize(With FormatDescription: CMFormatDescription, BufferCountHint: Int)
     {
+        #if true
+        Initialized = true
+        #else
         Reset("MetalCheckerboard.Initialize")
         (BufferPool, _, OutputFormatDescription) = CreateBufferPool(From: FormatDescription, BufferCountHint: BufferCountHint)
         if BufferPool == nil
@@ -96,6 +99,7 @@ class MetalCheckerboard: FilterParent, Renderer
         {
             TextureCache = MetalTextureCache
         }
+        #endif
     }
     
     func Reset(_ CalledBy: String = "")
@@ -120,6 +124,9 @@ class MetalCheckerboard: FilterParent, Renderer
     
     func Render(PixelBuffer: CVPixelBuffer) -> CVPixelBuffer?
     {
+        #if true
+        return nil
+        #else
         objc_sync_enter(AccessLock)
         defer{objc_sync_exit(AccessLock)}
         if !Initialized
@@ -186,6 +193,7 @@ class MetalCheckerboard: FilterParent, Renderer
         LiveRenderTime = CACurrentMediaTime() - Start
         ParameterManager.UpdateRenderAccumulator(NewValue: LiveRenderTime, ID: ID(), ForImage: false)
         return OutputBuffer
+        #endif
     }
     
     var ImageDevice: MTLDevice? = nil
@@ -210,6 +218,16 @@ class MetalCheckerboard: FilterParent, Renderer
             print("Unable to create pipeline state: \(error.localizedDescription)")
         }
         
+        var MetalTextureCache: CVMetalTextureCache? = nil
+        if CVMetalTextureCacheCreate(kCFAllocatorDefault, nil, MetalDevice!, nil, &MetalTextureCache) != kCVReturnSuccess
+        {
+            fatalError("Unable to allocation texture cache in MetalCheckerboard.")
+        }
+        else
+        {
+            TextureCache = MetalTextureCache
+        }
+        
         InitializedForImage = true
     }
     
@@ -218,6 +236,9 @@ class MetalCheckerboard: FilterParent, Renderer
     //http://flexmonkey.blogspot.com/2014/10/metal-kernel-functions-compute-shaders.html
     func Render(Image: UIImage) -> UIImage?
     {
+        #if true
+        return nil
+        #else
         if !InitializedForImage
         {
             fatalError("Not initialized.")
@@ -302,10 +323,14 @@ class MetalCheckerboard: FilterParent, Renderer
         ImageRenderTime = CACurrentMediaTime() - Start
         ParameterManager.UpdateRenderAccumulator(NewValue: ImageRenderTime, ID: ID(), ForImage: true)
         return UIImage(cgImage: FinalImage!)
+        #endif
     }
     
     func Render(Image: CIImage) -> CIImage?
     {
+        #if true
+        return nil
+        #else
         let UImage = UIImage(ciImage: Image)
         if let IFinal = Render(Image: UImage)
         {
@@ -325,9 +350,12 @@ class MetalCheckerboard: FilterParent, Renderer
             print("Error returned from Render(UIImage) in MetalCheckerboard.Render(CIImage)")
             return nil
         }
+        #endif
     }
     
     /// Returns the generated image. If the filter does not support generated images nil is returned.
+    ///
+    /// - Note: Call InitializeForImage on this instance to initialize for image generation.
     ///
     /// - Returns: Nil is always returned.
     func Generate() -> CIImage?
@@ -340,6 +368,28 @@ class MetalCheckerboard: FilterParent, Renderer
         let Start = CACurrentMediaTime()
         let IWidth = ParameterManager.GetInt(From: ID(), Field: .IWidth, Default: 512)
         let IHeight = ParameterManager.GetInt(From: ID(), Field: .IHeight, Default: 512)
+        
+        var DummyImage: UIImage!
+        if let duImage = UIImage.MakeColorImage(SolidColor: UIColor.red, Size: CGSize(width: IWidth, height: IHeight))
+        {
+            DummyImage = duImage
+        }
+        else
+        {
+            print("Error returned by MakeColorImage.")
+            return nil
+        }
+        
+        var DummyTexture: MTLTexture!
+        if let DummyBuffer = GetPixelBufferFrom(DummyImage)
+        {
+            DummyTexture = MakeTextureFromCVPixelBuffer(pixelBuffer: DummyBuffer, textureFormat: .bgra8Unorm)
+        }
+        else
+        {
+            print("Error returned by GetPixelBufferFrom")
+            return nil
+        }
         
         let TextureDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .rgba8Unorm,
                                                                          width: Int(IWidth), height: Int(IHeight), mipmapped: true)
@@ -368,7 +418,8 @@ class MetalCheckerboard: FilterParent, Renderer
         let CommandEncoder = CommandBuffer?.makeComputeCommandEncoder()
         
         CommandEncoder?.setComputePipelineState(ImageComputePipelineState!)
-        CommandEncoder?.setTexture(OutputTexture, index: 0)
+        CommandEncoder?.setTexture(DummyTexture, index: 0)
+        CommandEncoder?.setTexture(OutputTexture, index: 1)
         
         let C1 = ParameterManager.GetColor(From: ID(), Field: .Color0, Default: UIColor.black)
         let C2 = ParameterManager.GetColor(From: ID(), Field: .Color1, Default: UIColor.white)
@@ -385,7 +436,7 @@ class MetalCheckerboard: FilterParent, Renderer
         ParameterBuffer = MetalDevice!.makeBuffer(length: MemoryLayout<CheckerboardParameters>.stride, options: [])
         memcpy(ParameterBuffer.contents(), Parameters, MemoryLayout<CheckerboardParameters>.stride)
         
-        CommandEncoder?.setBuffer(InputParameterBuffer, offset: 0, index: 0)
+        CommandEncoder?.setBuffer(ParameterBuffer, offset: 0, index: 0)
         CommandEncoder?.setBuffer(ResultsBuffer, offset: 0, index: 1)
         
         let ThreadGroupCount  = MTLSizeMake(8, 8, 1)
@@ -403,7 +454,6 @@ class MetalCheckerboard: FilterParent, Renderer
         //Get the result of the generated image.
         let ImageSize = CGSize(width: Texture.width, height: Texture.height)
         let ImageByteCount = Int(ImageSize.width * ImageSize.height * 4)
-        //let BytesPerRow = CgImage?.bytesPerRow
         var ImageBytes = [UInt8](repeating: 0, count: ImageByteCount)
         let ORegion = MTLRegionMake2D(0, 0, Int(ImageSize.width), Int(ImageSize.height))
         OutputTexture?.getBytes(&ImageBytes, bytesPerRow: IBytesPerRow, from: ORegion, mipmapLevel: 0)
@@ -431,7 +481,8 @@ class MetalCheckerboard: FilterParent, Renderer
         
         ImageRenderTime = CACurrentMediaTime() - Start
         ParameterManager.UpdateRenderAccumulator(NewValue: ImageRenderTime, ID: ID(), ForImage: true)
-        return LastUIImage?.ciImage
+        let Final = CIImage(cgImage: FinalImage!)
+        return Final
     }
     
     var LastUIImage: UIImage? = nil
