@@ -357,7 +357,7 @@
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" preservesSuperviewLayoutMargins="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="kEo-eE-CZ8">
-                                                    <rect key="frame" x="439" y="9" width="51" height="31"/>
+                                                    <rect key="frame" x="345" y="9" width="51" height="31"/>
                                                     <viewLayoutGuide key="safeArea" id="F8l-dt-6ue"/>
                                                     <connections>
                                                         <action selector="HandleSolarizeIfGreaterChanged:" destination="qew-f6-aDc" eventType="primaryActionTriggered" id="YSb-9W-Iwr"/>
