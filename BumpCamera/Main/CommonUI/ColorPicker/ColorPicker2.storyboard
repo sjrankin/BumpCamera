@@ -1,0 +1,278 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14460.31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="Rkl-ep-u17">
+    <device id="retina5_5" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14460.20"/>
+        <capability name="Named colors" minToolsVersion="9.0"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--Color Picker-->
+        <scene sceneID="VNw-yQ-iJE">
+            <objects>
+                <tableViewController storyboardIdentifier="MainColorPicker" id="Wg3-6M-II5" customClass="ColorPicker2" customModule="BumpCamera" customModuleProvider="target" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="static" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" id="VkH-pZ-hzJ">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <sections>
+                            <tableViewSection id="PiV-IT-dQK">
+                                <cells>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" rowHeight="50" id="MDD-UI-Q1X">
+                                        <rect key="frame" x="0.0" y="0.0" width="414" height="50"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="MDD-UI-Q1X" id="jFN-ad-Xzi">
+                                            <rect key="frame" x="0.0" y="0.0" width="414" height="49.666666666666664"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="mX1-gO-5AN">
+                                                    <rect key="frame" x="253" y="14.666666666666666" width="141" height="20.333333333333336"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="width" constant="141" id="qbx-Bd-yGF"/>
+                                                    </constraints>
+                                                    <fontDescription key="fontDescription" name="Courier" family="Courier" pointSize="20"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="0Zh-lD-KhJ">
+                                                    <rect key="frame" x="20" y="14.666666666666666" width="209" height="20.333333333333336"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstItem="0Zh-lD-KhJ" firstAttribute="centerY" secondItem="jFN-ad-Xzi" secondAttribute="centerY" id="0cn-8D-OtN"/>
+                                                <constraint firstItem="mX1-gO-5AN" firstAttribute="leading" secondItem="0Zh-lD-KhJ" secondAttribute="trailing" constant="24" id="7Ls-Pm-BTL"/>
+                                                <constraint firstItem="0Zh-lD-KhJ" firstAttribute="bottom" secondItem="mX1-gO-5AN" secondAttribute="bottom" id="ELT-2l-aN2"/>
+                                                <constraint firstItem="0Zh-lD-KhJ" firstAttribute="top" secondItem="mX1-gO-5AN" secondAttribute="top" id="K78-47-vOQ"/>
+                                                <constraint firstItem="0Zh-lD-KhJ" firstAttribute="leading" secondItem="jFN-ad-Xzi" secondAttribute="leadingMargin" id="Utz-o1-L0o"/>
+                                                <constraint firstAttribute="bottomMargin" secondItem="0Zh-lD-KhJ" secondAttribute="bottom" constant="4" id="j4C-be-KiG"/>
+                                                <constraint firstItem="mX1-gO-5AN" firstAttribute="trailing" secondItem="jFN-ad-Xzi" secondAttribute="trailingMargin" id="nLO-Nl-Deo"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" rowHeight="269" id="iEB-jD-mqt">
+                                        <rect key="frame" x="0.0" y="50" width="414" height="269"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="iEB-jD-mqt" id="ijM-2E-EVn">
+                                            <rect key="frame" x="0.0" y="0.0" width="414" height="268.66666666666669"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="bPv-Zz-4Uz">
+                                                    <rect key="frame" x="66" y="38" width="282" height="177"/>
+                                                    <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
+                                                </view>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="gle-ff-cnt">
+                                                    <rect key="frame" x="19" y="11" width="44" height="18"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="XQC-dB-uNE">
+                                                    <rect key="frame" x="356" y="11" width="38" height="18"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="DdF-vA-EW7">
+                                                    <rect key="frame" x="19" y="233" width="44" height="18"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <view contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" translatesAutoresizingMaskIntoConstraints="NO" id="aYz-UU-HAE" userLabel="Blue Slider" customClass="GSlider" customModule="BumpCamera" customModuleProvider="target">
+                                                    <rect key="frame" x="356" y="38" width="40" height="177"/>
+                                                    <color key="backgroundColor" name="BluePastel"/>
+                                                    <viewLayoutGuide key="safeArea" id="qeS-46-oTI"/>
+                                                    <userDefinedRuntimeAttributes>
+                                                        <userDefinedRuntimeAttribute type="number" keyPath="MinValue">
+                                                            <real key="value" value="0.0"/>
+                                                        </userDefinedRuntimeAttribute>
+                                                        <userDefinedRuntimeAttribute type="number" keyPath="MaxValue">
+                                                            <real key="value" value="1"/>
+                                                        </userDefinedRuntimeAttribute>
+                                                        <userDefinedRuntimeAttribute type="number" keyPath="Value">
+                                                            <real key="value" value="0.5"/>
+                                                        </userDefinedRuntimeAttribute>
+                                                        <userDefinedRuntimeAttribute type="boolean" keyPath="IsHorizontal" value="NO"/>
+                                                        <userDefinedRuntimeAttribute type="color" keyPath="BorderColor">
+                                                            <color key="value" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                        </userDefinedRuntimeAttribute>
+                                                        <userDefinedRuntimeAttribute type="boolean" keyPath="DrawBorder" value="YES"/>
+                                                        <userDefinedRuntimeAttribute type="color" keyPath="GradientStart">
+                                                            <color key="value" red="0.0" green="0.0" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                        </userDefinedRuntimeAttribute>
+                                                        <userDefinedRuntimeAttribute type="color" keyPath="GradientEnd">
+                                                            <color key="value" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                        </userDefinedRuntimeAttribute>
+                                                        <userDefinedRuntimeAttribute type="string" keyPath="Name" value="BlueSlider"/>
+                                                        <userDefinedRuntimeAttribute type="boolean" keyPath="RoundCorneredBordes" value="YES"/>
+                                                    </userDefinedRuntimeAttributes>
+                                                </view>
+                                                <view contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" translatesAutoresizingMaskIntoConstraints="NO" id="RSi-C0-L7P" userLabel="Red Slider" customClass="GSlider" customModule="BumpCamera" customModuleProvider="target">
+                                                    <rect key="frame" x="17" y="37" width="40" height="177"/>
+                                                    <color key="backgroundColor" name="Coral"/>
+                                                    <viewLayoutGuide key="safeArea" id="HaD-6g-Xfu"/>
+                                                    <userDefinedRuntimeAttributes>
+                                                        <userDefinedRuntimeAttribute type="number" keyPath="MinValue">
+                                                            <real key="value" value="0.0"/>
+                                                        </userDefinedRuntimeAttribute>
+                                                        <userDefinedRuntimeAttribute type="number" keyPath="MaxValue">
+                                                            <real key="value" value="1"/>
+                                                        </userDefinedRuntimeAttribute>
+                                                        <userDefinedRuntimeAttribute type="number" keyPath="Value">
+                                                            <real key="value" value="0.5"/>
+                                                        </userDefinedRuntimeAttribute>
+                                                        <userDefinedRuntimeAttribute type="boolean" keyPath="IsHorizontal" value="NO"/>
+                                                        <userDefinedRuntimeAttribute type="color" keyPath="BorderColor">
+                                                            <color key="value" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                        </userDefinedRuntimeAttribute>
+                                                        <userDefinedRuntimeAttribute type="boolean" keyPath="DrawBorder" value="YES"/>
+                                                        <userDefinedRuntimeAttribute type="color" keyPath="GradientStart">
+                                                            <color key="value" red="1" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                        </userDefinedRuntimeAttribute>
+                                                        <userDefinedRuntimeAttribute type="color" keyPath="GradientEnd">
+                                                            <color key="value" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                        </userDefinedRuntimeAttribute>
+                                                        <userDefinedRuntimeAttribute type="string" keyPath="Name" value="RedSlider"/>
+                                                        <userDefinedRuntimeAttribute type="boolean" keyPath="RoundCorneredBordes" value="YES"/>
+                                                    </userDefinedRuntimeAttributes>
+                                                </view>
+                                                <view contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" translatesAutoresizingMaskIntoConstraints="NO" id="VBD-3S-ZB5" userLabel="Green Slider" customClass="GSlider" customModule="BumpCamera" customModuleProvider="target">
+                                                    <rect key="frame" x="66" y="223" width="282" height="40"/>
+                                                    <color key="backgroundColor" name="Pistachio"/>
+                                                    <viewLayoutGuide key="safeArea" id="R0v-pg-yJY"/>
+                                                    <userDefinedRuntimeAttributes>
+                                                        <userDefinedRuntimeAttribute type="boolean" keyPath="DrawBorder" value="YES"/>
+                                                        <userDefinedRuntimeAttribute type="color" keyPath="BorderColor">
+                                                            <color key="value" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                        </userDefinedRuntimeAttribute>
+                                                        <userDefinedRuntimeAttribute type="boolean" keyPath="IsHorizontal" value="YES"/>
+                                                        <userDefinedRuntimeAttribute type="color" keyPath="GradientStart">
+                                                            <color key="value" red="0.0" green="1" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                        </userDefinedRuntimeAttribute>
+                                                        <userDefinedRuntimeAttribute type="color" keyPath="GradientEnd">
+                                                            <color key="value" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                        </userDefinedRuntimeAttribute>
+                                                        <userDefinedRuntimeAttribute type="number" keyPath="Value">
+                                                            <real key="value" value="0.5"/>
+                                                        </userDefinedRuntimeAttribute>
+                                                        <userDefinedRuntimeAttribute type="number" keyPath="MinValue">
+                                                            <real key="value" value="0.0"/>
+                                                        </userDefinedRuntimeAttribute>
+                                                        <userDefinedRuntimeAttribute type="number" keyPath="MaxValue">
+                                                            <real key="value" value="1"/>
+                                                        </userDefinedRuntimeAttribute>
+                                                        <userDefinedRuntimeAttribute type="string" keyPath="Name" value="GreenSlider"/>
+                                                        <userDefinedRuntimeAttribute type="boolean" keyPath="RoundCorneredBordes" value="YES"/>
+                                                    </userDefinedRuntimeAttributes>
+                                                </view>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstItem="gle-ff-cnt" firstAttribute="top" secondItem="ijM-2E-EVn" secondAttribute="topMargin" id="05t-HO-TcB"/>
+                                                <constraint firstItem="RSi-C0-L7P" firstAttribute="top" secondItem="gle-ff-cnt" secondAttribute="bottom" constant="8" symbolic="YES" id="2DG-ci-Geh"/>
+                                                <constraint firstItem="gle-ff-cnt" firstAttribute="baseline" secondItem="XQC-dB-uNE" secondAttribute="baseline" id="4dD-iI-MHq"/>
+                                                <constraint firstItem="aYz-UU-HAE" firstAttribute="top" secondItem="XQC-dB-uNE" secondAttribute="bottom" constant="9" id="8SS-DY-zg3"/>
+                                                <constraint firstAttribute="trailingMargin" secondItem="aYz-UU-HAE" secondAttribute="trailing" constant="-2" id="IyZ-mZ-vrx"/>
+                                                <constraint firstAttribute="bottomMargin" secondItem="DdF-vA-EW7" secondAttribute="bottom" constant="7" id="LIi-nk-PTU"/>
+                                                <constraint firstItem="bPv-Zz-4Uz" firstAttribute="trailing" secondItem="VBD-3S-ZB5" secondAttribute="trailing" id="MGu-sj-Ohp"/>
+                                                <constraint firstItem="XQC-dB-uNE" firstAttribute="leading" secondItem="aYz-UU-HAE" secondAttribute="leading" id="S5W-hq-hqL"/>
+                                                <constraint firstItem="VBD-3S-ZB5" firstAttribute="leading" secondItem="DdF-vA-EW7" secondAttribute="trailing" constant="3" id="TmC-uI-k78"/>
+                                                <constraint firstItem="aYz-UU-HAE" firstAttribute="leading" secondItem="bPv-Zz-4Uz" secondAttribute="trailing" constant="8" symbolic="YES" id="UwN-r9-rgP"/>
+                                                <constraint firstAttribute="bottomMargin" secondItem="aYz-UU-HAE" secondAttribute="bottom" constant="43" id="VLH-fQ-NTJ"/>
+                                                <constraint firstAttribute="bottomMargin" secondItem="VBD-3S-ZB5" secondAttribute="bottom" constant="-5" id="Veu-pe-cFj"/>
+                                                <constraint firstItem="bPv-Zz-4Uz" firstAttribute="leading" secondItem="VBD-3S-ZB5" secondAttribute="leading" id="XvD-7h-kiS"/>
+                                                <constraint firstItem="bPv-Zz-4Uz" firstAttribute="top" secondItem="aYz-UU-HAE" secondAttribute="top" id="g8d-vZ-fID"/>
+                                                <constraint firstItem="bPv-Zz-4Uz" firstAttribute="centerX" secondItem="ijM-2E-EVn" secondAttribute="centerX" id="hOi-fs-aja"/>
+                                                <constraint firstItem="bPv-Zz-4Uz" firstAttribute="bottom" secondItem="aYz-UU-HAE" secondAttribute="bottom" id="meH-Li-atG"/>
+                                                <constraint firstItem="gle-ff-cnt" firstAttribute="leading" secondItem="DdF-vA-EW7" secondAttribute="leading" id="nJQ-PI-6Vs"/>
+                                                <constraint firstItem="gle-ff-cnt" firstAttribute="leading" secondItem="ijM-2E-EVn" secondAttribute="leadingMargin" constant="-1" id="nmd-Nh-LxU"/>
+                                                <constraint firstItem="VBD-3S-ZB5" firstAttribute="top" secondItem="bPv-Zz-4Uz" secondAttribute="bottom" constant="8" symbolic="YES" id="q2d-NG-Z6G"/>
+                                                <constraint firstItem="bPv-Zz-4Uz" firstAttribute="leading" secondItem="RSi-C0-L7P" secondAttribute="trailing" constant="9" id="qha-3X-sDC"/>
+                                                <constraint firstItem="XQC-dB-uNE" firstAttribute="trailing" secondItem="ijM-2E-EVn" secondAttribute="trailingMargin" id="tc1-Jz-x2B"/>
+                                                <constraint firstItem="RSi-C0-L7P" firstAttribute="leading" secondItem="ijM-2E-EVn" secondAttribute="leadingMargin" constant="-3" id="wZe-zH-7eo"/>
+                                                <constraint firstItem="DdF-vA-EW7" firstAttribute="top" secondItem="RSi-C0-L7P" secondAttribute="bottom" constant="19" id="ypO-Na-zq0"/>
+                                                <constraint firstItem="gle-ff-cnt" firstAttribute="trailing" secondItem="DdF-vA-EW7" secondAttribute="trailing" id="zsC-Mt-tFp"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
+                                </cells>
+                            </tableViewSection>
+                        </sections>
+                        <connections>
+                            <outlet property="dataSource" destination="Wg3-6M-II5" id="9YT-qa-9hd"/>
+                            <outlet property="delegate" destination="Wg3-6M-II5" id="xlE-6o-X1U"/>
+                        </connections>
+                    </tableView>
+                    <toolbarItems>
+                        <barButtonItem title="Color Chips" id="mt8-Cg-GU7"/>
+                        <barButtonItem style="plain" systemItem="flexibleSpace" id="LFL-NK-2HL"/>
+                        <barButtonItem title="Color Names" id="CZw-jS-Ujw"/>
+                    </toolbarItems>
+                    <navigationItem key="navigationItem" title="Color Picker" id="OXP-aG-xYg">
+                        <barButtonItem key="leftBarButtonItem" title="Done" id="AyF-Gh-Dle">
+                            <connections>
+                                <action selector="HandleDoneButton:" destination="Wg3-6M-II5" id="I8U-GK-GH7"/>
+                            </connections>
+                        </barButtonItem>
+                        <barButtonItem key="rightBarButtonItem" title="Cancel" id="sMK-ny-lXd">
+                            <connections>
+                                <action selector="HandleCancelButton:" destination="Wg3-6M-II5" id="GQB-kk-AW2"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
+                    <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
+                    <connections>
+                        <outlet property="BottomLabel" destination="DdF-vA-EW7" id="fft-U3-Ycz"/>
+                        <outlet property="BottomSlider" destination="VBD-3S-ZB5" id="j0c-6E-3h6"/>
+                        <outlet property="ColorNameLabel" destination="0Zh-lD-KhJ" id="xUA-Sp-rKL"/>
+                        <outlet property="ColorValueLabel" destination="mX1-gO-5AN" id="XXK-LB-4H8"/>
+                        <outlet property="LeftLabel" destination="gle-ff-cnt" id="VYg-ZH-dEX"/>
+                        <outlet property="LeftSlider" destination="RSi-C0-L7P" id="mOq-qG-edf"/>
+                        <outlet property="RightLabel" destination="XQC-dB-uNE" id="2hU-vx-KOp"/>
+                        <outlet property="RightSlider" destination="aYz-UU-HAE" id="APj-PY-3Eb"/>
+                        <outlet property="SampleColorView" destination="bPv-Zz-4Uz" id="mV3-tb-XRa"/>
+                    </connections>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="eHw-De-8zU" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="91.304347826086968" y="352.17391304347831"/>
+        </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="Y3y-QG-fyA">
+            <objects>
+                <navigationController storyboardIdentifier="ColorPicker2" toolbarHidden="NO" id="Rkl-ep-u17" sceneMemberID="viewController">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="9Ve-sG-rj0">
+                        <rect key="frame" x="0.0" y="20" width="414" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <toolbar key="toolbar" opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="MNZ-c6-ULh">
+                        <rect key="frame" x="0.0" y="692" width="414" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </toolbar>
+                    <connections>
+                        <segue destination="Wg3-6M-II5" kind="relationship" relationship="rootViewController" id="1s6-YT-owO"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="15c-jY-dQe" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-860" y="353"/>
+        </scene>
+    </scenes>
+    <resources>
+        <namedColor name="BluePastel">
+            <color red="0.69803921568627447" green="0.80784313725490198" blue="0.99607843137254903" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+        <namedColor name="Coral">
+            <color red="1" green="0.49411764705882355" blue="0.31372549019607843" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+        <namedColor name="Pistachio">
+            <color red="0.57647058823529407" green="0.77254901960784317" blue="0.44705882352941179" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+    </resources>
+</document>
