@@ -275,7 +275,7 @@ class Solarize: FilterParent, Renderer
         let OutputTextureDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: Texture.pixelFormat,
                                                                                width: Texture.width, height: Texture.height, mipmapped: true)
         let OutputTexture = ImageDevice?.makeTexture(descriptor: OutputTextureDescriptor)
-        
+        OutputTextureDescriptor.usage = MTLTextureUsage.shaderWrite
         let CommandBuffer = ImageCommandQueue?.makeCommandBuffer()
         let CommandEncoder = CommandBuffer?.makeComputeCommandEncoder()
         
