@@ -107,10 +107,28 @@ class MetalCheckerboardGeneratorSettingsUICode: FilterSettingUIBase, UIActivityI
         switch segue.identifier
         {
         case "ToColorPicker":
-            let EditMe = ParameterManager.GetColor(From: FilterID, Field: .Color0, Default: UIColor.red)
-            if let Dest = segue.destination as? ColorPicker
+            var ColorField: FilterManager.InputFields = .Color0
+            switch QuadrantPressed
             {
-                Dest.delegate = self
+            case 1:
+                ColorField = .Color0
+                
+            case 2:
+                ColorField = .Color1
+                
+            case 3:
+                ColorField = .Color2
+                
+            case 4:
+                ColorField = .Color3
+                
+            default:
+                ColorField = .Color0
+            }
+            let EditMe = ParameterManager.GetColor(From: FilterID, Field: ColorField, Default: UIColor.red)
+            if let Dest = segue.destination as? ColorPicker2
+            {
+                Dest.ParentDelegate = self
                 let Tag = "Quadrant" + "\(QuadrantPressed)"
                 Dest.ColorToEdit(EditMe, Tag: Tag)
             }
