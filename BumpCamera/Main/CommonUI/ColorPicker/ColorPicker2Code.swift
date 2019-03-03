@@ -9,8 +9,11 @@
 import Foundation
 import UIKit
 
-class ColorPicker2: UITableViewController, GSliderProtocol
+class ColorPicker2: UITableViewController, GSliderProtocol, ColorPickerProtocol
 {
+    let _Settings = UserDefaults.standard
+    weak var ParentDelegate: ColorPickerProtocol? = nil
+    
     override func viewDidLoad()
     {
         super.viewDidLoad()
@@ -18,6 +21,7 @@ class ColorPicker2: UITableViewController, GSliderProtocol
         SampleColorView.layer.borderWidth = 0.5
         SampleColorView.layer.borderColor = UIColor.black.cgColor
         SampleColorView.layer.cornerRadius = 5.0
+        SampleColorView.backgroundColor = UIColor(red: 0.5, green: 0.5, blue: 0.5, alpha: 1.0)
         
         LeftLabel.text = "Red"
         RightLabel.text = "Blue"
@@ -29,6 +33,12 @@ class ColorPicker2: UITableViewController, GSliderProtocol
         RightSlider.Name = "Blue"
         BottomSlider.ParentDelegate = self
         BottomSlider.Name = "Green"
+        
+        UpdateColor(WithColor: SourceColor!)
+        UpdateSliders(WithColor: SourceColor!)
+        
+        let Colorspace = _Settings.integer(forKey: "ColorPickerColorspace")
+        ColorspaceSegment.selectedSegmentIndex = Colorspace
         
         tableView.tableFooterView = UIView()
     }
@@ -44,18 +54,91 @@ class ColorPicker2: UITableViewController, GSliderProtocol
     func NewSliderValue(Name: String, NewValue: Double)
     {
         print("New slider value \(NewValue) from \(Name).")
+        let rvalue = CGFloat(1.0 - LeftSlider.Value)
+        let gvalue = CGFloat(1.0 - BottomSlider.Value)
+        let bvalue = CGFloat(1.0 - RightSlider.Value)
+        let SampleColor = UIColor(red: rvalue, green: gvalue, blue: bvalue, alpha: 1.0)
+        UpdateColor(WithColor: SampleColor)
+    }
+    
+    func ColorToEdit(_ Color: UIColor, Tag: Any?)
+    {
+        ParentTag = Tag
+        SourceColor = Color
+    }
+    
+    var ParentTag: Any? = nil
+    var SourceColor: UIColor? = nil
+    
+    func UpdateColor(WithColor: UIColor)
+    {
+        SampleColorView.backgroundColor = WithColor
+        ColorValueLabel.text = "#" + String(format: "%02x", Int(WithColor.r * 255.0)) +
+            String(format: "%02x", Int(WithColor.g * 255.0)) + String(format: "%02x", Int(WithColor.b * 255.0))
+    }
+    
+    func UpdateSliders(WithColor: UIColor)
+    {
+        LeftSlider.Value = Double(WithColor.r)
+        BottomSlider.Value = Double(WithColor.g)
+        RightSlider.Value = Double(WithColor.b)
+    }
+    
+    func EditedColor(_ Edited: UIColor?, Tag: Any?)
+    {
+        if let NewColor = Edited
+        {
+            SourceColor = NewColor
+            UpdateColor(WithColor: SourceColor!)
+            UpdateSliders(WithColor: SourceColor!.Inverted())
+        }
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?)
+    {
+        switch segue.identifier
+        {
+        case "ToColorChipPicker":
+            break
+            
+        case "ToColorListPicker":
+            if let Dest = segue.destination as? ColorListPickerCode
+            {
+                Dest.ParentDelegate = self
+                Dest.ColorToEdit(SourceColor!, Tag: "PickerColor")
+            }
+            
+        default:
+            break
+        }
+        
+        super.prepare(for: segue, sender: self)
     }
     
     @IBAction func HandleCancelButton(_ sender: Any)
     {
         navigationController?.popViewController(animated: true)
-        //dismiss(animated: true, completion: nil)
     }
     
     @IBAction func HandleDoneButton(_ sender: Any)
     {
+        ParentDelegate?.EditedColor(SourceColor!, Tag: ParentTag)
         navigationController?.popViewController(animated: true)
-        //dismiss(animated: true, completion: nil)
+    }
+    
+    @IBAction func HandleColorNamesButton(_ sender: Any)
+    {
+        performSegue(withIdentifier: "ToColorListPicker", sender: self)
+    }
+    
+    @IBAction func HandleColorChipsButton(_ sender: Any)
+    {
+        performSegue(withIdentifier: "ToColorChipPicker", sender: self)
+    }
+    
+    @IBAction func HandleColorspaceChanged(_ sender: Any)
+    {
+        _Settings.set(ColorspaceSegment, forKey: "ColorPickerColorspace")
     }
     
     @IBOutlet weak var LeftSlider: GSlider!
@@ -67,6 +150,5 @@ class ColorPicker2: UITableViewController, GSliderProtocol
     @IBOutlet weak var LeftLabel: UILabel!
     @IBOutlet weak var RightLabel: UILabel!
     @IBOutlet weak var BottomLabel: UILabel!
-    
-    @IBOutlet weak var Test: UIView!
+    @IBOutlet weak var ColorspaceSegment: UISegmentedControl!
 }
