@@ -8,6 +8,7 @@
 
 import Foundation
 import UIKit
+import PDFKit
 
 class Privacy: UITableViewController
 {
@@ -17,6 +18,16 @@ class Privacy: UITableViewController
     {
         super.viewDidLoad()
         PrivacySwitch.isOn = _Settings.bool(forKey: "MaximumPrivacy")
+        if let Path = Bundle.main.path(forResource: "BumpCameraPrivacy", ofType: "pdf")
+            {
+            let FileURL = URL(fileURLWithPath: Path)
+                if let pDoc = PDFDocument(url: FileURL)
+                {
+                    PDFTextView.displayMode = .singlePageContinuous
+                    PDFTextView.autoScales = true
+                    PDFTextView.document = pDoc
+                }
+        }
     }
     
     @IBOutlet weak var PrivacySwitch: UISwitch!
@@ -54,4 +65,6 @@ class Privacy: UITableViewController
             break
         }
     }
+    
+    @IBOutlet weak var PDFTextView: PDFView!
 }
