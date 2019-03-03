@@ -148,6 +148,8 @@
 		1763F0782221687500E1E2E8 /* GaussianBlurSettingsUICode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1763F0772221687500E1E2E8 /* GaussianBlurSettingsUICode.swift */; };
 		1764FA8A21F1E6F90059FAFD /* FilterSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1764FA8921F1E6F90059FAFD /* FilterSettings.swift */; };
 		176D6829221D921C00BA6267 /* FilterPerformanceCode2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 176D6828221D921C00BA6267 /* FilterPerformanceCode2.swift */; };
+		1775DDB1222BC27E0061DC87 /* BumpCameraPrivacy.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 1775DDAF222BC27E0061DC87 /* BumpCameraPrivacy.pdf */; };
+		1775DDB2222BC27E0061DC87 /* BumpCameraLimitations.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 1775DDB0222BC27E0061DC87 /* BumpCameraLimitations.pdf */; };
 		17787F022202C43900D15761 /* HSBFilterSettingsUI.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 17787F012202C43900D15761 /* HSBFilterSettingsUI.storyboard */; };
 		17787F042202C6AE00D15761 /* HSBFilterSettingsUICode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17787F032202C6AE00D15761 /* HSBFilterSettingsUICode.swift */; };
 		17787F072202DC2A00D15761 /* ChannelMixerSettingsUI.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 17787F062202DC2A00D15761 /* ChannelMixerSettingsUI.storyboard */; };
@@ -427,6 +429,8 @@
 		1763F0772221687500E1E2E8 /* GaussianBlurSettingsUICode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GaussianBlurSettingsUICode.swift; sourceTree = "<group>"; };
 		1764FA8921F1E6F90059FAFD /* FilterSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterSettings.swift; sourceTree = "<group>"; };
 		176D6828221D921C00BA6267 /* FilterPerformanceCode2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterPerformanceCode2.swift; sourceTree = "<group>"; };
+		1775DDAF222BC27E0061DC87 /* BumpCameraPrivacy.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = BumpCameraPrivacy.pdf; sourceTree = "<group>"; };
+		1775DDB0222BC27E0061DC87 /* BumpCameraLimitations.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = BumpCameraLimitations.pdf; sourceTree = "<group>"; };
 		17787F012202C43900D15761 /* HSBFilterSettingsUI.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = HSBFilterSettingsUI.storyboard; sourceTree = "<group>"; };
 		17787F032202C6AE00D15761 /* HSBFilterSettingsUICode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HSBFilterSettingsUICode.swift; sourceTree = "<group>"; };
 		17787F062202DC2A00D15761 /* ChannelMixerSettingsUI.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = ChannelMixerSettingsUI.storyboard; sourceTree = "<group>"; };
@@ -1213,6 +1217,15 @@
 			path = GaussianBlur;
 			sourceTree = "<group>";
 		};
+		1775DDAA222BBB520061DC87 /* Text */ = {
+			isa = PBXGroup;
+			children = (
+				1775DDB0222BC27E0061DC87 /* BumpCameraLimitations.pdf */,
+				1775DDAF222BC27E0061DC87 /* BumpCameraPrivacy.pdf */,
+			);
+			path = Text;
+			sourceTree = "<group>";
+		};
 		17787EFE2202C3C700D15761 /* HSB */ = {
 			isa = PBXGroup;
 			children = (
@@ -1413,6 +1426,7 @@
 		17CDB9B42216697800C708F5 /* About */ = {
 			isa = PBXGroup;
 			children = (
+				1775DDAA222BBB520061DC87 /* Text */,
 				17BA6043221E6CB700AEC044 /* Help */,
 				173B16A722015766005A5B0B /* About.storyboard */,
 				176D6828221D921C00BA6267 /* FilterPerformanceCode2.swift */,
@@ -1663,6 +1677,7 @@
 				1797BCF12222CB3900C47510 /* DebugSettings.storyboard in Resources */,
 				17477A0322049B1500FD64EF /* GrayscaleSettingsUI.storyboard in Resources */,
 				17110DE3221EC24E00223990 /* VibranceSettingsUI.storyboard in Resources */,
+				1775DDB1222BC27E0061DC87 /* BumpCameraPrivacy.pdf in Resources */,
 				171E543121E44E180045ED77 /* LaunchScreen.storyboard in Resources */,
 				174779F822042FEC00FD64EF /* NoParametersSettingsUI.storyboard in Resources */,
 				17BA12E42227934A0035A1FC /* CheckerboardGeneratorSettingsUI.storyboard in Resources */,
@@ -1671,6 +1686,7 @@
 				17D60D87220FEAD000933F15 /* MonochromeColorsSettingsUI.storyboard in Resources */,
 				1726241721F840E500C7688C /* PixellateTable.storyboard in Resources */,
 				171298132223AF52000D5EF5 /* ExifViewer.storyboard in Resources */,
+				1775DDB2222BC27E0061DC87 /* BumpCameraLimitations.pdf in Resources */,
 				1797BCF52222CF7900C47510 /* ManageFilterRatings.storyboard in Resources */,
 				173F633422001800006CB67C /* Pixellate2Table.storyboard in Resources */,
 				1779F3D42218347800140EEA /* SepiaToneSettingsUI.storyboard in Resources */,
