@@ -39,6 +39,8 @@ class ColorPicker2: UITableViewController, GSliderProtocol, ColorPickerProtocol
         
         let Colorspace = _Settings.integer(forKey: "ColorPickerColorspace")
         ColorspaceSegment.selectedSegmentIndex = Colorspace
+        UpdateColorspace()
+        BottomSlider.SetHueGradient(InitialSaturation: 1.0, InitialBrightness: 1.0, Steps: 36)
         
         tableView.tableFooterView = UIView()
     }
@@ -49,6 +51,51 @@ class ColorPicker2: UITableViewController, GSliderProtocol, ColorPickerProtocol
         LeftSlider.Refresh(SliderName: LeftSlider.Name, WithRect: LeftSlider.frame)
         RightSlider.Refresh(SliderName: RightSlider.Name, WithRect: RightSlider.frame)
         BottomSlider.Refresh(SliderName: BottomSlider.Name, WithRect: BottomSlider.frame)
+    }
+    
+    func UpdateColorspace()
+    {
+        switch _Settings.integer(forKey: "ColorPickerColorspace")
+        {
+        case 0:
+            SetRGB()
+            
+        case 1:
+            SetHSB()
+            
+        case 2:
+            SetYUV()
+            
+        default:
+            break
+        }
+    }
+    
+    func SetRGB()
+    {
+        LeftLabel.text = "Red"
+        LeftSlider.GradientStart = UIColor.red
+        LeftSlider.GradientEnd = UIColor.black
+        BottomLabel.text = "Green"
+        BottomSlider.GradientStart = UIColor.green
+        BottomSlider.GradientEnd = UIColor.black
+        RightLabel.text = "Blue"
+        RightSlider.GradientStart = UIColor.blue
+        RightSlider.GradientEnd = UIColor.black
+    }
+    
+    func SetHSB()
+    {
+        LeftLabel.text = "Sat."
+        BottomLabel.text = "Hue"
+        RightLabel.text = "Bri."
+    }
+    
+    func SetYUV()
+    {
+        LeftLabel.text = "Y"
+        BottomLabel.text = "U"
+        RightLabel.text = "V"
     }
     
     func NewSliderValue(Name: String, NewValue: Double)
@@ -139,6 +186,7 @@ class ColorPicker2: UITableViewController, GSliderProtocol, ColorPickerProtocol
     @IBAction func HandleColorspaceChanged(_ sender: Any)
     {
         _Settings.set(ColorspaceSegment, forKey: "ColorPickerColorspace")
+        UpdateColorspace()
     }
     
     @IBOutlet weak var LeftSlider: GSlider!
