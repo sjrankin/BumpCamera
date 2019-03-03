@@ -218,6 +218,56 @@ import UIKit
         }
     }
     
+    /// Holds the use hue gradient flag. Updates the control gradient when set.
+    private var _UseHueGradient: Bool = false
+    {
+        didSet
+        {
+            UpdateGradient()
+        }
+    }
+    /// Get or set the flag that determines if the hue gradient is used. Setting this property causes an immediate visual update.
+    @IBInspectable var UseHueGradient: Bool
+        {
+        get
+        {
+            return _UseHueGradient
+        }
+        set
+        {
+            _UseHueGradient = newValue
+        }
+    }
+    
+    func SetHueGradient(InitialSaturation: CGFloat = 1.0, InitialBrightness: CGFloat = 1.0, Steps: Int = 36)
+    {
+        HueColors.removeAll()
+        var ColorAngle: CGFloat = 0.0
+        let StepCount = 360 / Steps
+        for Angle in stride(from: 0, to: 361, by: StepCount)
+        {
+            ColorAngle = ColorAngle + (CGFloat(Angle) / 360.0)
+            let ColorStop = UIColor(hue: ColorAngle, saturation: InitialSaturation, brightness: InitialBrightness, alpha: 1.0)
+            HueColors.append(ColorStop as Any)
+        }
+        UpdateGradient()
+    }
+    
+    var HueColors = [Any]()
+    
+    func UpdateHueGradient(Saturation: CGFloat, Brightness: CGFloat)
+    {
+        for Index in 0 ..< HueColors.count
+        {
+            if let Color = HueColors[Index] as? UIColor
+            {
+                let NewColor = UIColor(hue: Color.Hue, saturation: Saturation, brightness: Brightness, alpha: 1.0)
+                HueColors[Index] = NewColor as Any
+            }
+        }
+        UpdateGradient()
+    }
+    
     /// Holds the initial gradient color. Updates the control gradient when set.
     private var _GradientStart: UIColor = UIColor.white
     {
@@ -418,9 +468,64 @@ import UIKit
     /// The indicator shape layer.
     var IndicatorLevel: CAShapeLayer? = nil
     
-    /// Draw and update the gradient backgroun of the control using previously set properties.
+    /// Draw the gradient. Either the hue gradient or the standard two-color gradient will be drawn.
     func UpdateGradient()
     {
+        if UseHueGradient
+        {
+            DrawHueGradient()
+        }
+        else
+        {
+            DrawNormalGradient()
+        }
+    }
+    
+    func DrawHueGradient()
+    {
+        layer.sublayers?.forEach{if $0.name == "gradient"
+        {
+            $0.removeFromSuperlayer()
+            GradientLayer = nil
+            }
+        }
+        if HueLayer == nil
+        {
+            HueLayer = CAGradientLayer()
+            HueLayer?.frame = CGRect(x:0, y: 0, width: self.frame.width, height: self.frame.height)
+            HueLayer?.bounds = self.bounds
+            HueLayer?.name = "hue"
+            HueLayer?.zPosition = 500
+            self.layer.addSublayer(HueLayer!)
+        }
+        else
+        {
+            HueLayer?.frame = CGRect(x: 0, y: 0, width: NewFrame.width, height: NewFrame.height)
+        }
+        if _IsHorizontal
+        {
+            HueLayer?.startPoint = CGPoint(x: 0.0, y: 0.0)
+            HueLayer?.endPoint = CGPoint(x: 1.0, y: 0.0)
+        }
+        else
+        {
+            HueLayer?.startPoint = CGPoint(x: 0.0, y: 0.0)
+            HueLayer?.endPoint = CGPoint(x: 0.0, y: 1.0)
+        }
+        HueLayer?.colors = HueColors
+    }
+    
+    var HueLayer: CAGradientLayer? = nil
+    
+    /// Draw a two-color gradient for the background of the slider control.
+    func DrawNormalGradient()
+    {
+        layer.sublayers?.forEach{if $0.name == "hue"
+        {
+            $0.removeFromSuperlayer()
+            HueLayer = nil
+            }
+        }
         if GradientLayer == nil
         {
             GradientLayer = CAGradientLayer()
