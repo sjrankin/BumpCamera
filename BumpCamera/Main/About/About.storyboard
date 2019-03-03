@@ -37,22 +37,11 @@
                                             <rect key="frame" x="0.0" y="0.0" width="414" height="336.66666666666669"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" fixedFrame="YES" editable="NO" usesAttributedText="YES" selectable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="NcB-Zy-lUt">
-                                                    <rect key="frame" x="20" y="11" width="383" height="315"/>
+                                                <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Xlu-2U-6dT" customClass="PDFView">
+                                                    <rect key="frame" x="20" y="11" width="374" height="315"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                     <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                                    <attributedString key="attributedText">
-                                                        <fragment>
-                                                            <string key="content">BumpCamera respects your privacy. Therefore: 1) No data of any kind is transmitted by BumpCamera to any other device. 2) BumpCamera may save data in a directory visible with the Files app. 3) Personally identifying information is encrypted regardless of where it is saved. 4) No third party libraries were used. 5) If you select the option shown below, you will ensure maximum privacy (at the cost of some minor functionality). 6) BumpCamera writes EXIF information to saved images. You can disable this if you desire. 7) The images you take are your responsibility alone.</string>
-                                                            <attributes>
-                                                                <color key="NSColor" name="textColor" catalog="System" colorSpace="catalog"/>
-                                                                <font key="NSFont" size="17" name=".AppleSystemUIFont"/>
-                                                                <paragraphStyle key="NSParagraphStyle" alignment="left" lineBreakMode="wordWrapping" baseWritingDirection="natural" tighteningFactorForTruncation="0.0"/>
-                                                            </attributes>
-                                                        </fragment>
-                                                    </attributedString>
-                                                    <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
-                                                </textView>
+                                                </view>
                                             </subviews>
                                         </tableViewCellContentView>
                                     </tableViewCell>
@@ -104,12 +93,13 @@
                         </connections>
                     </tableView>
                     <connections>
+                        <outlet property="PDFTextView" destination="Xlu-2U-6dT" id="R9F-iG-e2S"/>
                         <outlet property="PrivacySwitch" destination="GZO-Fd-0BN" id="Fvi-R0-8UH"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="AQe-jz-tRF" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="172" y="1639"/>
+            <point key="canvasLocation" x="169.56521739130437" y="1638.5869565217392"/>
         </scene>
         <!--About Code-->
         <scene sceneID="Rzu-gp-jp6">
