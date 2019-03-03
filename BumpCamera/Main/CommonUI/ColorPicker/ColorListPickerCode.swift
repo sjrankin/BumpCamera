@@ -65,7 +65,7 @@ class ColorListPickerCode: UITableViewController, ColorPickerProtocol, UIPickerV
         }
         if let FullColor = PredefinedColors.GetColorIn(Group: ShortestName, At: ShortestIndex)
         {
-            print("Cloest color to \(Utility.ColorToString(Color)) is \(FullColor.ColorName) in \(ShortestName)")
+            print("Closest color to \(Utility.ColorToString(Color)) is \(FullColor.ColorName) in \(ShortestName)")
             let GroupIndex = ColorGroups.index(of: ShortestName)
             ColorPickerView.selectRow(GroupIndex!, inComponent: 0, animated: true)
             ColorGroupColors = PredefinedColors.GetColorsIn(Group: ColorGroups[GroupIndex!])
