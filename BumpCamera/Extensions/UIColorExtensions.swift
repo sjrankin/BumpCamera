@@ -325,6 +325,20 @@ extension UIColor
         }
     }
     
+    /// Invert the RGB (and possibly A) channels of the instance color and return a new color
+    /// based on the inverted values.
+    ///
+    /// - Parameter IncludeAlpha: If true, alpha is inverted as well.
+    /// - Returns: New UIColor with inverted color values.
+    func Inverted(_ IncludeAlpha: Bool = false) -> UIColor
+    {
+        let r = 1.0 - self.r
+        let g = 1.0 - self.g
+        let b = 1.0 - self.b
+        let a = IncludeAlpha ? 1.0 - self.a : self.a
+        return UIColor(red: r, green: g, blue: b, alpha: a)
+    }
+    
     /// Return the color symbol for the instance color.
     func Symbol() -> Colors
     {
