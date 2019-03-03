@@ -70,6 +70,7 @@ extension MainUIViewer
         #endif
         _Settings.set(0, forKey: "ProgramMode")
         _Settings.set(true, forKey: "ShowModeUI")
+        _Settings.set(0, forKey: "ColorPickerColorspace")
         let InitialGroupID = Filters?.GetGroupID(ForGroup: .Standard)
         _Settings.set(InitialGroupID?.uuidString, forKey: "CurrentGroup")
         let InitialFilterID = Filters?.GetFilterID(For: .PassThrough)
