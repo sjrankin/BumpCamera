@@ -84,10 +84,20 @@ class ModeSelectorUI: UIView, ButtonActionProtocol
         print("Button \(ButtonType.rawValue) pressed.")
         #endif
         MainDelegate?.ModeButtonPressed(ButtonType: ButtonType)
+        if ButtonType == .About
+        {
+            //Don't deselect any modes if the About button was pressed.
+            return
+        }
         for SomeView in subviews
         {
             if let Button = SomeView as? ModeSelectorButton
             {
+                if Button.ButtonMode == .About
+                {
+                    //The about button should never be deselected
+                    continue
+                }
                 if Button.ButtonMode == ButtonType
                 {
                     Button.SetSelectedState(ToState: .Selected)
@@ -125,7 +135,6 @@ class ModeSelectorUI: UIView, ButtonActionProtocol
             {
                 _ in
                 self.isHidden = false
-                //print("Show: self.frame=\(self.frame)")
         })
     }
     
@@ -144,7 +153,6 @@ class ModeSelectorUI: UIView, ButtonActionProtocol
             {
                 _ in
                 self.isHidden = true
-                //print("Hide: self.frame=\(self.frame)")
         })
     }
     
