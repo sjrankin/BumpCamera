@@ -170,6 +170,7 @@
                                                         </userDefinedRuntimeAttribute>
                                                         <userDefinedRuntimeAttribute type="string" keyPath="Name" value="GreenSlider"/>
                                                         <userDefinedRuntimeAttribute type="boolean" keyPath="RoundCorneredBorders" value="YES"/>
+                                                        <userDefinedRuntimeAttribute type="boolean" keyPath="UseHueGradient" value="YES"/>
                                                     </userDefinedRuntimeAttributes>
                                                 </view>
                                             </subviews>
@@ -201,21 +202,21 @@
                                             </constraints>
                                         </tableViewCellContentView>
                                     </tableViewCell>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" rowHeight="45" id="GOR-Eb-OX6">
-                                        <rect key="frame" x="0.0" y="325" width="414" height="45"/>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" rowHeight="60" id="GOR-Eb-OX6">
+                                        <rect key="frame" x="0.0" y="325" width="414" height="60"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="GOR-Eb-OX6" id="zaE-Q7-0rm">
-                                            <rect key="frame" x="0.0" y="0.0" width="414" height="44.666666666666664"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="414" height="59.666666666666664"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Colorspace" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ont-JP-Djv">
-                                                    <rect key="frame" x="20" y="10.666666666666666" width="87" height="23.333333333333336"/>
+                                                    <rect key="frame" x="20" y="22" width="87" height="23"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="yuQ-bq-bPQ">
-                                                    <rect key="frame" x="134" y="7.6666666666666661" width="260" height="30.333333333333336"/>
+                                                    <rect key="frame" x="134" y="19" width="260" height="30"/>
                                                     <segments>
                                                         <segment title="RGB"/>
                                                         <segment title="HSB"/>
@@ -227,13 +228,13 @@
                                                 </segmentedControl>
                                             </subviews>
                                             <constraints>
-                                                <constraint firstAttribute="bottomMargin" secondItem="yuQ-bq-bPQ" secondAttribute="bottom" constant="-3" id="SSf-T1-XQ4"/>
-                                                <constraint firstItem="yuQ-bq-bPQ" firstAttribute="trailing" secondItem="zaE-Q7-0rm" secondAttribute="trailingMargin" id="WMh-al-lFZ"/>
-                                                <constraint firstItem="ont-JP-Djv" firstAttribute="leading" secondItem="zaE-Q7-0rm" secondAttribute="leadingMargin" id="YhZ-Vc-Fzd"/>
-                                                <constraint firstItem="yuQ-bq-bPQ" firstAttribute="centerY" secondItem="zaE-Q7-0rm" secondAttribute="centerY" id="aBp-yu-Fux"/>
-                                                <constraint firstItem="ont-JP-Djv" firstAttribute="bottom" secondItem="zaE-Q7-0rm" secondAttribute="bottomMargin" id="kXC-z3-I6a"/>
-                                                <constraint firstItem="yuQ-bq-bPQ" firstAttribute="leading" secondItem="ont-JP-Djv" secondAttribute="trailing" constant="27" id="tj6-RD-lGE"/>
-                                                <constraint firstItem="ont-JP-Djv" firstAttribute="centerY" secondItem="yuQ-bq-bPQ" secondAttribute="centerY" id="y3e-XN-UbW"/>
+                                                <constraint firstItem="ont-JP-Djv" firstAttribute="centerY" secondItem="yuQ-bq-bPQ" secondAttribute="centerY" id="67B-rB-djs"/>
+                                                <constraint firstItem="ont-JP-Djv" firstAttribute="leading" secondItem="zaE-Q7-0rm" secondAttribute="leadingMargin" id="RFL-y9-v8K"/>
+                                                <constraint firstItem="yuQ-bq-bPQ" firstAttribute="leading" secondItem="ont-JP-Djv" secondAttribute="trailing" constant="27" id="Svb-QO-nN7"/>
+                                                <constraint firstItem="yuQ-bq-bPQ" firstAttribute="top" secondItem="zaE-Q7-0rm" secondAttribute="topMargin" constant="8" id="UZr-D8-BOj"/>
+                                                <constraint firstItem="ont-JP-Djv" firstAttribute="top" secondItem="zaE-Q7-0rm" secondAttribute="topMargin" constant="11" id="Xum-pj-8Wx"/>
+                                                <constraint firstAttribute="bottomMargin" secondItem="yuQ-bq-bPQ" secondAttribute="bottom" constant="1" id="crw-Qt-4kT"/>
+                                                <constraint firstItem="yuQ-bq-bPQ" firstAttribute="trailing" secondItem="zaE-Q7-0rm" secondAttribute="trailingMargin" id="eC9-Ls-Zno"/>
                                             </constraints>
                                         </tableViewCellContentView>
                                     </tableViewCell>
