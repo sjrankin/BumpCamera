@@ -10,7 +10,7 @@ import Foundation
 import UIKit
 
 /// Protocol for sending colors to be edited and received new colors in return.
-protocol ColorPickerProtocol
+protocol ColorPickerProtocol: class
 {
     /// Sets the color to be edited. Used by the caller of the color picker.
     ///
