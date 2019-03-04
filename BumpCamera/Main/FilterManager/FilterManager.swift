@@ -50,7 +50,7 @@ class FilterManager
                         (.HatchScreen, 6), (.CMYKHalftone, 8), (.Pixellate, 11), (.Comic, 2),
                         (.LineOverlay, 9), (.EdgeWork, 10), (.Posterize, 14), (.Pointillize, 13)],
             .Combined: [(.CircleAndLines, 0)],
-            .Effects: [(.PixellateMetal, 0), (.DilateErode, 1), (.Kuwahara, 2), (.BayerDecode, 3)],
+            .Effects: [(.PixellateMetal, 0), (.DilateErode, 1), (.Kuwahara, 2), (.Silhouette, 3), (.BayerDecode, 4)],
             .PhotoEffects: [(.Noir, 0), (.Chrome, 1), (.Vibrance, 2), (.XRay, 3), (.Instant, 4), (.ProcessEffect, 5),
                             (.TransferEffect, 6), (.SepiaTone, 7), (.Thermal, 8), (.TemperatureAndTint, 9),
                             (.Tonal, 10),],
@@ -114,6 +114,7 @@ class FilterManager
             .Tonal: (TonalEffect.ID(), TonalEffect.FilterKernel, TonalEffect.Title()),
             .Checkerboard: (CheckerboardGenerator.ID(), CheckerboardGenerator.FilterKernel, CheckerboardGenerator.Title()),
             .MetalCheckerboard: (MetalCheckerboard.ID(), MetalCheckerboard.FilterKernel, MetalCheckerboard.Title()),
+            .Silhouette: (ConditionalSilhouette.ID(), ConditionalSilhouette.FilterKernel, ConditionalSilhouette.Title()),
             ]
     
     /// Determines if the specified filter supports the specified target type. Not all filters support all targets - slow
@@ -205,6 +206,7 @@ class FilterManager
             .Tonal: TonalEffect.FilterTarget(),
             .Checkerboard: CheckerboardGenerator.FilterTarget(),
             .MetalCheckerboard: MetalCheckerboard.FilterTarget(),
+            .Silhouette: ConditionalSilhouette.FilterTarget(),
             ]
     
     /// Load all of the filter classes into the filter manager.
@@ -316,6 +318,7 @@ class FilterManager
         ParameterCount![.Tonal] = TonalEffect.SupportedFields().count
         ParameterCount![.Checkerboard] = CheckerboardGenerator.SupportedFields().count
         ParameterCount![.MetalCheckerboard] = MetalCheckerboard.SupportedFields().count
+        ParameterCount![.Silhouette] = ConditionalSilhouette.SupportedFields().count
     }
     
     private static var ParameterCount: [FilterManager.FilterTypes: Int]? = nil
@@ -384,6 +387,7 @@ class FilterManager
         StoryboardList![.Tonal] = TonalEffect.SettingsStoryboard()
         StoryboardList![.Checkerboard] = CheckerboardGenerator.SettingsStoryboard()
         StoryboardList![.MetalCheckerboard] = MetalCheckerboard.SettingsStoryboard()
+        StoryboardList![.Silhouette] = ConditionalSilhouette.SettingsStoryboard()
     }
     
     private static var StoryboardList: [FilterTypes: String?]? = nil
@@ -658,6 +662,9 @@ class FilterManager
             
         case .MetalCheckerboard:
             return MetalCheckerboard()
+            
+        case .Silhouette:
+            return ConditionalSilhouette()
             
         default:
             return nil
@@ -1080,6 +1087,7 @@ class FilterManager
             .Tonal: "Tonal Effect",
             .Checkerboard: "Checkerboard",
             .MetalCheckerboard: "Metal Checkerboard",
+            .Silhouette: "Silhouette",
             ]
     
     public static func GetFilterTitle(_ Filter: FilterTypes) -> String?
@@ -1147,6 +1155,7 @@ class FilterManager
             .Tonal: true,
             .Checkerboard: true,
             .MetalCheckerboard: true,
+            .Silhouette: true,
     ]
     
     /// Determines if the given filter type is implemented.
@@ -1341,6 +1350,15 @@ class FilterManager
             .PatternBlockWidth: .DoubleType,
             .Color2: .ColorType,
             .Color3: .ColorType,
+            .SilhouetteTrigger: .IntType,
+            .SilhouetteColor: .ColorType,
+            .SHueRange: .DoubleType,
+            .SHueThreshold: .DoubleType,
+            .SSaturationRange: .DoubleType,
+            .SSaturationThreshold: .DoubleType,
+            .SBrightnessRange: .DoubleType,
+            .SBrightnessThreshold: .DoubleType,
+            .SGreaterThan: .BoolType,
             ]
     
     /// Maps fields to names used to store field data in user settings.
@@ -1475,6 +1493,15 @@ class FilterManager
             .PatternBlockWidth: "_PatternBlockWidth",
             .Color2: "_Color2",
             .Color3: "_Color3",
+            .SilhouetteTrigger: "_Trigger",
+            .SHueThreshold: "_HueThreshold",
+            .SHueRange: "_HueRange",
+            .SSaturationThreshold: "_SaturationThreshold",
+            .SSaturationRange: "_SaturationRange",
+            .SBrightnessThreshold: "_BrightnessThreshold",
+            .SBrightnessRange: "_BrightnessRange",
+            .SGreaterThan: "_GreaterThan",
+            .SilhouetteColor: "_SilhouetteColor",
             ]
 }
 
