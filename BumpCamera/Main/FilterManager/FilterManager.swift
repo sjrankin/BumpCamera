@@ -54,9 +54,9 @@ class FilterManager
             .PhotoEffects: [(.Noir, 0), (.Chrome, 1), (.Vibrance, 2), (.XRay, 3), (.Instant, 4), (.ProcessEffect, 5),
                             (.TransferEffect, 6), (.SepiaTone, 7), (.Thermal, 8), (.TemperatureAndTint, 9),
                             (.Tonal, 10),],
-            .Colors: [(.HueAdjust, 0), (.HSBAdjust, 1), (.Solarize, 2), (.ChannelMixer, 3),
-                      (.DesaturateColors, 4), (.Threshold, 5), (.MonochromeColor, 6), (.FalseColor, 7),
-                      (.Monochrome, 8), (.PaletteShifting, 9)],
+            .Colors: [(.HueAdjust, 0), (.HSBAdjust, 1), (.Solarize, 2), (.ChannelMixer, 3), (.ColorInversion, 4),
+                      (.DesaturateColors, 5), (.Threshold, 6), (.MonochromeColor, 7), (.FalseColor, 8),
+                      (.Monochrome, 9), (.PaletteShifting, 10)],
             .Gray: [(.GrayscaleKernel, 0), (.Dither, 1)],
             //.Bumpy: [(.BumpyPixels, 1), (.BumpyTriangles, 2), (.Embossed, 0)],
             //.Motion: [(.ColorDelta, 0), (.FilterDelta, 1), (.PatternDelta, 2)],
@@ -64,7 +64,7 @@ class FilterManager
             .Generator: [(.Grid, 0), (.SmoothLinearGradient, 1), (.CornerGradient, 2), (.Checkerboard, 3),
                          (.MetalCheckerboard, 4)],
             .Blur: [(.GaussianBlur, 0)],
-    ]
+            ]
     
     public static let FilterInfoMap: [FilterTypes: (UUID, FilterKernelTypes, String)] =
         [
@@ -115,6 +115,7 @@ class FilterManager
             .Checkerboard: (CheckerboardGenerator.ID(), CheckerboardGenerator.FilterKernel, CheckerboardGenerator.Title()),
             .MetalCheckerboard: (MetalCheckerboard.ID(), MetalCheckerboard.FilterKernel, MetalCheckerboard.Title()),
             .Silhouette: (ConditionalSilhouette.ID(), ConditionalSilhouette.FilterKernel, ConditionalSilhouette.Title()),
+            .ColorInversion: (ColorInverter.ID(), ColorInverter.FilterKernel, ColorInverter.Title()),
             ]
     
     /// Determines if the specified filter supports the specified target type. Not all filters support all targets - slow
@@ -207,6 +208,7 @@ class FilterManager
             .Checkerboard: CheckerboardGenerator.FilterTarget(),
             .MetalCheckerboard: MetalCheckerboard.FilterTarget(),
             .Silhouette: ConditionalSilhouette.FilterTarget(),
+            .ColorInversion: ColorInverter.FilterTarget(),
             ]
     
     /// Load all of the filter classes into the filter manager.
@@ -319,6 +321,7 @@ class FilterManager
         ParameterCount![.Checkerboard] = CheckerboardGenerator.SupportedFields().count
         ParameterCount![.MetalCheckerboard] = MetalCheckerboard.SupportedFields().count
         ParameterCount![.Silhouette] = ConditionalSilhouette.SupportedFields().count
+        ParameterCount![.ColorInversion] = ColorInverter.SupportedFields().count
     }
     
     private static var ParameterCount: [FilterManager.FilterTypes: Int]? = nil
@@ -388,6 +391,7 @@ class FilterManager
         StoryboardList![.Checkerboard] = CheckerboardGenerator.SettingsStoryboard()
         StoryboardList![.MetalCheckerboard] = MetalCheckerboard.SettingsStoryboard()
         StoryboardList![.Silhouette] = ConditionalSilhouette.SettingsStoryboard()
+        StoryboardList![.ColorInversion] = ColorInverter.SettingsStoryboard()
     }
     
     private static var StoryboardList: [FilterTypes: String?]? = nil
@@ -666,6 +670,9 @@ class FilterManager
         case .Silhouette:
             return ConditionalSilhouette()
             
+        case .ColorInversion:
+            return ColorInverter()
+            
         default:
             return nil
         }
@@ -914,7 +921,7 @@ class FilterManager
             .Blur: UIColor.yellow,
             .FiveStar: UIColor.green,
             .Favorites: UIColor.white
-            ]
+    ]
     
     public func ColorForGroup(_ Group: FilterGroups) -> UIColor
     {
@@ -1088,6 +1095,7 @@ class FilterManager
             .Checkerboard: "Checkerboard",
             .MetalCheckerboard: "Metal Checkerboard",
             .Silhouette: "Silhouette",
+            .ColorInversion: "Invert Colors",
             ]
     
     public static func GetFilterTitle(_ Filter: FilterTypes) -> String?
@@ -1156,7 +1164,8 @@ class FilterManager
             .Checkerboard: true,
             .MetalCheckerboard: true,
             .Silhouette: true,
-    ]
+            .ColorInversion: true,
+            ]
     
     /// Determines if the given filter type is implemented.
     ///
@@ -1208,14 +1217,14 @@ class FilterManager
     
     /// Map of file types to file type names.
     public static let FieldTypeNameMap: [InputTypes: String] =
-    [
-        .DoubleType: "Double",
-        .IntType: "Integer",
-        .BoolType: "Boolean",
-        .PointType: "CGPoint",
-        .StringType: "String",
-        .Normal: "Normal",
-        .ColorType: "UIColor"
+        [
+            .DoubleType: "Double",
+            .IntType: "Integer",
+            .BoolType: "Boolean",
+            .PointType: "CGPoint",
+            .StringType: "String",
+            .Normal: "Normal",
+            .ColorType: "UIColor"
     ]
     
     /// Maps filter input fields to the type of data it expects.
@@ -1359,6 +1368,27 @@ class FilterManager
             .SBrightnessRange: .DoubleType,
             .SBrightnessThreshold: .DoubleType,
             .SGreaterThan: .BoolType,
+            .CIColorspace: .IntType,
+            .CIInvertChannel1: .BoolType,
+            .CIInvertChannel2: .BoolType,
+            .CIInvertChannel3: .BoolType,
+            .CIInvertChannel4: .BoolType,
+            .CIEnableChannel1Threshold: .BoolType,
+            .CIEnableChannel2Threshold: .BoolType,
+            .CIEnableChannel3Threshold: .BoolType,
+            .CIEnableChannel4Threshold: .BoolType,
+            .CIChannel1Threshold: .DoubleType,
+            .CIChannel2Threshold: .DoubleType,
+            .CIChannel3Threshold: .DoubleType,
+            .CIChannel4Threshold: .DoubleType,
+            .CIChannel1InvertIfGreater: .BoolType,
+            .CIChannel2InvertIfGreater: .BoolType,
+            .CIChannel3InvertIfGreater: .BoolType,
+            .CIChannel4InvertIfGreater: .BoolType,
+            .CIInvertAlpha: .BoolType,
+            .CIEnableAlphaThreshold: .BoolType,
+            .CIAlphaThreshold: .DoubleType,
+            .CIAlphaInvertIfGreater: .BoolType,
             ]
     
     /// Maps fields to names used to store field data in user settings.
@@ -1502,6 +1532,27 @@ class FilterManager
             .SBrightnessRange: "_BrightnessRange",
             .SGreaterThan: "_GreaterThan",
             .SilhouetteColor: "_SilhouetteColor",
+            .CIColorspace: "_ColorSpace",
+            .CIInvertChannel1: "_InvertChannel1",
+            .CIInvertChannel2: "_InvertChannel2",
+            .CIInvertChannel3: "_InvertChannel3",
+            .CIInvertChannel4: "_InvertChannel4",
+            .CIEnableChannel1Threshold: "_EnableChannel1Threshold",
+            .CIEnableChannel2Threshold: "_EnableChannel2Threshold",
+            .CIEnableChannel3Threshold: "_EnableChannel3Threshold",
+            .CIEnableChannel4Threshold: "_EnableChannel4Threshold",
+            .CIChannel1Threshold: "_Channel1Threshold",
+            .CIChannel2Threshold: "_Channel2Threshold",
+            .CIChannel3Threshold: "_Channel3Threshold",
+            .CIChannel4Threshold: "_Channel4Threshold",
+            .CIChannel1InvertIfGreater: "_InvertChannel1IfGreater",
+            .CIChannel2InvertIfGreater: "_InvertChannel1IfGreater",
+            .CIChannel3InvertIfGreater: "_InvertChannel1IfGreater",
+            .CIChannel4InvertIfGreater: "_InvertChannel1IfGreater",
+            .CIInvertAlpha: "_InvertAlpha",
+            .CIEnableAlphaThreshold: "_EnableAlphaInversionThreshold",
+            .CIAlphaThreshold: "_AlphaInversionThreshold",
+            .CIAlphaInvertIfGreater: "_InvertAlphaIfGreater",
             ]
 }
 

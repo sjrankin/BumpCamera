@@ -79,6 +79,7 @@ extension FilterManager
         case Checkerboard = 52
         case MetalCheckerboard = 53
         case Silhouette = 54
+        case ColorInversion = 55
         case NotSet = 10000
     }
     
@@ -262,6 +263,27 @@ extension FilterManager
         case SBrightnessRange = 135
         case SGreaterThan = 136
         case SilhouetteColor = 137
+        case CIColorspace = 138
+        case CIInvertChannel1 = 139
+        case CIInvertChannel2 = 140
+        case CIInvertChannel3 = 141
+        case CIInvertChannel4 = 142
+        case CIEnableChannel1Threshold = 143
+                case CIEnableChannel2Threshold = 144
+                case CIEnableChannel3Threshold = 145
+                case CIEnableChannel4Threshold = 146
+        case CIChannel1Threshold = 147
+                case CIChannel2Threshold = 148
+                case CIChannel3Threshold = 149
+                case CIChannel4Threshold = 150
+        case CIChannel1InvertIfGreater = 151
+                case CIChannel2InvertIfGreater = 152
+                case CIChannel3InvertIfGreater = 153
+                case CIChannel4InvertIfGreater = 154
+        case CIInvertAlpha = 155
+        case CIEnableAlphaThreshold = 156
+        case CIAlphaThreshold = 157
+        case CIAlphaInvertIfGreater = 158
         case NoField = 10000
     }
     
