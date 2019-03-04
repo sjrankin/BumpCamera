@@ -214,6 +214,11 @@
 		17C3926222159FBC0049B8FD /* DilateErode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17C3926122159FBC0049B8FD /* DilateErode.swift */; };
 		17C392652215A4480049B8FD /* DilateErodeSettingsUI.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 17C392642215A4480049B8FD /* DilateErodeSettingsUI.storyboard */; };
 		17C392672215A5CB0049B8FD /* DilateErodeSettingsUICode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17C392662215A5CB0049B8FD /* DilateErodeSettingsUICode.swift */; };
+		17C67573222D14A000D53B93 /* ColorInverterParameters.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17C67572222D14A000D53B93 /* ColorInverterParameters.swift */; };
+		17C67575222D160A00D53B93 /* ColorInverter.metal in Sources */ = {isa = PBXBuildFile; fileRef = 17C67574222D160A00D53B93 /* ColorInverter.metal */; };
+		17C67577222D1E4D00D53B93 /* ColorInverter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17C67576222D1E4D00D53B93 /* ColorInverter.swift */; };
+		17C6757A222D37B700D53B93 /* ColorInverterSettingsUI.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 17C67579222D37B700D53B93 /* ColorInverterSettingsUI.storyboard */; };
+		17C6757C222D3D0800D53B93 /* ColorInverterSettingsUICode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17C6757B222D3D0800D53B93 /* ColorInverterSettingsUICode.swift */; };
 		17C7F4BB22255F77001F05F3 /* MainUIModes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17C7F4BA22255F77001F05F3 /* MainUIModes.swift */; };
 		17C93EA622224C2B00B7F697 /* Privacy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17C93EA522224C2B00B7F697 /* Privacy.swift */; };
 		17C93EA82222523200B7F697 /* PrivacyManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17C93EA72222523200B7F697 /* PrivacyManager.swift */; };
@@ -502,6 +507,11 @@
 		17C3926122159FBC0049B8FD /* DilateErode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DilateErode.swift; sourceTree = "<group>"; };
 		17C392642215A4480049B8FD /* DilateErodeSettingsUI.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = DilateErodeSettingsUI.storyboard; sourceTree = "<group>"; };
 		17C392662215A5CB0049B8FD /* DilateErodeSettingsUICode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DilateErodeSettingsUICode.swift; sourceTree = "<group>"; };
+		17C67572222D14A000D53B93 /* ColorInverterParameters.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorInverterParameters.swift; sourceTree = "<group>"; };
+		17C67574222D160A00D53B93 /* ColorInverter.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = ColorInverter.metal; sourceTree = "<group>"; };
+		17C67576222D1E4D00D53B93 /* ColorInverter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorInverter.swift; sourceTree = "<group>"; };
+		17C67579222D37B700D53B93 /* ColorInverterSettingsUI.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = ColorInverterSettingsUI.storyboard; sourceTree = "<group>"; };
+		17C6757B222D3D0800D53B93 /* ColorInverterSettingsUICode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorInverterSettingsUICode.swift; sourceTree = "<group>"; };
 		17C7F4BA22255F77001F05F3 /* MainUIModes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainUIModes.swift; sourceTree = "<group>"; };
 		17C93EA522224C2B00B7F697 /* Privacy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Privacy.swift; sourceTree = "<group>"; };
 		17C93EA72222523200B7F697 /* PrivacyManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrivacyManager.swift; sourceTree = "<group>"; };
@@ -749,6 +759,7 @@
 				17110DDA221E960500223990 /* FindPixel */,
 				171375F922193188000E49C2 /* GrayscaleToRGB */,
 				1799C89421FF15530069D5AC /* External */,
+				17C67571222D148200D53B93 /* ColorInverter */,
 				17C3925A221596A80049B8FD /* DilateErode */,
 				176C9696222CECAB004DB727 /* ConditionalSilhouette */,
 				17FA09AF21E8A8E400405B2D /* PixelatorKernel */,
@@ -1083,6 +1094,7 @@
 				172D98C821F9A53A005A5275 /* ChannelMixer.swift */,
 				17BEE0B121FC20FF00A9370B /* DesaturateColors.swift */,
 				1799C89921FF1B890069D5AC /* KuwaharaEffect.swift */,
+				17C67576222D1E4D00D53B93 /* ColorInverter.swift */,
 				17E15FF5220585EE0037B35F /* MirroringDistortion.swift */,
 				171F3D08220AD1990098E2B7 /* Dithering.swift */,
 				17020EDC21FDD6C5006DE7ED /* GrayscaleAdjust.swift */,
@@ -1129,6 +1141,7 @@
 				17787F052202DC0B00D15761 /* ChannelMixer */,
 				171F3D12220AF94A0098E2B7 /* Solarize */,
 				176C969D222CFD15004DB727 /* ConditionalSilhouette */,
+				17C67578222D378600D53B93 /* ColorInverter */,
 				173F5D02220BE80D00067ABB /* Threshold */,
 				17D60D85220FEA7D00933F15 /* MonochromeColors */,
 				17C392632215A42C0049B8FD /* DilateErode */,
@@ -1460,6 +1473,24 @@
 			path = DilateErode;
 			sourceTree = "<group>";
 		};
+		17C67571222D148200D53B93 /* ColorInverter */ = {
+			isa = PBXGroup;
+			children = (
+				17C67572222D14A000D53B93 /* ColorInverterParameters.swift */,
+				17C67574222D160A00D53B93 /* ColorInverter.metal */,
+			);
+			path = ColorInverter;
+			sourceTree = "<group>";
+		};
+		17C67578222D378600D53B93 /* ColorInverter */ = {
+			isa = PBXGroup;
+			children = (
+				17C67579222D37B700D53B93 /* ColorInverterSettingsUI.storyboard */,
+				17C6757B222D3D0800D53B93 /* ColorInverterSettingsUICode.swift */,
+			);
+			path = ColorInverter;
+			sourceTree = "<group>";
+		};
 		17C7F4B522252F02001F05F3 /* ModeSelector */ = {
 			isa = PBXGroup;
 			children = (
@@ -1742,6 +1773,7 @@
 				1775DDB2222BC27E0061DC87 /* BumpCameraLimitations.pdf in Resources */,
 				1797BCF52222CF7900C47510 /* ManageFilterRatings.storyboard in Resources */,
 				173F633422001800006CB67C /* Pixellate2Table.storyboard in Resources */,
+				17C6757A222D37B700D53B93 /* ColorInverterSettingsUI.storyboard in Resources */,
 				1779F3D42218347800140EEA /* SepiaToneSettingsUI.storyboard in Resources */,
 				173F632F22000045006CB67C /* PixellateMetalTable.storyboard in Resources */,
 				1779F3C5221829A900140EEA /* PosterizeSettingsUI.storyboard in Resources */,
@@ -1867,6 +1899,7 @@
 				171F3CEF220861800098E2B7 /* GridGenerator.metal in Sources */,
 				173F6331220001FD006CB67C /* PixellateMetalTableCode.swift in Sources */,
 				17CE37432213CEF80070ED87 /* CornerGradient.metal in Sources */,
+				17C67573222D14A000D53B93 /* ColorInverterParameters.swift in Sources */,
 				176C9693222CD703004DB727 /* LinearGradientParameters.swift in Sources */,
 				171E542921E44E170045ED77 /* MainUIViewer.swift in Sources */,
 				17CE37452213D5DB0070ED87 /* CornerGradientParameters.swift in Sources */,
@@ -1914,6 +1947,7 @@
 				17D60D80220FD6A700933F15 /* MonochromeColorsParameters.swift in Sources */,
 				171D626B21EDCE62004D3545 /* Pixellate.swift in Sources */,
 				173F5CFF220BDF0A00067ABB /* Threshold.metal in Sources */,
+				17C6757C222D3D0800D53B93 /* ColorInverterSettingsUICode.swift in Sources */,
 				171375FB2219319B000E49C2 /* GrayscaleToRGB.metal in Sources */,
 				173FDCC1220EB86C00EFA90D /* MainUIUserInteractions.swift in Sources */,
 				1709A6FE2220FDED00D9B43D /* Ratings.swift in Sources */,
@@ -2018,6 +2052,7 @@
 				1799C89621FF15750069D5AC /* Pixellatekernel.metal in Sources */,
 				1740131E2226BE0300EAF157 /* MainUIModeHandler.swift in Sources */,
 				17CE373A2213AF330070ED87 /* ColorPickerProtocol.swift in Sources */,
+				17C67577222D1E4D00D53B93 /* ColorInverter.swift in Sources */,
 				1763F0722221443B00E1E2E8 /* MainUIProtocol.swift in Sources */,
 				17D60D84220FEA7700933F15 /* MonochromeColorsSettingUICode.swift in Sources */,
 				17D7511321F41CD40050A2B5 /* MainUIPhoto.swift in Sources */,
@@ -2042,6 +2077,7 @@
 				17020ED921FDD25D006DE7ED /* GrayscaleKernel.metal in Sources */,
 				1756CE0C21FD73D200C4E638 /* RGBtoBHS.metal in Sources */,
 				171E63A0222A683B003E03E6 /* GSlider.swift in Sources */,
+				17C67575222D160A00D53B93 /* ColorInverter.metal in Sources */,
 				1756CDFA21FD633C00C4E638 /* RGBtoGBR.metal in Sources */,
 				171D627621EDD52D004D3545 /* CircleAndLines.swift in Sources */,
 				17CDB9BC22168CEF00C708F5 /* License.swift in Sources */,
