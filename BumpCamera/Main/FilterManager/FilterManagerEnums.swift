@@ -78,6 +78,7 @@ extension FilterManager
         case Tonal = 51
         case Checkerboard = 52
         case MetalCheckerboard = 53
+        case Silhouette = 54
         case NotSet = 10000
     }
     
@@ -252,6 +253,15 @@ extension FilterManager
         case PatternBlockWidth = 126
         case Color2 = 127
         case Color3 = 128
+        case SilhouetteTrigger = 129
+        case SHueThreshold = 130
+        case SHueRange = 131
+        case SSaturationThreshold = 132
+        case SSaturationRange = 133
+        case SBrightnessThreshold = 134
+        case SBrightnessRange = 135
+        case SGreaterThan = 136
+        case SilhouetteColor = 137
         case NoField = 10000
     }
     
