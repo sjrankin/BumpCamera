@@ -25,6 +25,9 @@ class FileHandler
     /// Name of the directory used at runtime.
     static let RuntimeDirectory = "/Runtime"
     
+    /// Name of the directory used for debugging.
+    static let DebugDirectory = "/Debug"
+    
     /// Determines if the passed directory exists. If it does not, it is created.
     ///
     /// - Note: A false return indicates something is terribly wrong and execution should stop.
@@ -492,6 +495,35 @@ class FileHandler
         return true
     }
     
+    /// Save the contents of the passed string to a file with the passed file name. The file will be saved in the
+    /// indicated directory. The URL to the saved file will be returned on success.
+    ///
+    /// - Parameters:
+    ///   - SaveMe: Contains the string to save.
+    ///   - FileName: The name of the file to save.
+    ///   - ToDirectory: The name of the directory.
+    /// - Returns: The URL of the saved file on success, nil on error.
+    @discardableResult public static func SaveStringToFileEx(_ SaveMe: String, FileName: String, ToDirectory: String) -> URL?
+    {
+        if InMaximumPrivacy()
+        {
+            print("In Maximum Privacy mode. No writing allowed.")
+            return nil
+        }
+        let SaveDirectory = GetDirectoryURL(DirectoryName: ToDirectory)
+        let FinalFile = SaveDirectory?.appendingPathComponent(FileName)
+        do
+        {
+            try SaveMe.write(to: FinalFile!, atomically: false, encoding: .utf8)
+        }
+        catch
+        {
+            print("Error saving string to \(FinalFile!.path): error: \(error.localizedDescription)")
+            return nil
+        }
+        return FinalFile
+    }
+    
     /// Returns the current state of the maximum privacy flag in user settings.
     ///
     /// - Returns: Current maximum privacy state. If false, nothing should be written.
@@ -502,7 +534,9 @@ class FileHandler
     
     /// This function should be called to delete all data in all directories created by BumpCamera. It is called by
     /// the Privacy view controller when the user enables Maximum Privacy.
-    public static func ClearAllDirectories()
+    ///
+    /// - Parameter IncludingDebug: Determines if the debug directory is cleared as well.
+    public static func ClearAllDirectories(IncludingDebug: Bool = false)
     {
         print("Clearing all directories.")
         ClearDirectory(SampleDirectory)
@@ -513,5 +547,9 @@ class FileHandler
         print("Performance directory cleared.")
         ClearDirectory(RuntimeDirectory)
         print("Runtime directory cleared.")
+        if IncludingDebug
+        {
+            ClearDirectory(DebugDirectory)
+        }
     }
 }
