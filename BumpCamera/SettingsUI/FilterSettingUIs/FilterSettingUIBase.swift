@@ -24,6 +24,8 @@ class FilterSettingUIBase: UITableViewController,
     var SampleView: UIImageView!
     var ShowingSample: Bool = true
     var ImagePicker: UIImagePickerController? = nil
+    var ADelegate: AppDelegate? = nil
+    var MainFilter: FilterManager? = nil
     
     /// Initializes the base class.
     ///
@@ -34,7 +36,8 @@ class FilterSettingUIBase: UITableViewController,
     {
         print("\(FilterType) start at \(CACurrentMediaTime())")
         let Start = CACurrentMediaTime()
-        
+        ADelegate = UIApplication.shared.delegate as? AppDelegate
+        MainFilter = ADelegate?.Filters
         SampleView = UIImageView(image: UIImage(named: "Norio"))
         SampleView.contentMode = .scaleAspectFit
         ShowingSample = _Settings.bool(forKey: "ShowFilterSampleImages")
@@ -311,7 +314,7 @@ class FilterSettingUIBase: UITableViewController,
             let cgImg = ciContext.createCGImage(Source, from: Source.extent)
             if let Final = cgImg
             {
-            return UIImage(cgImage: Final)
+                return UIImage(cgImage: Final)
             }
             return nil
         }
@@ -720,6 +723,20 @@ class FilterSettingUIBase: UITableViewController,
             }
             return false
         }
+    }
+    
+    func LogChange()
+    {
+        #if DEBUG
+        let FilterName = FilterManager.GetFilterTitle(Filter)
+        let IsActive = ADelegate?.Filters?.IsActive(Filter)
+        let FilterDesc = FilterManager.GetFilterSettingString(For: SampleFilter!,
+                                                              FrameNumber: nil,
+                                                              TimeStamp: Date(),
+                                                              ActiveFilter: IsActive!,
+                                                              ShowVersionInfo: false)
+        ActivityLog.LogPrint("Edited parameter for \((FilterName)!)", FilterData: FilterDesc)
+        #endif
     }
     
     /// Save a filter settings double value to user settings.
