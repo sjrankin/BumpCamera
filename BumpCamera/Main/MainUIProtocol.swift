@@ -18,4 +18,7 @@ protocol MainUIProtocol: class
     ///
     /// - Parameter ButtonType: Indicates the button that was pressed.
     func ModeButtonPressed(ButtonType: CameraModeTypes)
+    
+    /// Returns the FilterManager instance being used.
+    func InstanceFilterManager() -> FilterManager?
 }
