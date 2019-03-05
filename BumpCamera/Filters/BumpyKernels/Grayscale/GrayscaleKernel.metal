@@ -15,7 +15,7 @@ struct GrayscaleParameters
     float RMultiplier;
     float GMultiplier;
     float BMultiplier;
-    int Test;
+    //int Test;
 };
 
 
