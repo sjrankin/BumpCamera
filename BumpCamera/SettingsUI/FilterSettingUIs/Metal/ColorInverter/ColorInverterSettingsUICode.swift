@@ -52,7 +52,7 @@ class ColorInverterSettingsUICode: FilterSettingUIBase
             ChannelSegment.insertSegment(withTitle: "Red", at: 0, animated: true)
             ChannelSegment.insertSegment(withTitle: "Green", at: 1, animated: true)
             ChannelSegment.insertSegment(withTitle: "Blue", at: 2, animated: true)
-            ChannelSegment.insertSegment(withTitle: "Alpha", at: 3, animated: true)
+            //ChannelSegment.insertSegment(withTitle: "Alpha", at: 3, animated: true)
             if CurrentChannel < 1
             {
                 SwitchToChannel(1)
@@ -75,7 +75,7 @@ class ColorInverterSettingsUICode: FilterSettingUIBase
             ChannelSegment.insertSegment(withTitle: "Hue", at: 0, animated: true)
             ChannelSegment.insertSegment(withTitle: "Saturation", at: 1, animated: true)
             ChannelSegment.insertSegment(withTitle: "Brightness", at: 2, animated: true)
-            ChannelSegment.insertSegment(withTitle: "Alpha", at: 3, animated: true)
+            //ChannelSegment.insertSegment(withTitle: "Alpha", at: 3, animated: true)
             if CurrentChannel < 1
             {
                 SwitchToChannel(1)
@@ -98,7 +98,7 @@ class ColorInverterSettingsUICode: FilterSettingUIBase
             ChannelSegment.insertSegment(withTitle: "Y", at: 0, animated: true)
             ChannelSegment.insertSegment(withTitle: "U", at: 1, animated: true)
             ChannelSegment.insertSegment(withTitle: "V", at: 2, animated: true)
-            ChannelSegment.insertSegment(withTitle: "Alpha", at: 3, animated: true)
+            //ChannelSegment.insertSegment(withTitle: "Alpha", at: 3, animated: true)
             if CurrentChannel < 1
             {
                 SwitchToChannel(1)
@@ -122,7 +122,7 @@ class ColorInverterSettingsUICode: FilterSettingUIBase
             ChannelSegment.insertSegment(withTitle: "Magenta", at: 1, animated: true)
             ChannelSegment.insertSegment(withTitle: "Yellow", at: 2, animated: true)
             ChannelSegment.insertSegment(withTitle: "Black", at: 3, animated: true)
-            ChannelSegment.insertSegment(withTitle: "Alpha", at: 4, animated: true)
+            //ChannelSegment.insertSegment(withTitle: "Alpha", at: 4, animated: true)
             if CurrentChannel < 1
             {
                 SwitchToChannel(1)
