@@ -36,6 +36,7 @@ class PrivacyManager
             _Settings.set(false, forKey: "SaveUserInformationInEXIF")
             _Settings.set(false, forKey: "SaveGPSCoordinatesWithImage")
             _Settings.set(false, forKey: "AllowUserSampleImages")
+            _Settings.set(false, forKey: "UseActivityLog")
         }
     }
     
@@ -67,6 +68,13 @@ class PrivacyManager
             
         case .SampleImage:
             return _Settings.bool(forKey: "AllowUserSampleImages")
+            
+        case .ActivityLog:
+            #if DEBUG
+            return _Settings.bool(forKey: "UseActivityLog")
+            #else
+            return false
+            #endif
         }
         
         return false
@@ -81,6 +89,7 @@ class PrivacyManager
 /// - EXIFLocation: Save device's GPS information in EXIF data.
 /// - EXIFUserName: Save user's name and copyright information in EXIF data.
 /// - SampleImage: Save sample image for filter settings.
+/// - ActivityLog: Collect, maintain, and save activity logs. Valid only in DEBUG mode.
 enum PrivacyAreas
 {
     case Runtime
@@ -88,4 +97,5 @@ enum PrivacyAreas
     case EXIFLocation
     case EXIFUserName
     case SampleImage
+    case ActivityLog
 }
