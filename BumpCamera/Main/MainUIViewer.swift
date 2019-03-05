@@ -71,8 +71,10 @@ class MainUIViewer: UIViewController,
         
         VideoIsAuthorized = CheckAuthorization()
         //Filters must be created before checking for settings.
-        FilterManager.LoadFilterRatings(self) 
-        Filters = FilterManager(FilterManager.FilterTypes.PassThrough)
+        FilterManager.LoadFilterRatings(self)
+        ADelegate!.Filters = FilterManager(FilterManager.FilterTypes.PassThrough)
+        Filters = ADelegate!.Filters
+        //Filters = FilterManager(FilterManager.FilterTypes.PassThrough)
         if !_Settings.bool(forKey: "SettingsInstalled")
         {
             InitializeSettings()
@@ -107,24 +109,31 @@ class MainUIViewer: UIViewController,
         //Make sure the file structure is OK... If not, create expected directories.
         if !FileHandler.CreateIfDoesNotExist(DirectoryName: FileHandler.SampleDirectory)
         {
-            ShowFatalErrorMessage(Title: "Directory Error", Message: "Error getting or getting the sample directory. Unable to continue.")
+            ShowFatalErrorMessage(Title: "Directory Error", Message: "Error getting or setting the sample directory. Unable to continue.")
             fatalError("Error creating \(FileHandler.SampleDirectory).")
         }
         if !FileHandler.CreateIfDoesNotExist(DirectoryName: FileHandler.ScratchDirectory)
         {
-            ShowFatalErrorMessage(Title: "Directory Error", Message: "Error getting or getting the scratch directory. Unable to continue.")
+            ShowFatalErrorMessage(Title: "Directory Error", Message: "Error getting or setting the scratch directory. Unable to continue.")
             fatalError("Error creating \(FileHandler.ScratchDirectory).")
         }
         if !FileHandler.CreateIfDoesNotExist(DirectoryName: FileHandler.PerformanceDirectory)
         {
-            ShowFatalErrorMessage(Title: "Directory Error", Message: "Error getting or getting the performance directory. Unable to continue.")
+            ShowFatalErrorMessage(Title: "Directory Error", Message: "Error getting or setting the performance directory. Unable to continue.")
             fatalError("Error creating \(FileHandler.PerformanceDirectory).")
         }
         if !FileHandler.CreateIfDoesNotExist(DirectoryName: FileHandler.RuntimeDirectory)
         {
-            ShowFatalErrorMessage(Title: "Directory Error", Message: "Error getting or getting the runtime directory. Unable to continue.")
+            ShowFatalErrorMessage(Title: "Directory Error", Message: "Error getting or setting the runtime directory. Unable to continue.")
             fatalError("Error creating \(FileHandler.SampleDirectory).")
         }
+        #if DEBUG
+        if !FileHandler.CreateIfDoesNotExist(DirectoryName: FileHandler.DebugDirectory)
+        {
+            ShowFatalErrorMessage(Title: "Directory Error", Message: "Error getting or setting the debug directory. Unable to continue.")
+        }
+        #endif
+                ActivityLog.Initialize(TimeStamp: Date())
         
         if _Settings.bool(forKey: "ClearRuntimeAtStartup")
         {
@@ -168,6 +177,11 @@ class MainUIViewer: UIViewController,
                 self.SetupResult = self.ConfigureLiveView()
         }
         StartSettingsMonitor()
+    }
+    
+    func InstanceFilterManager() -> FilterManager?
+    {
+        return Filters
     }
     
     @IBOutlet weak var ModeSelection: ModeSelectorUI!
