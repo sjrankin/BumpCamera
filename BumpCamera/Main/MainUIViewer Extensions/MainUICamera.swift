@@ -502,7 +502,8 @@ extension MainUIViewer
         
         if Filters?.VideoFilter == nil
         {
-            print("Setting filter to NotSet")
+            ActivityLog.LogPrint("Setting filter to NotSet")
+//            print("Setting filter to NotSet")
             Filters?.SetCurrentFilter(FilterType: .NotSet)
         }
         if !(Filters?.VideoFilter?.Filter?.Initialized)!
@@ -514,6 +515,8 @@ extension MainUIViewer
                 FilterManager.SaveFilterSettings(For: (Filters?.VideoFilter?.Filter!)!, WithName: Name, FrameNumber: FrameCount,
                                                  TimeStamp: Date())
             }
+            let FilterDesc = FilterManager.GetFilterSettingString(For: (Filters?.VideoFilter?.Filter!)!, FrameNumber: FrameCount, TimeStamp: Date())
+            ActivityLog.LogPrint("New filter selected: \((Filters?.VideoFilter?.Filter?.Description)!)", FilterData: FilterDesc)
         }
         
         guard let FilteredBuffer = Filters?.VideoFilter?.Filter?.Render(PixelBuffer: FinalPixelBuffer) else
