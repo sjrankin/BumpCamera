@@ -15,6 +15,7 @@ import UIKit
     var DidCrash = false
     var CrashedFilterName = ""
     var OnDebugger = false
+    var Filters: FilterManager? = nil
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool
     {
@@ -92,6 +93,7 @@ import UIKit
     {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
         print("Setting closed cleanly flag.")
+        ActivityLog.Close()
         _Settings.set(true, forKey: "ClosedCleanly")
     }
 }
