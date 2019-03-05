@@ -54,9 +54,10 @@ class FilterManager
             .PhotoEffects: [(.Noir, 0), (.Chrome, 1), (.Vibrance, 2), (.XRay, 3), (.Instant, 4), (.ProcessEffect, 5),
                             (.TransferEffect, 6), (.SepiaTone, 7), (.Thermal, 8), (.TemperatureAndTint, 9),
                             (.Tonal, 10),],
-            .Colors: [(.HueAdjust, 0), (.HSBAdjust, 1), (.Solarize, 2), (.ChannelMixer, 3), (.ColorInversion, 4),
-                      (.DesaturateColors, 5), (.Threshold, 6), (.MonochromeColor, 7), (.FalseColor, 8),
-                      (.Monochrome, 9), (.PaletteShifting, 10)],
+            .Colors: [(.HueAdjust, 0), (.HSBAdjust, 1), (.Solarize, 2), (.ChannelMixer, 3), (.ChannelMangler, 4),
+                      (.ColorInversion, 5),
+                      (.DesaturateColors, 6), (.Threshold, 7), (.MonochromeColor, 8), (.FalseColor, 9),
+                      (.Monochrome, 10), (.PaletteShifting, 11)],
             .Gray: [(.GrayscaleKernel, 0), (.Dither, 1)],
             //.Bumpy: [(.BumpyPixels, 1), (.BumpyTriangles, 2), (.Embossed, 0)],
             //.Motion: [(.ColorDelta, 0), (.FilterDelta, 1), (.PatternDelta, 2)],
@@ -116,6 +117,7 @@ class FilterManager
             .MetalCheckerboard: (MetalCheckerboard.ID(), MetalCheckerboard.FilterKernel, MetalCheckerboard.Title()),
             .Silhouette: (ConditionalSilhouette.ID(), ConditionalSilhouette.FilterKernel, ConditionalSilhouette.Title()),
             .ColorInversion: (ColorInverter.ID(), ColorInverter.FilterKernel, ColorInverter.Title()),
+            .ChannelMangler: (ChannelMangler.ID(), ChannelMangler.FilterKernel, ChannelMangler.Title()),
             ]
     
     /// Determines if the specified filter supports the specified target type. Not all filters support all targets - slow
@@ -209,6 +211,7 @@ class FilterManager
             .MetalCheckerboard: MetalCheckerboard.FilterTarget(),
             .Silhouette: ConditionalSilhouette.FilterTarget(),
             .ColorInversion: ColorInverter.FilterTarget(),
+            .ChannelMangler: ChannelMangler.FilterTarget(),
             ]
     
     /// Load all of the filter classes into the filter manager.
@@ -322,6 +325,7 @@ class FilterManager
         ParameterCount![.MetalCheckerboard] = MetalCheckerboard.SupportedFields().count
         ParameterCount![.Silhouette] = ConditionalSilhouette.SupportedFields().count
         ParameterCount![.ColorInversion] = ColorInverter.SupportedFields().count
+        ParameterCount![.ChannelMangler] = ChannelMangler.SupportedFields().count
     }
     
     private static var ParameterCount: [FilterManager.FilterTypes: Int]? = nil
@@ -392,6 +396,7 @@ class FilterManager
         StoryboardList![.MetalCheckerboard] = MetalCheckerboard.SettingsStoryboard()
         StoryboardList![.Silhouette] = ConditionalSilhouette.SettingsStoryboard()
         StoryboardList![.ColorInversion] = ColorInverter.SettingsStoryboard()
+        StoryboardList![.ChannelMangler] = ChannelMangler.SettingsStoryboard()
     }
     
     private static var StoryboardList: [FilterTypes: String?]? = nil
@@ -423,10 +428,21 @@ class FilterManager
         }
         _VideoFilter = GetFilter(Name: FilterType, .Video)
         _PhotoFilter = GetFilter(Name: FilterType, .Photo)
-        #if true
+        #if DEBUG
         print("FilterManager.SetCurrentFilter(\((FilterManager.FilterTitles[FilterType])!))")
         #endif
         return true
+    }
+    
+    /// Determines if the currently running live video filter is the same as the passed filter type.
+    ///
+    /// - Parameter FilterType: The filter type to compare against the currently running live video filter.
+    /// - Returns: True if the types are the same, false if not.
+    public func IsActive(_ FilterType: FilterTypes) -> Bool
+    {
+        let RunningID = VideoFilter?.Filter?.ID()
+        let RunningType = GetFilterTypeFrom(ID: RunningID!)
+        return RunningType == FilterType
     }
     
     private var _VideoFilter: CameraFilter?
@@ -672,6 +688,9 @@ class FilterManager
             
         case .ColorInversion:
             return ColorInverter()
+            
+        case .ChannelMangler:
+            return ChannelMangler()
             
         default:
             return nil
@@ -1096,6 +1115,7 @@ class FilterManager
             .MetalCheckerboard: "Metal Checkerboard",
             .Silhouette: "Silhouette",
             .ColorInversion: "Invert Colors",
+            .ChannelMangler: "Channel Mangler",
             ]
     
     public static func GetFilterTitle(_ Filter: FilterTypes) -> String?
@@ -1165,6 +1185,7 @@ class FilterManager
             .MetalCheckerboard: true,
             .Silhouette: true,
             .ColorInversion: true,
+            .ChannelMangler: true,
             ]
     
     /// Determines if the given filter type is implemented.
@@ -1389,6 +1410,7 @@ class FilterManager
             .CIEnableAlphaThreshold: .BoolType,
             .CIAlphaThreshold: .DoubleType,
             .CIAlphaInvertIfGreater: .BoolType,
+            .ChannelManglerAction: .IntType,
             ]
     
     /// Maps fields to names used to store field data in user settings.
@@ -1553,6 +1575,7 @@ class FilterManager
             .CIEnableAlphaThreshold: "_EnableAlphaInversionThreshold",
             .CIAlphaThreshold: "_AlphaInversionThreshold",
             .CIAlphaInvertIfGreater: "_InvertAlphaIfGreater",
+            .ChannelManglerAction: "_Action",
             ]
 }
 
