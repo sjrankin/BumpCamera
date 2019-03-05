@@ -64,6 +64,11 @@ extension MainUIViewer
         _Settings.set(true, forKey: "ClearScratchAtStartup")
         #endif
         #if DEBUG
+        _Settings.set(true, forKey: "UseActivityLog")
+        #else
+        _Settings.set(false, forKey: "UseActivityLog")
+        #endif
+        #if DEBUG
         _Settings.set(false, forKey: "ShowFramerateOverlay")
         _Settings.set(true, forKey: "IngorePriorCrashes")
         _Settings.set("", forKey: "LastCrashedFilter")
