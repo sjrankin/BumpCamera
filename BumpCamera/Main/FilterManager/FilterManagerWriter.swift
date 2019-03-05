@@ -11,18 +11,18 @@ import UIKit
 
 extension FilterManager
 {
-    /// Save filter settings for the passed filter.
+    /// Returns current state of a filter as an XML fragment string.
     ///
     /// - Parameters:
-    ///   - For: Instance of the filter to save settings for.
-    ///   - WithName: File name to use for the saved file. If not specified, "MostRecentFilter.xml" will be used.
-    ///   - InDirectory: Directory where to save the file. If not specified, the runtime directory will be used.
-    public static func SaveFilterSettings(For: Renderer, WithName: String? = nil, InDirectory: String? = nil,
-                                          FrameNumber: Int? = nil, TimeStamp: Date? = nil)
+    ///   - For: Instantiation of a filter whose state is returned.
+    ///   - FrameNumber: Optional frame number.
+    ///   - TimeStamp: Optional time stamp.
+    ///   - ActiveFilter: Boolean that indicates the filter being dumped is active. Intended for use for changing filter settings
+    ///                   for running filters.
+    /// - Returns: XML fragment with informatin describing the filter.
+    public static func GetFilterSettingString(For: Renderer, FrameNumber: Int? = nil, TimeStamp: Date? = nil,
+                                              ActiveFilter: Bool = false, ShowVersionInfo: Bool = true) -> String
     {
-        let FileName: String = WithName == nil ? "MostRecentFilter.xml" : WithName!
-        let Directory: String = InDirectory == nil ? FileHandler.RuntimeDirectory : InDirectory!
-        
         let ID = For.ID()
         let FilterType = GetFilterTypeFrom(ID: ID)
         var Aux = ""
@@ -30,13 +30,17 @@ extension FilterManager
         {
             Aux = " Frame=\"\(FrameCount)\""
         }
+        let IsActiveFilter = " Active=\"\(ActiveFilter)\""
         if let When = TimeStamp
         {
             let WhenS = Utility.MakeTimeStamp(FromDate: When)
             Aux = Aux + " TimeStamp=\"\(WhenS)\""
         }
-        var Working = "<Filter Name=\(For.Title()) ID=\(For.ID())\(Aux)>\n"
-        Working = Working + Versioning.EmitXML(4) + "\n"
+        var Working = "<Filter Name=\(For.Title()) ID=\(For.ID())\(Aux)\(IsActiveFilter)>\n"
+        if ShowVersionInfo
+        {
+            Working = Working + Versioning.EmitXML(4) + "\n"
+        }
         Working = Working + "    <Parameters Count=\"\(ParameterCountFor(FilterType!))\">\n"
         
         for SomeField in For.SupportedFields()
@@ -52,6 +56,21 @@ extension FilterManager
         Working = Working + "    </Parameters>\n"
         Working = Working + "</Filter>\n"
         
+        return Working
+    }
+    
+    /// Save filter settings for the passed filter.
+    ///
+    /// - Parameters:
+    ///   - For: Instance of the filter to save settings for.
+    ///   - WithName: File name to use for the saved file. If not specified, "MostRecentFilter.xml" will be used.
+    ///   - InDirectory: Directory where to save the file. If not specified, the runtime directory will be used.
+    public static func SaveFilterSettings(For: Renderer, WithName: String? = nil, InDirectory: String? = nil,
+                                          FrameNumber: Int? = nil, TimeStamp: Date? = nil)
+    {
+        let FileName: String = WithName == nil ? "MostRecentFilter.xml" : WithName!
+        let Directory: String = InDirectory == nil ? FileHandler.RuntimeDirectory : InDirectory!
+        let Working = GetFilterSettingString(For: For, FrameNumber: FrameNumber, TimeStamp: TimeStamp)
         FileHandler.SaveStringToFile(Working, FileName: FileName, ToDirectory: Directory)
     }
     
