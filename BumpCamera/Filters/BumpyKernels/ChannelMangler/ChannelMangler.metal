@@ -7,6 +7,7 @@
 //
 
 #include <metal_stdlib>
+#include <metal_math>
 using namespace metal;
 
 
@@ -14,6 +15,43 @@ struct ChannelManglerParameters
 {
     uint Action;
 };
+
+//https://www.geeksforgeeks.org/write-an-efficient-c-program-to-reverse-bits-of-a-number/
+uint ReverseBits(uint Source)
+{
+    uint Working = Source & 0xff;
+    uint BitCount = 8;
+    uint Final = 0;
+    for (uint i = 0; i < BitCount; i++)
+        {
+        if ((Working & (1 << i)))
+            {
+            Final |= 1 << ((BitCount - 1) - i);
+            }
+        }
+    return Final;
+}
+
+uint Compact(uint Source, bool ShiftHigh)
+{
+    uint Working = Source & 0xff;
+    uint OnCount = 0;
+    uint BitCount = 8;
+    for (uint i = 0; i < BitCount; i++)
+        {
+        if ((Working & (1 << i)))
+            {
+            OnCount++;
+            }
+        }
+    uint Value = uint(pow(2.0, float(OnCount)) - 1);
+    if (ShiftHigh)
+        {
+        uint ShiftBy = 8 - OnCount;
+        Value = Value << ShiftBy;
+        }
+    return Value;
+}
 
 float4 CMToRGBFromHSB(float H, float S, float B)
 {
@@ -136,6 +174,9 @@ kernel void ChannelMangler(texture2d<float, access::read> InTexture [[texture(0)
     uint Width = InTexture.get_width();
     uint Height = InTexture.get_height();
     float4 InColor = InTexture.read(gid);
+    uint RValue = uint(255.0 * InColor.r);
+    uint GValue = uint(255.0 * InColor.g);
+    uint BValue = uint(255.0 * InColor.b);
     float4 OutColor = InColor;
     float c1, c2, c3, c4;
     uint InX = gid.x;
@@ -161,6 +202,60 @@ kernel void ChannelMangler(texture2d<float, access::read> InTexture [[texture(0)
     float TrM = TrCMYKIn.g;
     float TrY = TrCMYKIn.b;
     float TrK = TrCMYKIn.a;
+    uint SY = gid.y;
+    uint SX = gid.x;
+    SX += 8;
+    if (SX > Width - 1)
+        {
+        SX = Width % 8;
+        SY++;
+        if (SY > Height - 1)
+            {
+            SY = 0;
+            }
+        }
+    float Sum3x3R = 0.0;
+    float Mean3x3R = 0.0;
+    float Sum3x3G = 0.0;
+    float Mean3x3G = 0.0;
+    float Sum3x3B = 0.0;
+    float Mean3x3B = 0.0;
+    if (Mangle.Action >= 22 && Mangle.Action <= 26)
+        {
+        if (InX > 0 && InX < Width - 1 && InY > 0 && InY < Height - 1)
+            {
+            Sum3x3R = Sum3x3R + InTexture.read(uint2(InX - 1, InY - 1)).r;
+            Sum3x3R = Sum3x3R + InTexture.read(uint2(InX, InY - 1)).r;
+            Sum3x3R = Sum3x3R + InTexture.read(uint2(InX + 1, InY - 1)).r;
+            Sum3x3R = Sum3x3R + InTexture.read(uint2(InX - 1, InY)).r;
+            Sum3x3R = Sum3x3R + InTexture.read(uint2(InX, InY)).r;
+            Sum3x3R = Sum3x3R + InTexture.read(uint2(InX + 1, InY)).r;
+            Sum3x3R = Sum3x3R + InTexture.read(uint2(InX - 1, InY + 1)).r;
+            Sum3x3R = Sum3x3R + InTexture.read(uint2(InX, InY + 1)).r;
+            Sum3x3R = Sum3x3R + InTexture.read(uint2(InX + 1, InY + 1)).r;
+            Mean3x3R = Sum3x3R / 9.0;
+            Sum3x3G = Sum3x3G + InTexture.read(uint2(InX - 1, InY - 1)).g;
+            Sum3x3G = Sum3x3G + InTexture.read(uint2(InX, InY - 1)).g;
+            Sum3x3G = Sum3x3G + InTexture.read(uint2(InX + 1, InY - 1)).g;
+            Sum3x3G = Sum3x3G + InTexture.read(uint2(InX - 1, InY)).g;
+            Sum3x3G = Sum3x3G + InTexture.read(uint2(InX, InY)).g;
+            Sum3x3G = Sum3x3G + InTexture.read(uint2(InX + 1, InY)).g;
+            Sum3x3G = Sum3x3G + InTexture.read(uint2(InX - 1, InY + 1)).g;
+            Sum3x3G = Sum3x3G + InTexture.read(uint2(InX, InY + 1)).g;
+            Sum3x3G = Sum3x3G + InTexture.read(uint2(InX + 1, InY + 1)).g;
+            Mean3x3G = Sum3x3G / 9.0;
+            Sum3x3B = Sum3x3B + InTexture.read(uint2(InX - 1, InY - 1)).b;
+            Sum3x3B = Sum3x3B + InTexture.read(uint2(InX, InY - 1)).b;
+            Sum3x3B = Sum3x3B + InTexture.read(uint2(InX + 1, InY - 1)).b;
+            Sum3x3B = Sum3x3B + InTexture.read(uint2(InX - 1, InY)).b;
+            Sum3x3B = Sum3x3B + InTexture.read(uint2(InX, InY)).b;
+            Sum3x3B = Sum3x3B + InTexture.read(uint2(InX + 1, InY)).b;
+            Sum3x3B = Sum3x3B + InTexture.read(uint2(InX - 1, InY + 1)).b;
+            Sum3x3B = Sum3x3B + InTexture.read(uint2(InX, InY + 1)).b;
+            Sum3x3B = Sum3x3B + InTexture.read(uint2(InX + 1, InY + 1)).b;
+            Mean3x3B = Sum3x3B / 9.0;
+            }
+        }
     
     switch (Mangle.Action)
     {
@@ -357,6 +452,170 @@ kernel void ChannelMangler(texture2d<float, access::read> InTexture [[texture(0)
         Bm = Bm * 10;
         c3 = float(Bm) / 1000.0;
         OutColor = CMToRGBFromHSB(c1, c2, c3);
+        break;
+        }
+        
+        case 19:
+        {
+        c1 = InTexture.read(uint2(SX,SY)).r;
+        c2 = InColor.g;
+        c3 = InColor.b;
+        OutColor = float4(c1, c2, c3, 1.0);
+        break;
+        }
+        
+        case 20:
+        {
+        c1 = InColor.r;
+        c2 = InTexture.read(uint2(SX,SY)).g;
+        c3 = InColor.b;
+        OutColor = float4(c1, c2, c3, 1.0);
+        break;
+        }
+        
+        case 21:
+        {
+        c1 = InColor.r;
+        c2 = InColor.g;
+        c3 = InTexture.read(uint2(SX,SY)).b;
+        OutColor = float4(c1, c2, c3, 1.0);
+        break;
+        }
+        
+        case 22:
+        {
+        c1 = Mean3x3R;
+        c2 = InColor.g;
+        c3 = InColor.b;
+        OutColor = float4(c1, c2, c3, 1.0);
+        break;
+        }
+        
+        case 23:
+        {
+        c1 = InColor.r;
+        c2 = Mean3x3G;
+        c3 = InColor.b;
+        OutColor = float4(c1, c2, c3, 1.0);
+        break;
+        }
+        
+        case 24:
+        {
+        c1 = InColor.r;
+        c2 = InColor.g;
+        c3 = Mean3x3B;
+        OutColor = float4(c1, c2, c3, 1.0);
+        break;
+        }
+        
+        case 25:
+        {
+        float Greatest = max(Mean3x3R, max(Mean3x3G, Mean3x3B));
+        c1 = Greatest;
+        c2 = Greatest;
+        c3 = Greatest;
+        OutColor = float4(c1, c2, c3, 1.0);
+        break;
+        }
+        
+        case 26:
+        {
+        float Least = min(Mean3x3R, min(Mean3x3G, Mean3x3B));
+        c1 = Least;
+        c2 = Least;
+        c3 = Least;
+        OutColor = float4(c1, c2, c3, 1.0);
+        break;
+        }
+        
+        case 27:
+        {
+        c1 = float((RValue & 0xfe) / 255.0);
+        c2 = float((GValue & 0xfe) / 255.0);
+        c3 = float((BValue & 0xfe) / 255.0);
+        OutColor = float4(c1, c2, c3, 1.0);
+        break;
+        }
+        
+        case 28:
+        {
+        c1 = float((RValue & 0xfc) / 255.0);
+        c2 = float((GValue & 0xfc) / 255.0);
+        c3 = float((BValue & 0xfc) / 255.0);
+        OutColor = float4(c1, c2, c3, 1.0);
+        break;
+        }
+        
+        case 29:
+        {
+        c1 = float((RValue & 0xf8) / 255.0);
+        c2 = float((GValue & 0xf8) / 255.0);
+        c3 = float((BValue & 0xf8) / 255.0);
+        OutColor = float4(c1, c2, c3, 1.0);
+        break;
+        }
+        
+        case 30:
+        {
+        c1 = float((RValue & 0xf0) / 255.0);
+        c2 = float((GValue & 0xf0) / 255.0);
+        c3 = float((BValue & 0xf0) / 255.0);
+        OutColor = float4(c1, c2, c3, 1.0);
+        break;
+        }
+        
+        case 31:
+        {
+        c1 = float((RValue & 0xe0) / 255.0);
+        c2 = float((GValue & 0xe0) / 255.0);
+        c3 = float((BValue & 0xe0) / 255.0);
+        OutColor = float4(c1, c2, c3, 1.0);
+        break;
+        }
+        
+        case 32:
+        {
+        c1 = float((RValue & 0x70) / 255.0);
+        c2 = float((GValue & 0x70) / 255.0);
+        c3 = float((BValue & 0x70) / 255.0);
+        OutColor = float4(c1, c2, c3, 1.0);
+        break;
+        }
+        
+        case 33:
+        {
+        uint clred = Compact(RValue, false);
+        uint clgreen = Compact(GValue, false);
+        uint clblue = Compact(BValue, false);
+        c1 = float(clred) / 255.0;
+        c2 = float(clgreen) / 255.0;
+        c3 = float(clblue) / 255.0;
+        OutColor = float4(c1, c2, c3, 1.0);
+        break;
+        }
+        
+        case 34:
+        {
+        uint chred = Compact(RValue, true);
+        uint chgreen = Compact(GValue, true);
+        uint chblue = Compact(BValue, true);
+        c1 = float(chred) / 255.0;
+        c2 = float(chgreen) / 255.0;
+        c3 = float(chblue) / 255.0;
+        OutColor = float4(c1, c2, c3, 1.0);
+        break;
+        }
+        
+        case 35:
+        {
+        uint rred = ReverseBits(RValue);
+        uint rgreen = ReverseBits(GValue);
+        uint rblue = ReverseBits(BValue);
+        c1 = float(rred) / 255.0;
+        c2 = float(rgreen) / 255.0;
+        c3 = float(rblue) / 255.0;
+        OutColor = float4(c1, c2, c3, 1.0);
         break;
         }
         
