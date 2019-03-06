@@ -81,6 +81,7 @@ extension FilterManager
         case Silhouette = 54
         case ColorInversion = 55
         case ChannelMangler = 56
+        case ColorMap = 57
         case NotSet = 10000
     }
     
