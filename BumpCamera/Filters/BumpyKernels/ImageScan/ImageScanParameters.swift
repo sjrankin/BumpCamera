@@ -12,6 +12,7 @@ import simd
 struct ImageScanParameters
 {
     let Action: simd_uint1
+    let ColorToCount: simd_float4
 }
 
 /// Types of actions the ImageScan kernel can take.
@@ -30,4 +31,5 @@ enum ImageScanActions: Int
     case CumulativeCMYKChannelValues = 3
     case BrightestPixels = 4
     case DarkestPixels = 5
+    case CountColor = 6
 }
