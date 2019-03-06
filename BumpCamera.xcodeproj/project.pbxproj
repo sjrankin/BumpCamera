@@ -219,6 +219,9 @@
 		17BA6049221E71CA00AEC044 /* HelpUICode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17BA6048221E71CA00AEC044 /* HelpUICode.swift */; };
 		17BEE0B221FC20FF00A9370B /* DesaturateColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17BEE0B121FC20FF00A9370B /* DesaturateColors.swift */; };
 		17BEE0B421FC2F8500A9370B /* DesaturationKernelParameters.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17BEE0B321FC2F8500A9370B /* DesaturationKernelParameters.swift */; };
+		17C18AD4222FF93300DBDD79 /* ColorMapSettingsUI.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 17C18AD3222FF93300DBDD79 /* ColorMapSettingsUI.storyboard */; };
+		17C18AD6222FFAF000DBDD79 /* ColorMapSettingsUICode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17C18AD5222FFAF000DBDD79 /* ColorMapSettingsUICode.swift */; };
+		17C18AD8222FFF6700DBDD79 /* GradientParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17C18AD7222FFF6700DBDD79 /* GradientParser.swift */; };
 		17C3925E22159D480049B8FD /* DEParameters.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17C3925D22159D480049B8FD /* DEParameters.swift */; };
 		17C3926022159D960049B8FD /* ErodeDilate.metal in Sources */ = {isa = PBXBuildFile; fileRef = 17C3925F22159D960049B8FD /* ErodeDilate.metal */; };
 		17C3926222159FBC0049B8FD /* DilateErode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17C3926122159FBC0049B8FD /* DilateErode.swift */; };
@@ -522,6 +525,9 @@
 		17BA6048221E71CA00AEC044 /* HelpUICode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HelpUICode.swift; sourceTree = "<group>"; };
 		17BEE0B121FC20FF00A9370B /* DesaturateColors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DesaturateColors.swift; sourceTree = "<group>"; };
 		17BEE0B321FC2F8500A9370B /* DesaturationKernelParameters.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DesaturationKernelParameters.swift; sourceTree = "<group>"; };
+		17C18AD3222FF93300DBDD79 /* ColorMapSettingsUI.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = ColorMapSettingsUI.storyboard; sourceTree = "<group>"; };
+		17C18AD5222FFAF000DBDD79 /* ColorMapSettingsUICode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorMapSettingsUICode.swift; sourceTree = "<group>"; };
+		17C18AD7222FFF6700DBDD79 /* GradientParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GradientParser.swift; sourceTree = "<group>"; };
 		17C3925D22159D480049B8FD /* DEParameters.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DEParameters.swift; sourceTree = "<group>"; };
 		17C3925F22159D960049B8FD /* ErodeDilate.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = ErodeDilate.metal; sourceTree = "<group>"; };
 		17C3926122159FBC0049B8FD /* DilateErode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DilateErode.swift; sourceTree = "<group>"; };
@@ -977,6 +983,7 @@
 			children = (
 				17F236A022152AF30091B865 /* Utility.swift */,
 				171F3CFE2209CB3F0098E2B7 /* FileHandling.swift */,
+				17C18AD7222FFF6700DBDD79 /* GradientParser.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -1181,6 +1188,7 @@
 		174F82E4221FDB6D009A004C /* CIFilter */ = {
 			isa = PBXGroup;
 			children = (
+				17C18AD2222FF91B00DBDD79 /* ColorMap */,
 				174F82E5221FDB9C009A004C /* Generators */,
 				174F82E6221FDBAE009A004C /* Monochrome */,
 				17787EFE2202C3C700D15761 /* HSB */,
@@ -1515,6 +1523,15 @@
 			path = Help;
 			sourceTree = "<group>";
 		};
+		17C18AD2222FF91B00DBDD79 /* ColorMap */ = {
+			isa = PBXGroup;
+			children = (
+				17C18AD3222FF93300DBDD79 /* ColorMapSettingsUI.storyboard */,
+				17C18AD5222FFAF000DBDD79 /* ColorMapSettingsUICode.swift */,
+			);
+			path = ColorMap;
+			sourceTree = "<group>";
+		};
 		17C3925A221596A80049B8FD /* DilateErode */ = {
 			isa = PBXGroup;
 			children = (
@@ -1788,7 +1805,7 @@
 				TargetAttributes = {
 					171E542221E44E170045ED77 = {
 						CreatedOnToolsVersion = 10.1;
-						LastSwiftMigration = 1010;
+						LastSwiftMigration = 1020;
 					};
 				};
 			};
@@ -1818,6 +1835,7 @@
 				173F5D0C220C676900067ABB /* ColorPicker.storyboard in Resources */,
 				17E9F0DD2201719600BA7B46 /* FilterSettingsUI.storyboard in Resources */,
 				173F5D0E220C67B600067ABB /* ColorChipPicker.storyboard in Resources */,
+				17C18AD4222FF93300DBDD79 /* ColorMapSettingsUI.storyboard in Resources */,
 				17AA10542212E2D200EF72DA /* EdgeWorkSettingsUI.storyboard in Resources */,
 				17A686E921F81E5B00F252CA /* HueAdjustTable.storyboard in Resources */,
 				1797BCF12222CB3900C47510 /* DebugSettings.storyboard in Resources */,
@@ -2038,6 +2056,7 @@
 				171298152223B20A000D5EF5 /* ExifViewerCode.swift in Sources */,
 				171F3CFF2209CB3F0098E2B7 /* FileHandling.swift in Sources */,
 				173B16A42201437B005A5B0B /* Pixellate2TableCode.swift in Sources */,
+				17C18AD6222FFAF000DBDD79 /* ColorMapSettingsUICode.swift in Sources */,
 				171D626221EDB66F004D3545 /* DotScreen.swift in Sources */,
 				17D60D82220FD7A900933F15 /* MonochromeColors.swift in Sources */,
 				1799C89A21FF1B890069D5AC /* KuwaharaEffect.swift in Sources */,
@@ -2097,6 +2116,7 @@
 				171375F42218FA84000E49C2 /* BayerDecode.metal in Sources */,
 				17EC44D221F027B500197804 /* LineOverlay.swift in Sources */,
 				1756CE0A21FD73AA00C4E638 /* RGBtoSBH.metal in Sources */,
+				17C18AD8222FFF6700DBDD79 /* GradientParser.swift in Sources */,
 				1726242121F8503E00C7688C /* NewFieldSettingProtocol.swift in Sources */,
 				176C969C222CF4AE004DB727 /* ConditionalSilhouette.swift in Sources */,
 				17D7511121F41BB90050A2B5 /* MainUIJpegDataClass.swift in Sources */,
@@ -2318,7 +2338,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "BumpCamera/BumpCamera-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				SWIFT_VERSION = 4.2;
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -2340,7 +2360,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = Irorio.BumpCamera;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "BumpCamera/BumpCamera-Bridging-Header.h";
-				SWIFT_VERSION = 4.2;
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
