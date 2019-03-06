@@ -81,23 +81,13 @@
                         </connections>
                     </tableView>
                     <toolbarItems>
-                        <barButtonItem title="Item" image="CameraHome" id="diq-hA-73f">
-                            <connections>
-                                <action selector="HandleCameraButton:" destination="I6e-MA-OjZ" id="Uu3-re-R23"/>
-                            </connections>
-                        </barButtonItem>
+                        <barButtonItem title="Not used." id="Fmu-jQ-a6l"/>
                     </toolbarItems>
-                    <navigationItem key="navigationItem" title="Channel Mangler Settings" id="g4Z-uu-rku">
-                        <barButtonItem key="leftBarButtonItem" title="Back" id="DIT-sh-YR0">
-                            <connections>
-                                <action selector="HandleBackButton:" destination="I6e-MA-OjZ" id="tYd-e5-W4h"/>
-                            </connections>
-                        </barButtonItem>
-                        <barButtonItem key="rightBarButtonItem" systemItem="action" id="7At-HX-Ebv"/>
-                    </navigationItem>
+                    <navigationItem key="navigationItem" title="Channel Mangler Settings" id="g4Z-uu-rku"/>
                     <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
                     <connections>
                         <outlet property="ChannelManglingPicker" destination="aKc-UH-7Jm" id="t9F-IP-lHX"/>
+                        <outlet property="ManglerExplanation" destination="cRI-rD-ow6" id="5yS-Qf-I25"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="9Cr-lV-oku" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -125,7 +115,4 @@
             <point key="canvasLocation" x="-1165" y="206"/>
         </scene>
     </scenes>
-    <resources>
-        <image name="CameraHome" width="48" height="48"/>
-    </resources>
 </document>
