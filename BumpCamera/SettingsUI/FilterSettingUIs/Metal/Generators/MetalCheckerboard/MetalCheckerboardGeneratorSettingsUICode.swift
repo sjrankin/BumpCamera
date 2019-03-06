@@ -9,8 +9,8 @@
 import Foundation
 import UIKit
 
-class MetalCheckerboardGeneratorSettingsUICode: FilterSettingUIBase, UIActivityItemSource,
-    ColorPickerProtocol
+class MetalCheckerboardGeneratorSettingsUICode: FilterSettingUIBase, ColorPickerProtocol//, UIActivityItemSource,
+//    ColorPickerProtocol
 {
     override func viewDidLoad()
     {
@@ -243,15 +243,16 @@ class MetalCheckerboardGeneratorSettingsUICode: FilterSettingUIBase, UIActivityI
         ShowSampleView()
     }
     
-    @IBAction func HandleBackButton(_ sender: Any)
-    {
-        dismiss(animated: true, completion: nil)
-    }
+    //@IBAction func HandleBackButton(_ sender: Any)
+    //{
+    //    dismiss(animated: true, completion: nil)
+    //}
     
     @IBAction func HandleCameraButton(_ sender: Any)
     {
     }
     
+    #if false
     @IBAction func HandleActionButton(_ sender: Any)
     {
         let Items: [Any] = [self]
@@ -306,6 +307,7 @@ class MetalCheckerboardGeneratorSettingsUICode: FilterSettingUIBase, UIActivityI
             return Generated
         }
     }
+    #endif
     
     @IBOutlet weak var WidthSegment: UISegmentedControl!
     @IBOutlet weak var HeightSegment: UISegmentedControl!
