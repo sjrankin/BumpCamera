@@ -9,7 +9,7 @@
 import Foundation
 import UIKit
 
-class CheckerboardGeneratorSettingsUICode: FilterSettingUIBase, UIActivityItemSource, ColorPickerProtocol
+class CheckerboardGeneratorSettingsUICode: FilterSettingUIBase, ColorPickerProtocol//UIActivityItemSource, ColorPickerProtocol
 {
     override func viewDidLoad()
     {
@@ -187,15 +187,16 @@ class CheckerboardGeneratorSettingsUICode: FilterSettingUIBase, UIActivityItemSo
     @IBOutlet weak var BlockWidthSlider: UISlider!
     @IBOutlet weak var SharpnessSlider: UISlider!
     
-    @IBAction func HandleBackButton(_ sender: Any)
-    {
-        dismiss(animated: true, completion: nil)
-    }
+    //@IBAction func HandleBackButton(_ sender: Any)
+    //{
+    //    dismiss(animated: true, completion: nil)
+    //}
     
     @IBAction func HandleCameraButton(_ sender: Any)
     {
     }
     
+    #if false
     @IBAction func HandleActionButton(_ sender: Any)
     {
         let Items: [Any] = [self]
@@ -250,4 +251,5 @@ class CheckerboardGeneratorSettingsUICode: FilterSettingUIBase, UIActivityItemSo
             return Generated
         }
     }
+    #endif
 }
