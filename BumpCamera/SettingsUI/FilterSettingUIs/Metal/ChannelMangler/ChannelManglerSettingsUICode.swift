@@ -21,30 +21,49 @@ class ChannelManglerSettingsUICode: FilterSettingUIBase, UIPickerViewDelegate, U
         ChannelManglingPicker.reloadAllComponents()
         let SelectedRow = ParameterManager.GetInt(From: FilterID, Field: .ChannelManglerAction, Default: 0)
         ChannelManglingPicker.selectRow(SelectedRow, inComponent: 0, animated: true)
+        let Description = MangleTypes[SelectedRow]?.1
+        ManglerExplanation.text = Description
     }
     
-    let MangleTypes: [Int: String] =
+    let MangleTypes: [Int: (String, String)] =
         [
-            0: "NOP",
-            1: "Channel Max Other",
-            2: "Channel Min Other",
-            3: "Channel + Mean Other",
-            4: "Max Channel Inverted",
-            5: "Min Channel Inverted",
-            6: "Transpose Red",
-            7: "Transpose Green",
-            8: "Transpose Blue",
-            9: "Transpose Cyan",
-            10: "Transpose Magenta",
-            11: "Transpose Yellow",
-            12: "Transpose Black",
-            13: "Inverted Hue",
-            14: "Inverted Saturation",
-            15: "Inverted Brightness",
-            16: "Ranged Hue",
-            17: "Ranged Saturation",
-            18: "Ranged Brightness",
-    ]
+            0: ("NOP", "No changes made to the image."),
+            1: ("Channel Max Other", "Each channel's value becomes the maximum of the other two channels."),
+            2: ("Channel Min Other", "Each channel's value becomes the minimum of the other two channels."),
+            3: ("Channel + Mean Other", "Channel values become (channel value + Mean(other two channels)) / 2"),
+            4: ("Max Channel Inverted", "The channel with the greatest value is inverted. The other two are used as is."),
+            5: ("Min Channel Inverted", "The channel with the smallest value is inverted. The other two are used as is."),
+            6: ("Transpose Red", "The red channel values is obtained from the transposed pixel."),
+            7: ("Transpose Green", "The green channel values is obtained from the transposed pixel."),
+            8: ("Transpose Blue", "The blue channel values is obtained from the transposed pixel."),
+            9: ("Transpose Cyan", "The cyan channel values is obtained from the transposed pixel."),
+            10: ("Transpose Magenta", "The magenta channel values is obtained from the transposed pixel."),
+            11: ("Transpose Yellow", "The yellow channel values is obtained from the transposed pixel."),
+            12: ("Transpose Black", "The black channel values is obtained from the transposed pixel."),
+            13: ("Transpose Hue", "The hue channel values is obtained from the transposed pixel."),
+            14: ("Transpose Saturation", "The saturation channel values is obtained from the transposed pixel."),
+            15: ("Transpose Brightness", "The brightness channel values is obtained from the transposed pixel."),
+            16: ("Ranged Hue", "The hue value is constrained to an equal range within 360°."),
+            17: ("Ranged Saturation", "The saturation value is constrained to an equal range."),
+            18: ("Ranged Brightness", "The brightness value is constrained to an equal range."),
+            19: ("Red + X:8", "The red channel value is obtained 8 horizontal pixels to the right (and down if near the right edge)."),
+            20: ("Green + X:8", "The green channel value is obtained 8 horizontal pixels to the right (and down if near the right edge)."),
+            21: ("Blue + X:8", "The blue channel value is obtained 8 horizontal pixels to the right (and down if near the right edge)."),
+            22: ("3x3 Red Mean", "The red channel is set to the mean of the 3x3 grid with the current pixel as the center."),
+            23: ("3x3 Green Mean", "The green channel is set to the mean of the 3x3 grid with the current pixel as the center."),
+            24: ("3x3 Blue Mean", "The blue channel is set to the mean of the 3x3 grid with the current pixel as the center."),
+            25: ("Largest Mean Channel", "Each channel is set to the greatest mean value of the red, green, or blue channels."),
+            26: ("Smallest Mean Channel", "Each channel is set to the smallest mean value of the red, green, or blue channels."),
+            27: ("Mask with 0xfe", "Each channel value is converted to 0...255 then masked with 0xfe."),
+            28: ("Mask with 0xfc", "Each channel value is converted to 0...255 then masked with 0xfc."),
+            29: ("Mask with 0xf8", "Each channel value is converted to 0...255 then masked with 0xf8."),
+            30: ("Mask with 0xf0", "Each channel value is converted to 0...255 then masked with 0xf0."),
+            31: ("Mask with 0xe0", "Each channel value is converted to 0...255 then masked with 0xe0."),
+            32: ("Mask with 0x70", "Each channel value is converted to 0...255 then masked with 0x70."),
+            33: ("Compact Shift Low", "Each channel has all bits compressed such that there are no 0s, then shifted right."),
+            34: ("Compact Shift High", "Each channel has all bits compressed such that there are no 0s, then shifted left."),
+            35: ("Reverse Bits", "Each channe's bits are reversed."),
+            ]
     
     func numberOfComponents(in pickerView: UIPickerView) -> Int
     {
@@ -58,23 +77,17 @@ class ChannelManglerSettingsUICode: FilterSettingUIBase, UIPickerViewDelegate, U
     
     func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String?
     {
-        return MangleTypes[row]
+        return MangleTypes[row]?.0
     }
     
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int)
     {
+        let Description = MangleTypes[row]?.1
+        ManglerExplanation.text = Description
         UpdateValue(WithValue: row, ToField: .ChannelManglerAction)
         ShowSampleView()
     }
     
+    @IBOutlet weak var ManglerExplanation: UILabel!
     @IBOutlet weak var ChannelManglingPicker: UIPickerView!
-    
-    @IBAction func HandleBackButton(_ sender: Any)
-    {
-        dismiss(animated: true, completion: nil)
-    }
-    
-    @IBAction func HandleCameraButton(_ sender: Any)
-    {
-    }
 }
