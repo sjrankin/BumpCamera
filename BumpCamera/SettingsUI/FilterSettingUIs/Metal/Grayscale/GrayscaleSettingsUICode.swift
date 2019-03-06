@@ -63,7 +63,7 @@ class GrayscaleSettingsUICode: FilterSettingUIBase, UIPickerViewDelegate, UIPick
     func SelectGrayscaleType(Index: Int)
     {
         let GType = GrayscaleAdjust.GetGrayscaleTypeFromCommandIndex(Index)
-        let PIndex = TypesInOrder.index(of: GType)
+        let PIndex = TypesInOrder.firstIndex(of: GType)
         GrayPicker.selectRow(PIndex!, inComponent: 0, animated: true)
         let Description = GrayscaleAdjust.GrayscaleTypeDescription(For: GType)
         GrayscaleDescription.text = Description
