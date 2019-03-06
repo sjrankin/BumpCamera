@@ -13,7 +13,8 @@ import Photos
 /// Base class for filter setting UIs.
 class FilterSettingUIBase: UITableViewController,
     UIImagePickerControllerDelegate,
-    UINavigationControllerDelegate
+    UINavigationControllerDelegate,
+    UIActivityItemSource
 {
     let _Settings = UserDefaults.standard
     var Filter = FilterManager.FilterTypes.PassThrough
@@ -36,6 +37,7 @@ class FilterSettingUIBase: UITableViewController,
     {
         print("\(FilterType) start at \(CACurrentMediaTime())")
         let Start = CACurrentMediaTime()
+        LoadUIElements()
         ADelegate = UIApplication.shared.delegate as? AppDelegate
         MainFilter = ADelegate?.Filters
         SampleView = UIImageView(image: UIImage(named: "Norio"))
@@ -70,19 +72,6 @@ class FilterSettingUIBase: UITableViewController,
             SampleView.image = UIImage(named: SampleImageName)
             SampleView.backgroundColor = UIColor.darkGray
             SampleView.isUserInteractionEnabled = true
-            #if false
-            if DoEnableSelect
-            {
-                let Tap = UITapGestureRecognizer(target: self, action: #selector(HandleSampleSelection))
-                SampleView.addGestureRecognizer(Tap)
-                let LeftSwipe = UISwipeGestureRecognizer(target: self, action: #selector(HandleSampleChange))
-                LeftSwipe.direction = UISwipeGestureRecognizer.Direction.left
-                SampleView.addGestureRecognizer(LeftSwipe)
-                let RightSwipe = UISwipeGestureRecognizer(target: self, action: #selector(HandleSampleChange))
-                RightSwipe.direction = UISwipeGestureRecognizer.Direction.right
-                SampleView.addGestureRecognizer(RightSwipe)
-            }
-            #endif
             ShowSampleView()
         }
         let Cell = RatingCell(style: UITableViewCell.CellStyle.default, reuseIdentifier: "RatingCell")
@@ -91,6 +80,159 @@ class FilterSettingUIBase: UITableViewController,
         
         let End = CACurrentMediaTime()
         print("FilterSettingUIBase(Filter) start-up duration: \(End - Start) seconds")
+    }
+    
+    /// Load common UI elements. Specifically, the Back, Action, and Camera Home buttons are added.
+    /// - Note: For some reason, if you don't have any buttons in the toolbar, this function is not able to add new buttons. So, it
+    ///         is important that when you create a filter settings UI you leave at least one dummy item in the toolbar or no
+    ///         buttons will appear at run time. (This function will remove all original buttons so the dummy button/item will be
+    ///         removed.)
+    func LoadUIElements()
+    {
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .action, target: self, action: #selector(HandleAction))
+        self.navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Back", style: UIBarButtonItem.Style.plain, target: self, action: #selector(HandleBBackButton(_:)))
+        //See note in function documentation.
+        self.toolbarItems?.removeAll()
+        self.toolbarItems?.append(UIBarButtonItem(image: UIImage(named: "CameraHome"), style: UIBarButtonItem.Style.plain, target: self, action: #selector(HandleCameraHomeBButton(_:))))
+        self.toolbarItems?.append(UIBarButtonItem(barButtonSystemItem: UIBarButtonItem.SystemItem.flexibleSpace, target: nil, action: nil))
+        let PersonIcon = UIBarButtonItem(image: UIImage(named: "PersonIcon"), style: UIBarButtonItem.Style.plain, target: self, action: #selector(HandlePersonButton(_:)))
+        self.toolbarItems?.append(PersonIcon)
+        if DoEnableSelect
+        {
+            PersonIcon.isEnabled = true
+        }
+        else
+        {
+            PersonIcon.isEnabled = false
+        }
+    }
+    
+    /// Contains the image to save/export via the action button.
+    var ActionSaveImage: UIImage? = nil
+    
+    /// Handle the Action button press. Save and/or exports the current sample image.
+    ///
+    /// - Parameter sender: Not used.
+    @objc func HandleAction(_ sender: Any)
+    {
+        if (SampleFilter?.Ports().contains(.Input))!
+        {
+            //Have to make sure the image to save is "CGImage-backed" or UIImageWriteToSavedPhotosAlbum will silently fail.
+            if let SaveMe = LastSampleImage
+            {
+                if let ciimg = CIImage(image: SaveMe)
+                {
+                    //If we're here, the image is well-behaved and we can convert it to CGImage backed easily.
+                    let Context = CIContext()
+                    let cgimg = Context.createCGImage(ciimg, from: ciimg.extent)
+                    ActionSaveImage = UIImage(cgImage: cgimg!)
+                }
+                else
+                {
+                    let ciimg = SampleFilter?.LastImageRendered(AsUIImage: false) as! CIImage
+                    let Context = CIContext()
+                    let cgimg = Context.createCGImage(ciimg, from: ciimg.extent)
+                    ActionSaveImage = UIImage(cgImage: cgimg!)
+                }
+            }
+        }
+        else
+        {
+            ActionSaveImage = GetLastGeneratedImage()!
+        }
+        let Items: [Any] = [self]
+        let ACV = UIActivityViewController(activityItems: Items, applicationActivities: nil)
+        present(ACV, animated: true)
+    }
+    
+    /// Returns the type of the action item.
+    ///
+    /// - Parameter activityViewController: Not used.
+    /// - Returns: The type of the action item. In our case, a UIImage.
+    @objc func activityViewControllerPlaceholderItem(_ activityViewController: UIActivityViewController) -> Any
+    {
+        return UIImage()
+    }
+    
+    /// Returns the title (subject) for the Action button.
+    ///
+    /// - Parameters:
+    ///   - activityViewController: Not used.
+    ///   - activityType: Not used.
+    /// - Returns: Title of the Action.
+    @objc func activityViewController(_ activityViewController: UIActivityViewController, subjectForActivityType activityType: UIActivity.ActivityType?) -> String
+    {
+        return "BumpCamera Sample Output"
+    }
+    
+    /// Handles sending the sample output to the user-specified location.
+    ///
+    /// - Parameters:
+    ///   - activityViewController: Not used.
+    ///   - activityType: Describes where the user wants to send the sample image.
+    /// - Returns: The sample image.
+    @objc func activityViewController(_ activityViewController: UIActivityViewController, itemForActivityType activityType: UIActivity.ActivityType?) -> Any?
+    {
+        let Generated: UIImage = ActionSaveImage!
+        
+        switch activityType!
+        {
+        case .postToTwitter:
+            return Generated
+            
+        case .airDrop:
+            return Generated
+            
+        case .copyToPasteboard:
+            return Generated
+            
+        case .mail:
+            return Generated
+            
+        case .postToTencentWeibo:
+            return Generated
+            
+        case .postToWeibo:
+            return Generated
+            
+        case .print:
+            return Generated
+            
+        case .markupAsPDF:
+            return Generated
+            
+        case .message:
+            return Generated
+            
+        default:
+            return Generated
+        }
+    }
+    
+    /// Handle presses of the camera home button.
+    ///
+    /// - Parameter sender: Not used.
+    @objc func HandleCameraHomeBButton(_ sender: Any)
+    {
+    }
+    
+    /// Handle presses of the back button - returns to the calling view controller.
+    ///
+    /// - Parameter sender: Not used.
+    @objc func HandleBBackButton(_ sender: Any)
+    {
+        dismiss(animated: true, completion: nil)
+    }
+    
+    @objc func HandlePersonButton(_ sender: Any)
+    {
+        let Alert = UIAlertController(title: "Manage Sample Image",
+                                      message: "Select the action to perform on the sample image.",
+                                      preferredStyle: UIAlertController.Style.actionSheet)
+        Alert.addAction(UIAlertAction(title: "Select Custom Image", style: UIAlertAction.Style.default, handler: HandleNewSampleImage))
+        Alert.addAction(UIAlertAction(title: "Clear Custom Image", style: UIAlertAction.Style.default, handler: HandleNewSampleImage))
+        Alert.addAction(UIAlertAction(title: "Cancel", style: UIAlertAction.Style.cancel, handler: nil))
+        self.present(Alert, animated: true, completion: nil)
     }
     
     #if true
@@ -150,25 +292,27 @@ class FilterSettingUIBase: UITableViewController,
     
     override func viewWillAppear(_ animated: Bool)
     {
-        #if false
-        NotificationCenter.default.addObserver(self, selector: #selector(DefaultsChanged),
-                                               name: UserDefaults.didChangeNotification,
-                                               object: nil)
-        #endif
-        if ShowingSample
-        {
-            if DoEnableSelect
-            {
-                let Tap = UITapGestureRecognizer(target: self, action: #selector(HandleSampleSelection))
-                SampleView.addGestureRecognizer(Tap)
-                let LeftSwipe = UISwipeGestureRecognizer(target: self, action: #selector(HandleSampleChange))
-                LeftSwipe.direction = UISwipeGestureRecognizer.Direction.left
-                SampleView.addGestureRecognizer(LeftSwipe)
-                let RightSwipe = UISwipeGestureRecognizer(target: self, action: #selector(HandleSampleChange))
-                RightSwipe.direction = UISwipeGestureRecognizer.Direction.right
-                SampleView.addGestureRecognizer(RightSwipe)
-            }
-        }
+        /*
+         #if false
+         NotificationCenter.default.addObserver(self, selector: #selector(DefaultsChanged),
+         name: UserDefaults.didChangeNotification,
+         object: nil)
+         #endif
+         if ShowingSample
+         {
+         if DoEnableSelect
+         {
+         let Tap = UITapGestureRecognizer(target: self, action: #selector(HandleSampleSelection))
+         SampleView.addGestureRecognizer(Tap)
+         let LeftSwipe = UISwipeGestureRecognizer(target: self, action: #selector(HandleSampleChange))
+         LeftSwipe.direction = UISwipeGestureRecognizer.Direction.left
+         SampleView.addGestureRecognizer(LeftSwipe)
+         let RightSwipe = UISwipeGestureRecognizer(target: self, action: #selector(HandleSampleChange))
+         RightSwipe.direction = UISwipeGestureRecognizer.Direction.right
+         SampleView.addGestureRecognizer(RightSwipe)
+         }
+         }
+         */
     }
     
     /// When the view disappears, remove the notification observer.
@@ -418,7 +562,7 @@ class FilterSettingUIBase: UITableViewController,
                                       preferredStyle: UIAlertController.Style.actionSheet)
         Alert.addAction(UIAlertAction(title: "Select Custom Image", style: UIAlertAction.Style.default, handler: HandleNewSampleImage))
         Alert.addAction(UIAlertAction(title: "Clear Custom Image", style: UIAlertAction.Style.default, handler: HandleNewSampleImage))
-        Alert.addAction(UIAlertAction(title: "Save Sample Image", style: UIAlertAction.Style.default, handler: HandleNewSampleImage))
+        //Alert.addAction(UIAlertAction(title: "Save Sample Image", style: UIAlertAction.Style.default, handler: HandleNewSampleImage))
         Alert.addAction(UIAlertAction(title: "Cancel", style: UIAlertAction.Style.cancel, handler: nil))
         self.present(Alert, animated: true, completion: nil)
     }
@@ -747,6 +891,7 @@ class FilterSettingUIBase: UITableViewController,
     func UpdateValue(WithValue: Double, ToField: FilterManager.InputFields)
     {
         ParameterManager.SetField(To: FilterID, Field: ToField, Value: WithValue as Any?)
+        LogChange()
     }
     
     /// Save a filter settings integer value to user settings.
@@ -757,6 +902,7 @@ class FilterSettingUIBase: UITableViewController,
     func UpdateValue(WithValue: Int, ToField: FilterManager.InputFields)
     {
         ParameterManager.SetField(To: FilterID, Field: ToField, Value: WithValue as Any?)
+        LogChange()
     }
     
     /// Save a filter settings boolean value to user settings.
@@ -767,6 +913,7 @@ class FilterSettingUIBase: UITableViewController,
     func UpdateValue(WithValue: Bool, ToField: FilterManager.InputFields)
     {
         ParameterManager.SetField(To: FilterID, Field: ToField, Value: WithValue as Any?)
+        LogChange()
     }
     
     /// Save a filter settings string value to user settings.
@@ -777,6 +924,7 @@ class FilterSettingUIBase: UITableViewController,
     func UpdateValue(WithValue: String, ToField: FilterManager.InputFields)
     {
         ParameterManager.SetField(To: FilterID, Field: ToField, Value: WithValue as Any?)
+        LogChange()
     }
     
     /// Save a filter settings CGPoint to user settings.
@@ -787,6 +935,7 @@ class FilterSettingUIBase: UITableViewController,
     func UpdateValue(WithValue: CGPoint, ToField: FilterManager.InputFields)
     {
         ParameterManager.SetField(To: FilterID, Field: ToField, Value: WithValue as Any?)
+        LogChange()
     }
     
     /// Save a filter settings CIVector to user settings.
@@ -800,6 +949,7 @@ class FilterSettingUIBase: UITableViewController,
     {
         let NewPoint = CGPoint(x: WithValue.x, y: WithValue.y)
         ParameterManager.SetField(To: FilterID, Field: ToField, Value: NewPoint as Any?)
+        LogChange()
     }
     
     /// Save a filter settings UIColor value to user settings.
@@ -810,6 +960,7 @@ class FilterSettingUIBase: UITableViewController,
     func UpdateValue(WithValue: UIColor, ToField: FilterManager.InputFields)
     {
         ParameterManager.SetField(To: FilterID, Field: ToField, Value: WithValue as Any?)
+        LogChange()
     }
 }
 
