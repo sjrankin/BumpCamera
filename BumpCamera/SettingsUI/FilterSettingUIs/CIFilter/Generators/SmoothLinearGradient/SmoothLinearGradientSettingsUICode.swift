@@ -255,15 +255,16 @@ class SmoothLinearGradientSettingsUICode: FilterSettingUIBase, ColorPickerProtoc
     }
     #endif
     
-    @IBAction func HandleBackButton(_ sender: Any)
-    {
-        dismiss(animated: true, completion: nil)
-    }
+    //@IBAction func HandleBackButton(_ sender: Any)
+    //{
+    //    dismiss(animated: true, completion: nil)
+    //}
     
     @IBAction func HandleCameraButton(_ sender: Any)
     {
     }
     
+    #if false
     @IBAction func HandleActionButton(_ sender: Any)
     {
         let Items: [Any] = [self]
@@ -318,6 +319,7 @@ class SmoothLinearGradientSettingsUICode: FilterSettingUIBase, ColorPickerProtoc
             return Generated
         }
     }
+    #endif
     
     @IBOutlet weak var HeightSegments: UISegmentedControl!
     @IBOutlet weak var WidthSegments: UISegmentedControl!
