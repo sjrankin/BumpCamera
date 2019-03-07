@@ -160,7 +160,7 @@ class Instant: FilterParent, Renderer
             }
             else
             {
-                print("Error returned Render.")
+                print("Render returned error.")
                 return nil
             }
         }
