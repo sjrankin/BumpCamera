@@ -23,6 +23,7 @@ class FilterSettingUIBase: UITableViewController,
     var SampleFilter: Renderer? = nil
     var SampleImageName: String = "Norio"
     var SampleView: UIImageView!
+    var SampleViewEx: UICollectionView!
     var ShowingSample: Bool = true
     var ImagePicker: UIImagePickerController? = nil
     var ADelegate: AppDelegate? = nil
@@ -290,9 +291,9 @@ class FilterSettingUIBase: UITableViewController,
     }
     #endif
     
+    #if true
     override func viewWillAppear(_ animated: Bool)
     {
-        /*
          #if false
          NotificationCenter.default.addObserver(self, selector: #selector(DefaultsChanged),
          name: UserDefaults.didChangeNotification,
@@ -312,8 +313,8 @@ class FilterSettingUIBase: UITableViewController,
          SampleView.addGestureRecognizer(RightSwipe)
          }
          }
-         */
     }
+    #endif
     
     /// When the view disappears, remove the notification observer.
     ///
@@ -436,7 +437,10 @@ class FilterSettingUIBase: UITableViewController,
                 return
             }
         }
-        SampleView.image = FinalImage!
+        if let TheImage = FinalImage
+        {
+        SampleView.image = TheImage
+        }
         LastSampleImage = FinalImage
         #if false
         SizeHeaderToFit()
