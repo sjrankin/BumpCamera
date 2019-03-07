@@ -217,6 +217,7 @@
 		17BA6045221E6CC800AEC044 /* HelpUI.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 17BA6044221E6CC800AEC044 /* HelpUI.storyboard */; };
 		17BA6047221E70A500AEC044 /* GeneralHelp.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 17BA6046221E70A500AEC044 /* GeneralHelp.storyboard */; };
 		17BA6049221E71CA00AEC044 /* HelpUICode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17BA6048221E71CA00AEC044 /* HelpUICode.swift */; };
+		17BC00752230B3200076A5D5 /* GradientTestCode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17BC00742230B3200076A5D5 /* GradientTestCode.swift */; };
 		17BEE0B221FC20FF00A9370B /* DesaturateColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17BEE0B121FC20FF00A9370B /* DesaturateColors.swift */; };
 		17BEE0B421FC2F8500A9370B /* DesaturationKernelParameters.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17BEE0B321FC2F8500A9370B /* DesaturationKernelParameters.swift */; };
 		17C18AD4222FF93300DBDD79 /* ColorMapSettingsUI.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 17C18AD3222FF93300DBDD79 /* ColorMapSettingsUI.storyboard */; };
@@ -523,6 +524,7 @@
 		17BA6044221E6CC800AEC044 /* HelpUI.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = HelpUI.storyboard; sourceTree = "<group>"; };
 		17BA6046221E70A500AEC044 /* GeneralHelp.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = GeneralHelp.storyboard; sourceTree = "<group>"; };
 		17BA6048221E71CA00AEC044 /* HelpUICode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HelpUICode.swift; sourceTree = "<group>"; };
+		17BC00742230B3200076A5D5 /* GradientTestCode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GradientTestCode.swift; sourceTree = "<group>"; };
 		17BEE0B121FC20FF00A9370B /* DesaturateColors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DesaturateColors.swift; sourceTree = "<group>"; };
 		17BEE0B321FC2F8500A9370B /* DesaturationKernelParameters.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DesaturationKernelParameters.swift; sourceTree = "<group>"; };
 		17C18AD3222FF93300DBDD79 /* ColorMapSettingsUI.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = ColorMapSettingsUI.storyboard; sourceTree = "<group>"; };
@@ -1420,6 +1422,7 @@
 			isa = PBXGroup;
 			children = (
 				1797BCF02222CB3900C47510 /* DebugSettings.storyboard */,
+				17BC00742230B3200076A5D5 /* GradientTestCode.swift */,
 				1797BCF22222CC0800C47510 /* DebugSettingsCode.swift */,
 			);
 			path = DebugSettings;
@@ -2030,6 +2033,7 @@
 				171D625921ED98AE004D3545 /* Noir.swift in Sources */,
 				17787F042202C6AE00D15761 /* HSBFilterSettingsUICode.swift in Sources */,
 				17D60D80220FD6A700933F15 /* MonochromeColorsParameters.swift in Sources */,
+				17BC00752230B3200076A5D5 /* GradientTestCode.swift in Sources */,
 				171D626B21EDCE62004D3545 /* Pixellate.swift in Sources */,
 				173F5CFF220BDF0A00067ABB /* Threshold.metal in Sources */,
 				17C6757C222D3D0800D53B93 /* ColorInverterSettingsUICode.swift in Sources */,
