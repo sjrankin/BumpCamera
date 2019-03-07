@@ -59,10 +59,17 @@ class ChannelManglerSettingsUICode: FilterSettingUIBase, UIPickerViewDelegate, U
             29: ("Mask with 0xf8", "Each channel value is converted to 0...255 then masked with 0xf8."),
             30: ("Mask with 0xf0", "Each channel value is converted to 0...255 then masked with 0xf0."),
             31: ("Mask with 0xe0", "Each channel value is converted to 0...255 then masked with 0xe0."),
-            32: ("Mask with 0x70", "Each channel value is converted to 0...255 then masked with 0x70."),
-            33: ("Compact Shift Low", "Each channel has all bits compressed such that there are no 0s, then shifted right."),
-            34: ("Compact Shift High", "Each channel has all bits compressed such that there are no 0s, then shifted left."),
-            35: ("Reverse Bits", "Each channe's bits are reversed."),
+            32: ("Mask with 0xc0", "Each channel value is converted to 0...255 then masked with 0xc0."),
+            33: ("Mask with 0x80", "Each channel value is converted to 0...255 then masked with 0x80."),
+            34: ("Compact Shift Low", "Each channel has all bits compressed such that there are no 0s, then shifted right."),
+            35: ("Compact Shift High", "Each channel has all bits compressed such that there are no 0s, then shifted left."),
+            36: ("Reverse Bits", "Each channe's bits are reversed."),
+            37: ("Red xor Green Blue", "The green and blue channel values are xored with the red channel."),
+            38: ("Green xor Red blue", "The red and blue channel values are xored with the green channel."),
+            39: ("Blue xor Red Green", "The red and green channel values are xored with the blue channel."),
+            40: ("Multi-Xored", "Each channel is xored with the xor of the other two channels."),
+            41: ("Xor-Or", "Each channel is xored with the another channel ored with the third channel."),
+            42: ("Xor-And", "Each channel is xored with the another channel anded with the third channel."),
             ]
     
     func numberOfComponents(in pickerView: UIPickerView) -> Int
