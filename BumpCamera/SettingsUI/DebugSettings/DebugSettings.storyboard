@@ -6,6 +6,7 @@
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14490.49"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -58,13 +59,13 @@
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Enable activity log" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="dwQ-5R-Fc6">
-                                                    <rect key="frame" x="16" y="12" width="139" height="21"/>
+                                                    <rect key="frame" x="16" y="11.5" width="139" height="21.5"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="fYQ-WV-7Ke">
-                                                    <rect key="frame" x="310" y="7" width="49" height="31"/>
+                                                    <rect key="frame" x="310" y="6.5" width="51" height="31.5"/>
                                                     <connections>
                                                         <action selector="HandleActivityLogChanged:" destination="cVK-YC-yNn" eventType="primaryActionTriggered" id="KXL-RI-9H2"/>
                                                     </connections>
@@ -88,7 +89,7 @@
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="iWl-1O-jtK">
-                                                    <rect key="frame" x="16" y="4" width="193" height="36"/>
+                                                    <rect key="frame" x="16" y="4.5" width="193" height="35.5"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="20"/>
                                                     <state key="normal" title="Clear Debug Directory"/>
                                                     <connections>
@@ -216,6 +217,37 @@
                                     </tableViewCell>
                                 </cells>
                             </tableViewSection>
+                            <tableViewSection headerTitle="Tests" id="3Wa-at-0l1">
+                                <cells>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" accessoryType="disclosureIndicator" indentationWidth="10" rowHeight="45" id="JyV-t5-EE2">
+                                        <rect key="frame" x="0.0" y="429" width="375" height="45"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="JyV-t5-EE2" id="b4f-yX-2Af">
+                                            <rect key="frame" x="0.0" y="0.0" width="341" height="44.5"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Gradient test" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ECo-9j-Wnp">
+                                                    <rect key="frame" x="16" y="11" width="118" height="24"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="width" constant="118" id="YUK-ks-598"/>
+                                                    </constraints>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstItem="ECo-9j-Wnp" firstAttribute="leading" secondItem="b4f-yX-2Af" secondAttribute="leadingMargin" id="QK9-ny-ehe"/>
+                                                <constraint firstItem="ECo-9j-Wnp" firstAttribute="top" secondItem="b4f-yX-2Af" secondAttribute="topMargin" id="WDE-Yd-XQh"/>
+                                                <constraint firstAttribute="bottomMargin" secondItem="ECo-9j-Wnp" secondAttribute="bottom" constant="-1" id="aSj-9d-dht"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                        <connections>
+                                            <segue destination="otn-NI-ZbM" kind="show" id="nrT-Up-Jg8"/>
+                                        </connections>
+                                    </tableViewCell>
+                                </cells>
+                            </tableViewSection>
                         </sections>
                         <connections>
                             <outlet property="dataSource" destination="cVK-YC-yNn" id="B7C-79-n10"/>
@@ -247,6 +279,37 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Hwe-ej-gBt" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="2201" y="4"/>
+        </scene>
+        <!--Gradient Test-->
+        <scene sceneID="qbG-RT-Mmb">
+            <objects>
+                <viewController title="Gradient Test" id="otn-NI-ZbM" customClass="GradientTestCode" customModule="BumpCamera" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="ncY-lh-4IG">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" translatesAutoresizingMaskIntoConstraints="NO" id="zTu-ps-nLa">
+                                <rect key="frame" x="16" y="75" width="343" height="572"/>
+                                <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <viewLayoutGuide key="safeArea" id="3Kq-75-aDn"/>
+                            </view>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstItem="zTu-ps-nLa" firstAttribute="top" secondItem="0sw-mw-FMH" secondAttribute="top" constant="11" id="BkH-jT-mXJ"/>
+                            <constraint firstItem="zTu-ps-nLa" firstAttribute="leading" secondItem="ncY-lh-4IG" secondAttribute="leadingMargin" id="EMr-iH-Yfg"/>
+                            <constraint firstItem="zTu-ps-nLa" firstAttribute="trailing" secondItem="ncY-lh-4IG" secondAttribute="trailingMargin" id="JfE-sN-mua"/>
+                            <constraint firstAttribute="bottom" secondItem="zTu-ps-nLa" secondAttribute="bottom" constant="20" symbolic="YES" id="naN-Ca-QJp"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="0sw-mw-FMH"/>
+                    </view>
+                    <connections>
+                        <outlet property="TestView" destination="zTu-ps-nLa" id="LVa-DD-qya"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="DMe-NE-KqU" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1436" y="684.10794602698661"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="FWZ-0Y-FQ7">
