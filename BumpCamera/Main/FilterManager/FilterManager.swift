@@ -55,9 +55,9 @@ class FilterManager
                             (.TransferEffect, 6), (.SepiaTone, 7), (.Thermal, 8), (.TemperatureAndTint, 9),
                             (.Tonal, 10),],
             .Colors: [(.HueAdjust, 0), (.HSBAdjust, 1), (.Solarize, 2), (.ChannelMixer, 3), (.ChannelMangler, 4),
-                      (.ColorInversion, 5),
-                      (.DesaturateColors, 6), (.Threshold, 7), (.MonochromeColor, 8), (.FalseColor, 9),
-                      (.Monochrome, 10), (.PaletteShifting, 11)],
+                      (.ColorInversion, 5), (.ColorMap, 6),
+                      (.DesaturateColors, 7), (.Threshold, 8), (.MonochromeColor, 9), (.FalseColor, 10),
+                      (.Monochrome, 11), (.PaletteShifting, 12)],
             .Gray: [(.GrayscaleKernel, 0), (.Dither, 1)],
             //.Bumpy: [(.BumpyPixels, 1), (.BumpyTriangles, 2), (.Embossed, 0)],
             //.Motion: [(.ColorDelta, 0), (.FilterDelta, 1), (.PatternDelta, 2)],
@@ -118,6 +118,7 @@ class FilterManager
             .Silhouette: (ConditionalSilhouette.ID(), ConditionalSilhouette.FilterKernel, ConditionalSilhouette.Title()),
             .ColorInversion: (ColorInverter.ID(), ColorInverter.FilterKernel, ColorInverter.Title()),
             .ChannelMangler: (ChannelMangler.ID(), ChannelMangler.FilterKernel, ChannelMangler.Title()),
+            .ColorMap: (ColorMap.ID(), ColorMap.FilterKernel, ColorMap.Title()),
             ]
     
     /// Determines if the specified filter supports the specified target type. Not all filters support all targets - slow
@@ -212,6 +213,7 @@ class FilterManager
             .Silhouette: ConditionalSilhouette.FilterTarget(),
             .ColorInversion: ColorInverter.FilterTarget(),
             .ChannelMangler: ChannelMangler.FilterTarget(),
+            .ColorMap: ColorMap.FilterTarget(),
             ]
     
     /// Load all of the filter classes into the filter manager.
@@ -326,6 +328,7 @@ class FilterManager
         ParameterCount![.Silhouette] = ConditionalSilhouette.SupportedFields().count
         ParameterCount![.ColorInversion] = ColorInverter.SupportedFields().count
         ParameterCount![.ChannelMangler] = ChannelMangler.SupportedFields().count
+        ParameterCount![.ColorMap] = ColorMap.SupportedFields().count
     }
     
     private static var ParameterCount: [FilterManager.FilterTypes: Int]? = nil
@@ -397,6 +400,7 @@ class FilterManager
         StoryboardList![.Silhouette] = ConditionalSilhouette.SettingsStoryboard()
         StoryboardList![.ColorInversion] = ColorInverter.SettingsStoryboard()
         StoryboardList![.ChannelMangler] = ChannelMangler.SettingsStoryboard()
+        StoryboardList![.ColorMap] = ColorMap.SettingsStoryboard()
     }
     
     private static var StoryboardList: [FilterTypes: String?]? = nil
@@ -691,6 +695,9 @@ class FilterManager
             
         case .ChannelMangler:
             return ChannelMangler()
+            
+        case .ColorMap:
+            return ColorMap()
             
         default:
             return nil
@@ -1116,6 +1123,7 @@ class FilterManager
             .Silhouette: "Silhouette",
             .ColorInversion: "Invert Colors",
             .ChannelMangler: "Channel Mangler",
+            .ColorMap: "Color Map",
             ]
     
     public static func GetFilterTitle(_ Filter: FilterTypes) -> String?
@@ -1186,6 +1194,7 @@ class FilterManager
             .Silhouette: true,
             .ColorInversion: true,
             .ChannelMangler: true,
+            .ColorMap: true,
             ]
     
     /// Determines if the given filter type is implemented.
@@ -1411,6 +1420,8 @@ class FilterManager
             .CIAlphaThreshold: .DoubleType,
             .CIAlphaInvertIfGreater: .BoolType,
             .ChannelManglerAction: .IntType,
+            .InvertColorMapGradient: .BoolType,
+            .ColorMapGradient: .StringType,
             ]
     
     /// Maps fields to names used to store field data in user settings.
@@ -1576,6 +1587,8 @@ class FilterManager
             .CIAlphaThreshold: "_AlphaInversionThreshold",
             .CIAlphaInvertIfGreater: "_InvertAlphaIfGreater",
             .ChannelManglerAction: "_Action",
+            .InvertColorMapGradient: "_InvertGradient",
+            .ColorMapGradient: "_GradientDefinition",
             ]
 }
 
