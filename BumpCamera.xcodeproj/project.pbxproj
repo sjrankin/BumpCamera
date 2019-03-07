@@ -218,6 +218,10 @@
 		17BA6047221E70A500AEC044 /* GeneralHelp.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 17BA6046221E70A500AEC044 /* GeneralHelp.storyboard */; };
 		17BA6049221E71CA00AEC044 /* HelpUICode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17BA6048221E71CA00AEC044 /* HelpUICode.swift */; };
 		17BC00752230B3200076A5D5 /* GradientTestCode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17BC00742230B3200076A5D5 /* GradientTestCode.swift */; };
+		17BC00792230EE8F0076A5D5 /* ColorMap.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17BC00782230EE8F0076A5D5 /* ColorMap.swift */; };
+		17BC007B223139BC0076A5D5 /* SampleViewer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17BC007A223139BC0076A5D5 /* SampleViewer.swift */; };
+		17BC007E22313AFC0076A5D5 /* SampleViewerCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17BC007D22313AFC0076A5D5 /* SampleViewerCell.swift */; };
+		17BC0081223140580076A5D5 /* GradientEditorUI.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 17BC0080223140580076A5D5 /* GradientEditorUI.storyboard */; };
 		17BEE0B221FC20FF00A9370B /* DesaturateColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17BEE0B121FC20FF00A9370B /* DesaturateColors.swift */; };
 		17BEE0B421FC2F8500A9370B /* DesaturationKernelParameters.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17BEE0B321FC2F8500A9370B /* DesaturationKernelParameters.swift */; };
 		17C18AD4222FF93300DBDD79 /* ColorMapSettingsUI.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 17C18AD3222FF93300DBDD79 /* ColorMapSettingsUI.storyboard */; };
@@ -525,6 +529,10 @@
 		17BA6046221E70A500AEC044 /* GeneralHelp.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = GeneralHelp.storyboard; sourceTree = "<group>"; };
 		17BA6048221E71CA00AEC044 /* HelpUICode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HelpUICode.swift; sourceTree = "<group>"; };
 		17BC00742230B3200076A5D5 /* GradientTestCode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GradientTestCode.swift; sourceTree = "<group>"; };
+		17BC00782230EE8F0076A5D5 /* ColorMap.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorMap.swift; sourceTree = "<group>"; };
+		17BC007A223139BC0076A5D5 /* SampleViewer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SampleViewer.swift; sourceTree = "<group>"; };
+		17BC007D22313AFC0076A5D5 /* SampleViewerCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SampleViewerCell.swift; sourceTree = "<group>"; };
+		17BC0080223140580076A5D5 /* GradientEditorUI.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = GradientEditorUI.storyboard; sourceTree = "<group>"; };
 		17BEE0B121FC20FF00A9370B /* DesaturateColors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DesaturateColors.swift; sourceTree = "<group>"; };
 		17BEE0B321FC2F8500A9370B /* DesaturationKernelParameters.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DesaturationKernelParameters.swift; sourceTree = "<group>"; };
 		17C18AD3222FF93300DBDD79 /* ColorMapSettingsUI.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = ColorMapSettingsUI.storyboard; sourceTree = "<group>"; };
@@ -680,6 +688,7 @@
 				174F82DA221FBB1A009A004C /* Pointillize.swift */,
 				1726243321F8964E00C7688C /* HSBAdjust.swift */,
 				17AA10572212F98C00EF72DA /* FalseColor.swift */,
+				17BC00782230EE8F0076A5D5 /* ColorMap.swift */,
 				171D626A21EDCE62004D3545 /* Pixellate.swift */,
 			);
 			path = CIFilterWrappers;
@@ -1080,6 +1089,7 @@
 		173F5D07220C66FA00067ABB /* CommonUI */ = {
 			isa = PBXGroup;
 			children = (
+				17BC007F223140440076A5D5 /* GradientEditor */,
 				171298112223AF37000D5EF5 /* ImageMetadata */,
 				173F5D08220C671700067ABB /* ColorPicker */,
 			);
@@ -1526,6 +1536,23 @@
 			path = Help;
 			sourceTree = "<group>";
 		};
+		17BC007C22313AE10076A5D5 /* SampleViewer */ = {
+			isa = PBXGroup;
+			children = (
+				17BC007A223139BC0076A5D5 /* SampleViewer.swift */,
+				17BC007D22313AFC0076A5D5 /* SampleViewerCell.swift */,
+			);
+			path = SampleViewer;
+			sourceTree = "<group>";
+		};
+		17BC007F223140440076A5D5 /* GradientEditor */ = {
+			isa = PBXGroup;
+			children = (
+				17BC0080223140580076A5D5 /* GradientEditorUI.storyboard */,
+			);
+			path = GradientEditor;
+			sourceTree = "<group>";
+		};
 		17C18AD2222FF91B00DBDD79 /* ColorMap */ = {
 			isa = PBXGroup;
 			children = (
@@ -1728,6 +1755,7 @@
 			isa = PBXGroup;
 			children = (
 				17A409D62201E941003D4EC6 /* FilterSettingUIBase.swift */,
+				17BC007C22313AE10076A5D5 /* SampleViewer */,
 				17D60D882210511800933F15 /* SampleContainerView.swift */,
 				1709A6FA2220FBC600D9B43D /* RatingCell.swift */,
 				17E9F0DC2201719600BA7B46 /* FilterSettingsUI.storyboard */,
@@ -1846,6 +1874,7 @@
 				17110DE3221EC24E00223990 /* VibranceSettingsUI.storyboard in Resources */,
 				1775DDB1222BC27E0061DC87 /* BumpCameraPrivacy.pdf in Resources */,
 				171E543121E44E180045ED77 /* LaunchScreen.storyboard in Resources */,
+				17BC0081223140580076A5D5 /* GradientEditorUI.storyboard in Resources */,
 				174779F822042FEC00FD64EF /* NoParametersSettingsUI.storyboard in Resources */,
 				17BA12E42227934A0035A1FC /* CheckerboardGeneratorSettingsUI.storyboard in Resources */,
 				175A3335222EA32400670547 /* ChannelManglerSettingsUI.storyboard in Resources */,
@@ -2100,11 +2129,13 @@
 				17D60D7E220FCDF800933F15 /* MonochromeColors.metal in Sources */,
 				1712980E222396FC000D5EF5 /* RunFilterResults.swift in Sources */,
 				17110DE5221EC31200223990 /* VibranceSettingsUICode.swift in Sources */,
+				17BC007B223139BC0076A5D5 /* SampleViewer.swift in Sources */,
 				17D7510821F410BF0050A2B5 /* MainUIFilterSelection.swift in Sources */,
 				175A3326222E5D8000670547 /* DataExtensions.swift in Sources */,
 				171F3CF1220862B80098E2B7 /* GridParameters.swift in Sources */,
 				171D626D21EDCF6E004D3545 /* LineScreen.swift in Sources */,
 				174D6D5B220803E70066AE93 /* GroupNodeManager.swift in Sources */,
+				17BC007E22313AFC0076A5D5 /* SampleViewerCell.swift in Sources */,
 				17CE37382213AEDB0070ED87 /* GeneralResults.swift in Sources */,
 				179B599421EF0AC200905058 /* FilterCollectionCell.swift in Sources */,
 				170BFE7C221C363500754BF6 /* SmoothLinearGradientSettingsUICode.swift in Sources */,
@@ -2156,6 +2187,7 @@
 				1779F3D1221833A900140EEA /* SepiaTone.swift in Sources */,
 				17E9F0E722017E9600BA7B46 /* FilterSettingsUICode.swift in Sources */,
 				1797BCF32222CC0800C47510 /* DebugSettingsCode.swift in Sources */,
+				17BC00792230EE8F0076A5D5 /* ColorMap.swift in Sources */,
 				171F3D0F220AD5AA0098E2B7 /* Solarize.metal in Sources */,
 				17C392672215A5CB0049B8FD /* DilateErodeSettingsUICode.swift in Sources */,
 				1764FA8A21F1E6F90059FAFD /* FilterSettings.swift in Sources */,
