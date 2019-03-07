@@ -26,6 +26,7 @@ class GradientTestCode: UIViewController
     func MakeGradient(WithFrame: CGRect) -> CAGradientLayer
     {
         let Layer = CAGradientLayer()
+        Layer.name = "Gradient"
         Layer.frame = WithFrame
         Layer.startPoint = CGPoint(x: 0.0, y: 0.0)
         Layer.endPoint = CGPoint(x: 0.0, y: 1.0)
@@ -52,5 +53,91 @@ class GradientTestCode: UIViewController
         return Layer
     }
     
+    @IBAction func HandleGradientChanged(_ sender: Any)
+    {
+DrawGradient()
+    }
+    
+    func DrawGradient()
+    {
+        let DoReverse = ReverseSwitch.isOn
+        let IsVertical = VerticalSwitch.isOn
+        var NewLayer: CAGradientLayer!
+        switch GradientSegments.selectedSegmentIndex
+        {
+        case 0:
+            //black white
+            NewLayer = GradientParser.CreateGradientLayer(From: "(Black)@(0.0),(White)@(1.0)",
+                                                          WithFrame: TestView.bounds,
+                                                          IsVertical: IsVertical, ReverseColors: DoReverse)
+            
+        case 1:
+            //many
+            let Many = "(Red)@(0.0)," +
+                "(White)@(0.1)," +
+                "(Red)@(0.2)," +
+                "(Yellow)@(0.3)," +
+                "(Red)@(0.4)," +
+                "(Orange)@(0.5)," +
+                "(Red)@(0.6)," +
+                "(Yellow)@(0.7)," +
+                "(Red)@(0.8)," +
+                "(White)@(0.9)," +
+                "(Red)@(1.0)"
+            NewLayer = GradientParser.CreateGradientLayer(From: Many,
+                                                          WithFrame: TestView.bounds,
+                                                          IsVertical: IsVertical, ReverseColors: DoReverse)
+            
+        case 2:
+            //yellow gold
+            NewLayer = GradientParser.CreateGradientLayer(From: "(Yellow)@(0.0),(Gold)@(1.0)",
+                                                          WithFrame: TestView.bounds,
+                                                          IsVertical: IsVertical, ReverseColors: DoReverse)
+            
+        case 3:
+            //gold red
+            NewLayer = GradientParser.CreateGradientLayer(From: "(Gold)@(0.0),(Red)@(1.0)",
+                                                          WithFrame: TestView.bounds,
+                                                          IsVertical: IsVertical, ReverseColors: DoReverse)
+            
+        case 4:
+            //RGB
+            NewLayer = GradientParser.CreateGradientLayer(From: "(Red)@(0.0),(Green)@(0.5),(Blue)@(1.0)",
+                                                          WithFrame: TestView.bounds,
+                                                          IsVertical: IsVertical, ReverseColors: DoReverse)
+            
+        case 5:
+            //rainbow
+            let Rainbow = "(Red)@(0.0),(Orange)@(0.16),(Yellow)@(0.32),(Green)@(0.48),(Blue)@(0.64),(Indigo)@(0.80),(Violet)@(1.0)"
+            NewLayer = GradientParser.CreateGradientLayer(From: Rainbow, WithFrame: TestView.bounds,
+                                                          IsVertical: IsVertical, ReverseColors: DoReverse)
+            
+        default:
+            fatalError("Unexpected segment.")
+        }
+        
+        NewLayer.name = "Gradient"
+        TestView?.layer.sublayers!.forEach{if $0.name == "Gradient" {$0.removeFromSuperlayer()}}
+        NewLayer.zPosition = 1000
+        TestView.layer.addSublayer(NewLayer)
+        VerticalSwitch.isEnabled = true
+        ReverseSwitch.isEnabled = true
+    }
+    
+    @IBAction func HandleVerticalChanged(_ sender: Any)
+    {
+        DrawGradient()
+    }
+    
+    @IBOutlet weak var VerticalSwitch: UISwitch!
+    
+    @IBAction func HandleReverseChanged(_ sender: Any)
+    {
+        DrawGradient()
+    }
+    
+    @IBOutlet weak var ReverseSwitch: UISwitch!
+    
+    @IBOutlet weak var GradientSegments: UISegmentedControl!
     @IBOutlet weak var TestView: UIView!
 }
