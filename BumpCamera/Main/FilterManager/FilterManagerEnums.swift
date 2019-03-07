@@ -287,6 +287,8 @@ extension FilterManager
         case CIAlphaThreshold = 157
         case CIAlphaInvertIfGreater = 158
         case ChannelManglerAction = 159
+        case InvertColorMapGradient = 160
+        case ColorMapGradient = 161
         case NoField = 10000
     }
     
