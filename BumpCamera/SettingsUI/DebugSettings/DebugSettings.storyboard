@@ -289,22 +289,74 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <view contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" translatesAutoresizingMaskIntoConstraints="NO" id="zTu-ps-nLa">
-                                <rect key="frame" x="16" y="75" width="343" height="572"/>
+                                <rect key="frame" x="16" y="75" width="343" height="490"/>
                                 <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <viewLayoutGuide key="safeArea" id="3Kq-75-aDn"/>
                             </view>
+                            <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" translatesAutoresizingMaskIntoConstraints="NO" id="KEe-P6-paL">
+                                <rect key="frame" x="16" y="583" width="343" height="29"/>
+                                <segments>
+                                    <segment title="BW"/>
+                                    <segment title="Many"/>
+                                    <segment title="YG"/>
+                                    <segment title="GR"/>
+                                    <segment title="RGB"/>
+                                    <segment title="RBow"/>
+                                </segments>
+                                <connections>
+                                    <action selector="HandleGradientChanged:" destination="otn-NI-ZbM" eventType="primaryActionTriggered" id="zLM-jU-Okv"/>
+                                </connections>
+                            </segmentedControl>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Reverse" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="MDS-Ql-p4z">
+                                <rect key="frame" x="16" y="626" width="62" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="GEu-10-9uT">
+                                <rect key="frame" x="93" y="621" width="51" height="31"/>
+                                <connections>
+                                    <action selector="HandleReverseChanged:" destination="otn-NI-ZbM" eventType="primaryActionTriggered" id="3dP-05-dS5"/>
+                                </connections>
+                            </switch>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Vertical" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Vbj-hf-Uga">
+                                <rect key="frame" x="234" y="626" width="58" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" enabled="NO" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="xR2-l1-vcU">
+                                <rect key="frame" x="310" y="621" width="51" height="31"/>
+                                <connections>
+                                    <action selector="HandleVerticalChanged:" destination="otn-NI-ZbM" eventType="primaryActionTriggered" id="par-HX-C8V"/>
+                                </connections>
+                            </switch>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
-                            <constraint firstItem="zTu-ps-nLa" firstAttribute="top" secondItem="0sw-mw-FMH" secondAttribute="top" constant="11" id="BkH-jT-mXJ"/>
-                            <constraint firstItem="zTu-ps-nLa" firstAttribute="leading" secondItem="ncY-lh-4IG" secondAttribute="leadingMargin" id="EMr-iH-Yfg"/>
-                            <constraint firstItem="zTu-ps-nLa" firstAttribute="trailing" secondItem="ncY-lh-4IG" secondAttribute="trailingMargin" id="JfE-sN-mua"/>
-                            <constraint firstAttribute="bottom" secondItem="zTu-ps-nLa" secondAttribute="bottom" constant="20" symbolic="YES" id="naN-Ca-QJp"/>
+                            <constraint firstItem="KEe-P6-paL" firstAttribute="leading" secondItem="MDS-Ql-p4z" secondAttribute="leading" id="0hK-Zb-HSb"/>
+                            <constraint firstItem="GEu-10-9uT" firstAttribute="top" secondItem="xR2-l1-vcU" secondAttribute="top" id="3BR-6g-esU"/>
+                            <constraint firstItem="xR2-l1-vcU" firstAttribute="leading" secondItem="Vbj-hf-Uga" secondAttribute="trailing" constant="18" id="BzH-cM-4cc"/>
+                            <constraint firstItem="GEu-10-9uT" firstAttribute="leading" secondItem="MDS-Ql-p4z" secondAttribute="trailing" constant="15" id="DpB-aA-m9K"/>
+                            <constraint firstItem="GEu-10-9uT" firstAttribute="top" secondItem="KEe-P6-paL" secondAttribute="bottom" constant="10" id="FMA-sm-phA"/>
+                            <constraint firstItem="zTu-ps-nLa" firstAttribute="trailing" secondItem="ncY-lh-4IG" secondAttribute="trailingMargin" id="KEd-zx-tH8"/>
+                            <constraint firstItem="KEe-P6-paL" firstAttribute="top" secondItem="zTu-ps-nLa" secondAttribute="bottom" constant="18" id="QPE-vr-duA"/>
+                            <constraint firstAttribute="bottom" secondItem="MDS-Ql-p4z" secondAttribute="bottom" constant="20" symbolic="YES" id="RYl-1R-7eo"/>
+                            <constraint firstItem="MDS-Ql-p4z" firstAttribute="baseline" secondItem="Vbj-hf-Uga" secondAttribute="baseline" id="Xwp-h1-ldD"/>
+                            <constraint firstItem="Vbj-hf-Uga" firstAttribute="centerY" secondItem="xR2-l1-vcU" secondAttribute="centerY" id="bh3-d4-dbM"/>
+                            <constraint firstItem="KEe-P6-paL" firstAttribute="trailing" secondItem="xR2-l1-vcU" secondAttribute="trailing" id="cjI-Hz-2So"/>
+                            <constraint firstItem="zTu-ps-nLa" firstAttribute="trailing" secondItem="KEe-P6-paL" secondAttribute="trailing" id="eew-p7-kIF"/>
+                            <constraint firstItem="zTu-ps-nLa" firstAttribute="leading" secondItem="KEe-P6-paL" secondAttribute="leading" id="f5w-rl-urh"/>
+                            <constraint firstItem="zTu-ps-nLa" firstAttribute="top" secondItem="0sw-mw-FMH" secondAttribute="top" constant="11" id="p4h-fX-83r"/>
+                            <constraint firstItem="zTu-ps-nLa" firstAttribute="leading" secondItem="ncY-lh-4IG" secondAttribute="leadingMargin" id="qmx-El-Eci"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="0sw-mw-FMH"/>
                     </view>
                     <connections>
+                        <outlet property="GradientSegments" destination="KEe-P6-paL" id="F1c-Zq-hvm"/>
+                        <outlet property="ReverseSwitch" destination="GEu-10-9uT" id="rgc-Ja-fz5"/>
                         <outlet property="TestView" destination="zTu-ps-nLa" id="LVa-DD-qya"/>
+                        <outlet property="VerticalSwitch" destination="xR2-l1-vcU" id="DTw-Sv-AKu"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="DMe-NE-KqU" userLabel="First Responder" sceneMemberID="firstResponder"/>
