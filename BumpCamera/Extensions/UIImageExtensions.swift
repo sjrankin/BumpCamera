@@ -13,6 +13,15 @@ import simd
 
 extension UIImage
 {
+    convenience init(View: UIView)
+    {
+        UIGraphicsBeginImageContextWithOptions(View.bounds.size, View.isOpaque, 0.0)
+        View.drawHierarchy(in: View.bounds, afterScreenUpdates: true)
+        let Image = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        self.init(cgImage: (Image?.cgImage)!)
+    }
+    
     /// Create a UIImage from a pixel buffer.
     ///
     /// -SeeAlso:
