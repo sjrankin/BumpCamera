@@ -20,15 +20,64 @@ class ColorMapSettingsUICode: FilterSettingUIBase, UIPickerViewDelegate, UIPicke
         GradientSample.layer.borderColor = UIColor.black.cgColor
         GradientSample.layer.borderWidth = 0.5
         GradientSample.layer.cornerRadius = 5.0
-        LoadUIContents()
         
         GradientPicker.delegate = self
         GradientPicker.dataSource = self
+        
+        SelectItem(ParameterManager.GetString(From: FilterID, Field: .ColorMapGradient, Default: ""))
+        LoadUIContents()
+    }
+    
+    func SelectItem(_ RawValue: String)
+    {
+        var Index = 0
+        for (_, Gradient) in GradientsForPicker
+        {
+            if Gradient.lowercased() == RawValue.lowercased()
+            {
+                GradientPicker.selectRow(Index, inComponent: 0, animated: true)
+                StandardIndex = Index
+                return
+            }
+            Index = Index + 1
+        }
+        GradientPicker.selectRow(0, inComponent: 0, animated: true)
+    }
+    
+    var UserGradient: String? = nil
+    var StandardIndex: Int = 0
+    
+    /// Neede to make sure the sample gradient fits in the provided view.
+    override func viewDidLayoutSubviews()
+    {
+        LoadUIContents()
     }
     
     func LoadUIContents()
     {
-        
+        let DoInvert = InvertGradientSwitch.isOn
+        let (Name, RawGradient) = GradientsForPicker[StandardIndex]
+        if Name == "User"
+        {
+            if let OtherGradient = UserGradient
+            {
+                let SampleGradient = GradientParser.CreateGradientImage(From: OtherGradient,
+                                                                        WithFrame: GradientSample.bounds,
+                                                                        IsVertical: true, ReverseColors: DoInvert)
+                GradientSample.image = SampleGradient
+            }
+            else
+            {
+                
+            }
+        }
+        else
+        {
+            let SampleGradient = GradientParser.CreateGradientImage(From: RawGradient,
+                                                                    WithFrame: GradientSample.bounds,
+                                                                    IsVertical: true, ReverseColors: DoInvert)
+            GradientSample.image = SampleGradient
+        }
     }
     
     let GradientsForPicker: [(String, String)] =
@@ -43,8 +92,20 @@ class ColorMapSettingsUICode: FilterSettingUIBase, UIPickerViewDelegate, UIPicke
         ("White to Orange", "(White)@(0.0),(Orange)@(1.0)"),
         ("White to Indigo", "(White)@(0.0),(Indigo)@(1.0)"),
         ("White to Violet", "(White)@(0.0),(Violet)@(1.0)"),
-        ("Rainbow", "(Red)@(0.0),(Orange)@(0.18),(Yellow)@(0.36),(Green)@(0.52),(Blue)@(0.68),(Indigo)@(0.84),(Violet)@(1.0)")
+        ("Black to Red", "(Black)@(0.0),(Red)@(1.0)"),
+        ("Black to Green", "(Black)@(0.0),(Green)@(1.0)"),
+        ("Black to Blue", "(Black)@(0.0),(Blue)@(1.0)"),
+        ("Black to Cyan", "(Black)@(0.0),(Cyan)@(1.0)"),
+        ("Black to Magenta", "(Black)@(0.0),(Magenta)@(1.0)"),
+        ("Black to Yellow", "(Black)@(0.0),(Red)@(1.0)"),
+        ("Rainbow", "(Red)@(0.0),(Orange)@(0.18),(Yellow)@(0.36),(Green)@(0.52),(Blue)@(0.68),(Indigo)@(0.84),(Violet)@(1.0)"),
+        ("User", ""),
     ]
+    
+    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String?
+    {
+        return GradientsForPicker[row].0
+    }
     
     func numberOfComponents(in pickerView: UIPickerView) -> Int
     {
@@ -54,6 +115,21 @@ class ColorMapSettingsUICode: FilterSettingUIBase, UIPickerViewDelegate, UIPicke
     func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int
     {
         return GradientsForPicker.count
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int)
+    {
+        StandardIndex = row
+        UpdateValue(WithValue: GradientsForPicker[StandardIndex].1, ToField: .ColorMapGradient)
+        ShowSampleView()
+        LoadUIContents()
+    }
+    
+    @IBAction func HandleInversionChanged(_ sender: Any)
+    {
+        UpdateValue(WithValue: InvertGradientSwitch.isOn, ToField: .InvertColorMapGradient)
+        ShowSampleView()
+        LoadUIContents()
     }
     
     @IBOutlet weak var GradientPicker: UIPickerView!
