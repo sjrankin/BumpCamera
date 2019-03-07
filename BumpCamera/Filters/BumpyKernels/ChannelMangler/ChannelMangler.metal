@@ -576,14 +576,23 @@ kernel void ChannelMangler(texture2d<float, access::read> InTexture [[texture(0)
         
         case 32:
         {
-        c1 = float((RValue & 0x70) / 255.0);
-        c2 = float((GValue & 0x70) / 255.0);
-        c3 = float((BValue & 0x70) / 255.0);
+        c1 = float((RValue & 0xc0) / 255.0);
+        c2 = float((GValue & 0xc0) / 255.0);
+        c3 = float((BValue & 0xc0) / 255.0);
         OutColor = float4(c1, c2, c3, 1.0);
         break;
         }
         
         case 33:
+        {
+        c1 = float((RValue & 0x80) / 255.0);
+        c2 = float((GValue & 0x80) / 255.0);
+        c3 = float((BValue & 0x80) / 255.0);
+        OutColor = float4(c1, c2, c3, 1.0);
+        break;
+        }
+        
+        case 34:
         {
         uint clred = Compact(RValue, false);
         uint clgreen = Compact(GValue, false);
@@ -595,7 +604,7 @@ kernel void ChannelMangler(texture2d<float, access::read> InTexture [[texture(0)
         break;
         }
         
-        case 34:
+        case 35:
         {
         uint chred = Compact(RValue, true);
         uint chgreen = Compact(GValue, true);
@@ -607,7 +616,7 @@ kernel void ChannelMangler(texture2d<float, access::read> InTexture [[texture(0)
         break;
         }
         
-        case 35:
+        case 36:
         {
         uint rred = ReverseBits(RValue);
         uint rgreen = ReverseBits(GValue);
@@ -615,6 +624,93 @@ kernel void ChannelMangler(texture2d<float, access::read> InTexture [[texture(0)
         c1 = float(rred) / 255.0;
         c2 = float(rgreen) / 255.0;
         c3 = float(rblue) / 255.0;
+        OutColor = float4(c1, c2, c3, 1.0);
+        break;
+        }
+        
+        case 37:
+        {
+        int ic1 = int(InColor.r * 255.0);
+        int ic2 = int(InColor.g * 255.0);
+        int ic3 = int(InColor.b * 255.0);
+        ic2 = ic2 ^ ic1;
+        ic3 = ic3 ^ ic1;
+        c1 = InColor.r;
+        c2 = float(ic2 / 255.0);
+        c3 = float(ic3 / 255.0);
+        OutColor = float4(c1, c2, c3, 1.0);
+        break;
+        }
+        
+        case 38:
+        {
+        int ic1 = int(InColor.r * 255.0);
+        int ic2 = int(InColor.g * 255.0);
+        int ic3 = int(InColor.b * 255.0);
+        ic1 = ic1 ^ ic2;
+        ic3 = ic3 ^ ic2;
+        c1 = float(ic1 / 255.0);
+        c2 = InColor.g;
+        c3 = float(ic3 / 255.0);
+        OutColor = float4(c1, c2, c3, 1.0);
+        break;
+        }
+        
+        case 39:
+        {
+        int ic1 = int(InColor.r * 255.0);
+        int ic2 = int(InColor.g * 255.0);
+        int ic3 = int(InColor.b * 255.0);
+        ic1 = ic1 ^ ic3;
+        ic2 = ic2 ^ ic3;
+        c1 = float(ic1 / 255.0);
+        c2 = float(ic2 / 255.0);
+        c3 = InColor.b;
+        OutColor = float4(c1, c2, c3, 1.0);
+        break;
+        }
+        
+        case 40:
+        {
+        int ic1 = int(InColor.r * 255.0);
+        int ic2 = int(InColor.g * 255.0);
+        int ic3 = int(InColor.b * 255.0);
+        ic1 = ic1 ^ ic2 ^ ic3;
+        ic2 = ic2 ^ ic1 ^ ic3;
+        ic3 = ic3 ^ ic1 ^ ic2;
+        c1 = float(ic1 / 255.0);
+        c2 = float(ic2 / 255.0);
+        c3 = float(ic3 / 255.0);
+        OutColor = float4(c1, c2, c3, 1.0);
+        break;
+        }
+        
+        case 41:
+        {
+        int ic1 = int(InColor.r * 255.0);
+        int ic2 = int(InColor.g * 255.0);
+        int ic3 = int(InColor.b * 255.0);
+        ic1 = ic1 ^ (ic2 | ic3);
+        ic2 = ic2 ^ (ic1 | ic3);
+        ic3 = ic3 ^ (ic1 | ic2);
+        c1 = float(ic1 / 255.0);
+        c2 = float(ic2 / 255.0);
+        c3 = float(ic3 / 255.0);
+        OutColor = float4(c1, c2, c3, 1.0);
+        break;
+        }
+        
+        case 42:
+        {
+        int ic1 = int(InColor.r * 255.0);
+        int ic2 = int(InColor.g * 255.0);
+        int ic3 = int(InColor.b * 255.0);
+        ic1 = ic1 ^ (ic2 & ic3);
+        ic2 = ic2 ^ (ic1 & ic3);
+        ic3 = ic3 ^ (ic1 & ic2);
+        c1 = float(ic1 / 255.0);
+        c2 = float(ic2 / 255.0);
+        c3 = float(ic3 / 255.0);
         OutColor = float4(c1, c2, c3, 1.0);
         break;
         }
