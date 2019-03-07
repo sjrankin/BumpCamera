@@ -86,8 +86,11 @@
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="QfY-40-jPj">
+                                                <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="QfY-40-jPj">
                                                     <rect key="frame" x="310" y="7.5" width="51" height="29.5"/>
+                                                    <connections>
+                                                        <action selector="HandleInversionChanged:" destination="QdZ-L3-aQF" eventType="primaryActionTriggered" id="mFV-iv-akz"/>
+                                                    </connections>
                                                 </switch>
                                             </subviews>
                                             <constraints>
