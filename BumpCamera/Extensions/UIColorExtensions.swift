@@ -12,6 +12,230 @@ import simd
 
 extension UIColor
 {
+    /// Create a UIColor with the unnormalized RGB values. Alpha is set to 1.0.
+    ///
+    /// - Parameters:
+    ///   - red: Red value (between 0 and 255).
+    ///   - green: Green value (between 0 and 255).
+    ///   - blue: Blue value (between 0 and 255).
+    convenience init(red: Int, green: Int, blue: Int)
+    {
+        self.init(red: CGFloat(Utility.ForceToValidRange(red, ValidRange: 0...255)),
+                  green: CGFloat(Utility.ForceToValidRange(green, ValidRange: 0...255)),
+                  blue: CGFloat(Utility.ForceToValidRange(blue, ValidRange: 0...255)),
+                  alpha: 1.0)
+    }
+    
+    /// Create a UIColor with the lower 24-bits of the passed integer. Alpha is set to 1.0.
+    ///
+    /// - Parameter Hex: Numeric color value. Only the lower 24-bits are used. The colors are in rrggbb order.
+    convenience init(Hex: Int)
+    {
+        let r = (Hex >> 16) & 0xff
+        let g = (Hex >> 8) & 0xff
+        let b = (Hex) & 0xff
+        self.init(red: CGFloat(r) / 255.0, green: CGFloat(g) / 255.0, blue: CGFloat(b) / 255.0, alpha: 1.0)
+    }
+    
+    /// Create a UIColor with the passed hex string.
+    ///
+    /// - Note:
+    ///   The format of the hex string is: `rrggbb` or `rrggbbaa` with optional prefix.
+    ///
+    /// - Parameter HexString: The hex value in a string. The value may be prefixed by `#`, `0x` or '0X' but
+    ///                        values without prefixes are acceptable. Alpha channels are also permissible.
+    ///                        Channel values that somehow evaluated to out of range are clamped. Invalid
+    ///                        `HexString` values result in a failure (nil returned).
+    convenience init?(HexString: String)
+    {
+        self.init()
+        if HexString.count < 1
+        {
+            return nil
+        }
+        var Working = HexString.trimmingCharacters(in:. whitespacesAndNewlines)
+        Working = Working.lowercased()
+        Working = Working.replacingOccurrences(of: "#", with: "")
+        Working = Working.replacingOccurrences(of: "0x", with: "")
+        if Working.count == 6 || Working.count == 8
+        {
+        }
+        else
+        {
+            print("Unable to convert \(HexString) to a color.")
+            return nil
+        }
+        
+        if Working.count == 8
+        {
+            let LowA = Working.index(Working.startIndex, offsetBy: 0)
+            let HighA = Working.index(Working.startIndex, offsetBy: 1)
+            let a = Working[LowA...HighA]
+            let Alpha = Int(String(describing: a), radix: 16)
+            
+            let LowR = Working.index(Working.startIndex, offsetBy: 2)
+            let HighR = Working.index(Working.startIndex, offsetBy: 3)
+            let r = Working[LowR...HighR]
+            let Red = Int(String(describing: r), radix: 16)
+            
+            let LowG = Working.index(Working.startIndex, offsetBy: 4)
+            let HighG = Working.index(Working.startIndex, offsetBy: 5)
+            let g = Working[LowG...HighG]
+            let Green = Int(String(describing: g), radix: 16)
+            
+            let LowB = Working.index(Working.startIndex, offsetBy: 6)
+            let HighB = Working.index(Working.startIndex, offsetBy: 7)
+            let b = Working[LowB...HighB]
+            let Blue = Int(String(describing: b), radix: 16)
+            
+            let FAlpha = CGFloat(Alpha!) / 100.0
+            let FRed = CGFloat(Red!) / 255.0
+            let FGreen = CGFloat(Green!) / 255.0
+            let FBlue = CGFloat(Blue!) / 255.0
+            self.init(red: FRed, green: FGreen, blue: FBlue, alpha: FAlpha)
+        }
+        else
+        {
+            let LowR = Working.index(Working.startIndex, offsetBy: 0)
+            let HighR = Working.index(Working.startIndex, offsetBy: 1)
+            let r = Working[LowR...HighR]
+            let Red = Int(String(describing: r), radix: 16)
+            
+            let LowG = Working.index(Working.startIndex, offsetBy: 2)
+            let HighG = Working.index(Working.startIndex, offsetBy: 3)
+            let g = Working[LowG...HighG]
+            let Green = Int(String(describing: g), radix: 16)
+            
+            let LowB = Working.index(Working.startIndex, offsetBy: 4)
+            let HighB = Working.index(Working.startIndex, offsetBy: 5)
+            let b = Working[LowB...HighB]
+            let Blue = Int(String(describing: b), radix: 16)
+            
+            let FRed = CGFloat(Red!) / 255.0
+            let FGreen = CGFloat(Green!) / 255.0
+            let FBlue = CGFloat(Blue!) / 255.0
+            
+            self.init(red: FRed, green: FGreen, blue: FBlue, alpha: 1.0)
+        }
+    }
+    
+    /// List of known color names and their associated values.
+    private static let KnownColors: [String: UIColor] =
+        [
+            "black": UIColor.black,
+            "white": UIColor.white,
+            "red": UIColor.red,
+            "green": UIColor.green,
+            "blue": UIColor.blue,
+            "cyan": UIColor.cyan,
+            "magenta": UIColor.magenta,
+            "yellow": UIColor.yellow,
+            "purple": UIColor.purple,
+            "orange": UIColor.orange,
+            "brown": UIColor.brown,
+            "gray": UIColor.gray,
+            "darkgray": UIColor.darkGray,
+            "lightgray": UIColor.lightGray,
+    ]
+    
+    /// Search the known colors list for the passed color name. Returns the color value if found.
+    ///
+    /// - Parameter Name: The name to search in the known colors list. Internally, the name is
+    ///                   lowercased to match the names in the known colors list.
+    /// - Returns: The value of the passed name on success, nil if not found.
+    public static func GetKnownColor(Name: String) -> UIColor?
+    {
+        return KnownColors[Name.lowercased()]
+    }
+    
+    /// Return a UIColor with the passed hex string.
+    ///
+    /// - Note:
+    ///   The format of the hex string is: `rrggbb` or `rrggbbaa` with optional prefix.
+    ///
+    /// - Parameter Value: The hex value in a string. The value may be prefixed by `#` `0x` (`0X` is also OK but
+    ///                    essentially the same as `0x` as the case of the input is normalized before much
+    ///                    processing takes place) but values without prefixes are acceptable. Alpha channels
+    ///                    are also permissible. Channel values that somehow evaluated to out of range are
+    ///                    clamped. Invalid `HexString` values result in a failure (nil returned).
+    /// - Returns: A UIColor with the color of the passed hex string on success, nil on failure.
+    static func FromHex(_ Value: String) -> UIColor?
+    {
+        if Value.count < 1
+        {
+            return nil
+        }
+        var Working = Value.trimmingCharacters(in:. whitespacesAndNewlines)
+        Working = Working.lowercased()
+        Working = Working.replacingOccurrences(of: "#", with: "")
+        Working = Working.replacingOccurrences(of: "0x", with: "")
+        Working = Working.replacingOccurrences(of: "0X", with: "")
+        if let IsKnown = GetKnownColor(Name: Working)
+        {
+            return IsKnown
+        }
+        if Working.count == 6 || Working.count == 8
+        {
+        }
+        else
+        {
+            print("Unable to convert \(Value) to a color.")
+            return nil
+        }
+        
+        if Working.count == 8
+        {
+            let LowA = Working.index(Working.startIndex, offsetBy: 0)
+            let HighA = Working.index(Working.startIndex, offsetBy: 1)
+            let a = Working[LowA...HighA]
+            let Alpha = Int(String(describing: a), radix: 16)
+            
+            let LowR = Working.index(Working.startIndex, offsetBy: 2)
+            let HighR = Working.index(Working.startIndex, offsetBy: 3)
+            let r = Working[LowR...HighR]
+            let Red = Int(String(describing: r), radix: 16)
+            
+            let LowG = Working.index(Working.startIndex, offsetBy: 4)
+            let HighG = Working.index(Working.startIndex, offsetBy: 5)
+            let g = Working[LowG...HighG]
+            let Green = Int(String(describing: g), radix: 16)
+            
+            let LowB = Working.index(Working.startIndex, offsetBy: 6)
+            let HighB = Working.index(Working.startIndex, offsetBy: 7)
+            let b = Working[LowB...HighB]
+            let Blue = Int(String(describing: b), radix: 16)
+            
+            let FAlpha = CGFloat(Alpha!) / 100.0
+            let FRed = CGFloat(Red!) / 255.0
+            let FGreen = CGFloat(Green!) / 255.0
+            let FBlue = CGFloat(Blue!) / 255.0
+            return UIColor(red: FRed, green: FGreen, blue: FBlue, alpha: FAlpha)
+        }
+        else
+        {
+            let LowR = Working.index(Working.startIndex, offsetBy: 0)
+            let HighR = Working.index(Working.startIndex, offsetBy: 1)
+            let r = Working[LowR...HighR]
+            let Red = Int(String(describing: r), radix: 16)
+            
+            let LowG = Working.index(Working.startIndex, offsetBy: 2)
+            let HighG = Working.index(Working.startIndex, offsetBy: 3)
+            let g = Working[LowG...HighG]
+            let Green = Int(String(describing: g), radix: 16)
+            
+            let LowB = Working.index(Working.startIndex, offsetBy: 4)
+            let HighB = Working.index(Working.startIndex, offsetBy: 5)
+            let b = Working[LowB...HighB]
+            let Blue = Int(String(describing: b), radix: 16)
+            
+            let FRed = CGFloat(Red!) / 255.0
+            let FGreen = CGFloat(Green!) / 255.0
+            let FBlue = CGFloat(Blue!) / 255.0
+            
+            return UIColor(red: FRed, green: FGreen, blue: FBlue, alpha: 1.0)
+        }
+    }
+    
     /// Convert an instance of a UIColor to a SIMD float4 structure.
     ///
     /// - Returns: SIMD float4 equivalent of the instance color.
@@ -229,7 +453,7 @@ extension UIColor
         return sR == oR && sG == oG && sB == oB
     }
     
-    /// Determiens if the instance color is equal to the passed color.
+    /// Determines if the instance color is equal to the passed color.
     ///
     /// - Parameters:
     ///   - R: Other color red value.
@@ -358,21 +582,21 @@ extension UIColor
     
     /// Table of color symbols to color values (excluding alpha).
     static let ColorValues: [Colors: (CGFloat, CGFloat, CGFloat)] =
-    [
-        .Orange: (1.0, 0.5, 0.0),
-        .Black: (0.0, 0.0, 0.0),
-        .Blue: (0.0, 0.0, 1.0),
-        .Brown: (0.6, 0.4, 0.2),
-        .Cyan: (0.0, 1.0, 1.0),
-        .DarkGray: (0.33, 0.33, 0.33),
-        .Gray: (0.5, 0.5, 0.5),
-        .Green: (0.0, 1.0, 0.0),
-        .LightGray: (0.66, 0.66, 0.66),
-        .Magenta: (1.0, 0.0, 1.0),
-        .Purple: (0.5, 0.0, 0.5),
-        .Red: (1.0, 0.0, 0.0),
-        .White: (1.0, 1.0, 1.0),
-        .Yellow: (1.0, 1.0, 0.0)
+        [
+            .Orange: (1.0, 0.5, 0.0),
+            .Black: (0.0, 0.0, 0.0),
+            .Blue: (0.0, 0.0, 1.0),
+            .Brown: (0.6, 0.4, 0.2),
+            .Cyan: (0.0, 1.0, 1.0),
+            .DarkGray: (0.33, 0.33, 0.33),
+            .Gray: (0.5, 0.5, 0.5),
+            .Green: (0.0, 1.0, 0.0),
+            .LightGray: (0.66, 0.66, 0.66),
+            .Magenta: (1.0, 0.0, 1.0),
+            .Purple: (0.5, 0.0, 0.5),
+            .Red: (1.0, 0.0, 0.0),
+            .White: (1.0, 1.0, 1.0),
+            .Yellow: (1.0, 1.0, 0.0)
     ]
     
     /// Color symbols.
