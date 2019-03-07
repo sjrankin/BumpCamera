@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14490.68" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="l6F-cZ-k2b">
+    <device id="retina5_5" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14490.49"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--Gradient Editor-->
+        <scene sceneID="6VI-mc-u3X">
+            <objects>
+                <viewController id="dno-Lt-XfB" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="Ne8-cq-1mT">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" translatesAutoresizingMaskIntoConstraints="NO" id="cyd-HQ-NbD">
+                                <rect key="frame" x="22" y="72" width="370" height="150"/>
+                                <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="150" id="g7b-UF-eUk"/>
+                                </constraints>
+                                <viewLayoutGuide key="safeArea" id="QUl-Mt-IVT"/>
+                            </view>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" alwaysBounceVertical="YES" showsHorizontalScrollIndicator="NO" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="04i-j9-Oix">
+                                <rect key="frame" x="22" y="325" width="370" height="367"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <viewLayoutGuide key="safeArea" id="joK-2K-dwn"/>
+                            </tableView>
+                            <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="zCz-9D-01C">
+                                <rect key="frame" x="22" y="239" width="211" height="29"/>
+                                <segments>
+                                    <segment title="Vertical"/>
+                                    <segment title="Horizontal"/>
+                                </segments>
+                            </segmentedControl>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Reverse color order" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="QVA-QX-4OT">
+                                <rect key="frame" x="22" y="285" width="264" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" horizontalCompressionResistancePriority="751" preservesSuperviewLayoutMargins="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Kzc-Av-R9P">
+                                <rect key="frame" x="345" y="280" width="51" height="31"/>
+                                <viewLayoutGuide key="safeArea" id="S6I-Pk-mdE"/>
+                            </switch>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstItem="cyd-HQ-NbD" firstAttribute="centerX" secondItem="Ne8-cq-1mT" secondAttribute="centerX" id="8ch-zh-Hbn"/>
+                            <constraint firstItem="04i-j9-Oix" firstAttribute="top" secondItem="Kzc-Av-R9P" secondAttribute="bottom" constant="14" id="AXL-f1-Kaq"/>
+                            <constraint firstItem="QVA-QX-4OT" firstAttribute="centerY" secondItem="Kzc-Av-R9P" secondAttribute="centerY" id="CwZ-DF-ywa"/>
+                            <constraint firstItem="Kzc-Av-R9P" firstAttribute="top" secondItem="a9M-E0-awZ" secondAttribute="top" constant="216" id="Keo-Un-RSX"/>
+                            <constraint firstItem="a9M-E0-awZ" firstAttribute="trailing" secondItem="zCz-9D-01C" secondAttribute="trailing" constant="181" id="OiU-Ze-A6R"/>
+                            <constraint firstItem="zCz-9D-01C" firstAttribute="leading" secondItem="a9M-E0-awZ" secondAttribute="leading" constant="22" id="PaN-pg-A6d"/>
+                            <constraint firstItem="04i-j9-Oix" firstAttribute="bottom" secondItem="a9M-E0-awZ" secondAttribute="bottom" id="Tuy-0h-j1v"/>
+                            <constraint firstItem="cyd-HQ-NbD" firstAttribute="top" secondItem="a9M-E0-awZ" secondAttribute="top" constant="8" id="bdP-jh-c0i"/>
+                            <constraint firstItem="QVA-QX-4OT" firstAttribute="top" secondItem="zCz-9D-01C" secondAttribute="bottom" constant="18" id="gt8-7F-ASp"/>
+                            <constraint firstItem="cyd-HQ-NbD" firstAttribute="leading" secondItem="zCz-9D-01C" secondAttribute="leading" id="iuM-JF-zxL"/>
+                            <constraint firstItem="Kzc-Av-R9P" firstAttribute="leading" secondItem="QVA-QX-4OT" secondAttribute="trailing" constant="59" id="pgV-Jv-IBk"/>
+                            <constraint firstAttribute="trailing" secondItem="Kzc-Av-R9P" secondAttribute="trailing" constant="20" id="qkR-CV-xSN"/>
+                            <constraint firstItem="QVA-QX-4OT" firstAttribute="leading" secondItem="04i-j9-Oix" secondAttribute="leading" id="sVU-og-iE7"/>
+                            <constraint firstItem="zCz-9D-01C" firstAttribute="leading" secondItem="QVA-QX-4OT" secondAttribute="leading" id="uII-ls-8aO"/>
+                            <constraint firstItem="cyd-HQ-NbD" firstAttribute="trailing" secondItem="04i-j9-Oix" secondAttribute="trailing" id="ysH-aF-fYH"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="a9M-E0-awZ"/>
+                    </view>
+                    <toolbarItems>
+                        <barButtonItem systemItem="add" id="m8g-QH-W3p"/>
+                        <barButtonItem systemItem="edit" id="C8F-IG-5iM"/>
+                    </toolbarItems>
+                    <navigationItem key="navigationItem" title="Gradient Editor" id="FnE-LG-Pek">
+                        <barButtonItem key="backBarButtonItem" title="Back" id="cG2-lX-VEV"/>
+                        <barButtonItem key="leftBarButtonItem" title="Back" id="tY0-BU-T6z"/>
+                        <barButtonItem key="rightBarButtonItem" title="Cancel" id="HqM-Wc-9av"/>
+                    </navigationItem>
+                    <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="szU-X3-QPK" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="358.125" y="150"/>
+        </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="Ey8-SI-rfA">
+            <objects>
+                <navigationController storyboardIdentifier="GradientEditorUI" toolbarHidden="NO" id="l6F-cZ-k2b" sceneMemberID="viewController">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="AAR-FZ-bTR">
+                        <rect key="frame" x="0.0" y="20" width="414" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <toolbar key="toolbar" opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="6nr-RW-u5p">
+                        <rect key="frame" x="0.0" y="692" width="414" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </toolbar>
+                    <connections>
+                        <segue destination="dno-Lt-XfB" kind="relationship" relationship="rootViewController" id="Bqv-eE-AQ0"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="DYz-kS-GDE" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-584" y="152"/>
+        </scene>
+    </scenes>
+</document>
