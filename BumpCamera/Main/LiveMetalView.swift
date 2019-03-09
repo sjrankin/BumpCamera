@@ -59,12 +59,16 @@ class LiveMetalView: MTKView
     
     private var InternalRotation: Rotation = .rotate0Degrees
     
+    var PixelBufferLock = NSObject()
+    
     var pixelBuffer: CVPixelBuffer?
     {
         didSet
         {
             SyncQueue.sync
                 {
+                    objc_sync_enter(PixelBufferLock)
+                    defer {objc_sync_exit(PixelBufferLock)}
                     InternalPixelBuffer = pixelBuffer
             }
         }
@@ -341,8 +345,14 @@ class LiveMetalView: MTKView
         }
     }
     
+    var DrawingLock = NSObject()
+    
     override func draw(_ rect: CGRect)
     {
+        //objc_sync_enter(DrawingLock)
+        //defer {objc_sync_exit(DrawingLock)}
+        //objc_sync_enter(PixelBufferLock)
+        //defer {objc_sync_exit(PixelBufferLock)}
         var pixelBuffer: CVPixelBuffer?
         var mirroring = false
         var rotation: Rotation = .rotate0Degrees
