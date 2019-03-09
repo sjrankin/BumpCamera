@@ -16,6 +16,11 @@ struct ChannelManglerParameters
     uint Action;
 };
 
+struct GradientTable
+{
+    float4 Values[256];
+};
+
 //https://www.geeksforgeeks.org/write-an-efficient-c-program-to-reverse-bits-of-a-number/
 uint ReverseBits(uint Source)
 {
@@ -168,7 +173,8 @@ float4 CMCMYKToRGB(float4 Source)
 kernel void ChannelMangler(texture2d<float, access::read> InTexture [[texture(0)]],
                            texture2d<float, access::write> OutTexture [[texture(1)]],
                            constant ChannelManglerParameters &Mangle [[buffer(0)]],
-                           device float *ToCPU [[buffer(1)]],
+                           constant GradientTable &Gradient [[buffer(1)]],
+                           device float *ToCPU [[buffer(2)]],
                            uint2 gid [[thread_position_in_grid]])
 {
     uint Width = InTexture.get_width();
@@ -712,6 +718,27 @@ kernel void ChannelMangler(texture2d<float, access::read> InTexture [[texture(0)
         c2 = float(ic2 / 255.0);
         c3 = float(ic3 / 255.0);
         OutColor = float4(c1, c2, c3, 1.0);
+        break;
+        }
+        
+        case 43:
+        {
+        int GradientIndex = int(Hue * 255.0);
+        OutColor = Gradient.Values[GradientIndex];
+        break;
+        }
+        
+        case 44:
+        {
+        int GradientIndex = int(Saturation * 255.0);
+        OutColor = Gradient.Values[GradientIndex];
+        break;
+        }
+        
+        case 45:
+        {
+        int GradientIndex = int(Brightness * 255.0);
+        OutColor = Gradient.Values[GradientIndex];
         break;
         }
         
