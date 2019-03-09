@@ -177,12 +177,54 @@ class MainUIViewer: UIViewController,
                 self.SetupResult = self.ConfigureLiveView()
         }
         StartSettingsMonitor()
+        //StartHeartBeat()
+    }
+    
+    func StartHeartBeat()
+    {
+        if HeartBeatTimer != nil
+        {
+            HeartBeatTimer?.invalidate()
+            HeartBeatTimer = nil
+        }
+        if _Settings.bool(forKey: "EnableHeartBeat")
+        {
+            //DispatchSourceTimer
+        ActivityLog.LogMessage("Started heartbeat timer.")
+            let Interval = _Settings.integer(forKey: "HeartBeatInterval")
+            if Interval <= 0
+            {
+                ActivityLog.LogMessage("Heart beat timer enabled but invalid interval. No action taken.")
+                return
+            }
+            HeartBeatTimer = Timer.scheduledTimer(timeInterval: Double(Interval), target: self, selector: #selector(HandleHeartBeatEvent), userInfo: nil, repeats: true)
+        }
+    }
+    
+    func StopHeartBeat()
+    {
+        ActivityLog.LogMessage("Stopped heartbeat timer.")
+        if HeartBeatTimer != nil
+        {
+            HeartBeatTimer?.invalidate()
+            HeartBeatTimer = nil
+        }
+    }
+    
+    @objc func HandleHeartBeatEvent()
+    {
+        DispatchQueue.main.async
+            {
+                ActivityLog.LogMessage("Bump camera heart beat.")
+        }
     }
     
     func InstanceFilterManager() -> FilterManager?
     {
         return Filters
     }
+    
+    var HeartBeatTimer: Timer? = nil
     
     @IBOutlet weak var ModeSelection: ModeSelectorUI!
     
@@ -715,6 +757,12 @@ class MainUIViewer: UIViewController,
     var LastSelectedFilterID: UUID? = nil
     var GroupData: GroupNodeManager!
     
+    var PreviousTime: Double = CACurrentMediaTime()
+    var SecondStart: Double = CACurrentMediaTime()
+    var StartTime: Double = -1
+    var HeartBeatLevel: Int = 1
+    
+    @IBOutlet weak var HeartBeatIndicator: UIImageView!
     @IBOutlet weak var GroupCollectionView: UICollectionView!
     @IBOutlet weak var FilterCollectionView: UICollectionView!
     
