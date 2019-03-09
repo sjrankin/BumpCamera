@@ -488,6 +488,57 @@ extension MainUIViewer
     /// - Parameter Buffer: The buffer with the data from the live view frame.
     func ProcessLiveViewFrame(Buffer: CMSampleBuffer)
     {
+        
+        let Now = CACurrentMediaTime()
+        if StartTime < 0
+        {
+            StartTime = Now
+        }
+        let Delta = Now - PreviousTime
+        if Delta > 60
+        {
+            PreviousTime = Now
+            var Message = "Heart beat at \((Now - StartTime).Round(To: 3)) seconds"
+            #if DEBUG
+            if _Settings.bool(forKey: "ShowFramerateOverlay")
+            {
+                Message = Message + ", frames: \(FrameCount)"
+            }
+            #else
+            Message = Message + "."
+            #endif
+            ActivityLog.LogMessage(Message)
+        }
+        #if DEBUG
+        if _Settings.bool(forKey: "ShowHeartBeatIndicator")
+        {
+            if Now - SecondStart > _Settings.double(forKey: "HeartRate")
+            {
+                SecondStart = Now
+                let HeartImage = HeartBeatLevel == 0 ? "EmptyHeart" : "FilledHeart"
+                DispatchQueue.main.async {
+                    self.HeartBeatIndicator.image = UIImage(named: HeartImage)
+                    self.HeartBeatIndicator.backgroundColor = UIColor.yellow
+                }
+                if HeartBeatLevel == 0
+                {
+                    HeartBeatLevel = 1
+                }
+                else
+                {
+                    HeartBeatLevel = 0
+                }
+            }
+        }
+        else
+        {
+            DispatchQueue.main.async {
+                self.HeartBeatIndicator.image = nil
+                self.HeartBeatIndicator.backgroundColor = UIColor.clear
+            }
+        }
+        #endif
+        
         guard let VideoPixelBuffer = CMSampleBufferGetImageBuffer(Buffer) else
         {
             print("Error getting sample buffer in ProcessLiveViewFrame.")
@@ -503,7 +554,7 @@ extension MainUIViewer
         if Filters?.VideoFilter == nil
         {
             ActivityLog.LogPrint("Setting filter to NotSet")
-//            print("Setting filter to NotSet")
+            //            print("Setting filter to NotSet")
             Filters?.SetCurrentFilter(FilterType: .NotSet)
         }
         if !(Filters?.VideoFilter?.Filter?.Initialized)!
