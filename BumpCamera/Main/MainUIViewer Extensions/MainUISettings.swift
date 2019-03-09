@@ -76,6 +76,17 @@ extension MainUIViewer
         _Settings.set(0, forKey: "ProgramMode")
         _Settings.set(true, forKey: "ShowModeUI")
         _Settings.set(0, forKey: "ColorPickerColorspace")
+        #if DEBUG
+        _Settings.set(true, forKey: "EnableHeartBeat")
+        _Settings.set(60, forKey: "HeartBeatInterval")
+        #else
+        _Settings.set(false, forKey: "EnableHeartBeat")
+        _Settings.set(0, forKey: "HeartBeatInterval")
+        #endif
+        #if DEBUG
+        _Settings.set(true, forKey: "ShowHeartBeatIndicator")
+        _Settings.set(0.5, forKey: "HeartRate")
+        #endif
         let InitialGroupID = Filters?.GetGroupID(ForGroup: .Standard)
         _Settings.set(InitialGroupID?.uuidString, forKey: "CurrentGroup")
         let InitialFilterID = Filters?.GetFilterID(For: .PassThrough)
