@@ -70,6 +70,9 @@ class ChannelManglerSettingsUICode: FilterSettingUIBase, UIPickerViewDelegate, U
             40: ("Multi-Xored", "Each channel is xored with the xor of the other two channels."),
             41: ("Xor-Or", "Each channel is xored with the another channel ored with the third channel."),
             42: ("Xor-And", "Each channel is xored with the another channel anded with the third channel."),
+            43: ("Quick & Dirty Hue Gradient", "A gradient is applied to the image base on hue."),
+            44: ("Quick & Dirty Saturation Gradient", "A gradient is applied to the image base on saturation."),
+            45: ("Quick & Dirty Brightness Gradient", "A gradient is applied to the image base on brightness."),
             ]
     
     func numberOfComponents(in pickerView: UIPickerView) -> Int
