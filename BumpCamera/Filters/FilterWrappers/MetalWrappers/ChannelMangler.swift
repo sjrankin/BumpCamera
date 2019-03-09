@@ -168,11 +168,34 @@ class ChannelMangler: FilterParent, Renderer
             return nil
         }
         
+        let GradientColors = GradientParser.ResolveGradient("(Cyan)@(0.0),(Magenta)@(0.33),(Yellow)@(0.67),(Black)@(1.0)")
+        var IGradient = [simd_float4](repeating: simd_float4(0.0, 0.0, 0.0, 1.0), count: 256)
+        for index in 0 ... 255
+        {
+            let Color = GradientColors[index]
+            IGradient[index] = simd_float4(Float(Color.r), Float(Color.g), Float(Color.b), 1.0)
+        }
+        let IGPtr = UnsafePointer(IGradient)
+        //let GradientBuffer = MetalDevice!.makeBuffer(length: MemoryLayout<simd_float4>.stride * GradientSize, options: [])
+        let igptrz0 = MemoryLayout<[simd_float4]>.stride * 256
+        let igptrz1 = MemoryLayout<simd_float4>.stride * 256 //use this one
+//        print("igptrz0=\(igptrz0), igptrz1=\(igptrz1)")
+        let GradientBuffer = MetalDevice!.makeBuffer(bytes: IGPtr, length: 4096, options: [])
+        //let Gradient = UnsafeBufferPointer<simd_float4>(start: UnsafePointer(GradientBuffer!.contents().assumingMemoryBound(to: simd_float4.self)),
+        //                                                count: GradientSize)
+        
+        let ResultsCount = 10
+        let ResultsBuffer = MetalDevice!.makeBuffer(length: MemoryLayout<ReturnBufferType>.stride * ResultsCount, options: [])
+        let Results = UnsafeBufferPointer<ReturnBufferType>(start: UnsafePointer(ResultsBuffer!.contents().assumingMemoryBound(to: ReturnBufferType.self)),
+                                                            count: ResultsCount)
+        
         CommandEncoder.label = "Channel Mangler Kernel"
         CommandEncoder.setComputePipelineState(ComputePipelineState!)
         CommandEncoder.setTexture(InputTexture, index: 0)
         CommandEncoder.setTexture(OutputTexture, index: 1)
         CommandEncoder.setBuffer(ParameterBuffer, offset: 0, index: 0)
+        CommandEncoder.setBuffer(ResultsBuffer, offset: 0, index: 2)
+        CommandEncoder.setBuffer(GradientBuffer, offset: 0, index: 1)
         
         let w = ComputePipelineState!.threadExecutionWidth
         let h = ComputePipelineState!.maxTotalThreadsPerThreadgroup / w
@@ -266,9 +289,28 @@ class ChannelMangler: FilterParent, Renderer
         let CommandBuffer = ImageCommandQueue?.makeCommandBuffer()
         let CommandEncoder = CommandBuffer?.makeComputeCommandEncoder()
         
+        let GradientColors = GradientParser.ResolveGradient("(Cyan)@(0.0),(Magenta)@(0.33),(Yellow)@(0.67),(Black)@(1.0)")
+        var IGradient = [simd_float4](repeating: simd_float4(0.0, 0.0, 0.0, 1.0), count: 256)
+        for index in 0 ... 255
+        {
+            let Color = GradientColors[index]
+            IGradient[index] = simd_float4(Float(Color.r), Float(Color.g), Float(Color.b), 1.0)
+        }
+        let IGPtr = UnsafePointer(IGradient)
+        //let GradientBuffer = MetalDevice!.makeBuffer(length: MemoryLayout<simd_float4>.stride * GradientSize, options: [])
+        let igptrz = 4096//MemoryLayout<[simd_float4]>.stride * 256
+        let GradientBuffer = MetalDevice!.makeBuffer(bytes: IGPtr, length: igptrz, options: [])
+        
+        let ResultsCount = 10
+        let ResultsBuffer = MetalDevice!.makeBuffer(length: MemoryLayout<ReturnBufferType>.stride * ResultsCount, options: [])
+        let Results = UnsafeBufferPointer<ReturnBufferType>(start: UnsafePointer(ResultsBuffer!.contents().assumingMemoryBound(to: ReturnBufferType.self)),
+                                                            count: ResultsCount)
+        
         CommandEncoder?.setComputePipelineState(ImageComputePipelineState!)
         CommandEncoder?.setTexture(Texture, index: 0)
         CommandEncoder?.setTexture(OutputTexture, index: 1)
+        CommandEncoder?.setBuffer(ResultsBuffer, offset: 0, index: 2)
+        CommandEncoder?.setBuffer(GradientBuffer, offset: 0, index: 1)
         
         let MangleAction = ParameterManager.GetUInt1(From: ID(), Field: .ChannelManglerAction, Default: 0)
         let Parameter = ChannelManglerParameters(Action: MangleAction) 
