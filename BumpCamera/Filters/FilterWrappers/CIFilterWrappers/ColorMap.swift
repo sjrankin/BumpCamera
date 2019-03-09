@@ -135,7 +135,6 @@ class ColorMap: FilterParent, Renderer
         let DoReverse = ParameterManager.GetBool(From: ID(), Field: .InvertColorMapGradient, Default: false)
         if GradientImage == nil || GradientDefinition != GDef
         {
-            //let GRect = CGRect(x: 0, y: 0, width: 2, height: 512)
             //The image is rotated, so we need to "rotate" the dimensions as well.
             let GRect = CGRect(x: 0, y: 0, width: SourceImage.extent.height, height: SourceImage.extent.width)
             GradientImage = GradientParser.CreateGradientImage(From: GDef, WithFrame: GRect, IsVertical: true, ReverseColors: DoReverse)
