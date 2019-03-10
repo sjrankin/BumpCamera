@@ -742,6 +742,13 @@ kernel void ChannelMangler(texture2d<float, access::read> InTexture [[texture(0)
         break;
         }
         
+        case 46:
+        {
+        float Mean = ((InColor.r + InColor.g + InColor.b) / 3.0) * 255.0;
+        OutColor = Gradient.Values[int(Mean)];
+        break;
+        }
+        
         default:
         break;
     }
