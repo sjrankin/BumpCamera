@@ -28,15 +28,19 @@ class FilterSettingUIBase: UITableViewController,
     var ImagePicker: UIImagePickerController? = nil
     var ADelegate: AppDelegate? = nil
     var MainFilter: FilterManager? = nil
+    var CallsFilter: Bool = true
+    var SampleViewImage: UIImage? = nil
     
     /// Initializes the base class.
     ///
     /// - Parameters:
     ///   - Sample: The UIImageView where the sample image will be shown.
     ///   - FilterType: The filter type.
-    func Initialize(FilterType: FilterManager.FilterTypes, EnableSelectImage: Bool = true)
+    ///   - CallFilter: Set to false only if there is input but no output (eg, measuration filters).
+    func Initialize(FilterType: FilterManager.FilterTypes, EnableSelectImage: Bool = true, CallFilter: Bool = true)
     {
         print("\(FilterType) start at \(CACurrentMediaTime())")
+        CallsFilter = CallFilter
         let Start = CACurrentMediaTime()
         LoadUIElements()
         ADelegate = UIApplication.shared.delegate as? AppDelegate
@@ -71,6 +75,7 @@ class FilterSettingUIBase: UITableViewController,
             
             SampleImageName = _Settings.string(forKey: "SampleImage")!
             SampleView.image = UIImage(named: SampleImageName)
+            SampleViewImage = UIImage(named: SampleImageName)
             SampleView.backgroundColor = UIColor.darkGray
             SampleView.isUserInteractionEnabled = true
             ShowSampleView()
@@ -294,25 +299,25 @@ class FilterSettingUIBase: UITableViewController,
     #if true
     override func viewWillAppear(_ animated: Bool)
     {
-         #if false
-         NotificationCenter.default.addObserver(self, selector: #selector(DefaultsChanged),
-         name: UserDefaults.didChangeNotification,
-         object: nil)
-         #endif
-         if ShowingSample
-         {
-         if DoEnableSelect
-         {
-         let Tap = UITapGestureRecognizer(target: self, action: #selector(HandleSampleSelection))
-         SampleView.addGestureRecognizer(Tap)
-         let LeftSwipe = UISwipeGestureRecognizer(target: self, action: #selector(HandleSampleChange))
-         LeftSwipe.direction = UISwipeGestureRecognizer.Direction.left
-         SampleView.addGestureRecognizer(LeftSwipe)
-         let RightSwipe = UISwipeGestureRecognizer(target: self, action: #selector(HandleSampleChange))
-         RightSwipe.direction = UISwipeGestureRecognizer.Direction.right
-         SampleView.addGestureRecognizer(RightSwipe)
-         }
-         }
+        #if false
+        NotificationCenter.default.addObserver(self, selector: #selector(DefaultsChanged),
+                                               name: UserDefaults.didChangeNotification,
+                                               object: nil)
+        #endif
+        if ShowingSample
+        {
+            if DoEnableSelect
+            {
+                let Tap = UITapGestureRecognizer(target: self, action: #selector(HandleSampleSelection))
+                SampleView.addGestureRecognizer(Tap)
+                let LeftSwipe = UISwipeGestureRecognizer(target: self, action: #selector(HandleSampleChange))
+                LeftSwipe.direction = UISwipeGestureRecognizer.Direction.left
+                SampleView.addGestureRecognizer(LeftSwipe)
+                let RightSwipe = UISwipeGestureRecognizer(target: self, action: #selector(HandleSampleChange))
+                RightSwipe.direction = UISwipeGestureRecognizer.Direction.right
+                SampleView.addGestureRecognizer(RightSwipe)
+            }
+        }
     }
     #endif
     
@@ -420,7 +425,10 @@ class FilterSettingUIBase: UITableViewController,
                 SampleImage = UIImage(named: "Norio")
                 _Settings.set("Norio", forKey: "SampleImage")
             }
+            if CallsFilter
+            {
             FinalImage = SampleFilter?.Render(Image: SampleImage)
+            }
         }
         else
         {
@@ -439,7 +447,8 @@ class FilterSettingUIBase: UITableViewController,
         }
         if let TheImage = FinalImage
         {
-        SampleView.image = TheImage
+            SampleView.image = TheImage
+            SampleViewImage = TheImage
         }
         LastSampleImage = FinalImage
         #if false
@@ -683,6 +692,7 @@ class FilterSettingUIBase: UITableViewController,
         if let PickedImage = info[UIImagePickerController.InfoKey.originalImage] as? UIImage
         {
             SampleView.image = PickedImage
+            SampleViewImage = PickedImage
             let OK = FileHandler.SaveSampleImage(PickedImage)
             if OK
             {
