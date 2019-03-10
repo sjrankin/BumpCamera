@@ -312,6 +312,12 @@
 		17FA09A821E8814700405B2D /* UIImageExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17FA09A721E8814700405B2D /* UIImageExtensions.swift */; };
 		17FA09AC21E8A6B700405B2D /* PixelatorKernel.metal in Sources */ = {isa = PBXBuildFile; fileRef = 17FA09AB21E8A6B700405B2D /* PixelatorKernel.metal */; };
 		17FA09AE21E8A8DD00405B2D /* PixelatorKernel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17FA09AD21E8A8DD00405B2D /* PixelatorKernel.swift */; };
+		17FA64902234A69D0060D5CA /* Octree.metal in Sources */ = {isa = PBXBuildFile; fileRef = 17FA648F2234A69D0060D5CA /* Octree.metal */; };
+		17FA64932234C4CA0060D5CA /* PixelCounter.metal in Sources */ = {isa = PBXBuildFile; fileRef = 17FA64922234C4CA0060D5CA /* PixelCounter.metal */; };
+		17FA64952234CA380060D5CA /* PixelCounter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17FA64942234CA380060D5CA /* PixelCounter.swift */; };
+		17FA64972234CA4F0060D5CA /* PixelCounterParameters.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17FA64962234CA4F0060D5CA /* PixelCounterParameters.swift */; };
+		17FA649C2234DAD00060D5CA /* PixelCounterSettingsUI.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 17FA649B2234DAD00060D5CA /* PixelCounterSettingsUI.storyboard */; };
+		17FA649E2234E51A0060D5CA /* PixelCounterSettingsUICode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17FA649D2234E51A0060D5CA /* PixelCounterSettingsUICode.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -624,6 +630,12 @@
 		17FA09A721E8814700405B2D /* UIImageExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIImageExtensions.swift; sourceTree = "<group>"; };
 		17FA09AB21E8A6B700405B2D /* PixelatorKernel.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = PixelatorKernel.metal; sourceTree = "<group>"; };
 		17FA09AD21E8A8DD00405B2D /* PixelatorKernel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PixelatorKernel.swift; sourceTree = "<group>"; };
+		17FA648F2234A69D0060D5CA /* Octree.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = Octree.metal; sourceTree = "<group>"; };
+		17FA64922234C4CA0060D5CA /* PixelCounter.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = PixelCounter.metal; sourceTree = "<group>"; };
+		17FA64942234CA380060D5CA /* PixelCounter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PixelCounter.swift; sourceTree = "<group>"; };
+		17FA64962234CA4F0060D5CA /* PixelCounterParameters.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PixelCounterParameters.swift; sourceTree = "<group>"; };
+		17FA649B2234DAD00060D5CA /* PixelCounterSettingsUI.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = PixelCounterSettingsUI.storyboard; sourceTree = "<group>"; };
+		17FA649D2234E51A0060D5CA /* PixelCounterSettingsUICode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PixelCounterSettingsUICode.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -792,6 +804,7 @@
 		1712A85321FB23F4001E9D2B /* BumpyKernels */ = {
 			isa = PBXGroup;
 			children = (
+				17FA648D2234A67E0060D5CA /* Measuration */,
 				171E5B0C2205D09D004E60F1 /* Generators */,
 				17110DDA221E960500223990 /* FindPixel */,
 				171375F922193188000E49C2 /* GrayscaleToRGB */,
@@ -1128,6 +1141,7 @@
 		173FDCBD220E946000EFA90D /* MetalWrappers */ = {
 			isa = PBXGroup;
 			children = (
+				17FA64982234CAFC0060D5CA /* Measuration */,
 				171F3CF22208634F0098E2B7 /* Generators */,
 				1799C8A121FF2F9C0069D5AC /* Pixellate_Metal.swift */,
 				176C969B222CF4AE004DB727 /* ConditionalSilhouette.swift */,
@@ -1179,6 +1193,7 @@
 		174F82E3221FDB0C009A004C /* Metal */ = {
 			isa = PBXGroup;
 			children = (
+				17FA64992234DAAB0060D5CA /* Measuration */,
 				171F3CF5220944120098E2B7 /* Generators */,
 				17787F052202DC0B00D15761 /* ChannelMixer */,
 				175A3333222EA30B00670547 /* ChannelMangler */,
@@ -1802,6 +1817,57 @@
 			path = PixelatorKernel;
 			sourceTree = "<group>";
 		};
+		17FA648D2234A67E0060D5CA /* Measuration */ = {
+			isa = PBXGroup;
+			children = (
+				17FA64912234C4B90060D5CA /* PixelCounter */,
+				17FA648E2234A6900060D5CA /* Octree */,
+			);
+			path = Measuration;
+			sourceTree = "<group>";
+		};
+		17FA648E2234A6900060D5CA /* Octree */ = {
+			isa = PBXGroup;
+			children = (
+				17FA648F2234A69D0060D5CA /* Octree.metal */,
+			);
+			path = Octree;
+			sourceTree = "<group>";
+		};
+		17FA64912234C4B90060D5CA /* PixelCounter */ = {
+			isa = PBXGroup;
+			children = (
+				17FA64922234C4CA0060D5CA /* PixelCounter.metal */,
+				17FA64962234CA4F0060D5CA /* PixelCounterParameters.swift */,
+			);
+			path = PixelCounter;
+			sourceTree = "<group>";
+		};
+		17FA64982234CAFC0060D5CA /* Measuration */ = {
+			isa = PBXGroup;
+			children = (
+				17FA64942234CA380060D5CA /* PixelCounter.swift */,
+			);
+			path = Measuration;
+			sourceTree = "<group>";
+		};
+		17FA64992234DAAB0060D5CA /* Measuration */ = {
+			isa = PBXGroup;
+			children = (
+				17FA649A2234DAB40060D5CA /* PixelCounter */,
+			);
+			path = Measuration;
+			sourceTree = "<group>";
+		};
+		17FA649A2234DAB40060D5CA /* PixelCounter */ = {
+			isa = PBXGroup;
+			children = (
+				17FA649B2234DAD00060D5CA /* PixelCounterSettingsUI.storyboard */,
+				17FA649D2234E51A0060D5CA /* PixelCounterSettingsUICode.swift */,
+			);
+			path = PixelCounter;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -1873,6 +1939,7 @@
 				17477A0322049B1500FD64EF /* GrayscaleSettingsUI.storyboard in Resources */,
 				17110DE3221EC24E00223990 /* VibranceSettingsUI.storyboard in Resources */,
 				1775DDB1222BC27E0061DC87 /* BumpCameraPrivacy.pdf in Resources */,
+				17FA649C2234DAD00060D5CA /* PixelCounterSettingsUI.storyboard in Resources */,
 				171E543121E44E180045ED77 /* LaunchScreen.storyboard in Resources */,
 				17BC0081223140580076A5D5 /* GradientEditorUI.storyboard in Resources */,
 				174779F822042FEC00FD64EF /* NoParametersSettingsUI.storyboard in Resources */,
@@ -1967,6 +2034,7 @@
 				17CE373C2213B08C0070ED87 /* FalseColorSettingsUICode.swift in Sources */,
 				1756CE0621FD734600C4E638 /* RGBtoHBS.metal in Sources */,
 				1756CDF621FD629800C4E638 /* RGBtoRBG.metal in Sources */,
+				17FA64932234C4CA0060D5CA /* PixelCounter.metal in Sources */,
 				1709A6FB2220FBC600D9B43D /* RatingCell.swift in Sources */,
 				171D627121EDD1C2004D3545 /* HatchScreen.swift in Sources */,
 				1779F3CF2218324100140EEA /* TransferEffect.swift in Sources */,
@@ -2020,6 +2088,7 @@
 				17129810222398B2000D5EF5 /* WrapperPacket.swift in Sources */,
 				1756CDFE21FD63D800C4E638 /* RGBtoBGR.metal in Sources */,
 				17787F092202E2E400D15761 /* ChannelMixerSettingsUICode.swift in Sources */,
+				17FA64952234CA380060D5CA /* PixelCounter.swift in Sources */,
 				175A332E222E9A6100670547 /* ImageScanParameters.swift in Sources */,
 				172D98C921F9A53A005A5275 /* ChannelMixer.swift in Sources */,
 				1712982222240FC5000D5EF5 /* OverflowExifViewerCode.swift in Sources */,
@@ -2104,6 +2173,7 @@
 				1705D98422281ADE00B95262 /* CheckerboardParameters.swift in Sources */,
 				17D60D8E221162F100933F15 /* Pixellate2SettingsUICode.swift in Sources */,
 				17BA12DF22278B1A0035A1FC /* TonalEffect.swift in Sources */,
+				17FA649E2234E51A0060D5CA /* PixelCounterSettingsUICode.swift in Sources */,
 				171F3CFC220967D70098E2B7 /* UIColorExtensions.swift in Sources */,
 				1763F0782221687500E1E2E8 /* GaussianBlurSettingsUICode.swift in Sources */,
 				171D627321EDD415004D3545 /* CMYKHalftone.swift in Sources */,
@@ -2111,12 +2181,14 @@
 				171375F822192732000E49C2 /* BayerDecode.swift in Sources */,
 				171D627821EDF017004D3545 /* PassThrough.swift in Sources */,
 				171D626021EDB46D004D3545 /* Mixer.metal in Sources */,
+				17FA64902234A69D0060D5CA /* Octree.metal in Sources */,
 				17BA12E122278F140035A1FC /* CheckerboardGenerator.swift in Sources */,
 				172B87A7221BCC6100F0A508 /* ThermalEffect.swift in Sources */,
 				17C93EAB2222582500B7F697 /* GeneralSettings.swift in Sources */,
 				174F82EA221FDDC7009A004C /* MonochromeSettingsUICode.swift in Sources */,
 				17FA09AE21E8A8DD00405B2D /* PixelatorKernel.swift in Sources */,
 				171375F6221926BD000E49C2 /* BayerDecodeParameters.swift in Sources */,
+				17FA64972234CA4F0060D5CA /* PixelCounterParameters.swift in Sources */,
 				1756CDFC21FD638F00C4E638 /* RGBtoBRG.metal in Sources */,
 				17F2369F22152AA10091B865 /* PredefinedColorTable.swift in Sources */,
 				171F3D11220ADC780098E2B7 /* SolarizeParameters.swift in Sources */,
