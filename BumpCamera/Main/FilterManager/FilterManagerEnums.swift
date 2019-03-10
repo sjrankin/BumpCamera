@@ -82,6 +82,7 @@ extension FilterManager
         case ColorInversion = 55
         case ChannelMangler = 56
         case ColorMap = 57
+        case PixelCounter = 58
         case NotSet = 10000
     }
     
@@ -107,8 +108,9 @@ extension FilterManager
         case Gray = 8
         case PhotoEffects = 9
         case Blur = 10
-        case Favorites = 11
-        case FiveStar = 12
+        case Measuration = 11
+        case Favorites = 12
+        case FiveStar = 13
         case NotSet = 10000
     }
     
