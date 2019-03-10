@@ -73,6 +73,7 @@ class ChannelManglerSettingsUICode: FilterSettingUIBase, UIPickerViewDelegate, U
             43: ("Quick & Dirty Hue Gradient", "A gradient is applied to the image base on hue."),
             44: ("Quick & Dirty Saturation Gradient", "A gradient is applied to the image base on saturation."),
             45: ("Quick & Dirty Brightness Gradient", "A gradient is applied to the image base on brightness."),
+            46: ("Quick & Dirty Mean Gradient", "Takes the mean of each pixel and uses that value as an index into a gradient."),
             ]
     
     func numberOfComponents(in pickerView: UIPickerView) -> Int
