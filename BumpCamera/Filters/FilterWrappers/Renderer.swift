@@ -80,6 +80,30 @@ protocol Renderer: class
     ///            will return nil.
     func Generate() -> CIImage?
     
+    /// Queries the pixel buffer as per input parameters.
+    ///
+    /// - Parameters:
+    ///   - PixelBuffer: The pixel buffer to query.
+    ///   - Parameters: Determines how the pixel buffer is queried.
+    /// - Returns: Results of query in kernel-specific format.
+    func Query(PixelBuffer: CVPixelBuffer, Parameters: [String: Any]) -> [String: Any]?
+    
+    /// Queries the image as per input parameters.
+    ///
+    /// - Parameters:
+    ///   - PixelBuffer: The image to query.
+    ///   - Parameters: Determines how the image is queried.
+    /// - Returns: Results of query in kernel-specific format.
+    func Query(Image: UIImage, Parameters: [String: Any]) -> [String: Any]?
+    
+    /// Queries the image as per input parameters.
+    ///
+    /// - Parameters:
+    ///   - PixelBuffer: The image to query.
+    ///   - Parameters: Determines how the image is queried.
+    /// - Returns: Results of query in kernel-specific format.
+    func Query(Image: CIImage, Parameters: [String: Any]) -> [String: Any]?
+    
     /// Return the last image rendered with either Render(:UIImage) or Render(:CIImage).
     ///
     /// - Parameter AsUIImage: Determines the format of the returned image. If true, the image returned is a UIImage.
