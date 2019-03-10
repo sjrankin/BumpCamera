@@ -281,6 +281,186 @@ class GradientParser
         let Image = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
         return Image!
-//        return UIImage(View: View)
+        //        return UIImage(View: View)
+    }
+    
+    /// Holds previously-generated gradient sets.
+    private static var CachedGradients = [String: [UIColor]]()
+    
+    /// Clear the gradient cache.
+    public static func ClearGradientCache()
+    {
+        CachedGradients.removeAll()
+    }
+    
+    /// Resolve the passed gradient description into a list of 256 colors.
+    ///
+    /// - Note:
+    ///    - If the description does not contain a color at (0.0) or at (1.0), an implicit color will be
+    ///      added at each missing end. See `GenerateGradient` for more information.
+    ///    - Provided the description is not changed between calls, resolved gradients are cached for
+    ///      improving performance.
+    ///
+    /// - Parameter Description: The gradient description.
+    /// - Returns: List of 256 colors based on the gradient description.
+    public static func ResolveGradient(_ Description: String) -> [UIColor]
+    {
+        if let CachedColors = CachedGradients[Description]
+        {
+            return CachedColors
+        }
+        let Generated = GenerateGradient(From: Description, Range: 256)
+        CachedGradients[Description] = Generated
+        return Generated
+    }
+    
+    /// Resolve a gradient of 256 colors from `Color1` to `Color2`. `Color1` starts at (0.0) and
+    /// `Color2` starts at (1.0).
+    ///
+    /// - Parameters:
+    ///   - Color1: First color of the gradient.
+    ///   - Color2: Second color of the gradient.
+    /// - Returns: List of 256 colors from `Color1` to `Color2`.
+    public static func ResolveGradient(Color1: UIColor, Color2: UIColor) -> [UIColor]
+    {
+        return GenerateGradient(From: Color1, To: Color2, Range: 256)
+    }
+    
+    /// Generate a list of colors with `Range` colors from the passed gradient description.
+    ///
+    /// - Parameters:
+    ///   - From: The gradient description used to create the list of colors.
+    ///   - Range: Determines the number of colors in the list.
+    ///   - ImplicitFirstColor: If the description does not contain a color stop at (0.0), this color will be
+    ///                         used as the initial color.
+    ///   - ImplicitLastColor: If the description does not contain a color stop at (1.0), this color will be
+    ///                        used as the terminal color.
+    /// - Returns: List of colors created from the description. This list may be empty if the description does
+    ///            not resolve to any colors or if `Range` is less than 1. If `Range` is 1, the returned list
+    ///            will consist of only the sole color in the gradient (regardless of its location).
+    public static func GenerateGradient(From: String, Range: Int, ImplicitFirstColor: UIColor = UIColor.black,
+                                        ImplicitLastColor: UIColor = UIColor.black) -> [UIColor]
+    {
+        var Results = [UIColor]()
+        if Range < 1
+        {
+            return Results
+        }
+        let Raw = ParseGradient(From)
+        if Raw.count < 1
+        {
+            return Results
+        }
+        if Raw.count == 1
+        {
+            for _ in 0 ..< Range
+            {
+                Results.append(Raw[0].0)
+            }
+            return Results
+        }
+        var Working = [(UIColor, Double)]()
+        var FoundFirst = false
+        var FoundLast = false
+        for (Color, Percent) in Raw
+        {
+            if Percent == 0.0
+            {
+                FoundFirst = true
+            }
+            if Percent == 1.0
+            {
+                FoundLast = true
+            }
+            Working.append((Color, Double(Percent) * Double(Range)))
+        }
+        if !FoundFirst
+        {
+            Working.insert((ImplicitLastColor, 0.0), at: 0)
+        }
+        if !FoundLast
+        {
+            Working.append((ImplicitLastColor, Double(Range)))
+        }
+        
+        for Index in 0 ..< Range
+        {
+            let ColorRange = GetRangeDefinedColors(Index, Working)
+            let ImpliedColor = CreateImpliedColor(ColorRange)
+            Results.append(ImpliedColor)
+        }
+        
+        return Results
+    }
+    
+   /// Generate a list of colors with in the specified range of colors.
+    ///
+    /// - Parameters:
+    ///   - From: Starting color (position set to (0.0)).
+    ///   - To: Ending color (position set to (1.0)).
+    ///   - Range: Number of colors to return.
+    /// - Returns: List of colors from `From` to `To`.
+    public static func GenerateGradient(From: UIColor, To: UIColor, Range: Int) -> [UIColor]
+    {
+        var Results = [UIColor]()
+        var Working = [(UIColor, Double)]()
+        Working.append((From, 0.0))
+        Working.append((To, 1.0))
+        for Index in 0 ..< Range
+        {
+            let ColorRange = GetRangeDefinedColors(Index, Working)
+            let ImpliedColor = CreateImpliedColor(ColorRange)
+            Results.append(ImpliedColor)
+        }
+        
+        return Results
+    }
+    
+    /// Given two colors and value indicating a percent somewhere in between them, return the color a the
+    /// percent.
+    ///
+    /// - Parameter Segment: Tuple with the low color, high color, and the percent in between them.
+    /// - Returns: Color derived from the two passed colors and location between them.
+    private static func CreateImpliedColor(_ Segment: (UIColor, UIColor, Double)) -> UIColor
+    {
+        let LowR = Segment.0.r * CGFloat(1.0 - Segment.2)
+        let LowG = Segment.0.g * CGFloat(1.0 - Segment.2)
+        let LowB = Segment.0.b * CGFloat(1.0 - Segment.2)
+        let HighR = Segment.1.r * CGFloat(Segment.2)
+        let HighG = Segment.1.g * CGFloat(Segment.2)
+        let HighB = Segment.1.b * CGFloat(Segment.2)
+        return UIColor(red: LowR + HighR, green: LowG + HighG, blue: LowB + HighB, alpha: 1.0)
+    }
+    
+    /// Given a location, return the two colors that define the segment where the location is, as well as the
+    /// percent between the two ccolors for the location.
+    ///
+    /// - Parameters:
+    ///   - Index: Location of the point that defines which colors to return.
+    ///   - ColorList: List of colors and points for the colors.
+    /// - Returns: Tuple with the low color, high color, and percent `Index` is in between them.
+    private static func GetRangeDefinedColors(_ Index: Int, _ ColorList: [(UIColor, Double)]) -> (UIColor, UIColor, Double)
+    {
+        let DIndex = Double(Index)
+        //Need the - 1 for count value because we use index value + 1 in the loop
+        for ColorIndex in 0 ..< ColorList.count - 1
+        {
+            if DIndex >= ColorList[ColorIndex].1 && DIndex <= ColorList[ColorIndex + 1].1
+            {
+                let LowColor = ColorList[ColorIndex].0
+                let HighColor = ColorList[ColorIndex + 1].0
+                let Range = ColorList[ColorIndex + 1].1 - ColorList[ColorIndex].1
+                let AdjustedLocation = DIndex - ColorList[ColorIndex].1
+                let Percent = AdjustedLocation / Range
+                return (LowColor, HighColor, Percent)
+            }
+        }
+        //We should be at the end segment.
+        let LowColor = ColorList[ColorList.count - 2].0
+        let HighColor = ColorList[ColorList.count - 1].0
+        let Range = ColorList.last!.1 - ColorList[ColorList.count - 2].1
+        let AdjustedLocation = DIndex - ColorList[ColorList.count - 2].1
+        let Percent = AdjustedLocation / Range
+        return (LowColor, HighColor, Percent)
     }
 }
