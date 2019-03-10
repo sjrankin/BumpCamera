@@ -65,7 +65,8 @@ class FilterManager
             .Generator: [(.Grid, 0), (.SmoothLinearGradient, 1), (.CornerGradient, 2), (.Checkerboard, 3),
                          (.MetalCheckerboard, 4)],
             .Blur: [(.GaussianBlur, 0)],
-            ]
+            .Measuration: [(.PixelCounter, 0)]
+    ]
     
     public static let FilterInfoMap: [FilterTypes: (UUID, FilterKernelTypes, String)] =
         [
@@ -119,7 +120,8 @@ class FilterManager
             .ColorInversion: (ColorInverter.ID(), ColorInverter.FilterKernel, ColorInverter.Title()),
             .ChannelMangler: (ChannelMangler.ID(), ChannelMangler.FilterKernel, ChannelMangler.Title()),
             .ColorMap: (ColorMap.ID(), ColorMap.FilterKernel, ColorMap.Title()),
-            ]
+            .PixelCounter: (PixelCounter.ID(), PixelCounter.FilterKernel, PixelCounter.Title()),
+    ]
     
     /// Determines if the specified filter supports the specified target type. Not all filters support all targets - slow
     /// filters most likely do not support live views, and generates generally don't support live or video targets.
@@ -214,7 +216,8 @@ class FilterManager
             .ColorInversion: ColorInverter.FilterTarget(),
             .ChannelMangler: ChannelMangler.FilterTarget(),
             .ColorMap: ColorMap.FilterTarget(),
-            ]
+            .PixelCounter: PixelCounter.FilterTarget(),
+    ]
     
     /// Load all of the filter classes into the filter manager.
     private func PreloadFilters()
@@ -329,6 +332,7 @@ class FilterManager
         ParameterCount![.ColorInversion] = ColorInverter.SupportedFields().count
         ParameterCount![.ChannelMangler] = ChannelMangler.SupportedFields().count
         ParameterCount![.ColorMap] = ColorMap.SupportedFields().count
+        ParameterCount![.PixelCounter] = PixelCounter.SupportedFields().count
     }
     
     private static var ParameterCount: [FilterManager.FilterTypes: Int]? = nil
@@ -401,6 +405,7 @@ class FilterManager
         StoryboardList![.ColorInversion] = ColorInverter.SettingsStoryboard()
         StoryboardList![.ChannelMangler] = ChannelMangler.SettingsStoryboard()
         StoryboardList![.ColorMap] = ColorMap.SettingsStoryboard()
+        StoryboardList![.PixelCounter] = PixelCounter.SettingsStoryboard()
     }
     
     private static var StoryboardList: [FilterTypes: String?]? = nil
@@ -699,6 +704,9 @@ class FilterManager
         case .ColorMap:
             return ColorMap()
             
+        case .PixelCounter:
+            return PixelCounter()
+            
         default:
             return nil
         }
@@ -854,7 +862,8 @@ class FilterManager
             .Blur: UUID(uuidString: "417aafdc-2264-404c-bfd8-a1420d627427")!,
             .Favorites: UUID(uuidString: "8f5c963f-f009-40c9-80d9-a528506b7192")!,
             .FiveStar: UUID(uuidString: "5045f4bc-5d07-4a0c-9ed7-7f5fd20354dd")!,
-            ]
+            .Measuration: UUID(uuidString: "3c092135-8a86-4ae1-a53d-26be3a37ac4d")!,
+    ]
     
     /// Given a group description, return its ID.
     ///
@@ -929,7 +938,8 @@ class FilterManager
             .Gray: ("Mono- chrome", 3),
             .PhotoEffects: ("Photo Effects", 5),
             .Blur: ("Blur", 9),
-            ]
+            .Measuration: ("Measure", 10),
+    ]
     
     /// Map between group type and group color.
     private static let GroupColors: [FilterGroups: UIColor] =
@@ -946,7 +956,8 @@ class FilterManager
             .Gray: UIColor(named: "PaleGray")!,
             .Blur: UIColor.yellow,
             .FiveStar: UIColor.green,
-            .Favorites: UIColor.white
+            .Favorites: UIColor.white,
+            .Measuration: UIColor.gray,
     ]
     
     public func ColorForGroup(_ Group: FilterGroups) -> UIColor
@@ -1124,7 +1135,8 @@ class FilterManager
             .ColorInversion: "Invert Colors",
             .ChannelMangler: "Channel Mangler",
             .ColorMap: "Color Map",
-            ]
+            .PixelCounter: "Pixel Counter",
+    ]
     
     public static func GetFilterTitle(_ Filter: FilterTypes) -> String?
     {
@@ -1195,7 +1207,8 @@ class FilterManager
             .ColorInversion: true,
             .ChannelMangler: true,
             .ColorMap: true,
-            ]
+            .PixelCounter: true,
+    ]
     
     /// Determines if the given filter type is implemented.
     ///
@@ -1422,7 +1435,7 @@ class FilterManager
             .ChannelManglerAction: .IntType,
             .InvertColorMapGradient: .BoolType,
             .ColorMapGradient: .StringType,
-            ]
+    ]
     
     /// Maps fields to names used to store field data in user settings.
     public static let FieldStorageMap: [InputFields: String] =
@@ -1589,6 +1602,6 @@ class FilterManager
             .ChannelManglerAction: "_Action",
             .InvertColorMapGradient: "_InvertGradient",
             .ColorMapGradient: "_GradientDefinition",
-            ]
+    ]
 }
 
