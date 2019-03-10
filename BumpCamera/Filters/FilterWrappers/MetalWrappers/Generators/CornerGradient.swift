@@ -37,7 +37,7 @@ class CornerGradient: FilterParent, Renderer
     
     func ID() -> UUID
     {
-        return CornerGradient._ID
+        return type(of: self)._ID
     }
     
     static func Title() -> String
@@ -342,6 +342,21 @@ class CornerGradient: FilterParent, Renderer
         return nil
     }
     
+    func Query(PixelBuffer: CVPixelBuffer, Parameters: [String: Any]) -> [String: Any]?
+    {
+        return nil
+    }
+    
+    func Query(Image: UIImage, Parameters: [String: Any]) -> [String: Any]?
+    {
+        return nil
+    }
+    
+    func Query(Image: CIImage, Parameters: [String: Any]) -> [String: Any]?
+    {
+        return nil
+    }
+    
     var LastUIImage: UIImage? = nil
     var LastCIImage: CIImage? = nil
     
@@ -407,7 +422,7 @@ class CornerGradient: FilterParent, Renderer
     
     func SupportedFields() -> [FilterManager.InputFields]
     {
-        return CornerGradient.SupportedFields()
+        return type(of: self).SupportedFields()
     }
     
     public static func SupportedFields() -> [FilterManager.InputFields]
@@ -431,7 +446,7 @@ class CornerGradient: FilterParent, Renderer
     
     func SettingsStoryboard() -> String?
     {
-        return CornerGradient.SettingsStoryboard()
+        return type(of: self).SettingsStoryboard()
     }
     
     public static func SettingsStoryboard() -> String?
@@ -451,7 +466,7 @@ class CornerGradient: FilterParent, Renderer
     
     func FilterTarget() -> [FilterTargets]
     {
-        return CornerGradient.FilterTarget()
+        return type(of: self).FilterTarget()
     }
     
     private var ImageRenderTime: Double = 0.0
@@ -510,7 +525,7 @@ class CornerGradient: FilterParent, Renderer
     {
         get
         {
-            return CornerGradient.FilterKernel
+            return type(of: self).FilterKernel
         }
     }
     

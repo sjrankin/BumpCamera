@@ -1,5 +1,5 @@
 //
-//  Pixellate.swift
+//  type(of: self).swift
 //  BumpCamera
 //
 //  Created by Stuart Rankin on 1/15/19.
@@ -18,7 +18,7 @@ class Pixellate: FilterParent, Renderer
     
     func ID() -> UUID
     {
-        return Pixellate._ID
+        return type(of: self)._ID
     }
     
     static func ID() -> UUID
@@ -33,7 +33,7 @@ class Pixellate: FilterParent, Renderer
     
     func Title() -> String
     {
-        return Pixellate.Title()
+        return type(of: self).Title()
     }
     
     var InstanceID: UUID
@@ -63,7 +63,7 @@ class Pixellate: FilterParent, Renderer
     
     func Initialize(With FormatDescription: CMFormatDescription, BufferCountHint: Int)
     {
-        Reset("Pixellate.Initialize")
+        Reset("type(of: self).Initialize")
         (BufferPool, ColorSpace, OutputFormatDescription) = CreateBufferPool(From: FormatDescription, BufferCountHint: BufferCountHint)
         if BufferPool == nil
         {
@@ -127,7 +127,7 @@ class Pixellate: FilterParent, Renderer
         CVPixelBufferPoolCreatePixelBuffer(kCFAllocatorDefault, BufferPool!, &PixBuf)
         guard let OutPixBuf = PixBuf else
         {
-            print("Allocation failure in Pixellate.")
+            print("Allocation failure in type(of: self).")
             return nil
         }
         
@@ -197,6 +197,21 @@ class Pixellate: FilterParent, Renderer
         return nil
     }
     
+    func Query(PixelBuffer: CVPixelBuffer, Parameters: [String: Any]) -> [String: Any]?
+    {
+        return nil
+    }
+    
+    func Query(Image: UIImage, Parameters: [String: Any]) -> [String: Any]?
+    {
+        return nil
+    }
+    
+    func Query(Image: CIImage, Parameters: [String: Any]) -> [String: Any]?
+    {
+        return nil
+    }
+    
     var LastUIImage: UIImage? = nil
     var LastCIImage: CIImage? = nil
     
@@ -217,7 +232,7 @@ class Pixellate: FilterParent, Renderer
         switch Field
         {
         case .Width:
-            return (FilterManager.InputTypes.DoubleType, 20.0 as Any?)
+            return (.DoubleType, 20.0 as Any?)
             
         case .RenderImageCount:
             return (.IntType, 0 as Any?)
@@ -238,7 +253,7 @@ class Pixellate: FilterParent, Renderer
     
     func SupportedFields() -> [FilterManager.InputFields]
     {
-        return Pixellate.SupportedFields()
+        return type(of: self).SupportedFields()
     }
     
     public static func SupportedFields() -> [FilterManager.InputFields]
@@ -254,7 +269,7 @@ class Pixellate: FilterParent, Renderer
     
     public func SettingsStoryboard() -> String?
     {
-        return Pixellate.SettingsStoryboard()
+        return type(of: self).SettingsStoryboard()
     }
     
     public static func SettingsStoryboard() -> String?
@@ -274,7 +289,7 @@ class Pixellate: FilterParent, Renderer
     
     func FilterTarget() -> [FilterTargets]
     {
-        return Pixellate.FilterTarget()
+        return type(of: self).FilterTarget()
     }
     
     private var ImageRenderTime: Double = 0.0
@@ -333,7 +348,7 @@ class Pixellate: FilterParent, Renderer
     {
         get
         {
-            return Pixellate.FilterKernel
+            return type(of: self).FilterKernel
         }
     }
     
@@ -358,6 +373,6 @@ class Pixellate: FilterParent, Renderer
     /// - Returns: Array of ports.
     func Ports() -> [FilterPorts]
     {
-        return Pixellate.Ports()
+        return type(of: self).Ports()
     }
 }

@@ -32,7 +32,7 @@ class DilateErode: FilterParent, Renderer
     
     func ID() -> UUID
     {
-        return DilateErode._ID
+        return type(of: self)._ID
     }
     
     static func ID() -> UUID
@@ -52,7 +52,7 @@ class DilateErode: FilterParent, Renderer
     
     func Title() -> String
     {
-        return DilateErode.Title()
+        return type(of: self).Title()
     }
     
     var Description: String = "Dilate and Erode"
@@ -383,6 +383,21 @@ class DilateErode: FilterParent, Renderer
         return nil
     }
     
+    func Query(PixelBuffer: CVPixelBuffer, Parameters: [String: Any]) -> [String: Any]?
+    {
+        return nil
+    }
+    
+    func Query(Image: UIImage, Parameters: [String: Any]) -> [String: Any]?
+    {
+        return nil
+    }
+    
+    func Query(Image: CIImage, Parameters: [String: Any]) -> [String: Any]?
+    {
+        return nil
+    }
+    
     var LastUIImage: UIImage? = nil
     var LastCIImage: CIImage? = nil
     
@@ -430,7 +445,7 @@ class DilateErode: FilterParent, Renderer
     
     func SupportedFields() -> [FilterManager.InputFields]
     {
-        return DilateErode.SupportedFields()
+        return type(of: self).SupportedFields()
     }
     
     public static func SupportedFields() -> [FilterManager.InputFields]
@@ -448,7 +463,7 @@ class DilateErode: FilterParent, Renderer
     
     func SettingsStoryboard() -> String?
     {
-        return DilateErode.SettingsStoryboard()
+        return type(of: self).SettingsStoryboard()
     }
     
     public static func SettingsStoryboard() -> String?
@@ -468,7 +483,7 @@ class DilateErode: FilterParent, Renderer
     
     func FilterTarget() -> [FilterTargets]
     {
-        return DilateErode.FilterTarget()
+        return type(of: self).FilterTarget()
     }
     
     private var ImageRenderTime: Double = 0.0
@@ -527,7 +542,7 @@ class DilateErode: FilterParent, Renderer
     {
         get
         {
-            return DilateErode.FilterKernel
+            return type(of: self).FilterKernel
         }
     }
     
@@ -552,6 +567,6 @@ class DilateErode: FilterParent, Renderer
     /// - Returns: Array of ports.
     func Ports() -> [FilterPorts]
     {
-        return DilateErode.Ports()
+        return type(of: self).Ports()
     }
 }

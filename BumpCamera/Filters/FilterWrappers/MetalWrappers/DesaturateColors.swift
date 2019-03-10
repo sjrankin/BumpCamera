@@ -343,6 +343,21 @@ class DesaturateColors: FilterParent, Renderer
         return nil
     }
     
+    func Query(PixelBuffer: CVPixelBuffer, Parameters: [String: Any]) -> [String: Any]?
+    {
+        return nil
+    }
+    
+    func Query(Image: UIImage, Parameters: [String: Any]) -> [String: Any]?
+    {
+        return nil
+    }
+    
+    func Query(Image: CIImage, Parameters: [String: Any]) -> [String: Any]?
+    {
+        return nil
+    }
+    
     var LastUIImage: UIImage? = nil
     var LastCIImage: CIImage? = nil
     

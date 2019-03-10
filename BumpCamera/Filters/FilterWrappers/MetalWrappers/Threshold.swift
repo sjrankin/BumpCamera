@@ -1,5 +1,5 @@
 //
-//  Threshold.swift
+//  type(of: self).swift
 //  BumpCamera
 //
 //  Created by Stuart Rankin on 2/6/19.
@@ -32,7 +32,7 @@ class Threshold: FilterParent, Renderer
     
     func ID() -> UUID
     {
-        return Threshold._ID
+        return type(of: self)._ID
     }
     
     static func ID() -> UUID
@@ -47,7 +47,7 @@ class Threshold: FilterParent, Renderer
     
     func Title() -> String
     {
-        return Threshold.Title()
+        return type(of: self).Title()
     }
     
     var InstanceID: UUID
@@ -78,11 +78,11 @@ class Threshold: FilterParent, Renderer
     
     func Initialize(With FormatDescription: CMFormatDescription, BufferCountHint: Int)
     {
-        Reset("Threshold.Initialize")
+        Reset("type(of: self).Initialize")
         (BufferPool, _, OutputFormatDescription) = CreateBufferPool(From: FormatDescription, BufferCountHint: BufferCountHint)
         if BufferPool == nil
         {
-            print("BufferPool nil in Threshold.Initialize.")
+            print("BufferPool nil in type(of: self).Initialize.")
             return
         }
         InputFormatDescription = FormatDescription
@@ -92,7 +92,7 @@ class Threshold: FilterParent, Renderer
         var MetalTextureCache: CVMetalTextureCache? = nil
         if CVMetalTextureCacheCreate(kCFAllocatorDefault, nil, MetalDevice!, nil, &MetalTextureCache) != kCVReturnSuccess
         {
-            fatalError("Unable to allocation texture cache in Threshold.")
+            fatalError("Unable to allocation texture cache in type(of: self).")
         }
         else
         {
@@ -157,14 +157,14 @@ class Threshold: FilterParent, Renderer
         CVPixelBufferPoolCreatePixelBuffer(kCFAllocatorDefault, BufferPool!, &NewPixelBuffer)
         guard let OutputBuffer = NewPixelBuffer else
         {
-            print("Allocation failure for new pixel buffer pool in Threshold.")
+            print("Allocation failure for new pixel buffer pool in type(of: self).")
             return nil
         }
         
         guard let InputTexture = MakeTextureFromCVPixelBuffer(pixelBuffer: PixelBuffer, textureFormat: .bgra8Unorm),
             let OutputTexture = MakeTextureFromCVPixelBuffer(pixelBuffer: OutputBuffer, textureFormat: .bgra8Unorm) else
         {
-            print("Error creating textures in Threshold.")
+            print("Error creating textures in type(of: self).")
             return nil
         }
         
@@ -261,7 +261,7 @@ class Threshold: FilterParent, Renderer
                                                                          width: Int(ImageWidth), height: Int(ImageHeight), mipmapped: true)
         guard let Texture = ImageDevice?.makeTexture(descriptor: TextureDescriptor) else
         {
-            print("Error creating input texture in Threshold.Render.")
+            print("Error creating input texture in type(of: self).Render.")
             return nil
         }
         
@@ -340,13 +340,13 @@ class Threshold: FilterParent, Renderer
             }
             else
             {
-                print("Error converting UIImage to CIImage in Threshold.Render(CIImage)")
+                print("Error converting UIImage to CIImage in type(of: self).Render(CIImage)")
                 return nil
             }
         }
         else
         {
-            print("Error returned from Render(UIImage) in Threshold.Render(CIImage)")
+            print("Error returned from Render(UIImage) in type(of: self).Render(CIImage)")
             return nil
         }
     }
@@ -355,6 +355,21 @@ class Threshold: FilterParent, Renderer
     ///
     /// - Returns: Nil is always returned.
     func Generate() -> CIImage?
+    {
+        return nil
+    }
+    
+    func Query(PixelBuffer: CVPixelBuffer, Parameters: [String: Any]) -> [String: Any]?
+    {
+        return nil
+    }
+    
+    func Query(Image: UIImage, Parameters: [String: Any]) -> [String: Any]?
+    {
+        return nil
+    }
+    
+    func Query(Image: CIImage, Parameters: [String: Any]) -> [String: Any]?
     {
         return nil
     }
@@ -412,7 +427,7 @@ class Threshold: FilterParent, Renderer
     
     func SupportedFields() -> [FilterManager.InputFields]
     {
-        return Threshold.SupportedFields()
+        return type(of: self).SupportedFields()
     }
     
     public static func SupportedFields() -> [FilterManager.InputFields]
@@ -432,7 +447,7 @@ class Threshold: FilterParent, Renderer
     
     func SettingsStoryboard() -> String?
     {
-        return Threshold.SettingsStoryboard()
+        return type(of: self).SettingsStoryboard()
     }
     
     public static func SettingsStoryboard() -> String?
@@ -452,7 +467,7 @@ class Threshold: FilterParent, Renderer
     
     func FilterTarget() -> [FilterTargets]
     {
-        return Threshold.FilterTarget()
+        return type(of: self).FilterTarget()
     }
     
     private var ImageRenderTime: Double = 0.0
@@ -511,7 +526,7 @@ class Threshold: FilterParent, Renderer
     {
         get
         {
-            return Threshold.FilterKernel
+            return type(of: self).FilterKernel
         }
     }
     
@@ -536,6 +551,6 @@ class Threshold: FilterParent, Renderer
     /// - Returns: Array of ports.
     func Ports() -> [FilterPorts]
     {
-        return Threshold.Ports()
+        return type(of: self).Ports()
     }
 }

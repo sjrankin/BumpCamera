@@ -176,13 +176,8 @@ class ChannelMangler: FilterParent, Renderer
             IGradient[index] = simd_float4(Float(Color.r), Float(Color.g), Float(Color.b), 1.0)
         }
         let IGPtr = UnsafePointer(IGradient)
-        //let GradientBuffer = MetalDevice!.makeBuffer(length: MemoryLayout<simd_float4>.stride * GradientSize, options: [])
-        let igptrz0 = MemoryLayout<[simd_float4]>.stride * 256
-        let igptrz1 = MemoryLayout<simd_float4>.stride * 256 //use this one
-//        print("igptrz0=\(igptrz0), igptrz1=\(igptrz1)")
-        let GradientBuffer = MetalDevice!.makeBuffer(bytes: IGPtr, length: 4096, options: [])
-        //let Gradient = UnsafeBufferPointer<simd_float4>(start: UnsafePointer(GradientBuffer!.contents().assumingMemoryBound(to: simd_float4.self)),
-        //                                                count: GradientSize)
+        let GradientBufferSize = MemoryLayout<simd_float4>.stride * 256
+        let GradientBuffer = MetalDevice!.makeBuffer(bytes: IGPtr, length: GradientBufferSize, options: [])
         
         let ResultsCount = 10
         let ResultsBuffer = MetalDevice!.makeBuffer(length: MemoryLayout<ReturnBufferType>.stride * ResultsCount, options: [])
@@ -380,6 +375,21 @@ class ChannelMangler: FilterParent, Renderer
     ///
     /// - Returns: Nil is always returned.
     func Generate() -> CIImage?
+    {
+        return nil
+    }
+    
+    func Query(PixelBuffer: CVPixelBuffer, Parameters: [String: Any]) -> [String: Any]?
+    {
+        return nil
+    }
+    
+    func Query(Image: UIImage, Parameters: [String: Any]) -> [String: Any]?
+    {
+        return nil
+    }
+    
+    func Query(Image: CIImage, Parameters: [String: Any]) -> [String: Any]?
     {
         return nil
     }

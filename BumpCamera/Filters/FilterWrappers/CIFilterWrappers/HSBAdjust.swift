@@ -18,7 +18,7 @@ class HSBAdjust: FilterParent, Renderer
     
     func ID() -> UUID
     {
-        return HSBAdjust._ID
+        return type(of: self)._ID
     }
     
     static func ID() -> UUID
@@ -33,7 +33,7 @@ class HSBAdjust: FilterParent, Renderer
     
     func Title() -> String
     {
-        return HSBAdjust.Title()
+        return type(of: self).Title()
     }
     
     var InstanceID: UUID
@@ -67,7 +67,7 @@ class HSBAdjust: FilterParent, Renderer
         (BufferPool, ColorSpace, OutputFormatDescription) = CreateBufferPool(From: FormatDescription, BufferCountHint: BufferCountHint)
         if BufferPool == nil
         {
-            print("BufferPool nil in HSBAdjust.")
+            print("BufferPool nil in type(of: self).")
             return
         }
         InputFormatDescription = FormatDescription
@@ -103,7 +103,7 @@ class HSBAdjust: FilterParent, Renderer
         defer{objc_sync_exit(AccessLock)}
         if BufferPool == nil
         {
-            print("BufferPool nil in HSBAdjust.")
+            print("BufferPool nil in type(of: self).")
             return nil
         }
         guard let PrimaryFilter = PrimaryFilter,
@@ -233,6 +233,21 @@ class HSBAdjust: FilterParent, Renderer
         return nil
     }
     
+    func Query(PixelBuffer: CVPixelBuffer, Parameters: [String: Any]) -> [String: Any]?
+    {
+        return nil
+    }
+    
+    func Query(Image: UIImage, Parameters: [String: Any]) -> [String: Any]?
+    {
+        return nil
+    }
+    
+    func Query(Image: CIImage, Parameters: [String: Any]) -> [String: Any]?
+    {
+        return nil
+    }
+    
     var LastUIImage: UIImage? = nil
     var LastCIImage: CIImage? = nil
     
@@ -280,7 +295,7 @@ class HSBAdjust: FilterParent, Renderer
     
     func SupportedFields() -> [FilterManager.InputFields]
     {
-        return HSBAdjust.SupportedFields()
+        return type(of: self).SupportedFields()
     }
     
     public static func SupportedFields() -> [FilterManager.InputFields]
@@ -298,7 +313,7 @@ class HSBAdjust: FilterParent, Renderer
     
     func SettingsStoryboard() -> String?
     {
-        return HSBAdjust.SettingsStoryboard()
+        return type(of: self).SettingsStoryboard()
     }
     
     public static func SettingsStoryboard() -> String?
@@ -318,7 +333,7 @@ class HSBAdjust: FilterParent, Renderer
     
     func FilterTarget() -> [FilterTargets]
     {
-        return HSBAdjust.FilterTarget()
+        return type(of: self).FilterTarget()
     }
     
     private var ImageRenderTime: Double = 0.0
@@ -377,7 +392,7 @@ class HSBAdjust: FilterParent, Renderer
     {
         get
         {
-            return HSBAdjust.FilterKernel
+            return type(of: self).FilterKernel
         }
     }
     
@@ -402,6 +417,6 @@ class HSBAdjust: FilterParent, Renderer
     /// - Returns: Array of ports.
     func Ports() -> [FilterPorts]
     {
-        return HSBAdjust.Ports()
+        return type(of: self).Ports()
     }
 }

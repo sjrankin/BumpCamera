@@ -1,5 +1,5 @@
 //
-//  GaussianBlur.swift
+//  type(of: self).swift
 //  BumpCamera
 //
 //  Created by Stuart Rankin on 2/22/19.
@@ -24,7 +24,7 @@ class GaussianBlur: FilterParent, Renderer
     
     func ID() -> UUID
     {
-        return GaussianBlur._ID
+        return type(of: self)._ID
     }
     
     static func ID() -> UUID
@@ -39,7 +39,7 @@ class GaussianBlur: FilterParent, Renderer
     
     func Title() -> String
     {
-        return GaussianBlur.Title()
+        return type(of: self).Title()
     }
     
     var InstanceID: UUID
@@ -66,7 +66,7 @@ class GaussianBlur: FilterParent, Renderer
     
     func Initialize(With FormatDescription: CMFormatDescription, BufferCountHint: Int)
     {
-        Reset("GaussianBlur.Initialize")
+        Reset("type(of: self).Initialize")
         CommandQueue = MetalDevice?.makeCommandQueue()
         bciContext = CIContext()
         Initialized = true
@@ -173,7 +173,7 @@ class GaussianBlur: FilterParent, Renderer
     func InitializeForImage()
     {
         ImageDevice = MTLCreateSystemDefaultDevice()
-        Reset("GaussianBlur.Initialize")
+        Reset("type(of: self).Initialize")
         CommandQueue = ImageDevice?.makeCommandQueue()
         IGTextureLoader = MTKTextureLoader(device: MetalDevice!)
         InitializedForImage = true
@@ -182,7 +182,7 @@ class GaussianBlur: FilterParent, Renderer
     
     var ciContext: CIContext!
     
-    /// Renders the image with the wrapper's MPS image filter. In our case, the MPSImageGaussianBlur.
+    /// Renders the image with the wrapper's MPS image filter. In our case, the MPSImagetype(of: self).
     ///
     /// - Note: [Metal kernel functions compute shaders](http://flexmonkey.blogspot.com/2014/10/metal-kernel-functions-compute-shaders.html)
     ///
@@ -246,13 +246,13 @@ class GaussianBlur: FilterParent, Renderer
             }
             else
             {
-                print("Error converting UIImage to CIImage in GaussianBlur.Render(CIImage)")
+                print("Error converting UIImage to CIImage in type(of: self).Render(CIImage)")
                 return nil
             }
         }
         else
         {
-            print("Error returned from Render(UIImage) in GaussianBlur.Render(CIImage)")
+            print("Error returned from Render(UIImage) in type(of: self).Render(CIImage)")
             return nil
         }
     }
@@ -261,6 +261,21 @@ class GaussianBlur: FilterParent, Renderer
     ///
     /// - Returns: Nil is always returned.
     func Generate() -> CIImage?
+    {
+        return nil
+    }
+    
+    func Query(PixelBuffer: CVPixelBuffer, Parameters: [String: Any]) -> [String: Any]?
+    {
+        return nil
+    }
+    
+    func Query(Image: UIImage, Parameters: [String: Any]) -> [String: Any]?
+    {
+        return nil
+    }
+    
+    func Query(Image: CIImage, Parameters: [String: Any]) -> [String: Any]?
     {
         return nil
     }
@@ -306,7 +321,7 @@ class GaussianBlur: FilterParent, Renderer
     
     func SupportedFields() -> [FilterManager.InputFields]
     {
-        return GaussianBlur.SupportedFields()
+        return type(of: self).SupportedFields()
     }
     
     public static func SupportedFields() -> [FilterManager.InputFields]
@@ -322,7 +337,7 @@ class GaussianBlur: FilterParent, Renderer
     
     func SettingsStoryboard() -> String?
     {
-        return GaussianBlur.SettingsStoryboard()
+        return type(of: self).SettingsStoryboard()
     }
     
     public static func SettingsStoryboard() -> String?
@@ -342,7 +357,7 @@ class GaussianBlur: FilterParent, Renderer
     
     func FilterTarget() -> [FilterTargets]
     {
-        return GaussianBlur.FilterTarget()
+        return type(of: self).FilterTarget()
     }
     
     private var ImageRenderTime: Double = 0.0
@@ -401,7 +416,7 @@ class GaussianBlur: FilterParent, Renderer
     {
         get
         {
-            return GaussianBlur.FilterKernel
+            return type(of: self).FilterKernel
         }
     }
     
@@ -426,6 +441,6 @@ class GaussianBlur: FilterParent, Renderer
     /// - Returns: Array of ports.
     func Ports() -> [FilterPorts]
     {
-        return GaussianBlur.Ports()
+        return type(of: self).Ports()
     }
 }

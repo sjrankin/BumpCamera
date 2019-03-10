@@ -1,5 +1,5 @@
 //
-//  FalseColor.swift
+//  type(of: self).swift
 //  BumpCamera
 //
 //  Created by Stuart Rankin on 2/12/19.
@@ -18,7 +18,7 @@ class FalseColor: FilterParent, Renderer
     
     func ID() -> UUID
     {
-        return FalseColor._ID
+        return type(of: self)._ID
     }
     
     static func ID() -> UUID
@@ -33,7 +33,7 @@ class FalseColor: FilterParent, Renderer
     
     func Title() -> String
     {
-        return FalseColor.Title()
+        return type(of: self).Title()
     }
     
     var InstanceID: UUID
@@ -211,6 +211,21 @@ class FalseColor: FilterParent, Renderer
         return nil
     }
     
+    func Query(PixelBuffer: CVPixelBuffer, Parameters: [String: Any]) -> [String: Any]?
+    {
+        return nil
+    }
+    
+    func Query(Image: UIImage, Parameters: [String: Any]) -> [String: Any]?
+    {
+        return nil
+    }
+    
+    func Query(Image: CIImage, Parameters: [String: Any]) -> [String: Any]?
+    {
+        return nil
+    }
+    
     var LastUIImage: UIImage? = nil
     var LastCIImage: CIImage? = nil
     
@@ -255,7 +270,7 @@ class FalseColor: FilterParent, Renderer
     
     func SupportedFields() -> [FilterManager.InputFields]
     {
-        return FalseColor.SupportedFields()
+        return type(of: self).SupportedFields()
     }
     
     public static func SupportedFields() -> [FilterManager.InputFields]
@@ -272,7 +287,7 @@ class FalseColor: FilterParent, Renderer
     
     func SettingsStoryboard() -> String?
     {
-        return FalseColor.SettingsStoryboard()
+        return type(of: self).SettingsStoryboard()
     }
     
     public static func SettingsStoryboard() -> String?
@@ -292,7 +307,7 @@ class FalseColor: FilterParent, Renderer
     
     func FilterTarget() -> [FilterTargets]
     {
-        return FalseColor.FilterTarget()
+        return type(of: self).FilterTarget()
     }
     
     private var ImageRenderTime: Double = 0.0
@@ -351,7 +366,7 @@ class FalseColor: FilterParent, Renderer
     {
         get
         {
-            return FalseColor.FilterKernel
+            return type(of: self).FilterKernel
         }
     }
     
@@ -376,6 +391,6 @@ class FalseColor: FilterParent, Renderer
     /// - Returns: Array of ports.
     func Ports() -> [FilterPorts]
     {
-        return FalseColor.Ports()
+        return type(of: self).Ports()
     }
 }
