@@ -165,6 +165,11 @@
 		176C969F222CFD2C004DB727 /* ConditionalSilhouetteSettingsUI.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 176C969E222CFD2C004DB727 /* ConditionalSilhouetteSettingsUI.storyboard */; };
 		176C96A1222D04AD004DB727 /* ConditionalSilhouetteSettingsUICode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 176C96A0222D04AD004DB727 /* ConditionalSilhouetteSettingsUICode.swift */; };
 		176D6829221D921C00BA6267 /* FilterPerformanceCode2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 176D6828221D921C00BA6267 /* FilterPerformanceCode2.swift */; };
+		1773C9F5223528CC008DE0FE /* ColorMap2.metal in Sources */ = {isa = PBXBuildFile; fileRef = 1773C9F4223528CC008DE0FE /* ColorMap2.metal */; };
+		1773C9F722352A5E008DE0FE /* ColorMap2Parameters.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1773C9F622352A5E008DE0FE /* ColorMap2Parameters.swift */; };
+		1773C9F922352A90008DE0FE /* ColorMap2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1773C9F822352A90008DE0FE /* ColorMap2.swift */; };
+		1773C9FC22352E5F008DE0FE /* ColorMap2SettingsUI.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1773C9FB22352E5F008DE0FE /* ColorMap2SettingsUI.storyboard */; };
+		1773C9FE22353006008DE0FE /* ColorMap2SettingsUICode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1773C9FD22353006008DE0FE /* ColorMap2SettingsUICode.swift */; };
 		1775DDB1222BC27E0061DC87 /* BumpCameraPrivacy.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 1775DDAF222BC27E0061DC87 /* BumpCameraPrivacy.pdf */; };
 		1775DDB2222BC27E0061DC87 /* BumpCameraLimitations.pdf in Resources */ = {isa = PBXBuildFile; fileRef = 1775DDB0222BC27E0061DC87 /* BumpCameraLimitations.pdf */; };
 		17787F022202C43900D15761 /* HSBFilterSettingsUI.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 17787F012202C43900D15761 /* HSBFilterSettingsUI.storyboard */; };
@@ -318,6 +323,10 @@
 		17FA64972234CA4F0060D5CA /* PixelCounterParameters.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17FA64962234CA4F0060D5CA /* PixelCounterParameters.swift */; };
 		17FA649C2234DAD00060D5CA /* PixelCounterSettingsUI.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 17FA649B2234DAD00060D5CA /* PixelCounterSettingsUI.storyboard */; };
 		17FA649E2234E51A0060D5CA /* PixelCounterSettingsUICode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17FA649D2234E51A0060D5CA /* PixelCounterSettingsUICode.swift */; };
+		17FF72C92235FEBD00670977 /* GradientPickerProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17FF72C82235FEBD00670977 /* GradientPickerProtocol.swift */; };
+		17FF72CB2235FF8E00670977 /* GradientEditorUICode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17FF72CA2235FF8E00670977 /* GradientEditorUICode.swift */; };
+		17FF72CD2236076C00670977 /* GradientStopCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17FF72CC2236076C00670977 /* GradientStopCell.swift */; };
+		17FF72CF22360EDE00670977 /* ColorStopEditorCode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17FF72CE22360EDE00670977 /* ColorStopEditorCode.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -482,6 +491,11 @@
 		176C969E222CFD2C004DB727 /* ConditionalSilhouetteSettingsUI.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = ConditionalSilhouetteSettingsUI.storyboard; sourceTree = "<group>"; };
 		176C96A0222D04AD004DB727 /* ConditionalSilhouetteSettingsUICode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConditionalSilhouetteSettingsUICode.swift; sourceTree = "<group>"; };
 		176D6828221D921C00BA6267 /* FilterPerformanceCode2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterPerformanceCode2.swift; sourceTree = "<group>"; };
+		1773C9F4223528CC008DE0FE /* ColorMap2.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = ColorMap2.metal; sourceTree = "<group>"; };
+		1773C9F622352A5E008DE0FE /* ColorMap2Parameters.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorMap2Parameters.swift; sourceTree = "<group>"; };
+		1773C9F822352A90008DE0FE /* ColorMap2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorMap2.swift; sourceTree = "<group>"; };
+		1773C9FB22352E5F008DE0FE /* ColorMap2SettingsUI.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = ColorMap2SettingsUI.storyboard; sourceTree = "<group>"; };
+		1773C9FD22353006008DE0FE /* ColorMap2SettingsUICode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorMap2SettingsUICode.swift; sourceTree = "<group>"; };
 		1775DDAF222BC27E0061DC87 /* BumpCameraPrivacy.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = BumpCameraPrivacy.pdf; sourceTree = "<group>"; };
 		1775DDB0222BC27E0061DC87 /* BumpCameraLimitations.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = BumpCameraLimitations.pdf; sourceTree = "<group>"; };
 		17787F012202C43900D15761 /* HSBFilterSettingsUI.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = HSBFilterSettingsUI.storyboard; sourceTree = "<group>"; };
@@ -636,6 +650,10 @@
 		17FA64962234CA4F0060D5CA /* PixelCounterParameters.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PixelCounterParameters.swift; sourceTree = "<group>"; };
 		17FA649B2234DAD00060D5CA /* PixelCounterSettingsUI.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = PixelCounterSettingsUI.storyboard; sourceTree = "<group>"; };
 		17FA649D2234E51A0060D5CA /* PixelCounterSettingsUICode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PixelCounterSettingsUICode.swift; sourceTree = "<group>"; };
+		17FF72C82235FEBD00670977 /* GradientPickerProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GradientPickerProtocol.swift; sourceTree = "<group>"; };
+		17FF72CA2235FF8E00670977 /* GradientEditorUICode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GradientEditorUICode.swift; sourceTree = "<group>"; };
+		17FF72CC2236076C00670977 /* GradientStopCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GradientStopCell.swift; sourceTree = "<group>"; };
+		17FF72CE22360EDE00670977 /* ColorStopEditorCode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorStopEditorCode.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -806,10 +824,9 @@
 			children = (
 				17FA648D2234A67E0060D5CA /* Measuration */,
 				171E5B0C2205D09D004E60F1 /* Generators */,
-				17110DDA221E960500223990 /* FindPixel */,
+				1773C9F3223527EB008DE0FE /* ColorMap2 */,
 				171375F922193188000E49C2 /* GrayscaleToRGB */,
 				1799C89421FF15530069D5AC /* External */,
-				175A332A222E98E400670547 /* ImageScan */,
 				17C67571222D148200D53B93 /* ColorInverter */,
 				17C3925A221596A80049B8FD /* DilateErode */,
 				176C9696222CECAB004DB727 /* ConditionalSilhouette */,
@@ -1150,6 +1167,7 @@
 				172D98C821F9A53A005A5275 /* ChannelMixer.swift */,
 				17BEE0B121FC20FF00A9370B /* DesaturateColors.swift */,
 				1799C89921FF1B890069D5AC /* KuwaharaEffect.swift */,
+				1773C9F822352A90008DE0FE /* ColorMap2.swift */,
 				17C67576222D1E4D00D53B93 /* ColorInverter.swift */,
 				17E15FF5220585EE0037B35F /* MirroringDistortion.swift */,
 				171F3D08220AD1990098E2B7 /* Dithering.swift */,
@@ -1201,6 +1219,7 @@
 				176C969D222CFD15004DB727 /* ConditionalSilhouette */,
 				17C67578222D378600D53B93 /* ColorInverter */,
 				173F5D02220BE80D00067ABB /* Threshold */,
+				1773C9FA22352E16008DE0FE /* ColorMap2 */,
 				17D60D85220FEA7D00933F15 /* MonochromeColors */,
 				17C392632215A42C0049B8FD /* DilateErode */,
 				17D60D8A22115C9400933F15 /* Pixellate2 */,
@@ -1376,6 +1395,24 @@
 				176C96A0222D04AD004DB727 /* ConditionalSilhouetteSettingsUICode.swift */,
 			);
 			path = ConditionalSilhouette;
+			sourceTree = "<group>";
+		};
+		1773C9F3223527EB008DE0FE /* ColorMap2 */ = {
+			isa = PBXGroup;
+			children = (
+				1773C9F4223528CC008DE0FE /* ColorMap2.metal */,
+				1773C9F622352A5E008DE0FE /* ColorMap2Parameters.swift */,
+			);
+			path = ColorMap2;
+			sourceTree = "<group>";
+		};
+		1773C9FA22352E16008DE0FE /* ColorMap2 */ = {
+			isa = PBXGroup;
+			children = (
+				1773C9FB22352E5F008DE0FE /* ColorMap2SettingsUI.storyboard */,
+				1773C9FD22353006008DE0FE /* ColorMap2SettingsUICode.swift */,
+			);
+			path = ColorMap2;
 			sourceTree = "<group>";
 		};
 		1775DDAA222BBB520061DC87 /* Text */ = {
@@ -1564,6 +1601,10 @@
 			isa = PBXGroup;
 			children = (
 				17BC0080223140580076A5D5 /* GradientEditorUI.storyboard */,
+				17FF72CA2235FF8E00670977 /* GradientEditorUICode.swift */,
+				17FF72C82235FEBD00670977 /* GradientPickerProtocol.swift */,
+				17FF72CC2236076C00670977 /* GradientStopCell.swift */,
+				17FF72CE22360EDE00670977 /* ColorStopEditorCode.swift */,
 			);
 			path = GradientEditor;
 			sourceTree = "<group>";
@@ -1820,6 +1861,8 @@
 		17FA648D2234A67E0060D5CA /* Measuration */ = {
 			isa = PBXGroup;
 			children = (
+				175A332A222E98E400670547 /* ImageScan */,
+				17110DDA221E960500223990 /* FindPixel */,
 				17FA64912234C4B90060D5CA /* PixelCounter */,
 				17FA648E2234A6900060D5CA /* Octree */,
 			);
@@ -1964,6 +2007,7 @@
 				17E9F0E1220173CD00BA7B46 /* KuwaharaFilterSettingsUI.storyboard in Resources */,
 				1763F076222167AB00E1E2E8 /* GaussianBlurSettingsUI.storyboard in Resources */,
 				170BFE7A221C33EE00754BF6 /* SmoothLinearGradientSettingsUI.storyboard in Resources */,
+				1773C9FC22352E5F008DE0FE /* ColorMap2SettingsUI.storyboard in Resources */,
 				171F3CF82209444B0098E2B7 /* GridSettingsUI.storyboard in Resources */,
 				173F5D04220BE82E00067ABB /* ThresholdSettingsUI.storyboard in Resources */,
 				17E15FEF220575DD0037B35F /* MirroringFilterSettingsUI.storyboard in Resources */,
@@ -2034,6 +2078,7 @@
 				17CE373C2213B08C0070ED87 /* FalseColorSettingsUICode.swift in Sources */,
 				1756CE0621FD734600C4E638 /* RGBtoHBS.metal in Sources */,
 				1756CDF621FD629800C4E638 /* RGBtoRBG.metal in Sources */,
+				17FF72CF22360EDE00670977 /* ColorStopEditorCode.swift in Sources */,
 				17FA64932234C4CA0060D5CA /* PixelCounter.metal in Sources */,
 				1709A6FB2220FBC600D9B43D /* RatingCell.swift in Sources */,
 				171D627121EDD1C2004D3545 /* HatchScreen.swift in Sources */,
@@ -2090,10 +2135,12 @@
 				17787F092202E2E400D15761 /* ChannelMixerSettingsUICode.swift in Sources */,
 				17FA64952234CA380060D5CA /* PixelCounter.swift in Sources */,
 				175A332E222E9A6100670547 /* ImageScanParameters.swift in Sources */,
+				1773C9F5223528CC008DE0FE /* ColorMap2.metal in Sources */,
 				172D98C921F9A53A005A5275 /* ChannelMixer.swift in Sources */,
 				1712982222240FC5000D5EF5 /* OverflowExifViewerCode.swift in Sources */,
 				17E15FF4220585950037B35F /* MirroringParameters.swift in Sources */,
 				171298172223B445000D5EF5 /* ImageMetadata.swift in Sources */,
+				1773C9F922352A90008DE0FE /* ColorMap2.swift in Sources */,
 				174D6D5F220804AC0066AE93 /* FilterNode.swift in Sources */,
 				17D7511521F41DE40050A2B5 /* MainUIDebug.swift in Sources */,
 				1756F1192204A37100CC655D /* GrayscaleSettingsUICode.swift in Sources */,
@@ -2115,6 +2162,7 @@
 				175A3337222EA49D00670547 /* ChannelManglerSettingsUICode.swift in Sources */,
 				178CF92821F5F286007229FD /* FilterManagerEnums.swift in Sources */,
 				17D60D9222118EDB00933F15 /* Pixellate2ConditionalUI.swift in Sources */,
+				17FF72CD2236076C00670977 /* GradientStopCell.swift in Sources */,
 				17F2369B22152A4B0091B865 /* PredefinedColorGroup.swift in Sources */,
 				173F632D21FFFBEE006CB67C /* BlockInfoParameters.swift in Sources */,
 				1779F3D62218352E00140EEA /* SepiaToneSettingsUICode.swift in Sources */,
@@ -2133,6 +2181,8 @@
 				17D60D80220FD6A700933F15 /* MonochromeColorsParameters.swift in Sources */,
 				17BC00752230B3200076A5D5 /* GradientTestCode.swift in Sources */,
 				171D626B21EDCE62004D3545 /* Pixellate.swift in Sources */,
+				1773C9F722352A5E008DE0FE /* ColorMap2Parameters.swift in Sources */,
+				1773C9FE22353006008DE0FE /* ColorMap2SettingsUICode.swift in Sources */,
 				173F5CFF220BDF0A00067ABB /* Threshold.metal in Sources */,
 				17C6757C222D3D0800D53B93 /* ColorInverterSettingsUICode.swift in Sources */,
 				171375FB2219319B000E49C2 /* GrayscaleToRGB.metal in Sources */,
@@ -2240,6 +2290,7 @@
 				17D7512221F466CF0050A2B5 /* DepthToGrayscale.metal in Sources */,
 				1705D981222818DA00B95262 /* MetalCheckerboard.swift in Sources */,
 				17F236A3221533190091B865 /* ColorListPickerCode.swift in Sources */,
+				17FF72C92235FEBD00670977 /* GradientPickerProtocol.swift in Sources */,
 				171F3CF4220863760098E2B7 /* GridGenerator.swift in Sources */,
 				1791A07E222AC23E007AF021 /* GSliderProtocol.swift in Sources */,
 				175A332C222E98F800670547 /* ImageScan.metal in Sources */,
@@ -2285,6 +2336,7 @@
 				1740CEC42216A10A00BFD1A0 /* LicenseViewer.swift in Sources */,
 				174779FA2204309600FD64EF /* NoParametersSettingsUICode.swift in Sources */,
 				175E260E21F4A5AB00B6BF8F /* HueAdjust.swift in Sources */,
+				17FF72CB2235FF8E00670977 /* GradientEditorUICode.swift in Sources */,
 				17BEE0B221FC20FF00A9370B /* DesaturateColors.swift in Sources */,
 				1756CE1021FD860A00C4E638 /* RGBSwizzling.metal in Sources */,
 			);
