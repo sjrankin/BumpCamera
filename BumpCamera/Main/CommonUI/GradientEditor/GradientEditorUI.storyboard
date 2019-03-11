@@ -13,59 +13,33 @@
         <!--Gradient Editor-->
         <scene sceneID="6VI-mc-u3X">
             <objects>
-                <viewController id="dno-Lt-XfB" customClass="GradientEditorUICode" customModule="BumpCamera" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="MainEditor" id="dno-Lt-XfB" customClass="GradientEditorUICode" customModule="BumpCamera" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="Ne8-cq-1mT">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" alwaysBounceVertical="YES" showsHorizontalScrollIndicator="NO" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="04i-j9-Oix">
-                                <rect key="frame" x="22" y="328" width="331" height="295"/>
+                                <rect key="frame" x="22" y="270" width="331" height="338"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <viewLayoutGuide key="safeArea" id="joK-2K-dwn"/>
                             </tableView>
-                            <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="zCz-9D-01C">
-                                <rect key="frame" x="22" y="275" width="210" height="29"/>
-                                <segments>
-                                    <segment title="Vertical"/>
-                                    <segment title="Horizontal"/>
-                                </segments>
-                                <connections>
-                                    <action selector="HandleOrientationChange:" destination="dno-Lt-XfB" eventType="primaryActionTriggered" id="fcP-Vh-OMV"/>
-                                </connections>
-                            </segmentedControl>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="uVC-PY-qPd">
-                                <rect key="frame" x="282" y="274" width="71" height="36"/>
-                                <constraints>
-                                    <constraint firstAttribute="width" constant="71" id="7Nd-V1-7AQ"/>
-                                </constraints>
-                                <fontDescription key="fontDescription" type="system" pointSize="20"/>
-                                <state key="normal" title="Reverse"/>
-                                <connections>
-                                    <action selector="HandleReverseGradientButton:" destination="dno-Lt-XfB" eventType="primaryActionTriggered" id="8hN-LP-d1b"/>
-                                </connections>
-                            </button>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" preservesSuperviewLayoutMargins="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Utr-Zw-Pnp">
+                            <imageView clipsSubviews="YES" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" preservesSuperviewLayoutMargins="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Utr-Zw-Pnp">
                                 <rect key="frame" x="22" y="71" width="331" height="180"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="180" id="fzv-zD-Kf7"/>
+                                    <constraint firstAttribute="height" constant="180" id="CBz-Ux-3La"/>
                                 </constraints>
                                 <viewLayoutGuide key="safeArea" id="KGp-U0-H2u"/>
                             </imageView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
-                            <constraint firstItem="Utr-Zw-Pnp" firstAttribute="leading" secondItem="zCz-9D-01C" secondAttribute="leading" id="0jS-Yp-mEh"/>
-                            <constraint firstItem="Utr-Zw-Pnp" firstAttribute="top" secondItem="a9M-E0-awZ" secondAttribute="top" constant="7" id="D2k-HX-983"/>
-                            <constraint firstItem="04i-j9-Oix" firstAttribute="top" secondItem="uVC-PY-qPd" secondAttribute="bottom" constant="18" id="FSM-OS-dOm"/>
-                            <constraint firstItem="04i-j9-Oix" firstAttribute="bottom" secondItem="a9M-E0-awZ" secondAttribute="bottom" id="I3g-B4-iEk"/>
-                            <constraint firstItem="Utr-Zw-Pnp" firstAttribute="centerX" secondItem="Ne8-cq-1mT" secondAttribute="centerX" id="KMs-vd-vSp"/>
-                            <constraint firstItem="uVC-PY-qPd" firstAttribute="trailing" secondItem="04i-j9-Oix" secondAttribute="trailing" id="MCf-aM-Xdf"/>
-                            <constraint firstItem="uVC-PY-qPd" firstAttribute="top" secondItem="Utr-Zw-Pnp" secondAttribute="bottom" constant="23" id="RMi-v6-4yT"/>
-                            <constraint firstItem="zCz-9D-01C" firstAttribute="leading" secondItem="04i-j9-Oix" secondAttribute="leading" id="UjL-kZ-Paa"/>
-                            <constraint firstItem="uVC-PY-qPd" firstAttribute="leading" secondItem="zCz-9D-01C" secondAttribute="trailing" constant="50" id="WO4-R1-4rI"/>
-                            <constraint firstItem="zCz-9D-01C" firstAttribute="top" secondItem="Utr-Zw-Pnp" secondAttribute="bottom" constant="24" id="WZv-lr-CyL"/>
-                            <constraint firstItem="Utr-Zw-Pnp" firstAttribute="trailing" secondItem="uVC-PY-qPd" secondAttribute="trailing" id="lQN-1j-M76"/>
-                            <constraint firstItem="Utr-Zw-Pnp" firstAttribute="leading" secondItem="a9M-E0-awZ" secondAttribute="leading" constant="22" id="xP8-bp-RiM"/>
+                            <constraint firstItem="04i-j9-Oix" firstAttribute="top" secondItem="Utr-Zw-Pnp" secondAttribute="bottom" constant="19" id="0Td-b8-uVv"/>
+                            <constraint firstItem="Utr-Zw-Pnp" firstAttribute="leading" secondItem="a9M-E0-awZ" secondAttribute="leading" constant="22" id="8IA-Bb-iHy"/>
+                            <constraint firstItem="Utr-Zw-Pnp" firstAttribute="centerX" secondItem="Ne8-cq-1mT" secondAttribute="centerX" id="Dsf-er-JdA"/>
+                            <constraint firstItem="04i-j9-Oix" firstAttribute="trailing" secondItem="Utr-Zw-Pnp" secondAttribute="trailing" id="HNi-Sy-wIN"/>
+                            <constraint firstItem="04i-j9-Oix" firstAttribute="bottom" secondItem="a9M-E0-awZ" secondAttribute="bottom" constant="-15" id="M3k-OM-Goz"/>
+                            <constraint firstItem="Utr-Zw-Pnp" firstAttribute="top" secondItem="a9M-E0-awZ" secondAttribute="top" constant="7" id="qMU-oh-NW6"/>
+                            <constraint firstItem="04i-j9-Oix" firstAttribute="leading" secondItem="Utr-Zw-Pnp" secondAttribute="leading" id="x9e-SL-HD9"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="a9M-E0-awZ"/>
                     </view>
@@ -75,12 +49,18 @@
                                 <action selector="HandleAddButton:" destination="dno-Lt-XfB" id="hkn-eA-838"/>
                             </connections>
                         </barButtonItem>
-                        <barButtonItem systemItem="edit" id="C8F-IG-5iM">
+                        <barButtonItem title="Edit" id="C8F-IG-5iM">
                             <connections>
                                 <action selector="HandleEditButton:" destination="dno-Lt-XfB" id="OPu-hf-2ya"/>
                             </connections>
                         </barButtonItem>
                         <barButtonItem style="plain" systemItem="flexibleSpace" id="yhf-gk-nVv"/>
+                        <barButtonItem title="Reverse" id="c7x-fH-VJq">
+                            <connections>
+                                <action selector="HandleReverseGradientButton:" destination="dno-Lt-XfB" id="BoS-dP-v4x"/>
+                            </connections>
+                        </barButtonItem>
+                        <barButtonItem style="plain" systemItem="flexibleSpace" id="roG-TW-a2S"/>
                         <barButtonItem title="Reset" id="JDm-L4-tln">
                             <connections>
                                 <action selector="HandleResetButton:" destination="dno-Lt-XfB" id="c3y-vV-RII"/>
@@ -107,21 +87,24 @@
                     </navigationItem>
                     <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
                     <connections>
-                        <outlet property="GradientOrientation" destination="zCz-9D-01C" id="eu2-8A-dbw"/>
+                        <outlet property="AddGradientStopButton" destination="m8g-QH-W3p" id="yQJ-LO-hkS"/>
+                        <outlet property="ClearButton" destination="lf4-I2-2tk" id="yLL-Fw-Um3"/>
+                        <outlet property="EditButton" destination="C8F-IG-5iM" id="JNn-Hv-p98"/>
                         <outlet property="GradientStopTable" destination="04i-j9-Oix" id="483-5E-SGV"/>
                         <outlet property="GradientView" destination="Utr-Zw-Pnp" id="Krp-eX-mCW"/>
-                        <outlet property="ReverseGradientButton" destination="uVC-PY-qPd" id="pNI-0Y-O9i"/>
-                        <segue destination="daD-wc-l4E" kind="show" identifier="GradientStopEditor" id="LMd-N6-Igg"/>
+                        <outlet property="ResetButton" destination="JDm-L4-tln" id="LFR-gA-Qgn"/>
+                        <outlet property="ReverseColorButton" destination="c7x-fH-VJq" id="lnX-Bh-eRe"/>
+                        <segue destination="daD-wc-l4E" kind="show" identifier="ToGradientStopEditor" id="LMd-N6-Igg"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="szU-X3-QPK" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="357.60000000000002" y="149.77511244377811"/>
+            <point key="canvasLocation" x="356" y="148.87556221889056"/>
         </scene>
         <!--Gradient Stop Editor-->
         <scene sceneID="nCO-VY-pUd">
             <objects>
-                <viewController title="Gradient Stop Editor" id="daD-wc-l4E" customClass="ColorStopEditorCode" sceneMemberID="viewController">
+                <viewController title="Gradient Stop Editor" id="daD-wc-l4E" customClass="ColorStopEditorCode" customModule="BumpCamera" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="NBM-1F-wcJ">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -167,7 +150,7 @@
                                 </constraints>
                                 <viewLayoutGuide key="safeArea" id="Oyr-Su-tVM"/>
                             </view>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" preservesSuperviewLayoutMargins="YES" translatesAutoresizingMaskIntoConstraints="NO" id="rQ2-DL-0Xd">
+                            <imageView clipsSubviews="YES" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" preservesSuperviewLayoutMargins="YES" translatesAutoresizingMaskIntoConstraints="NO" id="rQ2-DL-0Xd">
                                 <rect key="frame" x="16" y="74" width="343" height="180"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="180" id="I59-J6-kId"/>
