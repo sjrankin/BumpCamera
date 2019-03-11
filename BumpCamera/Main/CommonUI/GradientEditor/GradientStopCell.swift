@@ -11,7 +11,7 @@ import UIKit
 
 class GradientStopCell: UITableViewCell
 {
-    public static var CellHeight: CGFloat = 70.0
+    public static var CellHeight: CGFloat = 50.0
     
     required init?(coder aDecoder: NSCoder)
     {
@@ -27,16 +27,17 @@ class GradientStopCell: UITableViewCell
         
         let CurrentWidth = UIScreen.main.bounds.width
         
-        let ColorRect = CGRect(x: 10, y: 5, width: CurrentWidth * 0.5, height: GradientStopCell.CellHeight - 10.0)
+        let ColorRect = CGRect(x: 15, y: 5, width: CurrentWidth * 0.4, height: GradientStopCell.CellHeight - 10.0)
         ColorSample = UIView(frame: ColorRect)
         ColorSample.layer.cornerRadius = 5.0
         ColorSample.layer.borderWidth = 0.5
         ColorSample.layer.borderColor = UIColor.black.cgColor
         contentView.addSubview(ColorSample)
         
-        let LabelRect = CGRect(x: CurrentWidth - 60.0, y: 5, width: 40.0, height: 30.0)
+        let LabelRect = CGRect(x: CurrentWidth * 0.6, y: 10, width: 60.0, height: 30.0)
         LocationLabel = UILabel(frame: LabelRect)
         LocationLabel.textAlignment = .right
+        LocationLabel.font = UIFont(name: "Courier", size: 22.0)
         contentView.addSubview(LocationLabel)
         
         self.accessoryType = .disclosureIndicator
@@ -46,7 +47,7 @@ class GradientStopCell: UITableViewCell
     func SetData(StopColor: UIColor, StopLocation: Double)
     {
         ColorSample.backgroundColor = StopColor
-        LocationLabel.text = "\(StopLocation.Round(To: 2))"
+        LocationLabel.text = "\(StopLocation.Round(To: 3))"
         _CellColor = StopColor
         _CellLocation = StopLocation
     }
