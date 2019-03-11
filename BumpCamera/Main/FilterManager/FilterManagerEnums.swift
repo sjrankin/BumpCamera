@@ -83,6 +83,7 @@ extension FilterManager
         case ChannelMangler = 56
         case ColorMap = 57
         case PixelCounter = 58
+        case ColorMap2 = 59
         case NotSet = 10000
     }
     
@@ -291,6 +292,7 @@ extension FilterManager
         case ChannelManglerAction = 159
         case InvertColorMapGradient = 160
         case ColorMapGradient = 161
+        case InvertColorMapSourceColor = 162
         case NoField = 10000
     }
     
