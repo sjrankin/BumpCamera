@@ -489,6 +489,11 @@ import UIKit
             GradientLayer = nil
             }
         }
+        let HueRect = CGRect(x:0, y: 0, width: self.frame.width, height: self.frame.height)
+        #if true
+        HueLayer = GradientParser.CreateGradientLayer(From: GradientParser.HueGradient, WithFrame: HueRect,
+                                           IsVertical: !_IsHorizontal, ReverseColors: false)
+        #else
         if HueLayer == nil
         {
             HueLayer = CAGradientLayer()
@@ -513,6 +518,7 @@ import UIKit
             HueLayer?.endPoint = CGPoint(x: 0.0, y: 1.0)
         }
         HueLayer?.colors = HueColors
+        #endif
     }
     
     var HueLayer: CAGradientLayer? = nil
