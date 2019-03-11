@@ -55,9 +55,9 @@ class FilterManager
                             (.TransferEffect, 6), (.SepiaTone, 7), (.Thermal, 8), (.TemperatureAndTint, 9),
                             (.Tonal, 10),],
             .Colors: [(.HueAdjust, 0), (.HSBAdjust, 1), (.Solarize, 2), (.ChannelMixer, 3), (.ChannelMangler, 4),
-                      (.ColorInversion, 5), (.ColorMap, 6),
-                      (.DesaturateColors, 7), (.Threshold, 8), (.MonochromeColor, 9), (.FalseColor, 10),
-                      (.Monochrome, 11), (.PaletteShifting, 12)],
+                      (.ColorInversion, 5), (.ColorMap, 6), (.ColorMap2, 7),
+                      (.DesaturateColors, 8), (.Threshold, 9), (.MonochromeColor, 10), (.FalseColor, 11),
+                      (.Monochrome, 12), (.PaletteShifting, 13)],
             .Gray: [(.GrayscaleKernel, 0), (.Dither, 1)],
             //.Bumpy: [(.BumpyPixels, 1), (.BumpyTriangles, 2), (.Embossed, 0)],
             //.Motion: [(.ColorDelta, 0), (.FilterDelta, 1), (.PatternDelta, 2)],
@@ -121,6 +121,7 @@ class FilterManager
             .ChannelMangler: (ChannelMangler.ID(), ChannelMangler.FilterKernel, ChannelMangler.Title()),
             .ColorMap: (ColorMap.ID(), ColorMap.FilterKernel, ColorMap.Title()),
             .PixelCounter: (PixelCounter.ID(), PixelCounter.FilterKernel, PixelCounter.Title()),
+            .ColorMap2: (ColorMap2.ID(), ColorMap2.FilterKernel, ColorMap2.Title()),
     ]
     
     /// Determines if the specified filter supports the specified target type. Not all filters support all targets - slow
@@ -217,6 +218,7 @@ class FilterManager
             .ChannelMangler: ChannelMangler.FilterTarget(),
             .ColorMap: ColorMap.FilterTarget(),
             .PixelCounter: PixelCounter.FilterTarget(),
+            .ColorMap2: ColorMap2.FilterTarget(),
     ]
     
     /// Load all of the filter classes into the filter manager.
@@ -333,6 +335,7 @@ class FilterManager
         ParameterCount![.ChannelMangler] = ChannelMangler.SupportedFields().count
         ParameterCount![.ColorMap] = ColorMap.SupportedFields().count
         ParameterCount![.PixelCounter] = PixelCounter.SupportedFields().count
+        ParameterCount![.ColorMap2] = ColorMap2.SupportedFields().count
     }
     
     private static var ParameterCount: [FilterManager.FilterTypes: Int]? = nil
@@ -406,6 +409,7 @@ class FilterManager
         StoryboardList![.ChannelMangler] = ChannelMangler.SettingsStoryboard()
         StoryboardList![.ColorMap] = ColorMap.SettingsStoryboard()
         StoryboardList![.PixelCounter] = PixelCounter.SettingsStoryboard()
+        StoryboardList![.ColorMap2] = ColorMap2.SettingsStoryboard()
     }
     
     private static var StoryboardList: [FilterTypes: String?]? = nil
@@ -706,6 +710,9 @@ class FilterManager
             
         case .PixelCounter:
             return PixelCounter()
+            
+        case .ColorMap2:
+            return ColorMap2()
             
         default:
             return nil
@@ -1134,8 +1141,9 @@ class FilterManager
             .Silhouette: "Silhouette",
             .ColorInversion: "Invert Colors",
             .ChannelMangler: "Channel Mangler",
-            .ColorMap: "Color Map",
+            .ColorMap: "Bad Color Map",
             .PixelCounter: "Pixel Counter",
+            .ColorMap2: "Color Map 2"
     ]
     
     public static func GetFilterTitle(_ Filter: FilterTypes) -> String?
@@ -1208,6 +1216,7 @@ class FilterManager
             .ChannelMangler: true,
             .ColorMap: true,
             .PixelCounter: true,
+            .ColorMap2: true
     ]
     
     /// Determines if the given filter type is implemented.
@@ -1435,6 +1444,7 @@ class FilterManager
             .ChannelManglerAction: .IntType,
             .InvertColorMapGradient: .BoolType,
             .ColorMapGradient: .StringType,
+            .InvertColorMapSourceColor: .BoolType,
     ]
     
     /// Maps fields to names used to store field data in user settings.
@@ -1602,6 +1612,7 @@ class FilterManager
             .ChannelManglerAction: "_Action",
             .InvertColorMapGradient: "_InvertGradient",
             .ColorMapGradient: "_GradientDefinition",
+            .InvertColorMapSourceColor: "_InvertColorMapSourceColor"
     ]
 }
 
