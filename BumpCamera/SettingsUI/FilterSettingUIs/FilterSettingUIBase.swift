@@ -10,7 +10,7 @@ import Foundation
 import UIKit
 import Photos
 
-/// Base class for filter setting UIs.
+/// Base class for filter setting UIs. Provides common functionality for all filter setting UIs.
 class FilterSettingUIBase: UITableViewController,
     UIImagePickerControllerDelegate,
     UINavigationControllerDelegate,
@@ -53,6 +53,7 @@ class FilterSettingUIBase: UITableViewController,
         {
             DoEnableSelect = false
         }
+        //The next line effectively removes blank table cells from the trailing end of the table view.
         tableView.tableFooterView = UIView()
         Filter = FilterType
         FilterID = FilterManager.FilterInfoMap[Filter]!.0
@@ -427,7 +428,11 @@ class FilterSettingUIBase: UITableViewController,
             }
             if CallsFilter
             {
-            FinalImage = SampleFilter?.Render(Image: SampleImage)
+                FinalImage = SampleFilter?.Render(Image: SampleImage)
+            }
+            else
+            {
+                FinalImage = SampleImage
             }
         }
         else
