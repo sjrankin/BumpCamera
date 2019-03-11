@@ -224,27 +224,140 @@ class GradientParser
         return AssembleGradient(Parts)
     }
     
-    /// Invert the color locations in the gradient. The locations remain unchanged but the colors are moved.
+    /// Reverse the color locations in the gradient. The locations remain unchanged but the colors are moved.
     ///
     /// - Parameter Gradients: Source gradient description.
     /// - Returns: New gradient description with inverted color locations.
-    public static func InvertColors(_ Gradients: String) -> String
+    public static func ReverseColorLocations(_ Gradients: String) -> String
     {
-    var Parts = ParseGradient(Gradients)
+        var Parts = ParseGradient(Gradients)
         if Parts.count < 1
         {
             return ""
         }
         var NewList = [(UIColor, CGFloat)]()
-        var UpIndex = 0
-        for Index in stride(from: Parts.count - 1, to: 0, by: -1)
+        for Index in 0 ..< Parts.count
         {
             let Color = Parts[Index].0
-            let Location = Parts[UpIndex].1
-            NewList.append((Color, Location))
-            UpIndex = UpIndex + 1
+            let Where = Parts[(Parts.count - 1) - Index].1
+            NewList.append((Color, Where))
         }
+        NewList.sort{$0.1 < $1.1}
         return AssembleGradient(NewList)
+    }
+    
+    /// Add a gradient stop to the end of the passed gradient description.
+    ///
+    /// - Parameters:
+    ///   - Gradients: Source gradient description.
+    ///   - Color: Color of the gradient stop to add.
+    ///   - Location: Location of the gradient stop to add.
+    /// - Returns: New gradient description. Depending on the value of `Location`, the appended gradient stop may end up
+    ///            elsewhere in the gradient (eg, not at the end).
+    public static func AddGradientStop(_ Gradients: String, Color: UIColor, Location: CGFloat) -> String
+    {
+        var Parts = ParseGradient(Gradients)
+        Parts.append((Color, Location))
+        return AssembleGradient(Parts)
+    }
+    
+    /// Insert a new gradient stop at the specified location in the passed gradient.
+    ///
+    /// - Parameters:
+    ///   - Gradients: Source gradient description.
+    ///   - Index: Where to insert the new gradient.
+    ///   - Color: Color of the gradient stop to add.
+    ///   - Location: Location of the gradient stop to add.
+    /// - Returns: New gradient description. The gradient stop may be moved depending on its `Location` value.
+    public static func InsertGradientStop(_ Gradients: String, Index: Int, Color: UIColor, Location: CGFloat) -> String
+    {
+        var Parts = ParseGradient(Gradients)
+        Parts.append((Color, Location))
+        let Index1 = Index
+        let Index2 = Parts.count - 1
+        let Final = SwapGradientStops(AssembleGradient(Parts), Index1: Index1, Index2: Index2)
+        return Final!
+    }
+    
+    /// Sort the passed gradient by gradient stop location.
+    ///
+    /// - Parameter Gradients: Source description of the gradient.
+    /// - Returns: Sorted gradient description.
+    public static func SortGradient(_ Gradients: String) -> String
+    {
+        var Parts = ParseGradient(Gradients)
+        Parts.sort{$0.1 < $1.1}
+        return AssembleGradient(Parts)
+    }
+    
+    /// Swap two gradients in the passed gradient description. If Index1 is the same as Index2, the original gradient is returned.
+    /// The gradient will be sorted on location order before being returned.
+    ///
+    /// - Parameters:
+    ///   - Gradients: Source gradient description.
+    ///   - Index1: Index of first item to swap.
+    ///   - Index2: Index of second item to swap.
+    /// - Returns: New gradient description with swapped gradients. Nil on error (most likely due to an index out of range).
+    public static func SwapGradientStops(_ Gradients: String, Index1: Int, Index2: Int) -> String?
+    {
+        var Parts = ParseGradient(Gradients)
+        if Index1 < 0
+        {
+            return nil
+        }
+        if Index2 < 0
+        {
+            return nil
+        }
+        if Index2 < Index1
+        {
+            return nil
+        }
+        if Index1 == Index2
+        {
+            return Gradients
+        }
+        if Index1 > Index2
+        {
+            return nil
+        }
+        if Index2 > Parts.count - 1
+        {
+            return nil
+        }
+        
+        let (Color1, Stop1) = (GradientStop(From: Gradients, At: Index1))!
+        let (Color2, Stop2) = (GradientStop(From: Gradients, At: Index2))!
+
+        var NewGradient = ReplaceGradientStop(Gradients, Color: Color1, Location: Stop2, AtIndex: Index1)
+        NewGradient = ReplaceGradientStop(NewGradient!, Color: Color2, Location: Stop1, AtIndex: Index2)
+        Parts = ParseGradient(NewGradient!)
+        Parts.sort{$0.1 < $1.1}
+        return AssembleGradient(Parts)
+    }
+    
+    /// Replace an existing gradient stop in the passed gradient with a new gradient stop.
+    ///
+    /// - Parameters:
+    ///   - Gradients: Source gradient description.
+    ///   - Color: The new gradient stop color.
+    ///   - Location: The new gradient stop location.
+    ///   - AtIndex: Determines the gradient stop that will be replaced.
+    /// - Returns: New gradient description with the edited gradient stop. On error, nil is returned.
+    public static func ReplaceGradientStop(_ Gradients: String, Color: UIColor, Location: CGFloat, AtIndex: Int) -> String?
+    {
+        
+        var Parts = ParseGradient(Gradients)
+        if AtIndex < 0
+        {
+            return nil
+        }
+        if AtIndex > Parts.count - 1
+        {
+            return nil
+        }
+        Parts[AtIndex] = (Color, Location)
+        return AssembleGradient(Parts)
     }
     
     /// Return the gradient stop at the specified index in the passed gradient description.
@@ -265,58 +378,6 @@ class GradientParser
             return nil
         }
         return Parts[At]
-    }
-    
-    /// Edit a gradient stop in situ in the passed gradient description.
-    ///
-    /// - Parameters:
-    ///   - Gradients: Source gradient description.
-    ///   - At: Indicates the position in the gradient description of the gradient stop to edit.
-    ///   - NewColor: New color for the gradient stop.
-    ///   - NewLocation: New location for the gradient stop.
-    /// - Returns: New gradient description with the edited gradient stop on success, nil on failure.
-    public static func EditGradientStop(_ Gradients: String, At: Int, NewColor: UIColor, NewLocation: CGFloat) -> String?
-    {
-        if let NewGradient = RemoveGradientStop(Gradients, AtIndex: At)
-        {
-            return InsertGradientStop(Into: NewGradient, NewColor, NewLocation)
-        }
-        else
-        {
-            return nil
-        }
-    }
-    
-    /// Edit a gradient stop in situ in the passed gradient description. The location of the gradient stop is not altered.
-    ///
-    /// - Parameters:
-    ///   - Gradients: Source gradient description.
-    ///   - At: Indicates the position in the gradient description of the gradient stop to edit.
-    ///   - NewColor: New color for the gradient stop.
-    /// - Returns: New gradient description with the edited gradient stop on success, nil on failure.
-    public static func EditGradientStop(_ Gradients: String, At: Int, NewColor: UIColor) -> String?
-    {
-        guard let (_, Location) = GradientStop(From: Gradients, At: At) else
-        {
-            return nil
-        }
-        return EditGradientStop(Gradients, At: At, NewColor: NewColor, NewLocation: Location)
-    }
-    
-    /// Edit a gradient stop in situ in the passed gradient description. The color of the gradient stop is not altered.
-    ///
-    /// - Parameters:
-    ///   - Gradients: Source gradient description.
-    ///   - At: Indicates the position in the gradient description of the gradient stop to edit.
-    ///   - NewColor: New color for the gradient stop.
-    /// - Returns: New gradient description with the edited gradient stop on success, nil on failure.
-    public static func EditGradientStop(_ Gradients: String, At: Int, NewLocation: CGFloat) -> String?
-    {
-        guard let (Color, _) = GradientStop(From: Gradients, At: At) else
-        {
-            return nil
-        }
-        return EditGradientStop(Gradients, At: At, NewColor: Color, NewLocation: NewLocation)
     }
     
     /// Creates and returns a CAGradientLayer with the gradient defined by the passed string
@@ -540,7 +601,7 @@ class GradientParser
         return Results
     }
     
-   /// Generate a list of colors with in the specified range of colors.
+    /// Generate a list of colors with in the specified range of colors.
     ///
     /// - Parameters:
     ///   - From: Starting color (position set to (0.0)).
