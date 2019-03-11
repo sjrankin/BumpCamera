@@ -172,6 +172,153 @@ class GradientParser
         return Result
     }
     
+    /// Insert the passed gradient stop into the full gradient. The returned result will have the gradient
+    /// in location order.
+    ///
+    /// - Parameters:
+    ///   - Into: The full gradient where the gradient stop will be placed.
+    ///   - Color: The color of the gradient stop to insert.
+    ///   - Location: The location of the gradient stop to insert.
+    /// - Returns: New full gradient with the newly inserted gradient stop.
+    public static func InsertGradientStop(Into: String, _ Color: UIColor, _ Location: CGFloat) -> String
+    {
+        var Parts = ParseGradient(Into)
+        Parts.append((Color, Location))
+        Parts.sort{$0.1 < $1.1}
+        return AssembleGradient(Parts)
+    }
+    
+    /// Removes the gradient stop at the specified index.
+    ///
+    /// - Parameters:
+    ///   - Gradients: Source gradient description.
+    ///   - AtIndex: The index of the gradient stop to remove.
+    /// - Returns: New gradient with the specified gradient stop removed on success, nil on failure/error (most
+    ///            likely due to invalid index specified).
+    public static func RemoveGradientStop(_ Gradients: String, AtIndex: Int) -> String?
+    {
+        if AtIndex < 0
+        {
+            return nil
+        }
+        var Parts = ParseGradient(Gradients)
+        if AtIndex > Parts.count - 1
+        {
+            return nil
+        }
+        Parts.remove(at: AtIndex)
+        return AssembleGradient(Parts)
+    }
+    
+    /// Removes all gradient stops at the specified location.
+    ///
+    /// - Parameters:
+    ///   - Gradients: Source gradient description.
+    ///   - AtLocation: The location at which to remove gradient stops.
+    /// - Returns: Gradient with all gradient stops at the specified location removed. If no gradient stops were
+    ///            found at the specified location, the gradient is returned unchanged.
+    public static func RemoveGradientStop(_ Gradients: String, AtLocation: CGFloat) -> String
+    {
+        var Parts = ParseGradient(Gradients)
+        Parts.removeAll(where: {$0.1 == AtLocation})
+        return AssembleGradient(Parts)
+    }
+    
+    /// Invert the color locations in the gradient. The locations remain unchanged but the colors are moved.
+    ///
+    /// - Parameter Gradients: Source gradient description.
+    /// - Returns: New gradient description with inverted color locations.
+    public static func InvertColors(_ Gradients: String) -> String
+    {
+    var Parts = ParseGradient(Gradients)
+        if Parts.count < 1
+        {
+            return ""
+        }
+        var NewList = [(UIColor, CGFloat)]()
+        var UpIndex = 0
+        for Index in stride(from: Parts.count - 1, to: 0, by: -1)
+        {
+            let Color = Parts[Index].0
+            let Location = Parts[UpIndex].1
+            NewList.append((Color, Location))
+            UpIndex = UpIndex + 1
+        }
+        return AssembleGradient(NewList)
+    }
+    
+    /// Return the gradient stop at the specified index in the passed gradient description.
+    ///
+    /// - Parameters:
+    ///   - From: Source gradient description.
+    ///   - At: Indicates the position in the gradient description of the gradient stop to return.
+    /// - Returns: Tuple of the color and location of the specified gradient stop on success, nil on failure.
+    public static func GradientStop(From: String, At: Int) -> (UIColor, CGFloat)?
+    {
+        let Parts = ParseGradient(From)
+        if At < 0
+        {
+            return nil
+        }
+        if At > Parts.count - 1
+        {
+            return nil
+        }
+        return Parts[At]
+    }
+    
+    /// Edit a gradient stop in situ in the passed gradient description.
+    ///
+    /// - Parameters:
+    ///   - Gradients: Source gradient description.
+    ///   - At: Indicates the position in the gradient description of the gradient stop to edit.
+    ///   - NewColor: New color for the gradient stop.
+    ///   - NewLocation: New location for the gradient stop.
+    /// - Returns: New gradient description with the edited gradient stop on success, nil on failure.
+    public static func EditGradientStop(_ Gradients: String, At: Int, NewColor: UIColor, NewLocation: CGFloat) -> String?
+    {
+        if let NewGradient = RemoveGradientStop(Gradients, AtIndex: At)
+        {
+            return InsertGradientStop(Into: NewGradient, NewColor, NewLocation)
+        }
+        else
+        {
+            return nil
+        }
+    }
+    
+    /// Edit a gradient stop in situ in the passed gradient description. The location of the gradient stop is not altered.
+    ///
+    /// - Parameters:
+    ///   - Gradients: Source gradient description.
+    ///   - At: Indicates the position in the gradient description of the gradient stop to edit.
+    ///   - NewColor: New color for the gradient stop.
+    /// - Returns: New gradient description with the edited gradient stop on success, nil on failure.
+    public static func EditGradientStop(_ Gradients: String, At: Int, NewColor: UIColor) -> String?
+    {
+        guard let (_, Location) = GradientStop(From: Gradients, At: At) else
+        {
+            return nil
+        }
+        return EditGradientStop(Gradients, At: At, NewColor: NewColor, NewLocation: Location)
+    }
+    
+    /// Edit a gradient stop in situ in the passed gradient description. The color of the gradient stop is not altered.
+    ///
+    /// - Parameters:
+    ///   - Gradients: Source gradient description.
+    ///   - At: Indicates the position in the gradient description of the gradient stop to edit.
+    ///   - NewColor: New color for the gradient stop.
+    /// - Returns: New gradient description with the edited gradient stop on success, nil on failure.
+    public static func EditGradientStop(_ Gradients: String, At: Int, NewLocation: CGFloat) -> String?
+    {
+        guard let (Color, _) = GradientStop(From: Gradients, At: At) else
+        {
+            return nil
+        }
+        return EditGradientStop(Gradients, At: At, NewColor: Color, NewLocation: NewLocation)
+    }
+    
     /// Creates and returns a CAGradientLayer with the gradient defined by the passed string
     /// (which uses this class' gradient definition).
     ///
