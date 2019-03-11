@@ -26,6 +26,35 @@ extension UIColor
                   alpha: 1.0)
     }
     
+    /// Create a UIColor with normalized double values. Alpha is set to 1.0.
+    ///
+    /// - Parameters:
+    ///   - red: Red channel value clamped to 0.0 to 1.0.
+    ///   - green: Green channel value clamped to 0.0 to 1.0.
+    ///   - blue: Blue channel value clamped to 0.0 to 1.0.
+    ///   - alpha: Alpha channel value clampled to 0.0 to 1.0.
+    convenience init(red: Double, green: Double, blue: Double, alpha: Double)
+    {
+        self.init(red: CGFloat(red.Clamp(0.0, 1.0)),
+                  green: CGFloat(green.Clamp(0.0, 1.0)),
+                  blue: CGFloat(blue.Clamp(0.0, 1.0)),
+                  alpha: CGFloat(alpha.Clamp(0.0, 1.0)))
+    }
+    
+    /// Create a UIColor with normalized double values. Alpha is set to 1.0.
+    ///
+    /// - Parameters:
+    ///   - red: Red channel value clamped to 0.0 to 1.0.
+    ///   - green: Green channel value clamped to 0.0 to 1.0.
+    ///   - blue: Blue channel value clamped to 0.0 to 1.0.
+    convenience init(red: Double, green: Double, blue: Double)
+    {
+        self.init(red: CGFloat(red.Clamp(0.0, 1.0)),
+                  green: CGFloat(green.Clamp(0.0, 1.0)),
+                  blue: CGFloat(blue.Clamp(0.0, 1.0)),
+                  alpha: 1.0)
+    }
+    
     /// Create a UIColor with the lower 24-bits of the passed integer. Alpha is set to 1.0.
     ///
     /// - Parameter Hex: Numeric color value. Only the lower 24-bits are used. The colors are in rrggbb order.
