@@ -44,6 +44,22 @@ class GradientParser
             "pastelbrown": UIColor(Hex: 0x836953),
             "pistachio": UIColor(Hex: 0x93c572),
             "tomato": UIColor(Hex: 0xff6347),
+            "pink": UIColor(Hex: 0xffc0cb),
+            "pastelyellow": UIColor(Hex: 0xfdfd96),
+            "saffron": UIColor(Hex: 0xf4c430),
+            "magicmint": UIColor(Hex: 0xaaf0d1),
+            "yellowprocess": UIColor(Hex: 0xffef00),
+            "thistle": UIColor(Hex: 0xd8bfd8),
+            "honeydew": UIColor(Hex: 0xf0fff0),
+            "lavender": UIColor(Hex: 0xe6e6fa),
+            "mustard": UIColor(Hex: 0xffdb58),
+            "babyblue": UIColor(Hex: 0x89cff0),
+            "chartreuse": UIColor(Hex: 0xdfff00),
+            "atomictangerine": UIColor(Hex: 0xff9966),
+            "daffodil": UIColor(Hex: 0xffff31),
+            "mistyrose": UIColor(Hex: 0xffe4e1),
+            "greenpastel": UIColor(Hex: 0xbaed91),
+            "pastelpink": UIColor(Hex: 0xffd1dc)
     ]
     
     /// Given a color value, return the color's name if known, hex value if not known.
@@ -66,6 +82,93 @@ class GradientParser
         return HexValue
     }
     
+    /// Handle a hue-based color. The expected format of the color is `[hue {, sat {, bri}}]` where hue is a normalized value
+    /// that determines the hue of the color, optional sat is the saturation, and optional bri is the brightness. If brightness
+    /// is desired, saturation must also be specified.
+    ///
+    /// - Note: This class cues from the color bracket - hue colors use square brackets.
+    ///
+    /// - Parameter Raw: String to parse.
+    /// - Returns: UIColor created from the raw hue string.
+    private static func ParseHueValue(_ Raw: String) -> UIColor?
+    {
+        var Working = Raw.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines).lowercased()
+        Working = Working.replacingOccurrences(of: "[", with: "")
+        Working = Working.replacingOccurrences(of: "]", with: "")
+        let Parts = Working.split(separator: ",")
+        var HueValue = 0.0
+        var SaturationValue = 1.0
+        var BrightnessValue = 1.0
+        switch Parts.count
+        {
+        case 0:
+            //Probably will occur only if Raw is empty.
+            return nil
+            
+        case 1:
+            //Hue only.
+            if let HueOK = Double(String(Parts[0]))
+            {
+                HueValue = HueOK.Clamp(0.0, 1.0)
+            }
+            else
+            {
+                return nil
+            }
+            
+        case 2:
+            //Hue and saturation.
+            if let HueOK = Double(String(Parts[0]))
+            {
+                HueValue = HueOK.Clamp(0.0, 1.0)
+            }
+            else
+            {
+                return nil
+            }
+            if let SatOK = Double(String(Parts[1]))
+            {
+                SaturationValue = SatOK.Clamp(0.0, 1.0)
+            }
+            else
+            {
+                return nil
+            }
+            
+        case 3:
+            //Hue, saturation, and brightness
+            if let HueOK = Double(String(Parts[0]))
+            {
+                HueValue = HueOK.Clamp(0.0, 1.0)
+            }
+            else
+            {
+                return nil
+            }
+            if let SatOK = Double(String(Parts[1]))
+            {
+                SaturationValue = SatOK.Clamp(0.0, 1.0)
+            }
+            else
+            {
+                return nil
+            }
+            if let BriOK = Double(String(Parts[2]))
+            {
+                BrightnessValue = BriOK.Clamp(0.0, 1.0)
+            }
+            else
+            {
+                return nil
+            }
+            
+        default:
+            return nil
+        }
+        
+        return UIColor(hue: CGFloat(HueValue), saturation: CGFloat(SaturationValue), brightness: CGFloat(BrightnessValue), alpha: 1.0)
+    }
+    
     /// Parse a color. The expected format of the color is `(color value)` where `color value` is a color name in
     /// the known color list or a hex value that describes the color.
     ///
@@ -73,9 +176,14 @@ class GradientParser
     /// - Returns: UIColor created from the color description passed in `Raw`. UIColor.white is returned on error.
     private static func ParseColor(_ Raw: String) -> UIColor?
     {
-        var Working = Raw.replacingOccurrences(of: "(", with: "")
+        var Working = Raw.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines).lowercased()
+        if Working.first == "["
+        {
+            return ParseHueValue(Working)
+        }
+        Working = Working.replacingOccurrences(of: "(", with: "")
         Working = Working.replacingOccurrences(of: ")", with: "")
-        Working = Working.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines).lowercased()
+        
         if let KnownColor = KnownColors[Working]
         {
             return KnownColor
@@ -328,7 +436,7 @@ class GradientParser
         
         let (Color1, Stop1) = (GradientStop(From: Gradients, At: Index1))!
         let (Color2, Stop2) = (GradientStop(From: Gradients, At: Index2))!
-
+        
         var NewGradient = ReplaceGradientStop(Gradients, Color: Color1, Location: Stop2, AtIndex: Index1)
         NewGradient = ReplaceGradientStop(NewGradient!, Color: Color2, Location: Stop1, AtIndex: Index2)
         Parts = ParseGradient(NewGradient!)
@@ -671,4 +779,87 @@ class GradientParser
         let Percent = AdjustedLocation / Range
         return (LowColor, HighColor, Percent)
     }
+    
+    // MARK: Predefined gradients.
+    
+    /// Predefined white to red gradient.
+    static let WhiteRedGradient = "(White)@(0.0),(Red)@(1.0)"
+    
+    /// Predefined white to green gradient.
+    static let WhiteGreenGradient = "(White)@(0.0),(Green)@(1.0)"
+    
+    /// Predefined white to blue gradient.
+    static let WhiteBlueGradient = "(White)@(0.0),(Blue)@(1.0)"
+    
+    /// Predefined white to cyan gradient.
+    static let WhiteCyanGradient = "(White)@(0.0),(Cyan)@(1.0)"
+    
+    /// Predefined white to magenta gradient.
+    static let WhiteMagentaGradient = "(White)@(0.0),(Magenta)@(1.0)"
+    
+    /// Predefined white to yellow gradient.
+    static let WhiteYellowGradient = "(White)@(0.0),(Yellow)@(1.0)"
+    
+    /// Predefined whte to black gradient.
+    static let WhiteBlackGradient = "(White)@(0.0),(Black)@(1.0)"
+    
+    /// Predefined red to black gradient.
+    static let RedBlackGradient = "(Red)@(0.0),(Black)@(1.0)"
+    
+    /// Predefined green to black gradient.
+    static let GreenBlackGradient = "(Green)@(0.0),(Black)@(1.0)"
+    
+    /// Predefined blue to black gradient.
+    static let BlueBlackGradient = "(Blue)@(0.0),(Black)@(1.0)"
+    
+    /// Predefined cyan to black gradient.
+    static let CyanBlackGradient = "(Cyan)@(0.0),(Black)@(1.0)"
+    
+    /// Predefined magenta to black gradient.
+    static let MagentaBlackGradient = "(Magenta)@(0.0),(Black)@(1.0)"
+    
+    /// Predefined yellow to black gradient.
+    static let YellowBlackGradient = "(Yellow)@(0.0),(Black)@(1.0)"
+    
+    /// Predefined cyan to blue gradient.
+    static let CyanBlueGradient = "(Cyan)@(0.0),(Blue)@(1.0)"
+    
+    /// Predefined cyan to blue to black gradient.
+    static let CyanBlueBlackGradient = "(Cyan)@(0.0),(Blue)@(0.8),(Black)@(1.0)"
+    
+    /// Predefined red to orange gradient.
+    static let RedOrangeGradient = "(Red)@(0.0),(Orange)@(1.0)"
+    
+    /// Predefined yellow to red gradient.
+    static let YellowRedGradient = "(Yellow)@(0.0),(Red)@(1.0)"
+    
+    /// Predefined pistachio to green gradient.
+    static let PistachioGreenGradient = "(Pistachio)@(0.0),(Green)@(1.0)"
+    
+    /// Predefined pistachio to black gradient.
+    static let PistachioBlackGradient = "(Pistachio)@(0.0),(Black)@(1.0)"
+    
+    /// Predefined tomato to red gradient.
+    static let TomatoRedGradient = "(Tomato)@(0.0),(Red)@(1.0)"
+    
+    /// Predefined tomato to black gradient.
+    static let TomatoBlackGradient = "(Tomato)@(0.0),(Black)@(1.0)"
+    
+    /// Predefined RGB gradient.
+    static let RGBGradient = "(Red)@(0.0),(Green)@(0.5),(Blue)@(1.0)"
+    
+    /// Predefined CMYK gradient.
+    static let CMYKGradient = "(Cyan)@(0.0),(Magenta)@(0.33),(Yellow)@(0.66),(Black)@(1.0)"
+    
+    /// Predefined metallic gradient.
+    static let MetallicGradient = "(White)@(0.0),(DarkGray)@(0.25),(White)@(0.5),(DarkGray)@(0.75),(White)@(1.0)"
+    
+    /// Predefined hue gradient with steps every 0.1.
+    static let HueGradient = "[0.0]@(0.0),[0.1]@(0.1),[0.2]@(0.2),[0.3]@(0.3),[0.4]@(0.4),[0.5]@(0.5),[0.6]@(0.6),[0.7]@(0.7),[0.8]@(0.8),[0.9]@(0.9),[1.0]@(1.0)"
+    
+    /// Predefined rainbow gradient (following the ROYGBIV model).
+    static let RainbowGradient = "(Red)@(0.0),(Orange)@(0.18),(Yellow)@(0.36),(Green)@(0.52),(Blue)@(0.68),(Indigo)@(0.84),(Violet)@(1.0)"
+    
+    /// Predefined pastel gradient 1.
+    static let PastelGradient1 = "(Daffodil)@(0.0),(Gold)@(0.25),(Mustard)@(0.4),(Pink)@(0.6),(AtomicTangerine)@(0.75),(Coral)@(1.0)"
 }
