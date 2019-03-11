@@ -26,7 +26,8 @@ class ColorMap2SettingsUICode: FilterSettingUIBase, UIPickerViewDelegate, UIPick
         
         InvertGradientSwitch.isOn = ParameterManager.GetBool(From: FilterID, Field: .InvertColorMapGradient, Default: false)
         InvertSourceColorSwitch.isOn = ParameterManager.GetBool(From: FilterID, Field: .InvertColorMapSourceColor, Default: false)
-        
+        UserGradient = _Settings.string(forKey: "UserGradient")!
+        GradientsForPicker.append(("User", UserGradient))
         SelectItem(ParameterManager.GetString(From: FilterID, Field: .ColorMapGradient, Default: ""))
         LoadUIContents()
     }
@@ -47,7 +48,7 @@ class ColorMap2SettingsUICode: FilterSettingUIBase, UIPickerViewDelegate, UIPick
         GradientPicker.selectRow(0, inComponent: 0, animated: true)
     }
     
-    var UserGradient: String? = "(White)@(0.0),(DarkGray)@(0.25),(White)@(0.5),(DarkGray)@(0.75),(White)@(1.0)"
+    var UserGradient: String = ""
     var StandardIndex: Int = 0
     
     /// Neede to make sure the sample gradient fits in the provided view.
@@ -62,21 +63,15 @@ class ColorMap2SettingsUICode: FilterSettingUIBase, UIPickerViewDelegate, UIPick
         let (Name, RawGradient) = GradientsForPicker[StandardIndex]
         if Name == "User"
         {
-            if let OtherGradient = UserGradient
+            if UserGradient.isEmpty
             {
-                let SampleGradient = GradientParser.CreateGradientImage(From: OtherGradient,
+                UserGradient = "(Green)@(0.0),(Brown)@(1.0)"
+                _Settings.set(UserGradient, forKey: "UserGradient")
+            }
+                let SampleGradient = GradientParser.CreateGradientImage(From: UserGradient,
                                                                         WithFrame: GradientSample.bounds,
                                                                         IsVertical: true, ReverseColors: DoInvert)
                 GradientSample.image = SampleGradient
-            }
-            else
-            {
-                UserGradient = "(White)@(0.0),(DarkGray)@(0.25),(White)@(0.5),(DarkGray)@(0.75),(White)@(1.0)"
-                let SampleGradient = GradientParser.CreateGradientImage(From: UserGradient!,
-                                                                        WithFrame: GradientSample.bounds,
-                                                                        IsVertical: true, ReverseColors: DoInvert)
-                GradientSample.image = SampleGradient
-            }
         }
         else
         {
@@ -87,7 +82,7 @@ class ColorMap2SettingsUICode: FilterSettingUIBase, UIPickerViewDelegate, UIPick
         }
     }
     
-    let GradientsForPicker: [(String, String)] =
+    var GradientsForPicker: [(String, String)] =
         [
             ("White to Black", "(White)@(0.0),(Black)@(1.0)"),
             ("White to Red", "(White)@(0.0),(Red)@(1.0)"),
@@ -110,9 +105,9 @@ class ColorMap2SettingsUICode: FilterSettingUIBase, UIPickerViewDelegate, UIPick
             ("Gold to Yellow", "(Gold)@(0.0),(Yellow)@(1.0)"),
             ("Blue to Green", "(Blue)@(0.0),(Green)@(1.0)"),
             ("Red Green Blue", "(Red)@(0.0),(Green)@(0.5),(Blue)@(1.0)"),
+            ("Metallic", "(White)@(0.0),(DarkGray)@(0.25),(White)@(0.5),(DarkGray)@(0.75),(White)@(1.0)"),
             ("Cyan Magenta Yellow Black", "(Cyan)@(0.0),(Magenta)@(0.33),(Yellow)@(0.66),(Black)@(1.0)"),
             ("Rainbow", "(Red)@(0.0),(Orange)@(0.18),(Yellow)@(0.36),(Green)@(0.52),(Blue)@(0.68),(Indigo)@(0.84),(Violet)@(1.0)"),
-            ("User", ""),
     ]
     
     func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String?
@@ -133,14 +128,7 @@ class ColorMap2SettingsUICode: FilterSettingUIBase, UIPickerViewDelegate, UIPick
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int)
     {
         StandardIndex = row
-        if GradientsForPicker[StandardIndex].0 == "User"
-        {
-            UpdateValue(WithValue: UserGradient!, ToField: .ColorMapGradient)
-        }
-        else
-        {
             UpdateValue(WithValue: GradientsForPicker[StandardIndex].1, ToField: .ColorMapGradient)
-        }
         ShowSampleView()
         LoadUIContents()
     }
@@ -161,15 +149,44 @@ class ColorMap2SettingsUICode: FilterSettingUIBase, UIPickerViewDelegate, UIPick
     
     func EditedGradient(_ Edited: String?, Tag: Any?)
     {
+        if let EditedGradient = Edited
+        {
+            if let PassedTag = Tag as? String
+            {
+                if PassedTag == "ColorMap2"
+                {
+                    GradientsForPicker.removeLast()
+                    GradientsForPicker.append(("User", EditedGradient))
+                }
+            }
+        }
     }
     
     func GradientToEdit(_ EditMe: String?, Tag: Any?)
     {
+        //Not used in this class.
     }
     
     func SetStop(StopColor: UIColor?, StopLocation: Double?)
     {
         //Not used in this class.
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?)
+    {
+        switch segue.identifier
+        {
+        case "ToGradientDesigner":
+            if let Dest = segue.destination as? GradientEditorUICode
+            {
+                Dest.ParentDelegate = self
+                Dest.GradientToEdit(UserGradient, Tag: "ColorMap2")
+            }
+            
+        default:
+            break
+        }
+        super.prepare(for: segue, sender: self)
     }
     
     @IBOutlet weak var GradientPicker: UIPickerView!
