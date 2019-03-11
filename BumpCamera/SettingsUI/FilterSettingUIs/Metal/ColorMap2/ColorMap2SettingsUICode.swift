@@ -83,31 +83,34 @@ class ColorMap2SettingsUICode: FilterSettingUIBase, UIPickerViewDelegate, UIPick
     }
     
     var GradientsForPicker: [(String, String)] =
-        [
-            ("White to Black", "(White)@(0.0),(Black)@(1.0)"),
-            ("White to Red", "(White)@(0.0),(Red)@(1.0)"),
-            ("White to Green", "(White)@(0.0),(Green)@(1.0)"),
-            ("White to Blue", "(White)@(0.0),(Blue)@(1.0)"),
-            ("White to Cyan", "(White)@(0.0),(Cyan)@(1.0)"),
-            ("White to Magenta", "(White)@(0.0),(Magenta)@(1.0)"),
-            ("White to Yellow", "(White)@(0.0),(Yellow)@(1.0)"),
-            ("White to Orange", "(White)@(0.0),(Orange)@(1.0)"),
-            ("White to Indigo", "(White)@(0.0),(Indigo)@(1.0)"),
-            ("White to Violet", "(White)@(0.0),(Violet)@(1.0)"),
-            ("Black to Red", "(Black)@(0.0),(Red)@(1.0)"),
-            ("Black to Green", "(Black)@(0.0),(Green)@(1.0)"),
-            ("Black to Blue", "(Black)@(0.0),(Blue)@(1.0)"),
-            ("Black to Cyan", "(Black)@(0.0),(Cyan)@(1.0)"),
-            ("Black to Magenta", "(Black)@(0.0),(Magenta)@(1.0)"),
-            ("Black to Yellow", "(Black)@(0.0),(Yellow)@(1.0)"),
-            ("Red to Yellow", "(Red)@(0.0),(Yellow)@(1.0)"),
-            ("Red to Orange", "(Red)@(0.0),(Orange)@(1.0)"),
-            ("Gold to Yellow", "(Gold)@(0.0),(Yellow)@(1.0)"),
-            ("Blue to Green", "(Blue)@(0.0),(Green)@(1.0)"),
-            ("Red Green Blue", "(Red)@(0.0),(Green)@(0.5),(Blue)@(1.0)"),
-            ("Metallic", "(White)@(0.0),(DarkGray)@(0.25),(White)@(0.5),(DarkGray)@(0.75),(White)@(1.0)"),
-            ("Cyan Magenta Yellow Black", "(Cyan)@(0.0),(Magenta)@(0.33),(Yellow)@(0.66),(Black)@(1.0)"),
-            ("Rainbow", "(Red)@(0.0),(Orange)@(0.18),(Yellow)@(0.36),(Green)@(0.52),(Blue)@(0.68),(Indigo)@(0.84),(Violet)@(1.0)"),
+    [
+        ("White to Black", GradientParser.WhiteBlackGradient),
+        ("White to Red", GradientParser.WhiteRedGradient),
+        ("White to Green", GradientParser.WhiteGreenGradient),
+        ("White to Blue", GradientParser.WhiteBlueGradient),
+        ("White to Cyan", GradientParser.WhiteCyanGradient),
+        ("White to Magenta", GradientParser.WhiteMagentaGradient),
+        ("White to Yellow", GradientParser.WhiteYellowGradient),
+        ("Red to Black", GradientParser.RedBlackGradient),
+        ("Green to Black", GradientParser.GreenBlackGradient),
+        ("Blue to Black", GradientParser.BlueBlackGradient),
+        ("Cyan to Black", GradientParser.CyanBlackGradient),
+        ("Magenta to Black", GradientParser.MagentaBlackGradient),
+        ("Yellow to Black", GradientParser.YellowBlackGradient),
+        ("Cyan to Blue", GradientParser.CyanBlueGradient),
+        ("Cyan-Blue-Black", GradientParser.CyanBlueBlackGradient),
+        ("Red to Orange", GradientParser.RedOrangeGradient),
+        ("Yellow to Red", GradientParser.YellowRedGradient),
+        ("Pistachio to Green", GradientParser.PistachioGreenGradient),
+        ("Pistachio to Black", GradientParser.PistachioBlackGradient),
+        ("Tomato to Red", GradientParser.TomatoRedGradient),
+        ("Tomato to Black", GradientParser.TomatoBlackGradient),
+        ("Metallic", GradientParser.MetallicGradient),
+        ("Red Green Blue", GradientParser.RGBGradient),
+        ("Cyan Magenta Yellow Black", GradientParser.CMYKGradient),
+        ("Hues", GradientParser.HueGradient),
+        ("Rainbow", GradientParser.RainbowGradient),
+        ("Pastel 1", GradientParser.PastelGradient1)
     ]
     
     func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String?
@@ -167,7 +170,7 @@ class ColorMap2SettingsUICode: FilterSettingUIBase, UIPickerViewDelegate, UIPick
         //Not used in this class.
     }
     
-    func SetStop(StopColor: UIColor?, StopLocation: Double?)
+    func SetStop(StopColorIndex StopIndex: Int)
     {
         //Not used in this class.
     }
