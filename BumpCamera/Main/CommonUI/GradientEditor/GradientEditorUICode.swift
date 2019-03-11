@@ -70,7 +70,7 @@ class GradientEditorUICode: UIViewController, GradientPickerProtocol,
         GradientStopTable.reloadData()
     }
     
-    func SetStop(StopColor: UIColor?, StopLocation: Double?)
+    func SetStop(StopColorIndex StopIndex: Int)
     {
         //Not used in this class.
     }
@@ -210,6 +210,7 @@ class GradientEditorUICode: UIViewController, GradientPickerProtocol,
         if let Cell = GradientStopTable.cellForRow(at: indexPath) as? GradientStopCell
         {
             let (Color, Location) = Cell.CellData()
+            SelectedIndex = indexPath.row
             ColorToEdit = Color
             LocationToEdit = Location
             performSegue(withIdentifier: "ToGradientStopEditor", sender: self)
@@ -218,6 +219,7 @@ class GradientEditorUICode: UIViewController, GradientPickerProtocol,
     
     var ColorToEdit: UIColor = UIColor.black
     var LocationToEdit: Double = 0.0
+    var SelectedIndex: Int = -1
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?)
     {
@@ -228,7 +230,7 @@ class GradientEditorUICode: UIViewController, GradientPickerProtocol,
             {
                 Dest.ParentDelegate = self
                 Dest.GradientToEdit(CurrentGradient, Tag: "FromColorStopEditor")
-                Dest.SetStop(StopColor: ColorToEdit, StopLocation: LocationToEdit)
+                Dest.SetStop(StopColorIndex: SelectedIndex)
             }
             
         default:
