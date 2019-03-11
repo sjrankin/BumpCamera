@@ -9,13 +9,25 @@
 import Foundation
 import UIKit
 
-class ColorStopEditor: UIViewController, ColorPickerProtocol, GradientPickerProtocol
+class ColorStopEditorCode: UIViewController, ColorPickerProtocol, GradientPickerProtocol
 {
     weak var ParentDelegate: GradientPickerProtocol? = nil
     
     override func viewDidLoad()
     {
         super.viewDidLoad()
+        
+        if StopIndex < 0
+        {
+            fatalError("Invalid gradient stop index.")
+        }
+        else
+        {
+            let (Color, Location) = GradientParser.GradientStop(From: OriginalGradient, At: StopIndex)!
+            StopColorToEdit = Color
+            StopLocationToEdit = Double(Location)
+        }
+        
         GradientSample.layer.borderColor = UIColor.black.cgColor
         GradientSample.layer.borderWidth = 0.5
         GradientSample.layer.cornerRadius = 5.0
@@ -26,11 +38,16 @@ class ColorStopEditor: UIViewController, ColorPickerProtocol, GradientPickerProt
         ColorSample.backgroundColor = StopColorToEdit
         
         LocationSlider.value = Float(StopLocationToEdit * 1000.0)
-        LocationBox.text = "\(StopLocationToEdit.Round(To: 2))"
+        LocationBox.text = "\(StopLocationToEdit.Round(To: 3))"
         
         let Tap = UITapGestureRecognizer(target: self, action: #selector(HandleTapOnSample))
         GradientSample.addGestureRecognizer(Tap)
         
+        UpdateUI()
+    }
+    
+    override func viewDidLayoutSubviews()
+    {
         UpdateUI()
     }
     
@@ -45,8 +62,8 @@ class ColorStopEditor: UIViewController, ColorPickerProtocol, GradientPickerProt
     
     func UpdateUI()
     {
-        let SampleGradient = GradientParser.InsertGradientStop(Into: OriginalGradient, StopColorToEdit, CGFloat(StopLocationToEdit))
-        let GradientImage = GradientParser.CreateGradientImage(From: SampleGradient,
+        let SampleGradient = GradientParser.ReplaceGradientStop(OriginalGradient, Color: StopColorToEdit, Location: CGFloat(StopLocationToEdit), AtIndex: StopIndex)
+        let GradientImage = GradientParser.CreateGradientImage(From: SampleGradient!,
                                                                WithFrame: GradientSample.bounds,
                                                                IsVertical: IsVertical, ReverseColors: false)
         GradientSample.image = GradientImage
@@ -90,19 +107,12 @@ class ColorStopEditor: UIViewController, ColorPickerProtocol, GradientPickerProt
         ParentTag = Tag
     }
     
-    func SetStop(StopColor: UIColor?, StopLocation: Double?)
+    func SetStop(StopColorIndex: Int)
     {
-        if let Color = StopColor
-        {
-            StopColorToEdit = Color
-            OriginalColor = Color
-        }
-        if let Where = StopLocation
-        {
-            StopLocationToEdit = Where
-            OriginalLocation = Where
-        }
+        StopIndex = StopColorIndex
     }
+    
+    var StopIndex = -1
     
     func UpdateGradient(WithLocation: Double)
     {
@@ -141,7 +151,7 @@ class ColorStopEditor: UIViewController, ColorPickerProtocol, GradientPickerProt
     {
         let SliderValue = Double(LocationSlider.value / 1000.0)
         UpdateGradient(WithLocation: SliderValue)
-        LocationBox.text = "\(SliderValue.Round(To: 2))"
+        LocationBox.text = "\(SliderValue.Round(To: 3))"
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?)
@@ -186,7 +196,6 @@ class ColorStopEditor: UIViewController, ColorPickerProtocol, GradientPickerProt
     @IBAction func HandleCancelPressed(_ sender: Any)
     {
         DidCancel = true
-        //ParentDelegate?.EditedGradient(nil, Tag: ParentTag)
         navigationController?.popViewController(animated: true)
     }
     
