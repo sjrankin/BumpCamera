@@ -9,7 +9,7 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
-        <!--Color Map Settings-->
+        <!--Bad Color Map Settings-->
         <scene sceneID="h71-lJ-sSs">
             <objects>
                 <tableViewController id="QdZ-L3-aQF" customClass="ColorMapSettingsUICode" customModule="BumpCamera" customModuleProvider="target" sceneMemberID="viewController">
@@ -114,7 +114,7 @@
                     <toolbarItems>
                         <barButtonItem title="Not used." id="7fV-5r-LNu"/>
                     </toolbarItems>
-                    <navigationItem key="navigationItem" title="Color Map Settings" id="6E9-vI-ia5"/>
+                    <navigationItem key="navigationItem" title="Bad Color Map Settings" id="6E9-vI-ia5"/>
                     <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
                     <connections>
                         <outlet property="GradientPicker" destination="Axg-3d-p0X" id="XnA-RH-fml"/>
