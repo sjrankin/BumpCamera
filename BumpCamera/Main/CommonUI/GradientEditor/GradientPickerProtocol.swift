@@ -15,5 +15,5 @@ protocol GradientPickerProtocol: class
     
     func GradientToEdit(_ EditMe: String?, Tag: Any?)
     
-    func SetStop(StopColor: UIColor?, StopLocation: Double?)
+    func SetStop(StopColorIndex: Int)
 }
