@@ -185,7 +185,7 @@ class ColorPicker2: UITableViewController, GSliderProtocol, ColorPickerProtocol
     
     @IBAction func HandleColorspaceChanged(_ sender: Any)
     {
-        _Settings.set(ColorspaceSegment, forKey: "ColorPickerColorspace")
+        _Settings.set(ColorspaceSegment.selectedSegmentIndex, forKey: "ColorPickerColorspace")
         UpdateColorspace()
     }
     
