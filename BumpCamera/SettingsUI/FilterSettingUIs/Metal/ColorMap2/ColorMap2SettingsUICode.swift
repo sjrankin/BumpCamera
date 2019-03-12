@@ -160,6 +160,10 @@ class ColorMap2SettingsUICode: FilterSettingUIBase, UIPickerViewDelegate, UIPick
                 {
                     GradientsForPicker.removeLast()
                     GradientsForPicker.append(("User", EditedGradient))
+                    UserGradient = EditedGradient
+                    _Settings.set(EditedGradient, forKey: "UserGradient")
+                    ShowSampleView()
+                    LoadUIContents()
                 }
             }
         }
