@@ -67,7 +67,7 @@ DrawGradient()
         {
         case 0:
             //black white
-            NewLayer = GradientParser.CreateGradientLayer(From: "(Black)@(0.0),(White)@(1.0)",
+            NewLayer = GradientManager.CreateGradientLayer(From: "(Black)@(0.0),(White)@(1.0)",
                                                           WithFrame: TestView.bounds,
                                                           IsVertical: IsVertical, ReverseColors: DoReverse)
             
@@ -84,32 +84,32 @@ DrawGradient()
                 "(Red)@(0.8)," +
                 "(White)@(0.9)," +
                 "(Red)@(1.0)"
-            NewLayer = GradientParser.CreateGradientLayer(From: Many,
+            NewLayer = GradientManager.CreateGradientLayer(From: Many,
                                                           WithFrame: TestView.bounds,
                                                           IsVertical: IsVertical, ReverseColors: DoReverse)
             
         case 2:
             //yellow gold
-            NewLayer = GradientParser.CreateGradientLayer(From: "(Yellow)@(0.0),(Gold)@(1.0)",
+            NewLayer = GradientManager.CreateGradientLayer(From: "(Yellow)@(0.0),(Gold)@(1.0)",
                                                           WithFrame: TestView.bounds,
                                                           IsVertical: IsVertical, ReverseColors: DoReverse)
             
         case 3:
             //gold red
-            NewLayer = GradientParser.CreateGradientLayer(From: "(Gold)@(0.0),(Red)@(1.0)",
+            NewLayer = GradientManager.CreateGradientLayer(From: "(Gold)@(0.0),(Red)@(1.0)",
                                                           WithFrame: TestView.bounds,
                                                           IsVertical: IsVertical, ReverseColors: DoReverse)
             
         case 4:
             //RGB
-            NewLayer = GradientParser.CreateGradientLayer(From: "(Red)@(0.0),(Green)@(0.5),(Blue)@(1.0)",
+            NewLayer = GradientManager.CreateGradientLayer(From: "(Red)@(0.0),(Green)@(0.5),(Blue)@(1.0)",
                                                           WithFrame: TestView.bounds,
                                                           IsVertical: IsVertical, ReverseColors: DoReverse)
             
         case 5:
             //rainbow
             let Rainbow = "(Red)@(0.0),(Orange)@(0.16),(Yellow)@(0.32),(Green)@(0.48),(Blue)@(0.64),(Indigo)@(0.80),(Violet)@(1.0)"
-            NewLayer = GradientParser.CreateGradientLayer(From: Rainbow, WithFrame: TestView.bounds,
+            NewLayer = GradientManager.CreateGradientLayer(From: Rainbow, WithFrame: TestView.bounds,
                                                           IsVertical: IsVertical, ReverseColors: DoReverse)
             
         default:
