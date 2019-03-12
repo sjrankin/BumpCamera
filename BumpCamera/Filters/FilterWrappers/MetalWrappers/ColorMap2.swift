@@ -175,7 +175,7 @@ class ColorMap2: FilterParent, Renderer
         {
             GradientDescription = "(White)@(0.0),(Black)@(1.0)"
         }
-        let GradientColors = GradientParser.ResolveGradient(GradientDescription)
+        let GradientColors = GradientManager.ResolveGradient(GradientDescription)
         var IGradient = [simd_float4](repeating: simd_float4(0.0, 0.0, 0.0, 1.0), count: 256)
         for index in 0 ... 255
         {
@@ -296,7 +296,7 @@ class ColorMap2: FilterParent, Renderer
         {
             GradientDescription = "(White)@(0.0),(Black)@(1.0)"
         }
-        let GradientColors = GradientParser.ResolveGradient(GradientDescription)
+        let GradientColors = GradientManager.ResolveGradient(GradientDescription)
         var IGradient = [simd_float4](repeating: simd_float4(0.0, 0.0, 0.0, 1.0), count: 256)
         for index in 0 ... 255
         {
