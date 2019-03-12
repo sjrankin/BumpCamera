@@ -37,7 +37,7 @@ kernel void ColorMap2(texture2d<float, access::read> InTexture [[texture(0)]],
     int GradientIndex = int(Mean * 255.0);
     if (Parameters.InvertGradientDirection)
         {
-        GradientIndex = 256 - GradientIndex;
+        GradientIndex = 255 - GradientIndex;
         }
     
     OutTexture.write(Gradient.Values[GradientIndex], gid);
