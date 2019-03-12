@@ -9,6 +9,7 @@
 import Foundation
 import UIKit
 
+/// Maintains predefined colors and color groups.
 class PredefinedColors
 {
     /// Ways to order predefined colors.
@@ -197,6 +198,13 @@ class PredefinedColors
         return (ClosestIndex, ClosestDistance)
     }
     
+    /// Return the color at the specified index in the specified color group.
+    ///
+    /// - Parameters:
+    ///   - Group: The group from with the color will be returned.
+    ///   - At: The index of the color in the specified group.
+    /// - Returns: The predefined color in the group at the specified index on success, nil if not
+    ///            found or bad index.
     public static func GetColorIn(Group: String, At: Int) -> PredefinedColor?
     {
         let Colors = GetColorsIn(Group: Group)
@@ -321,6 +329,10 @@ class PredefinedColors
         return abs(Biggest - Smallest)
     }
     
+    /// Determines if the passed color is monochromatic.
+    ///
+    /// - Parameter TheColor: The color to test.
+    /// - Returns: True if the color is monochromatic, false if not.
     private static func IsMonochromatic(_ TheColor: UIColor) -> Bool
     {
         let (R, G, B) = Utility.GetRGB(TheColor)
@@ -677,14 +689,14 @@ class PredefinedColors
     /// Return all names for the passed color, if any. If more than on color matches the passed color, the first color
     /// found will be used as the source for the returned names.
     ///
-    /// - Parameter Color: The color whose names will be returned.
+    /// - Parameter FindColor: The color whose names will be returned.
     /// - Returns: Array of names for the color. If the returned array is empty, no colors were found that matched the passed
     ///            color. The first name is the primary name and subsquent names are alternative names.
-    public static func NamesFrom(Color: UIColor) -> [String]
+    public static func NamesFrom(FindColor: UIColor) -> [String]
     {
         for Color in PredefinedColorTable.Colors
         {
-            if Color.SameColor(Color.Color)
+            if Color.SameColor(FindColor)
             {
                 if !Color.AlternativeName.isEmpty
                 {
