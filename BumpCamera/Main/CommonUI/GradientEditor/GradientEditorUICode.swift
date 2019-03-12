@@ -23,7 +23,7 @@ class GradientEditorUICode: UIViewController, GradientPickerProtocol,
         super.viewDidLoad()
         
         OriginalGradient = CurrentGradient
-        GradientStopList = GradientParser.ParseGradient(CurrentGradient)
+        GradientStopList = GradientManager.ParseGradient(CurrentGradient)
         GradientView.backgroundColor = UIColor.black
         GradientView.layer.borderColor = UIColor.black.cgColor
         GradientView.layer.borderWidth = 0.5
@@ -62,10 +62,10 @@ class GradientEditorUICode: UIViewController, GradientPickerProtocol,
         }
         else
         {
-            let SampleGradient = GradientParser.CreateGradientImage(From: WithGradient, WithFrame: GradientView.bounds,
+            let SampleGradient = GradientManager.CreateGradientImage(From: WithGradient, WithFrame: GradientView.bounds,
                                                                     IsVertical: IsVertical, ReverseColors: false)
             GradientView.image = SampleGradient
-            GradientStopList = GradientParser.ParseGradient(WithGradient)
+            GradientStopList = GradientManager.ParseGradient(WithGradient)
         }
         GradientStopTable.reloadData()
     }
@@ -106,7 +106,7 @@ class GradientEditorUICode: UIViewController, GradientPickerProtocol,
     
     @IBAction func HandleReverseGradientButton(_ sender: Any)
     {
-        CurrentGradient = GradientParser.ReverseColorLocations(CurrentGradient)
+        CurrentGradient = GradientManager.ReverseColorLocations(CurrentGradient)
         ShowSample(WithGradient: CurrentGradient)
     }
     
@@ -141,7 +141,7 @@ class GradientEditorUICode: UIViewController, GradientPickerProtocol,
     
     @IBAction func HandleAddButton(_ sender: Any)
     {
-        CurrentGradient = GradientParser.AddGradientStop(CurrentGradient, Color: UIColor.red, Location: 1.0)
+        CurrentGradient = GradientManager.AddGradientStop(CurrentGradient, Color: UIColor.red, Location: 1.0)
         ShowSample(WithGradient: CurrentGradient)
         GradientStopTable.reloadData()
     }
@@ -188,7 +188,7 @@ class GradientEditorUICode: UIViewController, GradientPickerProtocol,
     
     func tableView(_ tableView: UITableView, moveRowAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath)
     {
-        if let NewGradient = GradientParser.SwapGradientStops(CurrentGradient, Index1: sourceIndexPath.row,
+        if let NewGradient = GradientManager.SwapGradientStops(CurrentGradient, Index1: sourceIndexPath.row,
                                                               Index2: destinationIndexPath.row)
         {
             CurrentGradient = NewGradient
@@ -200,7 +200,7 @@ class GradientEditorUICode: UIViewController, GradientPickerProtocol,
     {
         if editingStyle == .delete
         {
-            CurrentGradient = GradientParser.RemoveGradientStop(CurrentGradient, AtIndex: indexPath.row)!
+            CurrentGradient = GradientManager.RemoveGradientStop(CurrentGradient, AtIndex: indexPath.row)!
             GradientStopTable.reloadData()
         }
     }
