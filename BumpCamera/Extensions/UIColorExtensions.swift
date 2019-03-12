@@ -12,6 +12,35 @@ import simd
 
 extension UIColor
 {
+    /// Convenience initializer that takes doubles as HSB channel values.
+    ///
+    /// - Parameters:
+    ///   - hue: Hue channel value. Clamped to 0.0 to 1.0.
+    ///   - saturation: Saturation channel value. Clamped to 0.0 to 1.0.
+    ///   - brightness: Brightness channel value. Clamped to 0.0 to 1.0.
+    ///   - alpha: Alpha channel value. Clamped to 0.0 to 1.0.
+    convenience init(hue: Double, saturation: Double, brightness: Double, alpha: Double)
+    {
+        self.init(hue: CGFloat(hue.Clamp(0.0, 1.0)),
+                  saturation: CGFloat(saturation.Clamp(0.0, 1.0)),
+                  brightness: CGFloat(brightness.Clamp(0.0, 1.0)),
+                  alpha: CGFloat(alpha.Clamp(0.0, 1.0)))
+    }
+    
+    /// Convenience initializer that takes doubles as HSB channel values. Alpha is set to 1.0.
+    ///
+    /// - Parameters:
+    ///   - hue: Hue channel value. Clamped to 0.0 to 1.0.
+    ///   - saturation: Saturation channel value. Clamped to 0.0 to 1.0.
+    ///   - brightness: Brightness channel value. Clamped to 0.0 to 1.0.
+    convenience init(hue: Double, saturation: Double, brightness: Double)
+    {
+        self.init(hue: CGFloat(hue.Clamp(0.0, 1.0)),
+                  saturation: CGFloat(saturation.Clamp(0.0, 1.0)),
+                  brightness: CGFloat(brightness.Clamp(0.0, 1.0)),
+                  alpha: 1.0)
+    }
+    
     /// Create a UIColor with the unnormalized RGB values. Alpha is set to 1.0.
     ///
     /// - Parameters:
@@ -394,6 +423,20 @@ extension UIColor
             self.getHue(&H, saturation: &S, brightness: &B, alpha: &A)
             return B
         }
+    }
+    
+    /// Create a new color with the same hue and saturation as the passed color, and the brightness of
+    /// the passed `ToBrightness` parameter value.
+    ///
+    /// - Parameters:
+    ///   - Source: Source color.
+    ///   - ToBrightness: Brightness level to apply to the source color.
+    /// - Returns: New color with the supplied brightness.
+    public static func SetBrightness(_ Source: UIColor, _ ToBrightness: CGFloat) -> UIColor
+    {
+        let Hue = Source.Hue
+        let Sat = Source.Saturation
+        return UIColor(hue: Hue, saturation: Sat, brightness: ToBrightness, alpha: 1.0)
     }
     
     /// Convert a SIMD float4 structure into a UIColor.
