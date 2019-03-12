@@ -23,7 +23,7 @@ class ColorStopEditorCode: UIViewController, ColorPickerProtocol, GradientPicker
         }
         else
         {
-            let (Color, Location) = GradientParser.GradientStop(From: OriginalGradient, At: StopIndex)!
+            let (Color, Location) = GradientManager.GradientStop(From: OriginalGradient, At: StopIndex)!
             StopColorToEdit = Color
             StopLocationToEdit = Double(Location)
         }
@@ -62,8 +62,8 @@ class ColorStopEditorCode: UIViewController, ColorPickerProtocol, GradientPicker
     
     func UpdateUI()
     {
-        let SampleGradient = GradientParser.ReplaceGradientStop(OriginalGradient, Color: StopColorToEdit, Location: CGFloat(StopLocationToEdit), AtIndex: StopIndex)
-        let GradientImage = GradientParser.CreateGradientImage(From: SampleGradient!,
+        let SampleGradient = GradientManager.ReplaceGradientStop(OriginalGradient, Color: StopColorToEdit, Location: CGFloat(StopLocationToEdit), AtIndex: StopIndex)
+        let GradientImage = GradientManager.CreateGradientImage(From: SampleGradient!,
                                                                WithFrame: GradientSample.bounds,
                                                                IsVertical: IsVertical, ReverseColors: false)
         GradientSample.image = GradientImage
@@ -184,7 +184,7 @@ class ColorStopEditorCode: UIViewController, ColorPickerProtocol, GradientPicker
             }
             else
             {
-                let Final = GradientParser.ReplaceGradientStop(OriginalGradient, Color: StopColorToEdit,
+                let Final = GradientManager.ReplaceGradientStop(OriginalGradient, Color: StopColorToEdit,
                                                                Location: CGFloat(StopLocationToEdit),
                                                                AtIndex: StopIndex)
                 ParentDelegate?.EditedGradient(Final, Tag: ParentTag)
