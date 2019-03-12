@@ -1,5 +1,5 @@
 //
-//  GradientParser.swift
+//  GradientManager.swift
 //  BumpCamera
 //
 //  Created by Stuart Rankin on 3/6/19.
@@ -13,11 +13,14 @@ import UIKit
 /// other functions to help with gradients in general.
 ///
 /// - Note:
-///     Gradient descriptions are a series of comma-delimited color stops. Each color stop is in the format
-///     `(color value)@(point)` where `color value` is either a hex value that describes a color, or a color
-///     name in the KnownColors list. `point` is the relative location of the gradient stop to the other color
-///     stops in the list. Orientation is not implied in color stop locations.
-class GradientParser
+///      - Gradient descriptions are a series of comma-delimited color stops. Each color stop is in the format
+///        `(color value)@(point)` where `color value` is either a hex value that describes a color, or a color
+///        name in the KnownColors list. `point` is the relative location of the gradient stop to the other color
+///        stops in the list. Orientation is not implied in color stop locations.
+///      - Additionally, HSB colors may be specified with `[]` syntax - for example, `[0.45,0.12,0.86]@(0.5)`.
+///        The square brackets are required to specify HSB values. The caller can specify only a hue, a hue and
+///        saturation, or hue, saturation and brightness. Hue and brightness only is invalid.
+class GradientManager
 {
     /// Dictionary of known colors (known as in the color name is known) and their associated color values.
     private static let KnownColors: [String: UIColor] =
@@ -862,4 +865,10 @@ class GradientParser
     
     /// Predefined pastel gradient 1.
     static let PastelGradient1 = "(Daffodil)@(0.0),(Gold)@(0.25),(Mustard)@(0.4),(Pink)@(0.6),(AtomicTangerine)@(0.75),(Coral)@(1.0)"
+    
+    /// Predefined stripe gradient 1.
+    static let Stripes1 = "(White)@(0.0),(White)@(0.2),(Black)@(0.21),(White)@(0.22),(White)@(0.40),(Black)@(0.41),(White)@(0.42),(White)@(0.60),(Black)@(0.61),(White)@(0.62),(White)@(0.80),(Black)@(0.81),(White)@(0.82),(White)@(1.0)"
+    
+    /// Predefined stripe gradient 2.
+    static let Stripes2 = "(White)@(0.0),(White)@(0.2),(Red)@(0.21),(White)@(0.22),(White)@(0.40),(Green)@(0.41),(White)@(0.42),(White)@(0.60),(Blue)@(0.61),(White)@(0.62),(White)@(0.80),(Daffodil)@(0.81),(White)@(0.82),(White)@(1.0)"
 }
