@@ -36,7 +36,7 @@ class GradientStopCell: UITableViewCell
         
         let LabelRect = CGRect(x: CurrentWidth * 0.55, y: 10, width: 80.0, height: 30.0)
         LocationLabel = UILabel(frame: LabelRect)
-        LocationLabel.layer.backgroundColor = UIColor.yellow.cgColor
+        //LocationLabel.layer.backgroundColor = UIColor.yellow.cgColor
         LocationLabel.textAlignment = .left
         LocationLabel.font = UIFont(name: "Courier", size: 22.0)
         contentView.addSubview(LocationLabel)
