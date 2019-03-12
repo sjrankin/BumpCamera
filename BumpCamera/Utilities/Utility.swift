@@ -652,14 +652,18 @@ class Utility
         return ColorString
     }
     
-    /// Convert a color to a human-readable string.
+    /// Convert a color to a human-readable string. For RGB, the value returned is in the format
+    /// (alpha, red, green, blue) (the caller can control whether alpha is returned or not). For HSB,
+    /// the format is (hue, saturation, brightness).
     ///
     /// - Parameters:
     ///   - Color: The color to convert.
     ///   - AsRGB: If true, ARGB is returned. If false, HSB is returned.
     ///   - DeNormalize: If true, color values are denomalized. If false, normalized color values are returned.
+    ///   - IncludeAlpha: If true, the alpha value is returned. Otherwise, it is not.
     /// - Returns: String value of the passed color.
-    public static func ColorToString(_ Color: UIColor, AsRGB: Bool = true, DeNormalize: Bool = true) -> String
+    public static func ColorToString(_ Color: UIColor, AsRGB: Bool = true, DeNormalize: Bool = true,
+                                     IncludeAlpha: Bool = true) -> String
     {
         if AsRGB
         {
@@ -670,11 +674,25 @@ class Utility
                 let DNR: Int = Int(Round(R * 255.0, ToPlaces: 0))
                 let DNG: Int = Int(Round(G * 255.0, ToPlaces: 0))
                 let DNB: Int = Int(Round(B * 255.0, ToPlaces: 0))
-                return "(\(DNA), \(DNR), \(DNG), \(DNB))"
+                if IncludeAlpha
+                {
+                    return "(\(DNA), \(DNR), \(DNG), \(DNB))"
+                }
+                else
+                {
+                    return "(\(DNR), \(DNG), \(DNB))" 
+                }
             }
             else
             {
-                return "(\(Round(A, ToPlaces: 3)), \(Round(R, ToPlaces: 3)), \(Round(G, ToPlaces: 3)), \(Round(B, ToPlaces: 3)))"
+                if IncludeAlpha
+                {
+                    return "(\(Round(A, ToPlaces: 3)), \(Round(R, ToPlaces: 3)), \(Round(G, ToPlaces: 3)), \(Round(B, ToPlaces: 3)))"
+                }
+                else
+                {
+                    return "(\(Round(R, ToPlaces: 3)), \(Round(G, ToPlaces: 3)), \(Round(B, ToPlaces: 3)))"
+                }
             }
         }
         else
@@ -1857,18 +1875,18 @@ class Utility
     
     /// List of most common XML entities and their raw equivalent.
     static let XMLEntities =
-    [
-        "&" : "&amp;",
-        "\"": "&quot;",
-        "'" : "&apos;",
-        "<" : "&lt;",
-        ">" : "&gt;"
+        [
+            "&" : "&amp;",
+            "\"": "&quot;",
+            "'" : "&apos;",
+            "<" : "&lt;",
+            ">" : "&gt;"
     ]
     
     /// Table of characters that must be quoted in XML. "&" must be first.
     static let XMLEntityTable =
-    [
-        "&", "\"", "'", "<", ">"
+        [
+            "&", "\"", "'", "<", ">"
     ]
     
     /// Replaces all instances of characters in the source string that are not valid XML characters
@@ -1899,8 +1917,8 @@ class Utility
 """
     /// List of JSON text entries to replace.
     static let JSONEntities =
-    [
-        "\"" : JSONQuote
+        [
+            "\"" : JSONQuote
     ]
     
     /// Replaces all instances of characters in the source string that are not valid stand-alone JSON characters.
