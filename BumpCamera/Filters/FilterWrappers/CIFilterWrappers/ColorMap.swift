@@ -137,7 +137,7 @@ class ColorMap: FilterParent, Renderer
         {
             //The image is rotated, so we need to "rotate" the dimensions as well.
             let GRect = CGRect(x: 0, y: 0, width: SourceImage.extent.height, height: SourceImage.extent.width)
-            GradientImage = GradientParser.CreateGradientImage(From: GDef, WithFrame: GRect, IsVertical: true, ReverseColors: DoReverse)
+            GradientImage = GradientManager.CreateGradientImage(From: GDef, WithFrame: GRect, IsVertical: true, ReverseColors: DoReverse)
             GradientDefinition = GDef
         }
         var CGradientImage = CIImage(image: GradientImage!)
@@ -216,7 +216,7 @@ class ColorMap: FilterParent, Renderer
         if iGradientImage == nil || iGradientDefinition != GDef
         {
             let GRect = CGRect(x: 0, y: 0, width: Image.extent.width, height: Image.extent.height)
-            iGradientImage = GradientParser.CreateGradientImage(From: GDef, WithFrame: GRect, IsVertical: true, ReverseColors: DoReverse)
+            iGradientImage = GradientManager.CreateGradientImage(From: GDef, WithFrame: GRect, IsVertical: true, ReverseColors: DoReverse)
             iGradientDefinition = GDef
         }
         let CGradientImage = CIImage(image: iGradientImage!)
