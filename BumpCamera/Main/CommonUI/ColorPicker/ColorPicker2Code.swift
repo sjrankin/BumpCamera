@@ -116,9 +116,11 @@ class ColorPicker2: UITableViewController, GSliderProtocol, ColorPickerProtocol
     
     var ParentTag: Any? = nil
     var SourceColor: UIColor? = nil
+    var CurrentColor: UIColor? = nil
     
     func UpdateColor(WithColor: UIColor)
     {
+        CurrentColor = WithColor
         SampleColorView.backgroundColor = WithColor
         ColorValueLabel.text = "#" + String(format: "%02x", Int(WithColor.r * 255.0)) +
             String(format: "%02x", Int(WithColor.g * 255.0)) + String(format: "%02x", Int(WithColor.b * 255.0))
@@ -136,6 +138,7 @@ class ColorPicker2: UITableViewController, GSliderProtocol, ColorPickerProtocol
         if let NewColor = Edited
         {
             SourceColor = NewColor
+            CurrentColor = NewColor
             UpdateColor(WithColor: SourceColor!)
             UpdateSliders(WithColor: SourceColor!.Inverted())
         }
@@ -152,7 +155,7 @@ class ColorPicker2: UITableViewController, GSliderProtocol, ColorPickerProtocol
             if let Dest = segue.destination as? ColorListPickerCode
             {
                 Dest.ParentDelegate = self
-                Dest.ColorToEdit(SourceColor!, Tag: "PickerColor")
+                Dest.ColorToEdit(CurrentColor!, Tag: "PickerColor")
             }
             
         default:
@@ -169,7 +172,7 @@ class ColorPicker2: UITableViewController, GSliderProtocol, ColorPickerProtocol
     
     @IBAction func HandleDoneButton(_ sender: Any)
     {
-        ParentDelegate?.EditedColor(SourceColor!, Tag: ParentTag)
+        ParentDelegate?.EditedColor(CurrentColor!, Tag: ParentTag)
         navigationController?.popViewController(animated: true)
     }
     
