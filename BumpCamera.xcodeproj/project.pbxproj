@@ -231,7 +231,7 @@
 		17BEE0B421FC2F8500A9370B /* DesaturationKernelParameters.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17BEE0B321FC2F8500A9370B /* DesaturationKernelParameters.swift */; };
 		17C18AD4222FF93300DBDD79 /* ColorMapSettingsUI.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 17C18AD3222FF93300DBDD79 /* ColorMapSettingsUI.storyboard */; };
 		17C18AD6222FFAF000DBDD79 /* ColorMapSettingsUICode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17C18AD5222FFAF000DBDD79 /* ColorMapSettingsUICode.swift */; };
-		17C18AD8222FFF6700DBDD79 /* GradientParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17C18AD7222FFF6700DBDD79 /* GradientParser.swift */; };
+		17C18AD8222FFF6700DBDD79 /* GradientManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17C18AD7222FFF6700DBDD79 /* GradientManager.swift */; };
 		17C3925E22159D480049B8FD /* DEParameters.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17C3925D22159D480049B8FD /* DEParameters.swift */; };
 		17C3926022159D960049B8FD /* ErodeDilate.metal in Sources */ = {isa = PBXBuildFile; fileRef = 17C3925F22159D960049B8FD /* ErodeDilate.metal */; };
 		17C3926222159FBC0049B8FD /* DilateErode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17C3926122159FBC0049B8FD /* DilateErode.swift */; };
@@ -557,7 +557,7 @@
 		17BEE0B321FC2F8500A9370B /* DesaturationKernelParameters.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DesaturationKernelParameters.swift; sourceTree = "<group>"; };
 		17C18AD3222FF93300DBDD79 /* ColorMapSettingsUI.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = ColorMapSettingsUI.storyboard; sourceTree = "<group>"; };
 		17C18AD5222FFAF000DBDD79 /* ColorMapSettingsUICode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorMapSettingsUICode.swift; sourceTree = "<group>"; };
-		17C18AD7222FFF6700DBDD79 /* GradientParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GradientParser.swift; sourceTree = "<group>"; };
+		17C18AD7222FFF6700DBDD79 /* GradientManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GradientManager.swift; sourceTree = "<group>"; };
 		17C3925D22159D480049B8FD /* DEParameters.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DEParameters.swift; sourceTree = "<group>"; };
 		17C3925F22159D960049B8FD /* ErodeDilate.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = ErodeDilate.metal; sourceTree = "<group>"; };
 		17C3926122159FBC0049B8FD /* DilateErode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DilateErode.swift; sourceTree = "<group>"; };
@@ -1024,7 +1024,7 @@
 			children = (
 				17F236A022152AF30091B865 /* Utility.swift */,
 				171F3CFE2209CB3F0098E2B7 /* FileHandling.swift */,
-				17C18AD7222FFF6700DBDD79 /* GradientParser.swift */,
+				17C18AD7222FFF6700DBDD79 /* GradientManager.swift */,
 			);
 			path = Utilities;
 			sourceTree = "<group>";
@@ -2273,7 +2273,7 @@
 				171375F42218FA84000E49C2 /* BayerDecode.metal in Sources */,
 				17EC44D221F027B500197804 /* LineOverlay.swift in Sources */,
 				1756CE0A21FD73AA00C4E638 /* RGBtoSBH.metal in Sources */,
-				17C18AD8222FFF6700DBDD79 /* GradientParser.swift in Sources */,
+				17C18AD8222FFF6700DBDD79 /* GradientManager.swift in Sources */,
 				1726242121F8503E00C7688C /* NewFieldSettingProtocol.swift in Sources */,
 				176C969C222CF4AE004DB727 /* ConditionalSilhouette.swift in Sources */,
 				17D7511121F41BB90050A2B5 /* MainUIJpegDataClass.swift in Sources */,
