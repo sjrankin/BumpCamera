@@ -168,7 +168,7 @@ class ChannelMangler: FilterParent, Renderer
             return nil
         }
         
-        let GradientColors = GradientParser.ResolveGradient("(Cyan)@(0.0),(Magenta)@(0.33),(Yellow)@(0.67),(Black)@(1.0)")
+        let GradientColors = GradientManager.ResolveGradient("(Cyan)@(0.0),(Magenta)@(0.33),(Yellow)@(0.67),(Black)@(1.0)")
         var IGradient = [simd_float4](repeating: simd_float4(0.0, 0.0, 0.0, 1.0), count: 256)
         for index in 0 ... 255
         {
@@ -284,7 +284,7 @@ class ChannelMangler: FilterParent, Renderer
         let CommandBuffer = ImageCommandQueue?.makeCommandBuffer()
         let CommandEncoder = CommandBuffer?.makeComputeCommandEncoder()
         
-        let GradientColors = GradientParser.ResolveGradient("(Cyan)@(0.0),(Magenta)@(0.33),(Yellow)@(0.67),(Black)@(1.0)")
+        let GradientColors = GradientManager.ResolveGradient("(Cyan)@(0.0),(Magenta)@(0.33),(Yellow)@(0.67),(Black)@(1.0)")
         var IGradient = [simd_float4](repeating: simd_float4(0.0, 0.0, 0.0, 1.0), count: 256)
         for index in 0 ... 255
         {
