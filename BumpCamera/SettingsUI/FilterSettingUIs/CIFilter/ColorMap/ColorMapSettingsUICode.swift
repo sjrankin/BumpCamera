@@ -61,7 +61,7 @@ class ColorMapSettingsUICode: FilterSettingUIBase, UIPickerViewDelegate, UIPicke
         {
             if let OtherGradient = UserGradient
             {
-                let SampleGradient = GradientParser.CreateGradientImage(From: OtherGradient,
+                let SampleGradient = GradientManager.CreateGradientImage(From: OtherGradient,
                                                                         WithFrame: GradientSample.bounds,
                                                                         IsVertical: true, ReverseColors: DoInvert)
                 GradientSample.image = SampleGradient
@@ -73,7 +73,7 @@ class ColorMapSettingsUICode: FilterSettingUIBase, UIPickerViewDelegate, UIPicke
         }
         else
         {
-            let SampleGradient = GradientParser.CreateGradientImage(From: RawGradient,
+            let SampleGradient = GradientManager.CreateGradientImage(From: RawGradient,
                                                                     WithFrame: GradientSample.bounds,
                                                                     IsVertical: true, ReverseColors: DoInvert)
             GradientSample.image = SampleGradient
