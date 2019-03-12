@@ -184,7 +184,9 @@ class ColorStopEditorCode: UIViewController, ColorPickerProtocol, GradientPicker
             }
             else
             {
-                let Final = GradientParser.InsertGradientStop(Into: OriginalGradient, StopColorToEdit, CGFloat(StopLocationToEdit))
+                let Final = GradientParser.ReplaceGradientStop(OriginalGradient, Color: StopColorToEdit,
+                                                               Location: CGFloat(StopLocationToEdit),
+                                                               AtIndex: StopIndex)
                 ParentDelegate?.EditedGradient(Final, Tag: ParentTag)
             }
         }
