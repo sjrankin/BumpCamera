@@ -45,6 +45,113 @@ import UIKit
         addGestureRecognizer(Tap)
     }
     
+    var TouchStartPoint: CGPoint? = nil
+    var TouchMovePoint: CGPoint? = nil
+    var TouchEndPoint: CGPoint? = nil
+    
+    func IsValidPoint(_ Point: CGPoint) -> Bool
+    {
+        if IsHorizontal
+        {
+            if Point.x < 0.0 || Point.x > frame.width
+            {
+                return false
+            }
+            else
+            {
+                return true
+            }
+        }
+        else
+        {
+            if Point.y < 0.0 || Point.y > frame.height
+            {
+                return false
+            }
+            else
+            {
+                return true
+            }
+        }
+    }
+    
+    func ValidateLocation(_ Point: CGPoint) -> CGPoint
+    {
+        if IsHorizontal
+        {
+            if Point.x <= 0.0
+            {
+                return CGPoint(x: 0.0, y: Point.y)
+            }
+            if Point.x >= frame.width
+            {
+                return CGPoint(x: frame.width, y: Point.y)
+            }
+            return Point
+        }
+        else
+        {
+            if Point.y <= 0.0
+            {
+                return CGPoint(x: Point.x, y: 0.0)
+            }
+            if Point.y >= frame.height
+            {
+                return CGPoint(x: Point.x, y: frame.height)
+            }
+            return Point
+        }
+    }
+    
+    //https://www.techotopia.com/index.php/Detecting_iOS_8_Touch_Screen_Gesture_Motions_in_Swift
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?)
+    {
+        if let Touch = touches.first
+        {
+            TouchStartPoint = Touch.location(in: self)
+            HandleMoved(ToWhere: TouchStartPoint!)
+        }
+    }
+    
+    override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?)
+    {
+        if let Touch = touches.first
+        {
+            TouchMovePoint = Touch.location(in: self)
+            HandleMoved(ToWhere: TouchMovePoint!)
+        }
+    }
+    
+    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?)
+    {
+        if let Touch = touches.first
+        {
+            TouchEndPoint = Touch.location(in: self)
+            HandleMoved(ToWhere: TouchEndPoint!)
+        }
+    }
+    
+    func HandleMoved(ToWhere: CGPoint)
+    {
+        let Validated = ValidateLocation(ToWhere)
+        let Percent = PercentFromLocation(Location: Validated)
+        let Range = MaxValue - MinValue
+        Value = (Range * Percent) + MinValue
+        DrawIndicator()
+        ParentDelegate?.NewSliderValue(Name: Name, NewValue: Value)
+    }
+    
+    override func draw(_ rect: CGRect)
+    {
+        guard let _ = UIGraphicsGetCurrentContext() else
+        {
+            return
+        }
+        UpdateGradient()
+        DrawIndicator()
+        UpdateBorder()
+    }
+    
     /// Handle taps on the slider. The value is recalculated and the indicator is moved as
     /// appropriate. The parent of the control is notified.
     ///
@@ -126,6 +233,50 @@ import UIKit
         }
     }
     
+    /// Holds the color to use to draw the outline of the indicator. Setting this value updates
+    /// the UI immediately.
+    private var _IndicatorStrokeColor: UIColor = UIColor.yellow
+    {
+        didSet
+        {
+            DrawIndicator()
+        }
+    }
+    /// Get or set the color to use to draw the stroke (outline) of the indicator.
+    @IBInspectable public var IndicatorStrokeColor: UIColor
+        {
+        get
+        {
+            return _IndicatorStrokeColor
+        }
+        set
+        {
+            _IndicatorStrokeColor = newValue
+        }
+    }
+    
+    /// Holds the color to use to draw the interior of the indicator. Setting this value updates
+    /// the UI immediately.
+    private var _IndicatorFillColor: UIColor = UIColor.black
+    {
+        didSet
+        {
+            DrawIndicator()
+        }
+    }
+    /// Get or set the color to use to draw the interior (fill) of the indicator.
+    @IBInspectable public var IndicatorFillColor: UIColor
+        {
+        get
+        {
+            return _IndicatorFillColor
+        }
+        set
+        {
+            _IndicatorFillColor = newValue
+        }
+    }
+    
     /// Holds the value that determines if the border of the control is rounded. Updates the border
     /// when set.
     private var _RoundCorneredBorders: Bool = true
@@ -190,6 +341,28 @@ import UIKit
         set
         {
             _BorderColor = newValue
+        }
+    }
+    
+    /// Holds the flag that shows or hides shadows. Shadow state is changed when set.
+    private var _ShowShadows: Bool = true
+    {
+        didSet
+        {
+            DrawIndicator()
+        }
+    }
+    /// Get or set the flag that tells the control to show or hide shadows under the indicator.
+    /// Setting this value causes an immediate visual update.
+    @IBInspectable var ShowShadows: Bool
+        {
+        get
+        {
+            return _ShowShadows
+        }
+        set
+        {
+            _ShowShadows = newValue
         }
     }
     
@@ -266,6 +439,29 @@ import UIKit
             }
         }
         UpdateGradient()
+    }
+    
+    /// Holds the flag that indicates whether to use the start gradient color as a solid color
+    /// instead of a gradient. Takes effect immediately.
+    private var _UseStartAsSolidColor: Bool = false
+    {
+        didSet
+        {
+            UpdateGradient()
+        }
+    }
+    /// Get or set the flag that indicates the start gradient color as a solid color instead a
+    /// gradient color. Setting this value causes an immediate visual update.
+    @IBInspectable var UseStartAsSolidColor: Bool
+        {
+        get
+        {
+            return _UseStartAsSolidColor
+        }
+        set
+        {
+            _UseStartAsSolidColor = newValue
+        }
     }
     
     /// Holds the initial gradient color. Updates the control gradient when set.
@@ -438,8 +634,8 @@ import UIKit
         {
             IndicatorLevel?.frame = CGRect(x: 0, y: 0, width: NewFrame.width, height: NewFrame.height)
         }
-        IndicatorLevel?.strokeColor = UIColor.yellow.cgColor
-        IndicatorLevel?.fillColor = UIColor.black.cgColor
+        IndicatorLevel?.strokeColor = IndicatorStrokeColor.cgColor
+        IndicatorLevel?.fillColor = IndicatorFillColor.cgColor
         IndicatorLevel?.lineWidth = 2.0
         let Indicator = UIBezierPath()
         if IsHorizontal
@@ -463,6 +659,9 @@ import UIKit
             Indicator.addLine(to: CGPoint(x: self.frame.width / 2.0, y: YPoint))
         }
         IndicatorLevel?.path = Indicator.cgPath
+        IndicatorLevel?.shadowPath = Indicator.cgPath
+        IndicatorLevel?.shadowOffset = CGSize(width: 3.0, height: 3.0)
+        IndicatorLevel?.shadowOpacity = 0.7
     }
     
     /// The indicator shape layer.
@@ -490,35 +689,10 @@ import UIKit
             }
         }
         let HueRect = CGRect(x:0, y: 0, width: self.frame.width, height: self.frame.height)
-        #if true
-        HueLayer = GradientParser.CreateGradientLayer(From: GradientParser.HueGradient, WithFrame: HueRect,
-                                           IsVertical: !_IsHorizontal, ReverseColors: false)
-        #else
-        if HueLayer == nil
-        {
-            HueLayer = CAGradientLayer()
-            HueLayer?.frame = CGRect(x:0, y: 0, width: self.frame.width, height: self.frame.height)
-            HueLayer?.bounds = self.bounds
-            HueLayer?.name = "hue"
-            HueLayer?.zPosition = 500
-            self.layer.addSublayer(HueLayer!)
-        }
-        else
-        {
-            HueLayer?.frame = CGRect(x: 0, y: 0, width: NewFrame.width, height: NewFrame.height)
-        }
-        if _IsHorizontal
-        {
-            HueLayer?.startPoint = CGPoint(x: 0.0, y: 0.0)
-            HueLayer?.endPoint = CGPoint(x: 1.0, y: 0.0)
-        }
-        else
-        {
-            HueLayer?.startPoint = CGPoint(x: 0.0, y: 0.0)
-            HueLayer?.endPoint = CGPoint(x: 0.0, y: 1.0)
-        }
-        HueLayer?.colors = HueColors
-        #endif
+        HueLayer = GradientManager.CreateGradientLayer(From: GradientManager.HueGradient, WithFrame: HueRect,
+                                                       IsVertical: !_IsHorizontal, ReverseColors: false)
+        HueLayer?.name = "hue"
+        self.layer.addSublayer(HueLayer!)
     }
     
     var HueLayer: CAGradientLayer? = nil
@@ -535,7 +709,6 @@ import UIKit
         if GradientLayer == nil
         {
             GradientLayer = CAGradientLayer()
-            //print("\(_Name): Bounds: \(self.bounds), Frame: \(self.frame)")
             GradientLayer?.frame = CGRect(x: 0, y: 0, width: self.frame.width, height: self.frame.height)
             GradientLayer?.bounds = self.bounds
             GradientLayer?.name = "gradient"
@@ -546,7 +719,14 @@ import UIKit
         {
             GradientLayer?.frame = CGRect(x: 0, y: 0, width: NewFrame.width, height: NewFrame.height)
         }
-        GradientLayer?.colors = [GradientStart.cgColor as Any, GradientEnd.cgColor as Any]
+        if UseStartAsSolidColor
+        {
+            GradientLayer?.colors = [GradientStart.cgColor as Any, GradientStart.cgColor as Any]
+        }
+        else
+        {
+            GradientLayer?.colors = [GradientStart.cgColor as Any, GradientEnd.cgColor as Any]
+        }
         if _IsHorizontal
         {
             GradientLayer?.startPoint = CGPoint(x: 0.0, y: 0.0)
@@ -561,5 +741,4 @@ import UIKit
     
     /// The gradient layer.
     var GradientLayer: CAGradientLayer? = nil
-    
 }
