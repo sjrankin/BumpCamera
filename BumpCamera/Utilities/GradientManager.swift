@@ -783,92 +783,128 @@ class GradientManager
         return (LowColor, HighColor, Percent)
     }
     
+    /// Determines if the passed gradient has any white colors in it. The determination is made simply by
+    /// looking at the gradient stops for any white color stops. If there are no white color stops, then
+    /// there is no white in the gradient.
+    ///
+    /// - Note: This function is provided to assist in combining color maps with source images.
+    ///
+    /// - Parameter InGradient: The gradient to check for color stops of all white.
+    /// - Returns: True if a white color stop is present, false if not.
+    public static func HasWhite(_ InGradient: String) -> Bool
+    {
+        let Parts = ParseGradient(InGradient)
+        for Stop in Parts
+        {
+            if Stop.0.IsSame(HexValue: 0xffffff)
+            {
+                return true
+            }
+        }
+        return false
+    }
+    
     // MARK: Predefined gradients.
     
-    /// Predefined white to red gradient.
-    static let WhiteRedGradient = "(White)@(0.0),(Red)@(1.0)"
-    
-    /// Predefined white to green gradient.
-    static let WhiteGreenGradient = "(White)@(0.0),(Green)@(1.0)"
-    
-    /// Predefined white to blue gradient.
-    static let WhiteBlueGradient = "(White)@(0.0),(Blue)@(1.0)"
-    
-    /// Predefined white to cyan gradient.
-    static let WhiteCyanGradient = "(White)@(0.0),(Cyan)@(1.0)"
-    
-    /// Predefined white to magenta gradient.
-    static let WhiteMagentaGradient = "(White)@(0.0),(Magenta)@(1.0)"
-    
-    /// Predefined white to yellow gradient.
-    static let WhiteYellowGradient = "(White)@(0.0),(Yellow)@(1.0)"
-    
-    /// Predefined whte to black gradient.
-    static let WhiteBlackGradient = "(White)@(0.0),(Black)@(1.0)"
-    
-    /// Predefined red to black gradient.
-    static let RedBlackGradient = "(Red)@(0.0),(Black)@(1.0)"
-    
-    /// Predefined green to black gradient.
-    static let GreenBlackGradient = "(Green)@(0.0),(Black)@(1.0)"
-    
-    /// Predefined blue to black gradient.
-    static let BlueBlackGradient = "(Blue)@(0.0),(Black)@(1.0)"
-    
-    /// Predefined cyan to black gradient.
-    static let CyanBlackGradient = "(Cyan)@(0.0),(Black)@(1.0)"
-    
-    /// Predefined magenta to black gradient.
-    static let MagentaBlackGradient = "(Magenta)@(0.0),(Black)@(1.0)"
-    
-    /// Predefined yellow to black gradient.
-    static let YellowBlackGradient = "(Yellow)@(0.0),(Black)@(1.0)"
-    
-    /// Predefined cyan to blue gradient.
-    static let CyanBlueGradient = "(Cyan)@(0.0),(Blue)@(1.0)"
-    
-    /// Predefined cyan to blue to black gradient.
-    static let CyanBlueBlackGradient = "(Cyan)@(0.0),(Blue)@(0.8),(Black)@(1.0)"
-    
-    /// Predefined red to orange gradient.
-    static let RedOrangeGradient = "(Red)@(0.0),(Orange)@(1.0)"
-    
-    /// Predefined yellow to red gradient.
-    static let YellowRedGradient = "(Yellow)@(0.0),(Red)@(1.0)"
-    
-    /// Predefined pistachio to green gradient.
-    static let PistachioGreenGradient = "(Pistachio)@(0.0),(Green)@(1.0)"
-    
-    /// Predefined pistachio to black gradient.
-    static let PistachioBlackGradient = "(Pistachio)@(0.0),(Black)@(1.0)"
-    
-    /// Predefined tomato to red gradient.
-    static let TomatoRedGradient = "(Tomato)@(0.0),(Red)@(1.0)"
-    
-    /// Predefined tomato to black gradient.
-    static let TomatoBlackGradient = "(Tomato)@(0.0),(Black)@(1.0)"
-    
-    /// Predefined RGB gradient.
-    static let RGBGradient = "(Red)@(0.0),(Green)@(0.5),(Blue)@(1.0)"
-    
-    /// Predefined CMYK gradient.
-    static let CMYKGradient = "(Cyan)@(0.0),(Magenta)@(0.33),(Yellow)@(0.66),(Black)@(1.0)"
-    
-    /// Predefined metallic gradient.
-    static let MetallicGradient = "(White)@(0.0),(DarkGray)@(0.25),(White)@(0.5),(DarkGray)@(0.75),(White)@(1.0)"
-    
-    /// Predefined hue gradient with steps every 0.1.
-    static let HueGradient = "[0.0]@(0.0),[0.1]@(0.1),[0.2]@(0.2),[0.3]@(0.3),[0.4]@(0.4),[0.5]@(0.5),[0.6]@(0.6),[0.7]@(0.7),[0.8]@(0.8),[0.9]@(0.9),[1.0]@(1.0)"
-    
-    /// Predefined rainbow gradient (following the ROYGBIV model).
-    static let RainbowGradient = "(Red)@(0.0),(Orange)@(0.18),(Yellow)@(0.36),(Green)@(0.52),(Blue)@(0.68),(Indigo)@(0.84),(Violet)@(1.0)"
-    
-    /// Predefined pastel gradient 1.
-    static let PastelGradient1 = "(Daffodil)@(0.0),(Gold)@(0.25),(Mustard)@(0.4),(Pink)@(0.6),(AtomicTangerine)@(0.75),(Coral)@(1.0)"
-    
-    /// Predefined stripe gradient 1.
-    static let Stripes1 = "(White)@(0.0),(White)@(0.2),(Black)@(0.21),(White)@(0.22),(White)@(0.40),(Black)@(0.41),(White)@(0.42),(White)@(0.60),(Black)@(0.61),(White)@(0.62),(White)@(0.80),(Black)@(0.81),(White)@(0.82),(White)@(1.0)"
-    
-    /// Predefined stripe gradient 2.
-    static let Stripes2 = "(White)@(0.0),(White)@(0.2),(Red)@(0.21),(White)@(0.22),(White)@(0.40),(Green)@(0.41),(White)@(0.42),(White)@(0.60),(Blue)@(0.61),(White)@(0.62),(White)@(0.80),(Daffodil)@(0.81),(White)@(0.82),(White)@(1.0)"
+    struct Gradients
+    {
+        /// Predefined white to red gradient.
+        static let WhiteRedGradient = "(White)@(0.0),(Red)@(1.0)"
+        
+        /// Predefined white to green gradient.
+        static let WhiteGreenGradient = "(White)@(0.0),(Green)@(1.0)"
+        
+        /// Predefined white to blue gradient.
+        static let WhiteBlueGradient = "(White)@(0.0),(Blue)@(1.0)"
+        
+        /// Predefined white to cyan gradient.
+        static let WhiteCyanGradient = "(White)@(0.0),(Cyan)@(1.0)"
+        
+        /// Predefined white to magenta gradient.
+        static let WhiteMagentaGradient = "(White)@(0.0),(Magenta)@(1.0)"
+        
+        /// Predefined white to yellow gradient.
+        static let WhiteYellowGradient = "(White)@(0.0),(Yellow)@(1.0)"
+        
+        /// Predefined whte to black gradient.
+        static let WhiteBlackGradient = "(White)@(0.0),(Black)@(1.0)"
+        
+        /// Predefined red to black gradient.
+        static let RedBlackGradient = "(Red)@(0.0),(Black)@(1.0)"
+        
+        /// Predefined green to black gradient.
+        static let GreenBlackGradient = "(Green)@(0.0),(Black)@(1.0)"
+        
+        /// Predefined blue to black gradient.
+        static let BlueBlackGradient = "(Blue)@(0.0),(Black)@(1.0)"
+        
+        /// Predefined cyan to black gradient.
+        static let CyanBlackGradient = "(Cyan)@(0.0),(Black)@(1.0)"
+        
+        /// Predefined magenta to black gradient.
+        static let MagentaBlackGradient = "(Magenta)@(0.0),(Black)@(1.0)"
+        
+        /// Predefined yellow to black gradient.
+        static let YellowBlackGradient = "(Yellow)@(0.0),(Black)@(1.0)"
+        
+        /// Predefined cyan to blue gradient.
+        static let CyanBlueGradient = "(Cyan)@(0.0),(Blue)@(1.0)"
+        
+        /// Predefined cyan to blue to black gradient.
+        static let CyanBlueBlackGradient = "(Cyan)@(0.0),(Blue)@(0.8),(Black)@(1.0)"
+        
+        /// Predefined red to orange gradient.
+        static let RedOrangeGradient = "(Red)@(0.0),(Orange)@(1.0)"
+        
+        /// Predefined yellow to red gradient.
+        static let YellowRedGradient = "(Yellow)@(0.0),(Red)@(1.0)"
+        
+        /// Predefined pistachio to green gradient.
+        static let PistachioGreenGradient = "(Pistachio)@(0.0),(Green)@(1.0)"
+        
+        /// Predefined pistachio to black gradient.
+        static let PistachioBlackGradient = "(Pistachio)@(0.0),(Black)@(1.0)"
+        
+        /// Predefined tomato to red gradient.
+        static let TomatoRedGradient = "(Tomato)@(0.0),(Red)@(1.0)"
+        
+        /// Predefined tomato to black gradient.
+        static let TomatoBlackGradient = "(Tomato)@(0.0),(Black)@(1.0)"
+        
+        /// Predefined RGB gradient.
+        static let RGBGradient = "(Red)@(0.0),(Green)@(0.5),(Blue)@(1.0)"
+        
+        /// Predefined CMYK gradient.
+        static let CMYKGradient = "(Cyan)@(0.0),(Magenta)@(0.33),(Yellow)@(0.66),(Black)@(1.0)"
+        
+        /// Predefined metallic gradient.
+        static let MetallicGradient = "(White)@(0.0),(DarkGray)@(0.25),(White)@(0.5),(DarkGray)@(0.75),(White)@(1.0)"
+        
+        /// Predefined hue gradient with steps every 0.1.
+        static let HueGradient = "[0.0]@(0.0),[0.1]@(0.1),[0.2]@(0.2),[0.3]@(0.3),[0.4]@(0.4),[0.5]@(0.5),[0.6]@(0.6),[0.7]@(0.7),[0.8]@(0.8),[0.9]@(0.9),[1.0]@(1.0)"
+        
+        /// Predefined rainbow gradient (following the ROYGBIV model).
+        static let RainbowGradient = "(Red)@(0.0),(Orange)@(0.18),(Yellow)@(0.36),(Green)@(0.52),(Blue)@(0.68),(Indigo)@(0.84),(Violet)@(1.0)"
+        
+        /// Predefined pastel gradient 1.
+        static let PastelGradient1 = "(Daffodil)@(0.0),(Gold)@(0.25),(Mustard)@(0.4),(Pink)@(0.6),(AtomicTangerine)@(0.75),(Coral)@(1.0)"
+        
+        /// Predefined stripe gradient 1.
+        static let Stripes1 = "(White)@(0.0),(White)@(0.2),(Black)@(0.21),(White)@(0.22),(White)@(0.40),(Black)@(0.41),(White)@(0.42),(White)@(0.60),(Black)@(0.61),(White)@(0.62),(White)@(0.80),(Black)@(0.81),(White)@(0.82),(White)@(1.0)"
+        
+        /// Predefined stripe gradient 2.
+        static let Stripes2 = "(White)@(0.0),(White)@(0.2),(Black)@(0.25),(White)@(0.3),(White)@(0.45),(Black)@(0.5),(White)@(0.55),(White)@(0.70),(Black)@(0.75),(White)@(0.8),(White)@(1.0)"
+        
+        /// Predefined stripe gradient 3.
+        static let Stripes3 = "(White)@(0.0),(White)@(0.2),(#000060)@(0.25),(White)@(0.3),(White)@(0.45),(#000060)@(0.5),(White)@(0.55),(White)@(0.70),(#000060)@(0.75),(White)@(0.8),(White)@(1.0)"
+        
+        /// Predefined stripe gradient 4.
+        static let Stripes4 = "(White)@(0.0),(White)@(0.2),(Red)@(0.25),(White)@(0.3),(White)@(0.45),(Green)@(0.5),(White)@(0.55),(White)@(0.70),(Blue)@(0.75),(White)@(0.8),(White)@(0.80),(White)@(1.0)"
+        
+        /// Predefined stripe gradient 5.
+        static let Stripes5 = "(White)@(0.0),(White)@(0.2),(Red)@(0.21),(White)@(0.22),(White)@(0.40),(Green)@(0.41),(White)@(0.42),(White)@(0.60),(Blue)@(0.61),(White)@(0.62),(White)@(0.80),(Daffodil)@(0.81),(White)@(0.82),(White)@(1.0)"
+        
+        /// Predefined blueprint stripes.
+        static let Blueprint = "(#000060)@(0.0),(#000060)@(0.22),(Cyan)@(0.25),(#000060)@(0.28),(#000060)@(0.47),(Cyan)@(0.5),(#000060)@(0.53),(#000060)@(0.72),(Cyan)@(0.75),(#000060)@(0.78),(#000060)@(1.0)"
+    }
 }
