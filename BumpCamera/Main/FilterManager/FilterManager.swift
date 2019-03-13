@@ -122,6 +122,7 @@ class FilterManager
             .ColorMap: (ColorMap.ID(), ColorMap.FilterKernel, ColorMap.Title()),
             .PixelCounter: (PixelCounter.ID(), PixelCounter.FilterKernel, PixelCounter.Title()),
             .ColorMap2: (ColorMap2.ID(), ColorMap2.FilterKernel, ColorMap2.Title()),
+            .Mask1: (Masking1.ID(), Masking1.FilterKernel, Masking1.Title()),
     ]
     
     /// Determines if the specified filter supports the specified target type. Not all filters support all targets - slow
@@ -219,6 +220,7 @@ class FilterManager
             .ColorMap: ColorMap.FilterTarget(),
             .PixelCounter: PixelCounter.FilterTarget(),
             .ColorMap2: ColorMap2.FilterTarget(),
+            .Mask1: Masking1.FilterTarget(),
     ]
     
     /// Load all of the filter classes into the filter manager.
@@ -336,6 +338,7 @@ class FilterManager
         ParameterCount![.ColorMap] = ColorMap.SupportedFields().count
         ParameterCount![.PixelCounter] = PixelCounter.SupportedFields().count
         ParameterCount![.ColorMap2] = ColorMap2.SupportedFields().count
+        ParameterCount![.Mask1] = Masking1.SupportedFields().count
     }
     
     private static var ParameterCount: [FilterManager.FilterTypes: Int]? = nil
@@ -410,6 +413,7 @@ class FilterManager
         StoryboardList![.ColorMap] = ColorMap.SettingsStoryboard()
         StoryboardList![.PixelCounter] = PixelCounter.SettingsStoryboard()
         StoryboardList![.ColorMap2] = ColorMap2.SettingsStoryboard()
+        StoryboardList![.Mask1] = Masking1.SettingsStoryboard()
     }
     
     private static var StoryboardList: [FilterTypes: String?]? = nil
@@ -713,6 +717,9 @@ class FilterManager
             
         case .ColorMap2:
             return ColorMap2()
+            
+        case .Mask1:
+            return Masking1()
             
         default:
             return nil
@@ -1143,7 +1150,8 @@ class FilterManager
             .ChannelMangler: "Channel Mangler",
             .ColorMap: "Bad Color Map",
             .PixelCounter: "Pixel Counter",
-            .ColorMap2: "Color Map 2"
+            .ColorMap2: "Color Map 2",
+            .Mask1: "Masking 1",
     ]
     
     public static func GetFilterTitle(_ Filter: FilterTypes) -> String?
@@ -1216,7 +1224,8 @@ class FilterManager
             .ChannelMangler: true,
             .ColorMap: true,
             .PixelCounter: true,
-            .ColorMap2: true
+            .ColorMap2: true,
+            .Mask1: true,
     ]
     
     /// Determines if the given filter type is implemented.
@@ -1445,6 +1454,8 @@ class FilterManager
             .InvertColorMapGradient: .BoolType,
             .ColorMapGradient: .StringType,
             .InvertColorMapSourceColor: .BoolType,
+            .MergeColorMapWithSource: .BoolType,
+            .MaskColor: .ColorType,
     ]
     
     /// Maps fields to names used to store field data in user settings.
@@ -1612,7 +1623,9 @@ class FilterManager
             .ChannelManglerAction: "_Action",
             .InvertColorMapGradient: "_InvertGradient",
             .ColorMapGradient: "_GradientDefinition",
-            .InvertColorMapSourceColor: "_InvertColorMapSourceColor"
+            .InvertColorMapSourceColor: "_InvertColorMapSourceColor",
+            .MergeColorMapWithSource: "_MergeColorMapWithSource",
+            .MaskColor: "_MaskColor",
     ]
 }
 
