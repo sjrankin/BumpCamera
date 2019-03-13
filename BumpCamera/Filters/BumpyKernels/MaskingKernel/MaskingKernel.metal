@@ -7,11 +7,13 @@
 //
 
 #include <metal_stdlib>
+#include <metal_math>
 using namespace metal;
 
 struct MaskingKernelParameters
 {
     float4 MaskColor;
+    int Tolerance;
 };
 
 kernel void MaskingKernel(texture2d<float, access::read> BottomImage [[texture(0)]],
@@ -24,7 +26,33 @@ kernel void MaskingKernel(texture2d<float, access::read> BottomImage [[texture(0
     float4 BottomColor = BottomImage.read(gid);
     float4 TopColor = TopImage.read(gid);
     
-    if (TopColor.r == Parameters.MaskColor.r && TopColor.g == Parameters.MaskColor.g && TopColor.b == Parameters.MaskColor.b)
+    if (Parameters.Tolerance == 0)
+        {
+        if (TopColor.r == Parameters.MaskColor.r &&
+            TopColor.g == Parameters.MaskColor.g &&
+            TopColor.b == Parameters.MaskColor.b)
+            {
+            OutTexture.write(BottomColor, gid);
+            }
+        else
+            {
+            OutTexture.write(TopColor, gid);
+            }
+        return;
+        }
+    
+    int TopRed = int(TopColor.r * 255.0);
+    int TopGreen = int(TopColor.g * 255.0);
+    int TopBlue = int(TopColor.b * 255.0);
+    int PRed = int(Parameters.MaskColor.r * 255.0);
+    int PGreen = int(Parameters.MaskColor.g * 255.0);
+    int PBlue = int(Parameters.MaskColor.b * 255.0);
+    int RedDelta = abs(TopRed - PRed);
+    int GreenDelta = abs(TopGreen - PGreen);
+    int BlueDelta = abs(TopBlue - PBlue);
+    if (RedDelta <= Parameters.Tolerance &&
+        GreenDelta <= Parameters.Tolerance &&
+        BlueDelta <= Parameters.Tolerance)
         {
         OutTexture.write(BottomColor, gid);
         }
