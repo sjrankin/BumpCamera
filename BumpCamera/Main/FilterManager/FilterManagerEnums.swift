@@ -84,6 +84,7 @@ extension FilterManager
         case ColorMap = 57
         case PixelCounter = 58
         case ColorMap2 = 59
+        case Mask1 = 60
         case NotSet = 10000
     }
     
@@ -293,6 +294,8 @@ extension FilterManager
         case InvertColorMapGradient = 160
         case ColorMapGradient = 161
         case InvertColorMapSourceColor = 162
+        case MergeColorMapWithSource = 163
+        case MaskColor = 164
         case NoField = 10000
     }
     
