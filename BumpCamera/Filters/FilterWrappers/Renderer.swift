@@ -80,6 +80,14 @@ protocol Renderer: class
     /// - Returns: Pixel buffer of the result on success, nil on error.
     func RenderWith(PixelBuffers: [CVPixelBuffer]) -> CVPixelBuffer?
     
+    /// Render an image with a filter and another image.
+    ///
+    /// - Parameters:
+    ///   - PixelBuffer: A pixel buffer with an image.
+    ///   - And: Top image that is merged.
+    /// - Returns: Pixel buffer with the result on success, nil on error.
+    func RenderWith(PixelBuffer: CVPixelBuffer, And: CVPixelBufferPool) -> CVPixelBuffer?
+    
     /// Render an image with a filter and multiple images.
     ///
     /// - Parameters:
@@ -217,6 +225,11 @@ extension Renderer
     }
     
     func Render(Image: UIImage) -> UIImage?
+    {
+        return nil
+    }
+    
+    func RenderWith(PixelBuffer: CVPixelBuffer, And: CVPixelBufferPool) -> CVPixelBuffer?
     {
         return nil
     }
