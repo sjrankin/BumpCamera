@@ -74,6 +74,32 @@ protocol Renderer: class
     ///            a lot easier to use built-in APIs to save it.
     func Render(Image: CIImage) -> CIImage?
     
+    /// Render an image with a filter and multiple images.
+    ///
+    /// - Parameter PixelBuffers: List of pixel buffers to use to render the image.
+    /// - Returns: Pixel buffer of the result on success, nil on error.
+    func RenderWith(PixelBuffers: [CVPixelBuffer]) -> CVPixelBuffer?
+    
+    /// Render an image with a filter and multiple images.
+    ///
+    /// - Parameters:
+    ///   - PixelBuffer: A pixel buffer with an image.
+    ///   - And: List of other images needed by the filter.
+    /// - Returns: Pixel buffer of the result on success, nil on error.
+    func RenderWith(PixelBuffer: CVPixelBuffer, And: [UIImage]) -> CVPixelBuffer?
+    
+    /// Render an image with a filter and multiple images.
+    ///
+    /// - Parameter Images: List of images to use to render the image.
+    /// - Returns: Image of the result on success, nil on error.
+    func RenderWith(Images: [UIImage]) -> UIImage?
+    
+    /// Render an image with a filter and multiple images.
+    ///
+    /// - Parameter Images: List of images to use to render the image.
+    /// - Returns: Image of the result on success, nil on error.
+    func RenderWith(Images: [CIImage]) -> CIImage?
+    
     /// Generates an image. Valid only for those filter that do not support input images.
     ///
     /// - Returns: Generated image. If the filter supports input images, you must use Render instead and this function
@@ -177,17 +203,78 @@ protocol Renderer: class
     func Ports() -> [FilterPorts]
 }
 
+/// Provides default implementations for functions that not all filters need.
+extension Renderer
+{
+    func Render(PixelBuffer: CVPixelBuffer) -> CVPixelBuffer?
+    {
+        return nil
+    }
+    
+    func Render(Image: CIImage) -> CIImage?
+    {
+        return nil
+    }
+    
+    func Render(Image: UIImage) -> UIImage?
+    {
+        return nil
+    }
+    
+    func RenderWith(PixelBuffers: [CVPixelBuffer]) -> CVPixelBuffer?
+    {
+        return nil
+    }
+    
+    func RenderWith(PixelBuffer: CVPixelBuffer, And: [UIImage]) -> CVPixelBuffer?
+    {
+        return nil
+    }
+    
+    func RenderWith(Images: [UIImage]) -> UIImage?
+    {
+        return nil
+    }
+    
+    func RenderWith(Images: [CIImage]) -> CIImage?
+    {
+        return nil
+    }
+    
+    func Generate() -> CIImage?
+    {
+        return nil
+    }
+    
+    func Query(PixelBuffer: CVPixelBuffer, Parameters: [String: Any]) -> [String: Any]?
+    {
+        return nil
+    }
+    
+    func Query(Image: UIImage, Parameters: [String: Any]) -> [String: Any]?
+    {
+        return nil
+    }
+    
+    func Query(Image: CIImage, Parameters: [String: Any]) -> [String: Any]?
+    {
+        return nil
+    }
+}
+
 /// Valid targets for the various filters. A target is something the filter can reasonably process, where "reasonable" means
 /// won't take a long time.
 ///
 /// - Still: Image files.
 /// - Video: Video files.
 /// - LiveView: Live view scene.
+/// - Internal: Used for internal processing.
 enum FilterTargets
 {
     case Still
     case Video
     case LiveView
+    case Internal
 }
 
 /// Describes the ports of a filter - whether they take input and generate output.
