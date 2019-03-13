@@ -117,6 +117,37 @@ class FilterParent
         return Result
     }
     
+    /// See if the passed image is monochrome and if it is, convert it to RGB and return the converted image. If the
+    /// image isn't monochrome, it's returned unchanged.
+    ///
+    /// - Parameter Image: The image to test for monochromeness.
+    /// - Returns: If the image is monochrome, the same image only in RGB colorspace. Otherwise the original image is
+    ///            returned unchanged.
+    func AdjustForMonochrome(Image: CGImage) -> CGImage
+    {
+        let ImageColorSpace = Image.colorSpace
+        if ImageColorSpace?.model == CGColorSpaceModel.monochrome
+        {
+            var CgImage = Image
+            let NewColorSpace = CGColorSpaceCreateDeviceRGB()
+            let NewBMInfo = CGBitmapInfo(rawValue: CGImageAlphaInfo.noneSkipLast.rawValue)
+            let IWidth: Int = Int(CgImage.width)
+            let IHeight: Int = Int(CgImage.height)
+            var RawData = [UInt8](repeating: 0, count: Int(IWidth * IHeight * 4))
+            let GContext = CGContext(data: &RawData, width: IWidth, height: IHeight,
+                                     bitsPerComponent: 8, bytesPerRow: 4 * IWidth,
+                                     space: NewColorSpace, bitmapInfo: NewBMInfo.rawValue)
+            let ImageRect = CGRect(x: 0, y: 0, width: IWidth, height: IHeight)
+            GContext!.draw(CgImage, in: ImageRect)
+            CgImage = GContext!.makeImage()!
+            return CgImage
+        }
+        else
+        {
+            return Image
+        }
+    }
+    
     /// Get the pixel buffer from the passed image.
     ///
     /// - Note:
