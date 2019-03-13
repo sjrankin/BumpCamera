@@ -109,7 +109,7 @@
                                                         <userDefinedRuntimeAttribute type="color" keyPath="GradientEnd">
                                                             <color key="value" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                         </userDefinedRuntimeAttribute>
-                                                        <userDefinedRuntimeAttribute type="string" keyPath="Name" value="BlueSlider"/>
+                                                        <userDefinedRuntimeAttribute type="string" keyPath="Name" value="RightSlider"/>
                                                         <userDefinedRuntimeAttribute type="boolean" keyPath="RoundCorneredBorders" value="YES"/>
                                                         <userDefinedRuntimeAttribute type="color" keyPath="IndicatorFillColor">
                                                             <color key="value" red="0.0" green="0.0" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -146,7 +146,7 @@
                                                         <userDefinedRuntimeAttribute type="color" keyPath="GradientEnd">
                                                             <color key="value" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                         </userDefinedRuntimeAttribute>
-                                                        <userDefinedRuntimeAttribute type="string" keyPath="Name" value="RedSlider"/>
+                                                        <userDefinedRuntimeAttribute type="string" keyPath="Name" value="LeftSlider"/>
                                                         <userDefinedRuntimeAttribute type="boolean" keyPath="RoundCorneredBorders" value="YES"/>
                                                         <userDefinedRuntimeAttribute type="color" keyPath="IndicatorFillColor">
                                                             <color key="value" red="1" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -183,7 +183,7 @@
                                                         <userDefinedRuntimeAttribute type="number" keyPath="MaxValue">
                                                             <real key="value" value="1"/>
                                                         </userDefinedRuntimeAttribute>
-                                                        <userDefinedRuntimeAttribute type="string" keyPath="Name" value="GreenSlider"/>
+                                                        <userDefinedRuntimeAttribute type="string" keyPath="Name" value="BottomSlider"/>
                                                         <userDefinedRuntimeAttribute type="boolean" keyPath="RoundCorneredBorders" value="YES"/>
                                                         <userDefinedRuntimeAttribute type="boolean" keyPath="UseHueGradient" value="NO"/>
                                                         <userDefinedRuntimeAttribute type="color" keyPath="IndicatorFillColor">
@@ -264,85 +264,6 @@
                                             </constraints>
                                         </tableViewCellContentView>
                                     </tableViewCell>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" rowHeight="116" id="FPp-zX-Kgw">
-                                        <rect key="frame" x="0.0" y="385" width="414" height="116"/>
-                                        <autoresizingMask key="autoresizingMask"/>
-                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="FPp-zX-Kgw" id="BOa-Q9-LCM">
-                                            <rect key="frame" x="0.0" y="0.0" width="414" height="115.66666666666667"/>
-                                            <autoresizingMask key="autoresizingMask"/>
-                                            <subviews>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="C1: 0.00" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="e6r-l4-Haq">
-                                                    <rect key="frame" x="20" y="11" width="63" height="21"/>
-                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                                    <nil key="textColor"/>
-                                                    <nil key="highlightedColor"/>
-                                                </label>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="C3: 0.00" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="y6I-nd-4yv">
-                                                    <rect key="frame" x="20" y="84" width="66" height="21"/>
-                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                                    <nil key="textColor"/>
-                                                    <nil key="highlightedColor"/>
-                                                </label>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="C2: 0.00" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="5QT-By-Y14">
-                                                    <rect key="frame" x="20" y="47" width="66" height="21"/>
-                                                    <constraints>
-                                                        <constraint firstAttribute="height" constant="21" id="m4u-7m-vSU"/>
-                                                    </constraints>
-                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                                    <nil key="textColor"/>
-                                                    <nil key="highlightedColor"/>
-                                                </label>
-                                            </subviews>
-                                            <constraints>
-                                                <constraint firstItem="y6I-nd-4yv" firstAttribute="bottom" secondItem="BOa-Q9-LCM" secondAttribute="bottomMargin" id="1HT-a4-9ge"/>
-                                                <constraint firstItem="e6r-l4-Haq" firstAttribute="leading" secondItem="5QT-By-Y14" secondAttribute="leading" id="IKc-ar-rIi"/>
-                                                <constraint firstItem="5QT-By-Y14" firstAttribute="leading" secondItem="y6I-nd-4yv" secondAttribute="leading" id="KLP-Mq-rEh"/>
-                                                <constraint firstItem="5QT-By-Y14" firstAttribute="top" secondItem="e6r-l4-Haq" secondAttribute="bottom" constant="15" id="YVs-Rr-5ct"/>
-                                                <constraint firstItem="e6r-l4-Haq" firstAttribute="top" secondItem="BOa-Q9-LCM" secondAttribute="topMargin" id="eou-Lp-yhj"/>
-                                                <constraint firstItem="5QT-By-Y14" firstAttribute="centerY" secondItem="BOa-Q9-LCM" secondAttribute="centerY" id="iou-Tt-aez"/>
-                                                <constraint firstItem="e6r-l4-Haq" firstAttribute="leading" secondItem="BOa-Q9-LCM" secondAttribute="leadingMargin" id="mBZ-8m-cfj"/>
-                                                <constraint firstItem="y6I-nd-4yv" firstAttribute="top" secondItem="5QT-By-Y14" secondAttribute="bottom" constant="16" id="tu8-de-3RI"/>
-                                            </constraints>
-                                        </tableViewCellContentView>
-                                    </tableViewCell>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" rowHeight="70" id="953-NT-6kb">
-                                        <rect key="frame" x="0.0" y="501" width="414" height="70"/>
-                                        <autoresizingMask key="autoresizingMask"/>
-                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="953-NT-6kb" id="Mdy-SJ-oZw">
-                                            <rect key="frame" x="0.0" y="0.0" width="414" height="69.666666666666671"/>
-                                            <autoresizingMask key="autoresizingMask"/>
-                                            <subviews>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="RGB" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="82O-vf-4f5">
-                                                    <rect key="frame" x="20" y="11" width="34" height="21"/>
-                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                                    <nil key="textColor"/>
-                                                    <nil key="highlightedColor"/>
-                                                </label>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="9TP-rh-fPH">
-                                                    <rect key="frame" x="72" y="11" width="245" height="21"/>
-                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                                    <nil key="textColor"/>
-                                                    <nil key="highlightedColor"/>
-                                                </label>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="HSB" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="kvP-Gs-1Rl">
-                                                    <rect key="frame" x="20" y="40" width="34" height="21"/>
-                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                                    <nil key="textColor"/>
-                                                    <nil key="highlightedColor"/>
-                                                </label>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="0RG-UQ-HdF">
-                                                    <rect key="frame" x="72" y="40" width="245" height="21"/>
-                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                                    <nil key="textColor"/>
-                                                    <nil key="highlightedColor"/>
-                                                </label>
-                                            </subviews>
-                                        </tableViewCellContentView>
-                                    </tableViewCell>
                                 </cells>
                             </tableViewSection>
                         </sections>
@@ -380,16 +301,11 @@
                     <connections>
                         <outlet property="BottomLabel" destination="DdF-vA-EW7" id="fft-U3-Ycz"/>
                         <outlet property="BottomSlider" destination="VBD-3S-ZB5" id="j0c-6E-3h6"/>
-                        <outlet property="C1Test" destination="e6r-l4-Haq" id="ZCd-sh-t7N"/>
-                        <outlet property="C2Test" destination="5QT-By-Y14" id="gbd-Kn-C6Y"/>
-                        <outlet property="C3Test" destination="y6I-nd-4yv" id="Fh4-ab-OTD"/>
                         <outlet property="ColorNameLabel" destination="0Zh-lD-KhJ" id="xUA-Sp-rKL"/>
                         <outlet property="ColorValueLabel" destination="mX1-gO-5AN" id="XXK-LB-4H8"/>
                         <outlet property="ColorspaceSegment" destination="yuQ-bq-bPQ" id="ptn-EU-dhv"/>
-                        <outlet property="HSBDebug" destination="0RG-UQ-HdF" id="E7d-fZ-KiK"/>
                         <outlet property="LeftLabel" destination="gle-ff-cnt" id="VYg-ZH-dEX"/>
                         <outlet property="LeftSlider" destination="RSi-C0-L7P" id="mOq-qG-edf"/>
-                        <outlet property="RGBDebug" destination="9TP-rh-fPH" id="b40-s1-JUR"/>
                         <outlet property="RightLabel" destination="XQC-dB-uNE" id="2hU-vx-KOp"/>
                         <outlet property="RightSlider" destination="aYz-UU-HAE" id="APj-PY-3Eb"/>
                         <outlet property="SampleColorView" destination="bPv-Zz-4Uz" id="mV3-tb-XRa"/>
