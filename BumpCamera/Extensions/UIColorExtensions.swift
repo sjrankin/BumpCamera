@@ -327,6 +327,62 @@ extension UIColor
         return Result
     }
     
+    /// Returns the red value as an integer from 0 to 255.
+    var dn_r: Int
+    {
+        get
+        {
+            var Red: CGFloat = 0.0
+            var Green: CGFloat = 0.0
+            var Blue: CGFloat = 0.0
+            var Alpha: CGFloat = 0.0
+            self.getRed(&Red, green: &Green, blue: &Blue, alpha: &Alpha)
+            return Int(Red * 255.0)
+        }
+    }
+    
+    /// Returns the green value as an integer from 0 to 255.
+    var dn_g: Int
+    {
+        get
+        {
+            var Red: CGFloat = 0.0
+            var Green: CGFloat = 0.0
+            var Blue: CGFloat = 0.0
+            var Alpha: CGFloat = 0.0
+            self.getRed(&Red, green: &Green, blue: &Blue, alpha: &Alpha)
+            return Int(Green * 255.0)
+        }
+    }
+    
+    /// Returns the blue value as an integer from 0 to 255.
+    var dn_b: Int
+    {
+        get
+        {
+            var Red: CGFloat = 0.0
+            var Green: CGFloat = 0.0
+            var Blue: CGFloat = 0.0
+            var Alpha: CGFloat = 0.0
+            self.getRed(&Red, green: &Green, blue: &Blue, alpha: &Alpha)
+            return Int(Blue * 255.0)
+        }
+    }
+    
+    /// Returns the alpha value as an integer from 0 to 255.
+    var dn_a: Int
+    {
+        get
+        {
+            var Red: CGFloat = 0.0
+            var Green: CGFloat = 0.0
+            var Blue: CGFloat = 0.0
+            var Alpha: CGFloat = 0.0
+            self.getRed(&Red, green: &Green, blue: &Blue, alpha: &Alpha)
+            return Int(Alpha * 255.0)
+        }
+    }
+    
     /// Returns the normalized red value.
     var r: CGFloat
     {
@@ -448,6 +504,32 @@ extension UIColor
         let NewColor = UIColor(red: CGFloat(Float4.w), green: CGFloat(Float4.x),
                                blue: CGFloat(Float4.y), alpha: CGFloat(Float4.z))
         return NewColor
+    }
+    
+    /// Determines the instance color is the same as the passed color. Both the instance color and the passed
+    /// color channels are converted to integers before being compared.
+    ///
+    /// - Parameter As: The color to compare to the instance color.
+    /// - Returns: True if the colors are the same, false if not.
+    func IsSame(As: UIColor) -> Bool
+    {
+        let red = Int(As.r * 255.0)
+        let green = Int(As.g * 255.0)
+        let blue = Int(As.b * 255.0)
+        return self.dn_r == red && self.dn_g == green && self.dn_b == blue
+    }
+    
+    /// Determines the instance color is the same as the passed color. Both the instance color and the passed
+    /// color channels are converted to integers before being compared.
+    ///
+    /// - Parameter HexValue: The value of the color to compare to the instance color.
+    /// - Returns: True if the colors are the same, false if not.
+    func IsSame(HexValue: Int) -> Bool
+    {
+        let red = (HexValue >> 16) & 0xff
+        let green = (HexValue >> 8) & 0xff
+        let blue = (HexValue) & 0xff
+        return self.dn_r == red && self.dn_g == green && self.dn_b == blue
     }
     
     /// Return the RGBA channels of the color.
