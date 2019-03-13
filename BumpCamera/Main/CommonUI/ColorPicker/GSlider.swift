@@ -691,7 +691,8 @@ import UIKit
             }
         }
         let HueRect = CGRect(x:0, y: 0, width: self.frame.width, height: self.frame.height)
-        HueLayer = GradientManager.CreateGradientLayer(From: GradientManager.Gradients.HueGradient, WithFrame: HueRect,
+        let HueGradient = GradientManager.GetGradient(.Hue)
+        HueLayer = GradientManager.CreateGradientLayer(From: HueGradient!, WithFrame: HueRect,
                                                        IsVertical: !_IsHorizontal, ReverseColors: false)
         HueLayer?.name = "hue"
         self.layer.addSublayer(HueLayer!)
