@@ -45,6 +45,9 @@ class ColorPicker2: UITableViewController, GSliderProtocol, ColorPickerProtocol
         tableView.tableFooterView = UIView()
     }
     
+    /// The controller finished layouting out subviews, which means the position and size of the subviews is
+    /// finalized and we can tell our sliders to refresh themselves to make sure the gradients are filled
+    /// correctly.
     override func viewDidLayoutSubviews()
     {
         super.viewDidLayoutSubviews()
@@ -81,7 +84,7 @@ class ColorPicker2: UITableViewController, GSliderProtocol, ColorPickerProtocol
         LeftSlider.GradientEnd = UIColor.black
         LeftSlider.UseStartAsSolidColor = false
         LeftSlider.IndicatorFillColor = UIColor.red
-        LeftSlider.Value = Double((Red)!)
+        LeftSlider.Value = 1.0 - Double((Red)!)
         
         BottomLabel.text = "Green"
         BottomSlider.GradientStart = UIColor.green
@@ -89,14 +92,14 @@ class ColorPicker2: UITableViewController, GSliderProtocol, ColorPickerProtocol
         BottomSlider.UseStartAsSolidColor = false
         BottomSlider.UseHueGradient = false
         BottomSlider.IndicatorFillColor = UIColor.green
-        BottomSlider.Value = Double((Green)!)
+        BottomSlider.Value = 1.0 - Double((Green)!)
         
         RightLabel.text = "Blue"
         RightSlider.GradientStart = UIColor.blue
         RightSlider.GradientEnd = UIColor.black
         RightSlider.UseStartAsSolidColor = false
         RightSlider.IndicatorFillColor = UIColor.blue
-        RightSlider.Value = Double((Blue)!)
+        RightSlider.Value = 1.0 - Double((Blue)!)
     }
     
     func SetHSB()
@@ -106,9 +109,9 @@ class ColorPicker2: UITableViewController, GSliderProtocol, ColorPickerProtocol
         let Brightness = (CurrentColor?.Brightness)!
         LeftLabel.text = "Sat."
         LeftSlider.UseStartAsSolidColor = true
-        LeftSlider.GradientStart = UIColor(hue: Hue, saturation: Saturation, brightness: 1.0, alpha: 1.0)
+        LeftSlider.GradientStart = UIColor(hue: Hue, saturation: 1.0 - Saturation, brightness: 1.0, alpha: 1.0)
         LeftSlider.IndicatorFillColor = UIColor.clear
-        LeftSlider.Value = Double(Saturation)
+        LeftSlider.Value = 1.0 - Double(Saturation)
         
         BottomLabel.text = "Hue"
         BottomSlider.UseHueGradient = true
@@ -116,11 +119,10 @@ class ColorPicker2: UITableViewController, GSliderProtocol, ColorPickerProtocol
         BottomSlider.Value = Double(Hue)
         
         RightLabel.text = "Bri."
-        RightSlider.UseStartAsSolidColor = false
-        RightSlider.GradientStart = UIColor.white
-        RightSlider.GradientEnd = UIColor.black
+        RightSlider.UseStartAsSolidColor = true
+        RightSlider.GradientStart = UIColor(hue: Hue, saturation: 1.0, brightness: 1.0 - Brightness, alpha: 1.0)
         RightSlider.IndicatorFillColor = UIColor.clear
-        RightSlider.Value = Double(Brightness)
+        RightSlider.Value = 1.0 - Double(Brightness)
     }
     
     func SetYUV()
@@ -132,14 +134,25 @@ class ColorPicker2: UITableViewController, GSliderProtocol, ColorPickerProtocol
     
     func NewSliderValue(Name: String, NewValue: Double)
     {
-        print("New slider value \(NewValue) from \(Name).")
+        //print("New slider value \(NewValue) from \(Name).")
         let rvalue = CGFloat(1.0 - LeftSlider.Value)
         let gvalue = CGFloat(1.0 - BottomSlider.Value)
         let bvalue = CGFloat(1.0 - RightSlider.Value)
-        C1Test.text = "C1: \((1.0 - rvalue).Round(To: 2))"
-        C2Test.text = "C2: \((1.0 - gvalue).Round(To: 2))"
-        C3Test.text = "C3: \((1.0 - bvalue).Round(To: 2))"
-        let SampleColor = UIColor(red: rvalue, green: gvalue, blue: bvalue, alpha: 1.0)
+        var SampleColor = UIColor.red
+        switch _Settings.integer(forKey: "ColorPickerColorspace")
+        {
+        case 0:
+            //RGB
+            SampleColor = UIColor(red: rvalue, green: gvalue, blue: bvalue, alpha: 1.0)
+            
+        case 1:
+            //HSB
+            SampleColor = UIColor(hue: 1.0 - gvalue, saturation: rvalue, brightness: bvalue, alpha: 1.0)
+            
+        default:
+            break
+        }
+        
         UpdateColor(WithColor: SampleColor)
     }
     
@@ -166,11 +179,9 @@ class ColorPicker2: UITableViewController, GSliderProtocol, ColorPickerProtocol
         {
         case 0:
             //RGB
-            RGBDebug.backgroundColor = UIColor.yellow
-            HSBDebug.backgroundColor = UIColor.clear
             if ColorName == nil
             {
-                ColorNameLabel.text = Utility.ColorToString(WithColor, AsRGB: true, DeNormalize: true, IncludeAlpha: false)
+                ColorNameLabel.text = "RGB" + Utility.ColorToString(WithColor, AsRGB: true, DeNormalize: true, IncludeAlpha: false)
             }
             else
             {
@@ -179,14 +190,15 @@ class ColorPicker2: UITableViewController, GSliderProtocol, ColorPickerProtocol
             
         case 1:
             //HSB
-            HSBDebug.backgroundColor = UIColor.yellow
-            RGBDebug.backgroundColor = UIColor.clear
             LeftSlider.GradientStart = UIColor(hue: Double(WithColor.Hue),
                                                saturation: LeftSlider.Value,
                                                brightness: 1.0, alpha: 1.0)
+            RightSlider.GradientStart = UIColor(hue: Double(WithColor.Hue),
+                                                saturation: 1.0,
+                                                brightness: RightSlider.Value, alpha: 1.0)
             if ColorName == nil
             {
-                ColorNameLabel.text = Utility.ColorToString(WithColor, AsRGB: false, DeNormalize: true)
+                ColorNameLabel.text = "HSB" + Utility.ColorToString(WithColor, AsRGB: false, DeNormalize: false)
             }
             else
             {
@@ -194,21 +206,16 @@ class ColorPicker2: UITableViewController, GSliderProtocol, ColorPickerProtocol
             }
             
         default:
-            HSBDebug.backgroundColor = UIColor.clear
-            RGBDebug.backgroundColor = UIColor.clear
+            break
         }
-        RGBDebug.text = Utility.ColorToString(CurrentColor!, AsRGB: true, DeNormalize: false, IncludeAlpha: false)
-        HSBDebug.text = Utility.ColorToString(CurrentColor!, AsRGB: false, DeNormalize: false)
     }
     
     func UpdateSliders(WithColor: UIColor)
     {
+        print("UpdateSliders\(Utility.ColorToString(WithColor, AsRGB: true, DeNormalize: true, IncludeAlpha: false))")
         LeftSlider.Value = Double(WithColor.r)
         BottomSlider.Value = Double(WithColor.g)
         RightSlider.Value = Double(WithColor.b)
-        C1Test.text = "C1: \((1.0 - WithColor.r).Round(To: 2))"
-        C2Test.text = "C2: \((1.0 - WithColor.g).Round(To: 2))"
-        C3Test.text = "C3: \((1.0 - WithColor.b).Round(To: 2))"
     }
     
     func EditedColor(_ Edited: UIColor?, Tag: Any?)
@@ -271,11 +278,6 @@ class ColorPicker2: UITableViewController, GSliderProtocol, ColorPickerProtocol
         UpdateColor(WithColor: CurrentColor!)
     }
     
-    @IBOutlet weak var HSBDebug: UILabel!
-    @IBOutlet weak var RGBDebug: UILabel!
-    @IBOutlet weak var C3Test: UILabel!
-    @IBOutlet weak var C2Test: UILabel!
-    @IBOutlet weak var C1Test: UILabel!
     @IBOutlet weak var LeftSlider: GSlider!
     @IBOutlet weak var RightSlider: GSlider!
     @IBOutlet weak var BottomSlider: GSlider!
