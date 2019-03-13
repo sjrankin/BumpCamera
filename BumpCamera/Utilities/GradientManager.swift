@@ -191,7 +191,7 @@ class GradientManager
         {
             return KnownColor
         }
-        Working = Working.replacingOccurrences(of: "#", with: "")
+       Working = Working.replacingOccurrences(of: "#", with: "")
         //What's left should be a six-digit hex number.
         if Working.count != 6
         {
@@ -542,8 +542,22 @@ class GradientManager
         return Layer
     }
     
-    /// Creates and returns a UIImage with the gradient defined by the passed string
-    /// (which uses this class' gradient definition).
+    /// Creates and returns a CAGradientLayer with the predefined gradient.
+    ///
+    /// - Parameters:
+    ///   - From: Determines the predefined gradient to use to create the image.
+    ///   - WithFrame: The frame of the layer.
+    ///   - IsVertical: Determines if the gradient is drawn vertically or horizontally.
+    ///   - ReverseColors: Determines if the colors in the gradient are reversed.
+    /// - Returns: Gradient layer with the colors defined by `From`.
+    public static func CreateGradientLayer(From: Gradients, WithFrame: CGRect, IsVertical: Bool = true,
+                                           ReverseColors: Bool = false) -> CAGradientLayer
+    {
+        return CreateGradientLayer(From: GetGradient(From)!, WithFrame: WithFrame, IsVertical: IsVertical,
+                                   ReverseColors: ReverseColors)
+    }
+    
+    /// Creates and returns a UIImage with the gradient defined by the passed string.
     ///
     /// - Parameters:
     ///   - From: Describes the gradient to create.
@@ -600,7 +614,21 @@ class GradientManager
         let Image = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
         return Image!
-        //        return UIImage(View: View)
+    }
+    
+    /// Creates and returns a UIImage with the gradient defined by the passed enum value.
+    ///
+    /// - Parameters:
+    ///   - From: Predefined gradient.
+    ///   - WithFrame: The frame of the layer (and resultant image).
+    ///   - IsVertical: Determines if the gradient is drawn vertically or horizontally.
+    ///   - ReverseColors: Determines if the colors in the gradient are reversed.
+    /// - Returns: UIImage of the resultant gradient from `From`.
+    public static func CreateGradientImage(From: Gradients, WithFrame: CGRect, IsVertical: Bool = true,
+                                           ReverseColors: Bool = false) -> UIImage
+    {
+        return CreateGradientImage(From: GetGradient(From)!, WithFrame: WithFrame, IsVertical: IsVertical,
+                                   ReverseColors: ReverseColors)
     }
     
     /// Holds previously-generated gradient sets.
@@ -806,105 +834,123 @@ class GradientManager
     
     // MARK: Predefined gradients.
     
-    struct Gradients
+    /// Return a gradient description based on its type.
+    ///
+    /// - Parameter GradientType: The type of gradient to return.
+    /// - Returns: Description of the gradient on success, nil if not found.
+    public static func GetGradient(_ GradientType: Gradients) -> String?
     {
-        /// Predefined white to red gradient.
-        static let WhiteRedGradient = "(White)@(0.0),(Red)@(1.0)"
-        
-        /// Predefined white to green gradient.
-        static let WhiteGreenGradient = "(White)@(0.0),(Green)@(1.0)"
-        
-        /// Predefined white to blue gradient.
-        static let WhiteBlueGradient = "(White)@(0.0),(Blue)@(1.0)"
-        
-        /// Predefined white to cyan gradient.
-        static let WhiteCyanGradient = "(White)@(0.0),(Cyan)@(1.0)"
-        
-        /// Predefined white to magenta gradient.
-        static let WhiteMagentaGradient = "(White)@(0.0),(Magenta)@(1.0)"
-        
-        /// Predefined white to yellow gradient.
-        static let WhiteYellowGradient = "(White)@(0.0),(Yellow)@(1.0)"
-        
-        /// Predefined whte to black gradient.
-        static let WhiteBlackGradient = "(White)@(0.0),(Black)@(1.0)"
-        
-        /// Predefined red to black gradient.
-        static let RedBlackGradient = "(Red)@(0.0),(Black)@(1.0)"
-        
-        /// Predefined green to black gradient.
-        static let GreenBlackGradient = "(Green)@(0.0),(Black)@(1.0)"
-        
-        /// Predefined blue to black gradient.
-        static let BlueBlackGradient = "(Blue)@(0.0),(Black)@(1.0)"
-        
-        /// Predefined cyan to black gradient.
-        static let CyanBlackGradient = "(Cyan)@(0.0),(Black)@(1.0)"
-        
-        /// Predefined magenta to black gradient.
-        static let MagentaBlackGradient = "(Magenta)@(0.0),(Black)@(1.0)"
-        
-        /// Predefined yellow to black gradient.
-        static let YellowBlackGradient = "(Yellow)@(0.0),(Black)@(1.0)"
-        
-        /// Predefined cyan to blue gradient.
-        static let CyanBlueGradient = "(Cyan)@(0.0),(Blue)@(1.0)"
-        
-        /// Predefined cyan to blue to black gradient.
-        static let CyanBlueBlackGradient = "(Cyan)@(0.0),(Blue)@(0.8),(Black)@(1.0)"
-        
-        /// Predefined red to orange gradient.
-        static let RedOrangeGradient = "(Red)@(0.0),(Orange)@(1.0)"
-        
-        /// Predefined yellow to red gradient.
-        static let YellowRedGradient = "(Yellow)@(0.0),(Red)@(1.0)"
-        
-        /// Predefined pistachio to green gradient.
-        static let PistachioGreenGradient = "(Pistachio)@(0.0),(Green)@(1.0)"
-        
-        /// Predefined pistachio to black gradient.
-        static let PistachioBlackGradient = "(Pistachio)@(0.0),(Black)@(1.0)"
-        
-        /// Predefined tomato to red gradient.
-        static let TomatoRedGradient = "(Tomato)@(0.0),(Red)@(1.0)"
-        
-        /// Predefined tomato to black gradient.
-        static let TomatoBlackGradient = "(Tomato)@(0.0),(Black)@(1.0)"
-        
-        /// Predefined RGB gradient.
-        static let RGBGradient = "(Red)@(0.0),(Green)@(0.5),(Blue)@(1.0)"
-        
-        /// Predefined CMYK gradient.
-        static let CMYKGradient = "(Cyan)@(0.0),(Magenta)@(0.33),(Yellow)@(0.66),(Black)@(1.0)"
-        
-        /// Predefined metallic gradient.
-        static let MetallicGradient = "(White)@(0.0),(DarkGray)@(0.25),(White)@(0.5),(DarkGray)@(0.75),(White)@(1.0)"
-        
-        /// Predefined hue gradient with steps every 0.1.
-        static let HueGradient = "[0.0]@(0.0),[0.1]@(0.1),[0.2]@(0.2),[0.3]@(0.3),[0.4]@(0.4),[0.5]@(0.5),[0.6]@(0.6),[0.7]@(0.7),[0.8]@(0.8),[0.9]@(0.9),[1.0]@(1.0)"
-        
-        /// Predefined rainbow gradient (following the ROYGBIV model).
-        static let RainbowGradient = "(Red)@(0.0),(Orange)@(0.18),(Yellow)@(0.36),(Green)@(0.52),(Blue)@(0.68),(Indigo)@(0.84),(Violet)@(1.0)"
-        
-        /// Predefined pastel gradient 1.
-        static let PastelGradient1 = "(Daffodil)@(0.0),(Gold)@(0.25),(Mustard)@(0.4),(Pink)@(0.6),(AtomicTangerine)@(0.75),(Coral)@(1.0)"
-        
-        /// Predefined stripe gradient 1.
-        static let Stripes1 = "(White)@(0.0),(White)@(0.2),(Black)@(0.21),(White)@(0.22),(White)@(0.40),(Black)@(0.41),(White)@(0.42),(White)@(0.60),(Black)@(0.61),(White)@(0.62),(White)@(0.80),(Black)@(0.81),(White)@(0.82),(White)@(1.0)"
-        
-        /// Predefined stripe gradient 2.
-        static let Stripes2 = "(White)@(0.0),(White)@(0.2),(Black)@(0.25),(White)@(0.3),(White)@(0.45),(Black)@(0.5),(White)@(0.55),(White)@(0.70),(Black)@(0.75),(White)@(0.8),(White)@(1.0)"
-        
-        /// Predefined stripe gradient 3.
-        static let Stripes3 = "(White)@(0.0),(White)@(0.2),(#000060)@(0.25),(White)@(0.3),(White)@(0.45),(#000060)@(0.5),(White)@(0.55),(White)@(0.70),(#000060)@(0.75),(White)@(0.8),(White)@(1.0)"
-        
-        /// Predefined stripe gradient 4.
-        static let Stripes4 = "(White)@(0.0),(White)@(0.2),(Red)@(0.25),(White)@(0.3),(White)@(0.45),(Green)@(0.5),(White)@(0.55),(White)@(0.70),(Blue)@(0.75),(White)@(0.8),(White)@(0.80),(White)@(1.0)"
-        
-        /// Predefined stripe gradient 5.
-        static let Stripes5 = "(White)@(0.0),(White)@(0.2),(Red)@(0.21),(White)@(0.22),(White)@(0.40),(Green)@(0.41),(White)@(0.42),(White)@(0.60),(Blue)@(0.61),(White)@(0.62),(White)@(0.80),(Daffodil)@(0.81),(White)@(0.82),(White)@(1.0)"
-        
-        /// Predefined blueprint stripes.
-        static let Blueprint = "(#000060)@(0.0),(#000060)@(0.22),(Cyan)@(0.25),(#000060)@(0.28),(#000060)@(0.47),(Cyan)@(0.5),(#000060)@(0.53),(#000060)@(0.72),(Cyan)@(0.75),(#000060)@(0.78),(#000060)@(1.0)"
+        for (GType, _, Description) in GradientList
+        {
+            if GType == GradientType
+            {
+                return Description
+            }
+        }
+        return nil
     }
+    
+    public static func IsPredefinedGradient(_ Description: String) -> Bool
+    {
+        let Parsed = ParseGradient(Description)
+        for (_, _, SomeGradient) in GradientList
+        {
+            let Predefined = ParseGradient(SomeGradient)
+            if Predefined.count != Parsed.count
+            {
+                continue
+            }
+            for Index in 0 ..< Predefined.count
+            {
+                if !Parsed[Index].0.IsSame(As: Predefined[Index].0)
+                {
+                    return false
+                }
+                if Parsed[Index].1 != Predefined[Index].1
+                {
+                    return false
+                }
+            }
+        }
+        return true
+    }
+    
+    /// List of predefined gradients.
+    public static let GradientList: [(Gradients, String, String)] =
+        [
+            (.WhiteRed, Gradients.WhiteRed.rawValue, "(White)@(0.0),(Red)@(1.0)"),
+            (.WhiteGreen, Gradients.WhiteGreen.rawValue, "(White)@(0.0),(Green)@(1.0)"),
+            (.WhiteBlue, Gradients.WhiteBlue.rawValue, "(White)@(0.0),(Blue)@(1.0)"),
+            (.WhiteCyan, Gradients.WhiteCyan.rawValue, "(White)@(0.0),(Cyan)@(1.0)"),
+            (.WhiteMagenta, Gradients.WhiteMagenta.rawValue, "(White)@(0.0),(Magenta)@(1.0)"),
+            (.WhiteYellow, Gradients.WhiteYellow.rawValue, "(White)@(0.0),(Yellow)@(1.0)"),
+            (.WhiteBlack, Gradients.WhiteBlack.rawValue, "(White)@(0.0),(Black)@(1.0)"),
+            (.RedBlack, Gradients.RedBlack.rawValue, "(Red)@(0.0),(Black)@(1.0)"),
+            (.GreenBlack, Gradients.GreenBlack.rawValue, "(Green)@(0.0),(Black)@(1.0)"),
+            (.BlueBlack, Gradients.BlueBlack.rawValue, "(Blue)@(0.0),(Black)@(1.0)"),
+            (.CyanBlack, Gradients.CyanBlack.rawValue, "(Cyan)@(0.0),(Black)@(1.0)"),
+            (.MagentaBlack, Gradients.MagentaBlack.rawValue, "(Magenta)@(0.0),(Black)@(1.0)"),
+            (.YellowBlack, Gradients.YellowBlack.rawValue, "(Yellow)@(0.0),(Black)@(1.0)"),
+            (.CyanBlue, Gradients.CyanBlue.rawValue, "(Cyan)@(0.0),(Blue)@(1.0)"),
+            (.CyanBlueBlack, Gradients.CyanBlueBlack.rawValue, "(Cyan)@(0.0),(Blue)@(0.8),(Black)@(1.0)"),
+            (.RedOrange, Gradients.RedOrange.rawValue, "(Red)@(0.0),(Orange)@(1.0)"),
+            (.YellowRed, Gradients.YellowRed.rawValue, "(Yellow)@(0.0),(Red)@(1.0)"),
+            (.PistachioGreen, Gradients.PistachioGreen.rawValue, "(Pistachio)@(0.0),(Green)@(1.0)"),
+            (.PistachioBlack, Gradients.PistachioBlack.rawValue, "(Pistachio)@(0.0),(Black)@(1.0)"),
+            (.WhiteTomato, Gradients.WhiteTomato.rawValue, "(White)@(0.0),(Tomato)@(1.0)"),
+            (.TomatoRed, Gradients.TomatoRed.rawValue, "(Tomato)@(0.0),(Red)@(1.0)"),
+            (.TomatoBlack, Gradients.TomatoBlack.rawValue, "(Tomato)@(0.0),(Black)@(1.0)"),
+            (.RedGreenBlue, Gradients.RedGreenBlue.rawValue, "(Red)@(0.0),(Green)@(0.5),(Blue)@(1.0)"),
+            (.CyanMagentaYellowBlack, Gradients.CyanMagentaYellowBlack.rawValue, "(Cyan)@(0.0),(Magenta)@(0.33),(Yellow)@(0.66),(Black)@(1.0)"),
+            (.Metallic, Gradients.Metallic.rawValue, "(White)@(0.0),(DarkGray)@(0.25),(White)@(0.5),(DarkGray)@(0.75),(White)@(1.0)"),
+            (.Hue, Gradients.Hue.rawValue, "[0.0]@(0.0),[0.1]@(0.1),[0.2]@(0.2),[0.3]@(0.3),[0.4]@(0.4),[0.5]@(0.5),[0.6]@(0.6),[0.7]@(0.7),[0.8]@(0.8),[0.9]@(0.9),[1.0]@(1.0)"),
+            (.Rainbow, Gradients.Rainbow.rawValue, "(Red)@(0.0),(Orange)@(0.18),(Yellow)@(0.36),(Green)@(0.52),(Blue)@(0.68),(Indigo)@(0.84),(Violet)@(1.0)"),
+            (.Pastel1, Gradients.Pastel1.rawValue, "(Daffodil)@(0.0),(Gold)@(0.25),(Mustard)@(0.4),(Pink)@(0.6),(AtomicTangerine)@(0.75),(Coral)@(1.0)"),
+            (.Stripes1, Gradients.Stripes1.rawValue, "(White)@(0.0),(White)@(0.2),(Black)@(0.21),(White)@(0.22),(White)@(0.40),(Black)@(0.41),(White)@(0.42),(White)@(0.60),(Black)@(0.61),(White)@(0.62),(White)@(0.80),(Black)@(0.81),(White)@(0.82),(White)@(1.0)"),
+            (.Stripes2, Gradients.Stripes2.rawValue, "(White)@(0.0),(White)@(0.2),(Black)@(0.25),(White)@(0.3),(White)@(0.45),(Black)@(0.5),(White)@(0.55),(White)@(0.70),(Black)@(0.75),(White)@(0.8),(White)@(1.0)"),
+            (.Stripes3, Gradients.Stripes3.rawValue, "(White)@(0.0),(White)@(0.2),(#000060)@(0.25),(White)@(0.3),(White)@(0.45),(#000060)@(0.5),(White)@(0.55),(White)@(0.70),(#000060)@(0.75),(White)@(0.8),(White)@(1.0)"),
+            (.Stripes4, Gradients.Stripes4.rawValue, "(White)@(0.0),(White)@(0.2),(Red)@(0.25),(White)@(0.3),(White)@(0.45),(Green)@(0.5),(White)@(0.55),(White)@(0.70),(Blue)@(0.75),(White)@(0.8),(White)@(0.80),(White)@(1.0)"),
+            (.Stripes5, Gradients.Stripes5.rawValue, "(White)@(0.0),(White)@(0.2),(Red)@(0.21),(White)@(0.22),(White)@(0.40),(Green)@(0.41),(White)@(0.42),(White)@(0.60),(Blue)@(0.61),(White)@(0.62),(White)@(0.80),(Daffodil)@(0.81),(White)@(0.82),(White)@(1.0)"),
+            (.Blueprint, Gradients.Blueprint.rawValue, "(#000060)@(0.0),(#000060)@(0.22),(Cyan)@(0.25),(#000060)@(0.28),(#000060)@(0.47),(Cyan)@(0.5),(#000060)@(0.53),(#000060)@(0.72),(Cyan)@(0.75),(#000060)@(0.78),(#000060)@(1.0)"),
+    ]
+}
+
+/// Predefined gradient types.
+enum Gradients: String
+{
+    case WhiteRed = "White-Red"
+    case WhiteGreen = "White-Green"
+    case WhiteBlue = "White-Blue"
+    case WhiteCyan = "White-Cyan"
+    case WhiteMagenta = "White-Magenta"
+    case WhiteYellow = "White-Yellow"
+    case WhiteBlack = "White-Black"
+    case RedBlack = "Red-Black"
+    case GreenBlack = "Green-Black"
+    case BlueBlack = "Blue-Black"
+    case CyanBlack = "Cyan-Black"
+    case MagentaBlack = "Magenta-Black"
+    case YellowBlack = "Yellow-Black"
+    case CyanBlue = "Cyan-Blue"
+    case CyanBlueBlack = "Cyan-Blue-Black"
+    case RedOrange = "Red-Orange"
+    case YellowRed = "Yellow-Red"
+    case PistachioGreen = "Pistachio-Green"
+    case PistachioBlack = "Pistachio-Black"
+    case WhiteTomato = "White-Tomato"
+    case TomatoRed = "Tomato-Red"
+    case TomatoBlack = "Tomato-Black"
+    case RedGreenBlue = "Red-Green-Blue"
+    case CyanMagentaYellowBlack = "Cyan-Magenta-Yellow-Black"
+    case Metallic = "Metallic"
+    case Hue = "Hue"
+    case Rainbow = "Rainbow"
+    case Pastel1 = "Pastel 1"
+    case Stripes1 = "Stripes 1"
+    case Stripes2 = "Stripes 2"
+    case Stripes3 = "Stripes 3"
+    case Stripes4 = "Stripes 4"
+    case Stripes5 = "Stripes 5"
+    case Blueprint = "Blueprint"
+    case User = "User"
 }
