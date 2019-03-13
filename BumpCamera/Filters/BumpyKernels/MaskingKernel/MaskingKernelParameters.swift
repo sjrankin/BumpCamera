@@ -12,4 +12,5 @@ import simd
 struct MaskingKernelParameters
 {
     let MaskColor: simd_float4
+    let Tolerance: simd_int1
 }
