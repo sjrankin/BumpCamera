@@ -133,7 +133,6 @@ class PredefinedColor
     {
         let (ThisR, ThisG, ThisB) = Utility.GetRGB(Color)
         let (ThatR, ThatG, ThatB) = Utility.GetRGB(OtherColor)
-        print("Searching for \(ThatR),\(ThatG),\(ThatB)")
         return ThisR == ThatR && ThisG == ThatG && ThisB == ThatB
     }
     
