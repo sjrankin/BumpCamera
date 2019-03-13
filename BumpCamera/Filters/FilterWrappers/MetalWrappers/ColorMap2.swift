@@ -138,6 +138,7 @@ class ColorMap2: FilterParent, Renderer
         }
         
         let Start = CACurrentMediaTime()
+        var DoMerge = ParameterManager.GetBool(From: ID(), Field: .MergeColorMapWithSource, Default: false)
         let InvertGradient = ParameterManager.GetBool(From: ID(), Field: .InvertColorMapGradient, Default: false)
         let InvertColor = ParameterManager.GetBool(From: ID(), Field: .InvertColorMapSourceColor, Default: false)
         let Parameter = ColorMapParameters(InvertGradientDirection: simd_bool(InvertGradient),
@@ -174,6 +175,10 @@ class ColorMap2: FilterParent, Renderer
         if GradientDescription.isEmpty
         {
             GradientDescription = "(White)@(0.0),(Black)@(1.0)"
+        }
+        if !GradientManager.HasWhite(GradientDescription)
+        {
+            DoMerge = false
         }
         let GradientColors = GradientManager.ResolveGradient(GradientDescription)
         var IGradient = [simd_float4](repeating: simd_float4(0.0, 0.0, 0.0, 1.0), count: 256)
@@ -291,10 +296,15 @@ class ColorMap2: FilterParent, Renderer
         let CommandBuffer = ImageCommandQueue?.makeCommandBuffer()
         let CommandEncoder = CommandBuffer?.makeComputeCommandEncoder()
         
+                var DoMerge = ParameterManager.GetBool(From: ID(), Field: .MergeColorMapWithSource, Default: false)
         var GradientDescription = ParameterManager.GetString(From: ID(), Field: .ColorMapGradient, Default: "(White)@(0.0),(Black)@(1.0)")
         if GradientDescription.isEmpty
         {
             GradientDescription = "(White)@(0.0),(Black)@(1.0)"
+        }
+        if !GradientManager.HasWhite(GradientDescription)
+        {
+            DoMerge = false
         }
         let GradientColors = GradientManager.ResolveGradient(GradientDescription)
         var IGradient = [simd_float4](repeating: simd_float4(0.0, 0.0, 0.0, 1.0), count: 256)
@@ -435,6 +445,9 @@ class ColorMap2: FilterParent, Renderer
         case .InvertColorMapGradient:
             return (.BoolType, false as Any?)
             
+        case .MergeColorMapWithSource:
+            return (.BoolType, false as Any?)
+            
         case .RenderImageCount:
             return (.IntType, 0 as Any?)
             
@@ -459,7 +472,7 @@ class ColorMap2: FilterParent, Renderer
     
     public static func SupportedFields() -> [FilterManager.InputFields]
     {
-        return [.ColorMapGradient, .InvertColorMapSourceColor, .InvertColorMapGradient,
+        return [.ColorMapGradient, .InvertColorMapSourceColor, .InvertColorMapGradient, .MergeColorMapWithSource,
                 .RenderImageCount, .CumulativeImageRenderDuration, .RenderLiveCount, .CumulativeLiveRenderDuration]
     }
     
