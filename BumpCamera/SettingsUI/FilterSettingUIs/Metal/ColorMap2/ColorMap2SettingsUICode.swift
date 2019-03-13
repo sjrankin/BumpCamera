@@ -24,6 +24,7 @@ class ColorMap2SettingsUICode: FilterSettingUIBase, UIPickerViewDelegate, UIPick
         GradientPicker.delegate = self
         GradientPicker.dataSource = self
         
+        MergeSwitch.isOn = ParameterManager.GetBool(From: FilterID, Field: .MergeColorMapWithSource, Default: false)
         InvertGradientSwitch.isOn = ParameterManager.GetBool(From: FilterID, Field: .InvertColorMapGradient, Default: false)
         InvertSourceColorSwitch.isOn = ParameterManager.GetBool(From: FilterID, Field: .InvertColorMapSourceColor, Default: false)
         UserGradient = _Settings.string(forKey: "UserGradient")!
@@ -69,50 +70,54 @@ class ColorMap2SettingsUICode: FilterSettingUIBase, UIPickerViewDelegate, UIPick
                 _Settings.set(UserGradient, forKey: "UserGradient")
             }
             let SampleGradient = GradientManager.CreateGradientImage(From: UserGradient,
-                                                                    WithFrame: GradientSample.bounds,
-                                                                    IsVertical: true, ReverseColors: DoInvert)
+                                                                     WithFrame: GradientSample.bounds,
+                                                                     IsVertical: true, ReverseColors: DoInvert)
             GradientSample.image = SampleGradient
         }
         else
         {
             let SampleGradient = GradientManager.CreateGradientImage(From: RawGradient,
-                                                                    WithFrame: GradientSample.bounds,
-                                                                    IsVertical: true, ReverseColors: DoInvert)
+                                                                     WithFrame: GradientSample.bounds,
+                                                                     IsVertical: true, ReverseColors: DoInvert)
             GradientSample.image = SampleGradient
         }
     }
     
     var GradientsForPicker: [(String, String)] =
         [
-            ("White to Black", GradientManager.WhiteBlackGradient),
-            ("White to Red", GradientManager.WhiteRedGradient),
-            ("White to Green", GradientManager.WhiteGreenGradient),
-            ("White to Blue", GradientManager.WhiteBlueGradient),
-            ("White to Cyan", GradientManager.WhiteCyanGradient),
-            ("White to Magenta", GradientManager.WhiteMagentaGradient),
-            ("White to Yellow", GradientManager.WhiteYellowGradient),
-            ("Red to Black", GradientManager.RedBlackGradient),
-            ("Green to Black", GradientManager.GreenBlackGradient),
-            ("Blue to Black", GradientManager.BlueBlackGradient),
-            ("Cyan to Black", GradientManager.CyanBlackGradient),
-            ("Magenta to Black", GradientManager.MagentaBlackGradient),
-            ("Yellow to Black", GradientManager.YellowBlackGradient),
-            ("Cyan to Blue", GradientManager.CyanBlueGradient),
-            ("Cyan-Blue-Black", GradientManager.CyanBlueBlackGradient),
-            ("Red to Orange", GradientManager.RedOrangeGradient),
-            ("Yellow to Red", GradientManager.YellowRedGradient),
-            ("Pistachio to Green", GradientManager.PistachioGreenGradient),
-            ("Pistachio to Black", GradientManager.PistachioBlackGradient),
-            ("Tomato to Red", GradientManager.TomatoRedGradient),
-            ("Tomato to Black", GradientManager.TomatoBlackGradient),
-            ("Metallic", GradientManager.MetallicGradient),
-            ("Red Green Blue", GradientManager.RGBGradient),
-            ("Cyan Magenta Yellow Black", GradientManager.CMYKGradient),
-            ("Hues", GradientManager.HueGradient),
-            ("Rainbow", GradientManager.RainbowGradient),
-            ("Pastel 1", GradientManager.PastelGradient1),
-            ("Stripes 1", GradientManager.Stripes1),
-                        ("Stripes 2", GradientManager.Stripes2),
+            ("White to Black", GradientManager.Gradients.WhiteBlackGradient),
+            ("White to Red", GradientManager.Gradients.WhiteRedGradient),
+            ("White to Green", GradientManager.Gradients.WhiteGreenGradient),
+            ("White to Blue", GradientManager.Gradients.WhiteBlueGradient),
+            ("White to Cyan", GradientManager.Gradients.WhiteCyanGradient),
+            ("White to Magenta", GradientManager.Gradients.WhiteMagentaGradient),
+            ("White to Yellow", GradientManager.Gradients.WhiteYellowGradient),
+            ("Red to Black", GradientManager.Gradients.RedBlackGradient),
+            ("Green to Black", GradientManager.Gradients.GreenBlackGradient),
+            ("Blue to Black", GradientManager.Gradients.BlueBlackGradient),
+            ("Cyan to Black", GradientManager.Gradients.CyanBlackGradient),
+            ("Magenta to Black", GradientManager.Gradients.MagentaBlackGradient),
+            ("Yellow to Black", GradientManager.Gradients.YellowBlackGradient),
+            ("Cyan to Blue", GradientManager.Gradients.CyanBlueGradient),
+            ("Cyan-Blue-Black", GradientManager.Gradients.CyanBlueBlackGradient),
+            ("Red to Orange", GradientManager.Gradients.RedOrangeGradient),
+            ("Yellow to Red", GradientManager.Gradients.YellowRedGradient),
+            ("Pistachio to Green", GradientManager.Gradients.PistachioGreenGradient),
+            ("Pistachio to Black", GradientManager.Gradients.PistachioBlackGradient),
+            ("Tomato to Red", GradientManager.Gradients.TomatoRedGradient),
+            ("Tomato to Black", GradientManager.Gradients.TomatoBlackGradient),
+            ("Metallic", GradientManager.Gradients.MetallicGradient),
+            ("Red Green Blue", GradientManager.Gradients.RGBGradient),
+            ("Cyan Magenta Yellow Black", GradientManager.Gradients.CMYKGradient),
+            ("Hues", GradientManager.Gradients.HueGradient),
+            ("Rainbow", GradientManager.Gradients.RainbowGradient),
+            ("Pastel 1", GradientManager.Gradients.PastelGradient1),
+            ("Stripes 1", GradientManager.Gradients.Stripes1),
+            ("Stripes 2", GradientManager.Gradients.Stripes2),
+            ("Stripes 3", GradientManager.Gradients.Stripes3),
+            ("Stripes 4", GradientManager.Gradients.Stripes4),
+            ("Stripes 5", GradientManager.Gradients.Stripes5),
+            ("Blueprints", GradientManager.Gradients.Blueprint),
     ]
     
     func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String?
@@ -198,6 +203,13 @@ class ColorMap2SettingsUICode: FilterSettingUIBase, UIPickerViewDelegate, UIPick
         super.prepare(for: segue, sender: self)
     }
     
+    @IBAction func HandleMergeChanged(_ sender: Any)
+    {
+        UpdateValue(WithValue: MergeSwitch.isOn, ToField: .MergeColorMapWithSource)
+        ShowSampleView()
+    }
+    
+    @IBOutlet weak var MergeSwitch: UISwitch!
     @IBOutlet weak var GradientPicker: UIPickerView!
     @IBOutlet weak var GradientSample: UIImageView!
     @IBOutlet weak var InvertGradientSwitch: UISwitch!
