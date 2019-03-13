@@ -144,13 +144,7 @@ class Masking1: FilterParent, Renderer
         InitializedForImage = true
     }
     
-    /// Merge the top image (in And[0]) with the bottom image (in PixelBuffer) and return the result.
-    ///
-    /// - Parameters:
-    ///   - PixelBuffer: The bottom image.
-    ///   - And: The top image that will be merged with the bottom image.
-    /// - Returns: Merged image.
-    func RenderWith(PixelBuffer: CVPixelBuffer, And: [UIImage]) -> CVPixelBuffer?
+    func RenderWith(PixelBuffer: CVPixelBuffer, And: CVPixelBuffer) -> CVPixelBuffer?
     {
         objc_sync_enter(AccessLock)
         defer{objc_sync_exit(AccessLock)}
@@ -158,11 +152,6 @@ class Masking1: FilterParent, Renderer
         if !Initialized
         {
             fatalError("MaskingKernel not initialized at Render(CVPixelBuffer) call.")
-        }
-        if And.count != 1
-        {
-            print("List of images is empty.")
-            return nil
         }
         
         //BufferPool is nil - nothing to do (or can do). This probably occurred because the user changed
@@ -175,10 +164,10 @@ class Masking1: FilterParent, Renderer
         
         let Start = CACurrentMediaTime()
         let MaskColor = ParameterManager.GetColor(From: ID(), Field: .MaskColor, Default: UIColor.white)
-        let Parameter = MaskingKernelParameters(MaskColor: MaskColor.ToFloat4())
+        let Parameter = MaskingKernelParameters(MaskColor: MaskColor.ToFloat4(), Tolerance: simd_int1(10))
         let Parameters = [Parameter]
-        ParameterBuffer = MetalDevice!.makeBuffer(length: MemoryLayout<ColorMapParameters>.stride, options: [])
-        memcpy(ParameterBuffer.contents(), Parameters, MemoryLayout<ColorMapParameters>.stride)
+        ParameterBuffer = MetalDevice!.makeBuffer(length: MemoryLayout<MaskingKernelParameters>.stride, options: [])
+        memcpy(ParameterBuffer.contents(), Parameters, MemoryLayout<MaskingKernelParameters>.stride)
         
         var NewPixelBuffer: CVPixelBuffer? = nil
         CVPixelBufferPoolCreatePixelBuffer(kCFAllocatorDefault, BufferPool!, &NewPixelBuffer)
@@ -189,7 +178,7 @@ class Masking1: FilterParent, Renderer
         }
         
         guard let BottomTexture = MakeTextureFromCVPixelBuffer(pixelBuffer: PixelBuffer, textureFormat: .bgra8Unorm),
-            let TopTexture = MakeTextureFromCVPixelBuffer(pixelBuffer: GetPixelBufferFrom(And[0])!, textureFormat: .bgra8Unorm),
+            let TopTexture = MakeTextureFromCVPixelBuffer(pixelBuffer: And, textureFormat: .bgra8Unorm),
             let OutputTexture = MakeTextureFromCVPixelBuffer(pixelBuffer: OutputBuffer, textureFormat: .bgra8Unorm) else
         {
             print("Error creating textures in MaskingKernel.")
@@ -231,6 +220,22 @@ class Masking1: FilterParent, Renderer
         LiveRenderTime = CACurrentMediaTime() - Start
         ParameterManager.UpdateRenderAccumulator(NewValue: LiveRenderTime, ID: ID(), ForImage: false)
         return OutputBuffer
+    }
+    
+    /// Merge the top image (in And[0]) with the bottom image (in PixelBuffer) and return the result.
+    ///
+    /// - Parameters:
+    ///   - PixelBuffer: The bottom image.
+    ///   - And: The top image that will be merged with the bottom image.
+    /// - Returns: Merged image.
+    func RenderWith(PixelBuffer: CVPixelBuffer, And: [UIImage]) -> CVPixelBuffer?
+    {
+        if And.count != 1
+        {
+            return nil
+        }
+        let TopBuffer = GetPixelBufferFrom(And[0])
+        return RenderWith(PixelBuffer: PixelBuffer, And: TopBuffer!)
     }
     
     /// Mask the images together. First image (index 0) is the top image to which the mask will be applied, and the second
@@ -319,13 +324,11 @@ class Masking1: FilterParent, Renderer
         CommandEncoder?.setTexture(OutputTexture, index: 2)
         CommandEncoder?.setBuffer(ResultsBuffer, offset: 0, index: 1)
         
-        let InvertGradient = ParameterManager.GetBool(From: ID(), Field: .InvertColorMapGradient, Default: false)
-        let InvertColor = ParameterManager.GetBool(From: ID(), Field: .InvertColorMapSourceColor, Default: false)
-        let Parameter = ColorMapParameters(InvertGradientDirection: simd_bool(InvertGradient),
-                                           InvertGradientValues: simd_bool(InvertColor))
+        let MaskColor = ParameterManager.GetColor(From: ID(), Field: .MaskColor, Default: UIColor.white)
+        let Parameter = MaskingKernelParameters(MaskColor: MaskColor.ToFloat4(), Tolerance: simd_int1(10))
         let Parameters = [Parameter]
-        ParameterBuffer = MetalDevice!.makeBuffer(length: MemoryLayout<ColorMapParameters>.stride, options: [])
-        memcpy(ParameterBuffer.contents(), Parameters, MemoryLayout<ColorMapParameters>.stride)
+        ParameterBuffer = MetalDevice!.makeBuffer(length: MemoryLayout<MaskingKernelParameters>.stride, options: [])
+        memcpy(ParameterBuffer.contents(), Parameters, MemoryLayout<MaskingKernelParameters>.stride)
         CommandEncoder!.setBuffer(ParameterBuffer, offset: 0, index: 0)
         
         let ThreadGroupCount  = MTLSizeMake(8, 8, 1)
