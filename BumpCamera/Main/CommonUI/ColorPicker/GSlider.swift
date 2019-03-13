@@ -525,7 +525,7 @@ import UIKit
         {
             if InRange(newValue)
             {
-                _Value = newValue
+                _Value = newValue.Clamp(0.0, 1.0)
             }
         }
     }
@@ -643,6 +643,7 @@ import UIKit
             let Range = MaxValue - MinValue
             let Percent = (Value + MinValue) / Range
             let XPoint = self.frame.width * CGFloat(Percent)
+            //print("DrawHIndicator(\(Name)) = \(Percent.Round(To: 3))")
             Indicator.move(to: CGPoint(x: XPoint, y: self.frame.height / 2.0))
             Indicator.addLine(to: CGPoint(x: XPoint - 8, y: self.frame.height - 2))
             Indicator.addLine(to: CGPoint(x: XPoint + 8, y: self.frame.height - 2))
@@ -653,6 +654,7 @@ import UIKit
             let Range = MaxValue - MinValue
             let Percent = (Value + MinValue) / Range
             let YPoint = self.frame.height * CGFloat(Percent)
+            //print("DrawYIndicator(\(Name)) = \(Percent.Round(To: 3))")
             Indicator.move(to: CGPoint(x: self.frame.width / 2.0, y: YPoint))
             Indicator.addLine(to: CGPoint(x: 2, y: YPoint - 8))
             Indicator.addLine(to: CGPoint(x: 2, y: YPoint + 8))
@@ -689,7 +691,7 @@ import UIKit
             }
         }
         let HueRect = CGRect(x:0, y: 0, width: self.frame.width, height: self.frame.height)
-        HueLayer = GradientManager.CreateGradientLayer(From: GradientManager.HueGradient, WithFrame: HueRect,
+        HueLayer = GradientManager.CreateGradientLayer(From: GradientManager.Gradients.HueGradient, WithFrame: HueRect,
                                                        IsVertical: !_IsHorizontal, ReverseColors: false)
         HueLayer?.name = "hue"
         self.layer.addSublayer(HueLayer!)
