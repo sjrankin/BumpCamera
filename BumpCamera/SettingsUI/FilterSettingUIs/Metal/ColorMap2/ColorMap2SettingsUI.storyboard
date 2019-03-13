@@ -136,6 +136,44 @@
                                             </constraints>
                                         </tableViewCellContentView>
                                     </tableViewCell>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" rowHeight="126" id="HYR-f6-dGA">
+                                        <rect key="frame" x="0.0" y="355" width="375" height="126"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="HYR-f6-dGA" id="50e-HG-L2O">
+                                            <rect key="frame" x="0.0" y="0.0" width="375" height="125.5"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="0FY-3P-CT2">
+                                                    <rect key="frame" x="310" y="6" width="51" height="31"/>
+                                                    <connections>
+                                                        <action selector="HandleMergeChanged:" destination="Fjv-G7-kfe" eventType="primaryActionTriggered" id="P4U-Vw-Feh"/>
+                                                    </connections>
+                                                </switch>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Merge with original" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Jun-Bw-VVy">
+                                                    <rect key="frame" x="16" y="12" width="146" height="21"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Merge the color mapped image with the source image. This works if the gradient has white in it. Otherwise, no change is visible" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="3" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="bcw-Gq-66I">
+                                                    <rect key="frame" x="16" y="47" width="341" height="72"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                                    <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstItem="bcw-Gq-66I" firstAttribute="top" secondItem="Jun-Bw-VVy" secondAttribute="bottom" constant="14" id="9mF-OM-3gL"/>
+                                                <constraint firstItem="Jun-Bw-VVy" firstAttribute="leading" secondItem="50e-HG-L2O" secondAttribute="leadingMargin" id="FYw-IA-JKw"/>
+                                                <constraint firstAttribute="bottomMargin" secondItem="bcw-Gq-66I" secondAttribute="bottom" constant="-4" id="Zqz-E6-m1Q"/>
+                                                <constraint firstAttribute="trailingMargin" secondItem="bcw-Gq-66I" secondAttribute="trailing" constant="2" id="csF-jz-GIc"/>
+                                                <constraint firstItem="bcw-Gq-66I" firstAttribute="top" secondItem="0FY-3P-CT2" secondAttribute="bottom" constant="10" id="gTk-ND-Zgn"/>
+                                                <constraint firstItem="0FY-3P-CT2" firstAttribute="trailing" secondItem="50e-HG-L2O" secondAttribute="trailingMargin" id="hTr-4B-9An"/>
+                                                <constraint firstItem="Jun-Bw-VVy" firstAttribute="leading" secondItem="bcw-Gq-66I" secondAttribute="leading" id="ku8-aE-28A"/>
+                                                <constraint firstItem="0FY-3P-CT2" firstAttribute="top" secondItem="50e-HG-L2O" secondAttribute="topMargin" constant="-5" id="p1w-60-APg"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
                                 </cells>
                             </tableViewSection>
                         </sections>
@@ -154,6 +192,7 @@
                         <outlet property="GradientSample" destination="5m5-vw-ezH" id="LaX-fs-HGF"/>
                         <outlet property="InvertGradientSwitch" destination="xBo-kl-E3H" id="LYv-5z-NtI"/>
                         <outlet property="InvertSourceColorSwitch" destination="3Qw-Wl-XOf" id="2k1-0v-HpQ"/>
+                        <outlet property="MergeSwitch" destination="0FY-3P-CT2" id="XlN-ce-dlg"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="51W-Wi-JmZ" userLabel="First Responder" sceneMemberID="firstResponder"/>
