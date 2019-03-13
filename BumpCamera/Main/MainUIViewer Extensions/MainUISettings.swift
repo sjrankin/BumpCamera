@@ -88,6 +88,7 @@ extension MainUIViewer
         _Settings.set(0.5, forKey: "HeartRate")
         #endif
         _Settings.set("(Green)@(0.0),(Brown)@(1.0)", forKey: "UserGradient")
+        _Settings.set("", forKey: "LastGradient")
         let InitialGroupID = Filters?.GetGroupID(ForGroup: .Standard)
         _Settings.set(InitialGroupID?.uuidString, forKey: "CurrentGroup")
         let InitialFilterID = Filters?.GetFilterID(For: .PassThrough)
