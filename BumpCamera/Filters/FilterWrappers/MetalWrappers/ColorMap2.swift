@@ -149,7 +149,7 @@ class ColorMap2: FilterParent, Renderer
         
         var NewPixelBuffer: CVPixelBuffer? = nil
         CVPixelBufferPoolCreatePixelBuffer(kCFAllocatorDefault, BufferPool!, &NewPixelBuffer)
-        guard let OutputBuffer = NewPixelBuffer else
+        guard var OutputBuffer = NewPixelBuffer else
         {
             print("Allocation failure for new pixel buffer pool in ColorMap2.")
             return nil
@@ -214,6 +214,13 @@ class ColorMap2: FilterParent, Renderer
         CommandEncoder.endEncoding()
         CommandBuffer.commit()
         
+        if DoMerge
+        {
+            let MaskFilter = Masking1()
+            MaskFilter.Initialize(With: InputFormatDescription!, BufferCountHint: 3)
+            OutputBuffer = MaskFilter.RenderWith(PixelBuffer: PixelBuffer, And: OutputBuffer)!
+        }
+        
         LiveRenderTime = CACurrentMediaTime() - Start
         ParameterManager.UpdateRenderAccumulator(NewValue: LiveRenderTime, ID: ID(), ForImage: false)
         return OutputBuffer
@@ -254,6 +261,9 @@ class ColorMap2: FilterParent, Renderer
         
         let Start = CACurrentMediaTime()
         var CgImage = Image.cgImage
+        #if true
+        CgImage = AdjustForMonochrome(Image: CgImage!)
+        #else
         let ImageColorspace = CgImage?.colorSpace
         //Handle sneaky grayscale images.
         if ImageColorspace?.model == CGColorSpaceModel.monochrome
@@ -270,6 +280,7 @@ class ColorMap2: FilterParent, Renderer
             GContext!.draw(CgImage!, in: ImageRect)
             CgImage = GContext!.makeImage()
         }
+        #endif
         let ImageWidth: Int = (CgImage?.width)!
         let ImageHeight: Int = (CgImage?.height)!
         var RawData = [UInt8](repeating: 0, count: Int(ImageWidth * ImageHeight * 4))
@@ -365,6 +376,14 @@ class ColorMap2: FilterParent, Renderer
                                  bytesPerRow: BytesPerRow!, space: RGBColorSpace, bitmapInfo: OBitmapInfo, provider: Provider!,
                                  decode: nil, shouldInterpolate: false, intent: RenderingIntent)
         LastUIImage = UIImage(cgImage: FinalImage!)
+        
+        if DoMerge
+        {
+            let MaskFilter = Masking1()
+            MaskFilter.InitializeForImage()
+            let BottomImage = LastUIImage!
+            LastUIImage = MaskFilter.RenderWith(Images: [BottomImage, Image])
+        }
         
         ImageRenderTime = CACurrentMediaTime() - Start
         ParameterManager.UpdateRenderAccumulator(NewValue: ImageRenderTime, ID: ID(), ForImage: true)
