@@ -130,8 +130,7 @@ float4 ToHSB(float4 Source)
     H = Hue / 360.0;
     S = Saturation;
     L = Brightness;
-    float4 Results = float4(H, S, L, 1);
-    return Results;
+    return float4(H, S, L, 1);
 }
 
 kernel void PixellateKernel(texture2d<float, access::read> inTexture [[texture(0)]],
@@ -150,7 +149,9 @@ kernel void PixellateKernel(texture2d<float, access::read> inTexture [[texture(0
     float S = HSB.g;
     float L = HSB.b;
     
-    float4 FinalColor = ColorAtPixel;
+    float4 FinalColor = float4(H, S, L, 1.0);
+    //FinalColor = ToRGB(FinalColor);
+    /*
     if (L < 0.5)
         {
         float NewL = L * 1.5;
@@ -161,6 +162,7 @@ kernel void PixellateKernel(texture2d<float, access::read> inTexture [[texture(0
         float4 NewHSB = float4(H, S, NewL, 1.0);
         FinalColor = ToRGB(NewHSB);
         }
+     */
     //float4 FinalColor = L < 0.5 ? float4(1.0 - ColorAtPixel.r, 1.0 - ColorAtPixel.g, 1.0 - ColorAtPixel.b, 0) : ColorAtPixel;
     
     outTexture.write(FinalColor, gid);
