@@ -187,6 +187,11 @@
 		1779F3D1221833A900140EEA /* SepiaTone.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1779F3D0221833A900140EEA /* SepiaTone.swift */; };
 		1779F3D42218347800140EEA /* SepiaToneSettingsUI.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1779F3D32218347800140EEA /* SepiaToneSettingsUI.storyboard */; };
 		1779F3D62218352E00140EEA /* SepiaToneSettingsUICode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1779F3D52218352E00140EEA /* SepiaToneSettingsUICode.swift */; };
+		17881ADB223B7961001ABE7D /* ShapePixellate.metal in Sources */ = {isa = PBXBuildFile; fileRef = 17881ADA223B7961001ABE7D /* ShapePixellate.metal */; };
+		17881ADD223B960E001ABE7D /* ShapePixellateParameters.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17881ADC223B960E001ABE7D /* ShapePixellateParameters.swift */; };
+		17881ADF223B9699001ABE7D /* ShapePixellate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17881ADE223B9699001ABE7D /* ShapePixellate.swift */; };
+		17881AE2223BA430001ABE7D /* ShapePixellateSettingsUI.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 17881AE1223BA430001ABE7D /* ShapePixellateSettingsUI.storyboard */; };
+		17881AE4223BBF33001ABE7D /* ShapePixellateSettingsUICode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17881AE3223BBF33001ABE7D /* ShapePixellateSettingsUICode.swift */; };
 		178C75BC21F3247E00844FFF /* LiveMetalViewExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 178C75BB21F3247E00844FFF /* LiveMetalViewExtension.swift */; };
 		178C75BE21F337C100844FFF /* AVCaptureVideoOrientationExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 178C75BD21F337C100844FFF /* AVCaptureVideoOrientationExtension.swift */; };
 		178CF92621F5B98D007229FD /* ParameterManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 178CF92521F5B98D007229FD /* ParameterManager.swift */; };
@@ -515,6 +520,11 @@
 		1779F3D0221833A900140EEA /* SepiaTone.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SepiaTone.swift; sourceTree = "<group>"; };
 		1779F3D32218347800140EEA /* SepiaToneSettingsUI.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = SepiaToneSettingsUI.storyboard; sourceTree = "<group>"; };
 		1779F3D52218352E00140EEA /* SepiaToneSettingsUICode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SepiaToneSettingsUICode.swift; sourceTree = "<group>"; };
+		17881ADA223B7961001ABE7D /* ShapePixellate.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = ShapePixellate.metal; sourceTree = "<group>"; };
+		17881ADC223B960E001ABE7D /* ShapePixellateParameters.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShapePixellateParameters.swift; sourceTree = "<group>"; };
+		17881ADE223B9699001ABE7D /* ShapePixellate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShapePixellate.swift; sourceTree = "<group>"; };
+		17881AE1223BA430001ABE7D /* ShapePixellateSettingsUI.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = ShapePixellateSettingsUI.storyboard; sourceTree = "<group>"; };
+		17881AE3223BBF33001ABE7D /* ShapePixellateSettingsUICode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShapePixellateSettingsUICode.swift; sourceTree = "<group>"; };
 		178C75BB21F3247E00844FFF /* LiveMetalViewExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveMetalViewExtension.swift; sourceTree = "<group>"; };
 		178C75BD21F337C100844FFF /* AVCaptureVideoOrientationExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AVCaptureVideoOrientationExtension.swift; sourceTree = "<group>"; };
 		178CF92521F5B98D007229FD /* ParameterManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParameterManager.swift; sourceTree = "<group>"; };
@@ -826,6 +836,7 @@
 		1712A85321FB23F4001E9D2B /* BumpyKernels */ = {
 			isa = PBXGroup;
 			children = (
+				17881AD9223B7905001ABE7D /* ShapePixellate */,
 				17FA648D2234A67E0060D5CA /* Measuration */,
 				171E5B0C2205D09D004E60F1 /* Generators */,
 				1773C9F3223527EB008DE0FE /* ColorMap2 */,
@@ -1167,6 +1178,7 @@
 				1799C8A121FF2F9C0069D5AC /* Pixellate_Metal.swift */,
 				176C969B222CF4AE004DB727 /* ConditionalSilhouette.swift */,
 				175A3331222EA00300670547 /* ChannelMangler.swift */,
+				17881ADE223B9699001ABE7D /* ShapePixellate.swift */,
 				17D60D81220FD7A900933F15 /* MonochromeColors.swift */,
 				172D98C821F9A53A005A5275 /* ChannelMixer.swift */,
 				17F9A2D92238E587000A0369 /* Masking1.swift */,
@@ -1216,6 +1228,7 @@
 		174F82E3221FDB0C009A004C /* Metal */ = {
 			isa = PBXGroup;
 			children = (
+				17881AE0223BA40E001ABE7D /* ShapePixellate */,
 				17FA64992234DAAB0060D5CA /* Measuration */,
 				171F3CF5220944120098E2B7 /* Generators */,
 				17787F052202DC0B00D15761 /* ChannelMixer */,
@@ -1472,6 +1485,24 @@
 				1779F3D52218352E00140EEA /* SepiaToneSettingsUICode.swift */,
 			);
 			path = SepiaTone;
+			sourceTree = "<group>";
+		};
+		17881AD9223B7905001ABE7D /* ShapePixellate */ = {
+			isa = PBXGroup;
+			children = (
+				17881ADA223B7961001ABE7D /* ShapePixellate.metal */,
+				17881ADC223B960E001ABE7D /* ShapePixellateParameters.swift */,
+			);
+			path = ShapePixellate;
+			sourceTree = "<group>";
+		};
+		17881AE0223BA40E001ABE7D /* ShapePixellate */ = {
+			isa = PBXGroup;
+			children = (
+				17881AE1223BA430001ABE7D /* ShapePixellateSettingsUI.storyboard */,
+				17881AE3223BBF33001ABE7D /* ShapePixellateSettingsUICode.swift */,
+			);
+			path = ShapePixellate;
 			sourceTree = "<group>";
 		};
 		1797BCF62222CFB800C47510 /* RatingsAndFavorites */ = {
@@ -2002,6 +2033,7 @@
 				174779F822042FEC00FD64EF /* NoParametersSettingsUI.storyboard in Resources */,
 				17BA12E42227934A0035A1FC /* CheckerboardGeneratorSettingsUI.storyboard in Resources */,
 				175A3335222EA32400670547 /* ChannelManglerSettingsUI.storyboard in Resources */,
+				17881AE2223BA430001ABE7D /* ShapePixellateSettingsUI.storyboard in Resources */,
 				17D60D8C22115CB700933F15 /* Pixellate2SettingsUI.storyboard in Resources */,
 				17110DD9221E910500223990 /* TemperatureAndTintSettingsUI.storyboard in Resources */,
 				17D60D87220FEAD000933F15 /* MonochromeColorsSettingsUI.storyboard in Resources */,
@@ -2130,6 +2162,7 @@
 				1709A7002221030500D9B43D /* FilterManagerRatings.swift in Sources */,
 				171375FF22194363000E49C2 /* MainUIExif.swift in Sources */,
 				17CDB9B822167A7E00C708F5 /* StringExtensions.swift in Sources */,
+				17881ADF223B9699001ABE7D /* ShapePixellate.swift in Sources */,
 				17F9A2D82238E541000A0369 /* MaskingKernelParameters.swift in Sources */,
 				17C93EA622224C2B00B7F697 /* Privacy.swift in Sources */,
 				170BFE75221C2DDF00754BF6 /* SmoothLinearGradient.swift in Sources */,
@@ -2156,6 +2189,7 @@
 				17E15FF4220585950037B35F /* MirroringParameters.swift in Sources */,
 				171298172223B445000D5EF5 /* ImageMetadata.swift in Sources */,
 				1773C9F922352A90008DE0FE /* ColorMap2.swift in Sources */,
+				17881AE4223BBF33001ABE7D /* ShapePixellateSettingsUICode.swift in Sources */,
 				174D6D5F220804AC0066AE93 /* FilterNode.swift in Sources */,
 				17D7511521F41DE40050A2B5 /* MainUIDebug.swift in Sources */,
 				1756F1192204A37100CC655D /* GrayscaleSettingsUICode.swift in Sources */,
@@ -2236,6 +2270,7 @@
 				17E15FE722053A620037B35F /* GrayscaleAdjustChannelMultipliersCode.swift in Sources */,
 				17E7E950222631BF00B3BB39 /* ModeSelectorButton.swift in Sources */,
 				1705D98422281ADE00B95262 /* CheckerboardParameters.swift in Sources */,
+				17881ADB223B7961001ABE7D /* ShapePixellate.metal in Sources */,
 				17D60D8E221162F100933F15 /* Pixellate2SettingsUICode.swift in Sources */,
 				17BA12DF22278B1A0035A1FC /* TonalEffect.swift in Sources */,
 				17FA649E2234E51A0060D5CA /* PixelCounterSettingsUICode.swift in Sources */,
@@ -2338,6 +2373,7 @@
 				17110DE0221EBFF700223990 /* Vibrance.swift in Sources */,
 				1740CEC82216B2FE00BFD1A0 /* Platform.swift in Sources */,
 				171F3D0D220AD3450098E2B7 /* Threshold.swift in Sources */,
+				17881ADD223B960E001ABE7D /* ShapePixellateParameters.swift in Sources */,
 				17B2ED8421F1A5CF00E3B56A /* MainSettings.swift in Sources */,
 				1726243421F8964E00C7688C /* HSBAdjust.swift in Sources */,
 				17BA6049221E71CA00AEC044 /* HelpUICode.swift in Sources */,
