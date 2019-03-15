@@ -50,7 +50,8 @@ class FilterManager
                         (.HatchScreen, 6), (.CMYKHalftone, 8), (.Pixellate, 11), (.Comic, 2),
                         (.LineOverlay, 9), (.EdgeWork, 10), (.Posterize, 14), (.Pointillize, 13)],
             .Combined: [(.CircleAndLines, 0)],
-            .Effects: [(.PixellateMetal, 0), (.DilateErode, 1), (.Kuwahara, 2), (.Silhouette, 3), (.BayerDecode, 4)],
+            .Effects: [(.PixellateMetal, 0), (.ShapePixellate, 1), (.DilateErode, 2), (.Kuwahara, 3),
+                       (.Silhouette, 4), (.BayerDecode, 5)],
             .PhotoEffects: [(.Noir, 0), (.Chrome, 1), (.Vibrance, 2), (.XRay, 3), (.Instant, 4), (.ProcessEffect, 5),
                             (.TransferEffect, 6), (.SepiaTone, 7), (.Thermal, 8), (.TemperatureAndTint, 9),
                             (.Tonal, 10),],
@@ -123,6 +124,7 @@ class FilterManager
             .PixelCounter: (PixelCounter.ID(), PixelCounter.FilterKernel, PixelCounter.Title()),
             .ColorMap2: (ColorMap2.ID(), ColorMap2.FilterKernel, ColorMap2.Title()),
             .Mask1: (Masking1.ID(), Masking1.FilterKernel, Masking1.Title()),
+            .ShapePixellate: (ShapePixellate.ID(), ShapePixellate.FilterKernel, ShapePixellate.Title()),
     ]
     
     /// Determines if the specified filter supports the specified target type. Not all filters support all targets - slow
@@ -221,6 +223,7 @@ class FilterManager
             .PixelCounter: PixelCounter.FilterTarget(),
             .ColorMap2: ColorMap2.FilterTarget(),
             .Mask1: Masking1.FilterTarget(),
+            .ShapePixellate: ShapePixellate.FilterTarget(),
     ]
     
     /// Load all of the filter classes into the filter manager.
@@ -339,6 +342,7 @@ class FilterManager
         ParameterCount![.PixelCounter] = PixelCounter.SupportedFields().count
         ParameterCount![.ColorMap2] = ColorMap2.SupportedFields().count
         ParameterCount![.Mask1] = Masking1.SupportedFields().count
+        ParameterCount![.ShapePixellate] = ShapePixellate.SupportedFields().count
     }
     
     private static var ParameterCount: [FilterManager.FilterTypes: Int]? = nil
@@ -414,6 +418,7 @@ class FilterManager
         StoryboardList![.PixelCounter] = PixelCounter.SettingsStoryboard()
         StoryboardList![.ColorMap2] = ColorMap2.SettingsStoryboard()
         StoryboardList![.Mask1] = Masking1.SettingsStoryboard()
+        StoryboardList![.ShapePixellate] = ShapePixellate.SettingsStoryboard()
     }
     
     private static var StoryboardList: [FilterTypes: String?]? = nil
@@ -720,6 +725,9 @@ class FilterManager
             
         case .Mask1:
             return Masking1()
+            
+        case .ShapePixellate:
+            return ShapePixellate()
             
         default:
             return nil
@@ -1152,6 +1160,7 @@ class FilterManager
             .PixelCounter: "Pixel Counter",
             .ColorMap2: "Color Map 2",
             .Mask1: "Masking 1",
+            .ShapePixellate: "Shape Pixellate",
     ]
     
     public static func GetFilterTitle(_ Filter: FilterTypes) -> String?
@@ -1226,6 +1235,7 @@ class FilterManager
             .PixelCounter: true,
             .ColorMap2: true,
             .Mask1: true,
+            .ShapePixellate: true,
     ]
     
     /// Determines if the given filter type is implemented.
@@ -1456,6 +1466,15 @@ class FilterManager
             .InvertColorMapSourceColor: .BoolType,
             .MergeColorMapWithSource: .BoolType,
             .MaskColor: .ColorType,
+            .PixellateWidth: .IntType,
+            .PixellateHeight: .IntType,
+            .BlockColorDetermination: .IntType,
+            .BlockColor: .ColorType,
+            .DrawPixelOutline: .BoolType,
+            .PixelOutlineColorDetermination: .IntType,
+            .PixelOutlineColor: .ColorType,
+            .PixelOutlineThickness: .IntType,
+            .PixellateShape: .IntType,
     ]
     
     /// Maps fields to names used to store field data in user settings.
@@ -1626,6 +1645,15 @@ class FilterManager
             .InvertColorMapSourceColor: "_InvertColorMapSourceColor",
             .MergeColorMapWithSource: "_MergeColorMapWithSource",
             .MaskColor: "_MaskColor",
+            .PixellateWidth: "_PixelWidth",
+            .PixellateHeight: "_PixelHeight",
+            .BlockColorDetermination: "_PixelBlockColorDetermination",
+            .BlockColor: "_PixelBlockColor",
+            .DrawPixelOutline: "_DrawPixelOutline",
+            .PixelOutlineColorDetermination: "_PixelOutlineColorDetermination",
+            .PixelOutlineColor: "_PixelOutlineColor",
+            .PixelOutlineThickness: "_PixelOutlineThickness",
+            .PixellateShape: "_PixelShape",
     ]
 }
 
