@@ -85,6 +85,7 @@ extension FilterManager
         case PixelCounter = 58
         case ColorMap2 = 59
         case Mask1 = 60
+        case ShapePixellate = 61
         case NotSet = 10000
     }
     
@@ -296,6 +297,15 @@ extension FilterManager
         case InvertColorMapSourceColor = 162
         case MergeColorMapWithSource = 163
         case MaskColor = 164
+        case PixellateWidth = 165
+        case PixellateHeight = 166
+        case BlockColorDetermination = 167
+        case BlockColor = 168
+        case DrawPixelOutline = 169
+        case PixelOutlineColorDetermination = 170
+        case PixelOutlineColor = 171
+        case PixelOutlineThickness = 172
+        case PixellateShape = 173
         case NoField = 10000
     }
     
