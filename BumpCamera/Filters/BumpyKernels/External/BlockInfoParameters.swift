@@ -11,6 +11,9 @@ import simd
 
 struct BlockInfoParameters
 {
-    let Width: uint
-    let Height: uint
+    let Width: simd_uint1
+    let Height: simd_uint1
+    let Highlight: simd_uint1
+    let BrightnessHighlight: simd_uint1
+    let HighlightColor: simd_float4
 }
