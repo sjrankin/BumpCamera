@@ -32,7 +32,7 @@ class Pixellate_Metal: FilterParent, Renderer
     
     func ID() -> UUID
     {
-        return Pixellate_Metal._ID
+        return type(of: self)._ID
     }
     
     static func ID() -> UUID
@@ -47,7 +47,7 @@ class Pixellate_Metal: FilterParent, Renderer
     
     func Title() -> String
     {
-        return Pixellate_Metal.Title()
+        return type(of: self).Title()
     }
     
     var InstanceID: UUID
@@ -56,8 +56,6 @@ class Pixellate_Metal: FilterParent, Renderer
     }
     
     var Description: String = "Metal Pixellate"
-    
-    var IconName: String = "Metal Pixellate"
     
     private let MetalDevice = MTLCreateSystemDefaultDevice()
     
@@ -138,9 +136,12 @@ class Pixellate_Metal: FilterParent, Renderer
         }
         
         let Start = CACurrentMediaTime()
+        
         let FinalWidth = ParameterManager.GetInt(From: ID(), Field: .BlockWidth, Default: 20)
         let FinalHeight = ParameterManager.GetInt(From: ID(), Field: .BlockHeight, Default: 20)
-        let Buffer0 = BlockInfoParameters(Width: uint(FinalWidth), Height: uint(FinalHeight))
+        let Buffer0 = BlockInfoParameters(Width: simd_uint1(FinalWidth), Height: simd_uint1(FinalHeight),
+                                          Highlight: simd_uint1(0), BrightnessHighlight: simd_uint1(0),
+                                          HighlightColor: UIColor.yellow.ToFloat4())
         let Buffers = [Buffer0]
         ParameterBuffer = MetalDevice!.makeBuffer(length: MemoryLayout<BlockInfoParameters>.stride, options: [])
         memcpy(ParameterBuffer?.contents(), Buffers, MemoryLayout<BlockInfoParameters>.stride)
@@ -227,6 +228,9 @@ class Pixellate_Metal: FilterParent, Renderer
         
         let Start = CACurrentMediaTime()
         var CgImage = Image.cgImage
+        #if true
+        CgImage = AdjustForMonochrome(Image: CgImage!)
+        #else
         let ImageColorspace = CgImage?.colorSpace
         //Handle sneaky grayscale images.
         if ImageColorspace?.model == CGColorSpaceModel.monochrome
@@ -243,6 +247,7 @@ class Pixellate_Metal: FilterParent, Renderer
             GContext!.draw(CgImage!, in: ImageRect)
             CgImage = GContext!.makeImage()
         }
+        #endif
         let ImageWidth: Int = (CgImage?.width)!
         let ImageHeight: Int = (CgImage?.height)!
         var RawData = [UInt8](repeating: 0, count: Int(ImageWidth * ImageHeight * 4))
@@ -263,6 +268,7 @@ class Pixellate_Metal: FilterParent, Renderer
         Texture.replace(region: Region, mipmapLevel: 0, withBytes: &RawData, bytesPerRow: Int((CgImage?.bytesPerRow)!))
         let OutputTextureDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: Texture.pixelFormat,
                                                                                width: Texture.width, height: Texture.height, mipmapped: true)
+       OutputTextureDescriptor.usage = .shaderWrite
         let OutputTexture = ImageDevice?.makeTexture(descriptor: OutputTextureDescriptor)
         
         let CommandBuffer = ImageCommandQueue?.makeCommandBuffer()
@@ -274,7 +280,9 @@ class Pixellate_Metal: FilterParent, Renderer
         
         let FinalWidth = ParameterManager.GetInt(From: ID(), Field: .BlockWidth, Default: 20)
         let FinalHeight = ParameterManager.GetInt(From: ID(), Field: .BlockHeight, Default: 20)
-        let Buffer0 = BlockInfoParameters(Width: uint(FinalWidth), Height: uint(FinalHeight))
+        let Buffer0 = BlockInfoParameters(Width: simd_uint1(FinalWidth), Height: simd_uint1(FinalHeight),
+                                          Highlight: simd_uint1(0), BrightnessHighlight: simd_uint1(0),
+                                          HighlightColor: UIColor.yellow.ToFloat4())
         let Buffers = [Buffer0]
         ImageParameterBuffer = MetalDevice!.makeBuffer(length: MemoryLayout<BlockInfoParameters>.stride, options: [])
         memcpy(ImageParameterBuffer?.contents(), Buffers, MemoryLayout<BlockInfoParameters>.stride)
@@ -336,30 +344,7 @@ class Pixellate_Metal: FilterParent, Renderer
             return nil
         }
     }
-    
-    /// Returns the generated image. If the filter does not support generated images nil is returned.
-    ///
-    /// - Returns: Nil is always returned.
-    func Generate() -> CIImage?
-    {
-        return nil
-    }
-    
-    func Query(PixelBuffer: CVPixelBuffer, Parameters: [String: Any]) -> [String: Any]?
-    {
-        return nil
-    }
-    
-    func Query(Image: UIImage, Parameters: [String: Any]) -> [String: Any]?
-    {
-        return nil
-    }
-    
-    func Query(Image: CIImage, Parameters: [String: Any]) -> [String: Any]?
-    {
-        return nil
-    }
-    
+
     var LastUIImage: UIImage? = nil
     var LastCIImage: CIImage? = nil
     
@@ -444,7 +429,7 @@ class Pixellate_Metal: FilterParent, Renderer
     
     func SupportedFields() -> [FilterManager.InputFields]
     {
-        return Pixellate_Metal.SupportedFields()
+        return type(of: self).SupportedFields()
     }
     
     public static func SupportedFields() -> [FilterManager.InputFields]
@@ -472,7 +457,7 @@ class Pixellate_Metal: FilterParent, Renderer
     
     func SettingsStoryboard() -> String?
     {
-        return Pixellate_Metal.SettingsStoryboard()
+        return type(of: self).SettingsStoryboard()
     }
     
     public static func SettingsStoryboard() -> String?
@@ -551,7 +536,7 @@ class Pixellate_Metal: FilterParent, Renderer
     {
         get
         {
-            return Pixellate_Metal.FilterKernel
+            return type(of: self).FilterKernel
         }
     }
     
@@ -576,6 +561,6 @@ class Pixellate_Metal: FilterParent, Renderer
     /// - Returns: Array of ports.
     func Ports() -> [FilterPorts]
     {
-        return Pixellate_Metal.Ports()
+        return type(of: self).Ports()
     }
 }
