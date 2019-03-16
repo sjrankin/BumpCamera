@@ -1134,6 +1134,7 @@
 		173F5D07220C66FA00067ABB /* CommonUI */ = {
 			isa = PBXGroup;
 			children = (
+				17421977223D11FB00C13DBB /* CustomControls */,
 				17BC007F223140440076A5D5 /* GradientEditor */,
 				171298112223AF37000D5EF5 /* ImageMetadata */,
 				173F5D08220C671700067ABB /* ColorPicker */,
@@ -1148,8 +1149,6 @@
 				173F5D0B220C676900067ABB /* ColorPicker.storyboard */,
 				171E639B222A58C0003E03E6 /* ColorPicker2.storyboard */,
 				171E639D222A5FEE003E03E6 /* ColorPicker2Code.swift */,
-				171E639F222A683B003E03E6 /* GSlider.swift */,
-				1791A07D222AC23E007AF021 /* GSliderProtocol.swift */,
 				17CE373D2213BAE20070ED87 /* ColorPicker.swift */,
 				173F5D0D220C67B600067ABB /* ColorChipPicker.storyboard */,
 				17CE37392213AF330070ED87 /* ColorPickerProtocol.swift */,
@@ -1195,6 +1194,23 @@
 				171F3D0C220AD3450098E2B7 /* Threshold.swift */,
 			);
 			path = MetalWrappers;
+			sourceTree = "<group>";
+		};
+		17421977223D11FB00C13DBB /* CustomControls */ = {
+			isa = PBXGroup;
+			children = (
+				17421978223D120800C13DBB /* GSlider */,
+			);
+			path = CustomControls;
+			sourceTree = "<group>";
+		};
+		17421978223D120800C13DBB /* GSlider */ = {
+			isa = PBXGroup;
+			children = (
+				171E639F222A683B003E03E6 /* GSlider.swift */,
+				1791A07D222AC23E007AF021 /* GSliderProtocol.swift */,
+			);
+			path = GSlider;
 			sourceTree = "<group>";
 		};
 		174779F622042FCD00FD64EF /* NoParameters */ = {
