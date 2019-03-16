@@ -21,7 +21,7 @@ class Pixellate2SettingsUICode: FilterSettingUIBase, DescendentDelta
         WidthOut.text = "\(BWidth)"
         let BHeight = ParameterManager.GetInt(From: FilterID, Field: .BlockHeight, Default: 32)
         BlockWidthSlider.value = Float(BHeight * 10)
-        WidthOut.text = "\(BHeight)"
+        HeightOut.text = "\(BHeight)"
         BlockWidthSlider.addTarget(self, action: #selector(HandleWidthStoppedSliding), for: [.touchUpInside, .touchUpOutside])
         BlockHeightSlider.addTarget(self, action: #selector(HandleHeightStoppedSliding), for: [.touchUpInside, .touchUpOutside])
         let DoMerge = ParameterManager.GetBool(From: FilterID, Field: .MergeWithBackground, Default: true)
