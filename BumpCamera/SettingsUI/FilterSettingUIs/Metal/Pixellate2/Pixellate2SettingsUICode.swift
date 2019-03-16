@@ -26,44 +26,12 @@ class Pixellate2SettingsUICode: FilterSettingUIBase, DescendentDelta
         BlockHeightSlider.addTarget(self, action: #selector(HandleHeightStoppedSliding), for: [.touchUpInside, .touchUpOutside])
         let DoMerge = ParameterManager.GetBool(From: FilterID, Field: .MergeWithBackground, Default: true)
         MergeSwitch.isOn = DoMerge
-        let CondPix = ParameterManager.GetBool(From: FilterID, Field: .ConditionalPixellation, Default: false)
-        ConditionalLabel.text = CondPix ? "enabled" : "disabled"
-        let PixelSelector = ParameterManager.GetInt(From: FilterID, Field: .PixellationHighlighting, Default: 3)
-        HighlightSegment.selectedSegmentIndex = PixelSelector
-        UpdateForHighlighting(PixelSelector)
         ShowSampleView()
     }
     
     func UpdatedFrom(_ DescendentName: String, Field: FilterManager.InputFields)
     {
         
-    }
-    
-    func UpdateForHighlighting(_ PixelSelector: Int)
-    {
-        HueEnabledLabel.text = ""
-        HueLabel.isEnabled = false
-        SaturationEnabledLabel.text = ""
-        SaturationLabel.isEnabled = false
-        BrightnessEnabledLabel.text = ""
-        BrightnessLabel.isEnabled = false
-        switch PixelSelector
-        {
-        case 0:
-            HueEnabledLabel.text = "enabled"
-            HueLabel.isEnabled = true
-            
-        case 1:
-            SaturationEnabledLabel.text = "enabled"
-            SaturationLabel.isEnabled = true
-            
-        case 2:
-            BrightnessEnabledLabel.text = "enabled"
-            BrightnessLabel.isEnabled = true
-            
-        default:
-            break
-        }
     }
     
     @objc func HandleWidthStoppedSliding()
@@ -100,59 +68,16 @@ class Pixellate2SettingsUICode: FilterSettingUIBase, DescendentDelta
         ShowSampleView()
     }
     
-    @IBAction func HandlePixelHighlightingChanged(_ sender: Any)
-    {
-        let PixelSelector = HighlightSegment.selectedSegmentIndex
-        UpdateForHighlighting(PixelSelector)
-        UpdateValue(WithValue: PixelSelector, ToField: .PixellationHighlighting)
-        ShowSampleView()
-    }
-    
     @IBOutlet weak var ConditionalLabel: UILabel!
     @IBOutlet weak var BlockWidthSlider: UISlider!
     @IBOutlet weak var BlockHeightSlider: UISlider!
     @IBOutlet weak var MergeSwitch: UISwitch!
-    @IBOutlet weak var HighlightSegment: UISegmentedControl!
     @IBOutlet weak var WidthOut: UILabel!
     @IBOutlet weak var HeightOut: UILabel!
-    @IBOutlet weak var HueLabel: UILabel!
-    @IBOutlet weak var SaturationLabel: UILabel!
-    @IBOutlet weak var BrightnessLabel: UILabel!
-    @IBOutlet weak var HueEnabledLabel: UILabel!
-    @IBOutlet weak var SaturationEnabledLabel: UILabel!
-    @IBOutlet weak var BrightnessEnabledLabel: UILabel!
     
     @IBAction func HandleBackPressed(_ sender: Any)
     {
         dismiss(animated: true, completion: nil)
-    }
-    
-    @IBAction func HandleCameraHome(_ sender: Any)
-    {
-    }
-    
-    override func shouldPerformSegue(withIdentifier identifier: String, sender: Any?) -> Bool
-    {
-        let PixelSelector = HighlightSegment.selectedSegmentIndex
-        switch identifier
-        {
-        case "ToConditionalPixellation":
-            return true
-            
-        case "ToHighlightHue":
-            return PixelSelector == 0
-            
-        case "ToHighlightSaturation":
-            return PixelSelector == 1
-            
-        case "ToHighlightBrightness":
-            return PixelSelector == 2
-            
-        default:
-            break
-        }
-        
-        return false
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?)
