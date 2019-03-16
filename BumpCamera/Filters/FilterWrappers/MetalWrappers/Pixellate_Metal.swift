@@ -370,6 +370,9 @@ class Pixellate_Metal: FilterParent, Renderer
         case .BlockHeight:
             return (.IntType, 20 as Any?)
             
+        case .PixellationHighlighting:
+            return (.IntType, 3 as Any?)
+            
         case .HighlightColor:
             return (.BoolType, false as Any?)
             
@@ -406,9 +409,6 @@ class Pixellate_Metal: FilterParent, Renderer
         case .ConditionalBackground:
             return (.IntType, 0 as Any?)
             
-        case .PixellationHighlighting:
-            return (.IntType, 3 as Any?)
-            
         case .RenderImageCount:
             return (.IntType, 0 as Any?)
             
@@ -435,6 +435,7 @@ class Pixellate_Metal: FilterParent, Renderer
     public static func SupportedFields() -> [FilterManager.InputFields]
     {
         var Fields = [FilterManager.InputFields]()
+        Fields.append(.PixellationHighlighting)
         Fields.append(.BlockWidth)
         Fields.append(.BlockHeight)
         Fields.append(.HighlightColor)
