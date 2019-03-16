@@ -21,120 +21,114 @@ struct BlockInfoParameters
 };
 
 //https://stackoverflow.com/questions/11704664/converting-hsb-color-to-rgb-in-objective-c
-float4 ToRGB(float4 Source)
+float4 HSBtoRGB(float4 Source)
 {
-    float H = Source.r;
-    float S = Source.g;
-    float L = Source.b;
+    float Hue = Source.r;
+    float Saturation = Source.g;
+    float Luminance = Source.b;
+    if (Saturation == 0.0)
+        {
+        return float4(Source.b, Source.b, Source.b, 1.0);
+        }
+    float H = Hue / 60.0;
+    float I = floor(H);
+    float F = H - I;
+    float P = Luminance * (1.0 - Saturation);
+    float Q = Luminance * (1.0 - (Saturation * F));
+    float T = Luminance * (1.0 - (Saturation * (1.0 - F)));
     float r = 0.0;
     float g = 0.0;
     float b = 0.0;
-    
-    float h = H * 360.0;
-    if (h >= 360.0)
-        {
-        h = 0.0;
-        }
-    h /= 60.0;
-    int Index = int(h);
-        int ff = h - Index;
-    float p = L * (1.0 - S);
-    float q = L * (1.0 - (S * ff));
-    float t = L * (1.0 - (S * (1.0 - ff)));
-    
-    switch(Index)
+    switch ((int)I)
     {
         case 0:
-        r = L;
-        g = t;
-        b = p;
+        r = Luminance;
+        g = T;
+        b = P;
         break;
         
         case 1:
-        r = q;
-        g = L;
-        b = p;
+        r = Q;
+        g = Luminance;
+        b = P;
         break;
         
         case 2:
-        r = p;
-        g = L;
-        b = t;
+        r = P;
+        g = Luminance;
+        b = T;
         break;
         
         case 3:
-        r = p;
-        g = q;
-        b = L;
+        r = P;
+        g = Q;
+        b = Luminance;
         break;
         
         case 4:
-        r = t;
-        g = p;
-        b = L;
+        r = T;
+        g = P;
+        b = Luminance;
         break;
         
-        case 5:
         default:
-        r = L;
-        g = p;
-        b = q;
+        r = Luminance;
+        g = P;
+        b = Q;
         break;
     }
-    
-    float4 Results = float4(r, g, b, 1);
-    return Results;
+    return float4(r, g, b, 1.0);
 }
 
-float4 ToHSB(float4 Source)
+//https://www.cs.rit.edu/~ncs/color/t_convert.html
+float4 RGBtoHSB(float4 Source)
 {
     float r = Source.r;
     float g = Source.g;
     float b = Source.b;
     
-    float H = 0.0;
     float S = 0.0;
     float L = 0.0;
     
-    float MinV = min(r, min(g, b));
-    float MaxV = max(r, max(g, b));
-    float Delta = MaxV - MinV;
+    float CMin = min(r, min(g, b));
+    float CMax = max(r, max(g, b));
+    float Delta = CMax - CMin;
     float Hue = 0.0;
     
-    if (Delta != 0)
+    if (Delta == 0.0)
         {
-        if (r == MaxV)
+        Hue = 0.0;
+        }
+    else
+        {
+        if (CMax == r)
             {
-            Hue = (g - b) / Delta;
+            Hue = (g - b) / Delta + (g < b ? 6.0 : 0.0);
             }
         else
-            if (g == MaxV)
+            if (CMax == g)
                 {
-                Hue = 2.0 + ((b - r) / Delta);
+                Hue = (((b - r) / Delta) + 2.0);
                 }
             else
-                {
-                Hue = 4.0 + ((r - g) / Delta);
-                }
-        
-        Hue = Hue * 60.0;
-        if (Hue < 0)
-            {
-            Hue = Hue + 360.0;
-            }
+                if (CMax == b)
+                    {
+                    Hue = (((r - g) / Delta) + 4.0);
+                    }
         }
+    Hue = Hue * 60.0;
+    if (Hue < 0.0)
+        {
+        Hue = Hue + 360.0;
+        }
+    L = CMax;
+    S = CMax == 0.0 ? 0.0 : (CMax - CMin) / CMax;
     
-    float Saturation = MaxV == 0.0 ? 0.0 : (Delta / MaxV);
-    float Brightness = MaxV;
-    
-    H = Hue / 360.0;
-    S = Saturation;
-    L = Brightness;
-    return float4(H, S, L, 1);
+    return float4(Hue, S, L, 1);
 }
 
-kernel void PixellateKernel(texture2d<float, access::read> inTexture [[texture(0)]],
-                            texture2d<float, access::write> outTexture [[texture(1)]],
+kernel void PixellateKernel(texture2d<float, access::read> InTexture [[texture(0)]],
+                            texture2d<float, access::write> OutTexture [[texture(1)]],
                             constant BlockInfoParameters &BlockInfo [[buffer(0)]],
                             uint2 gid [[thread_position_in_grid]])
 {
@@ -142,28 +136,30 @@ kernel void PixellateKernel(texture2d<float, access::read> inTexture [[texture(0
     uint Height = BlockInfo.Height;
     
     const uint2 PixelattedGrid = uint2((gid.x / Width) * Width, (gid.y / Height) * Height);
-    const float4 ColorAtPixel = inTexture.read(PixelattedGrid);
+    const float4 ColorAtPixel = InTexture.read(PixelattedGrid);
     
-    float4 HSB = ToHSB(ColorAtPixel);
-    float H = HSB.r;
-    float S = HSB.g;
-    float L = HSB.b;
+    float4 HSB = RGBtoHSB(ColorAtPixel);
+    //HSB = RGBtoHSB(InTexture.read(gid));
+    //float H = HSB.r;
+    //float S = HSB.g;
+    //float L = HSB.b;
     
-    float4 FinalColor = float4(H, S, L, 1.0);
-    //FinalColor = ToRGB(FinalColor);
+    //float4 FinalColor = float4(H, S, L, 1.0);
+    //FinalColor = HSBtoRGB(FinalColor);
+    float4 FinalColor = HSBtoRGB(HSB);
     /*
-    if (L < 0.5)
-        {
-        float NewL = L * 1.5;
-        if (NewL > 1.0)
-            {
-            NewL = 1.0;
-            }
-        float4 NewHSB = float4(H, S, NewL, 1.0);
-        FinalColor = ToRGB(NewHSB);
-        }
+     if (L < 0.5)
+     {
+     float NewL = L * 1.5;
+     if (NewL > 1.0)
+     {
+     NewL = 1.0;
+     }
+     float4 NewHSB = float4(H, S, NewL, 1.0);
+     FinalColor = ToRGB(NewHSB);
+     }
      */
     //float4 FinalColor = L < 0.5 ? float4(1.0 - ColorAtPixel.r, 1.0 - ColorAtPixel.g, 1.0 - ColorAtPixel.b, 0) : ColorAtPixel;
     
-    outTexture.write(FinalColor, gid);
+    OutTexture.write(FinalColor, gid);
 }
