@@ -109,6 +109,7 @@
 		1740CEC42216A10A00BFD1A0 /* LicenseViewer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1740CEC32216A10A00BFD1A0 /* LicenseViewer.swift */; };
 		1740CEC62216A4A300BFD1A0 /* LicensingList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1740CEC52216A4A300BFD1A0 /* LicensingList.swift */; };
 		1740CEC82216B2FE00BFD1A0 /* Platform.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1740CEC72216B2FE00BFD1A0 /* Platform.swift */; };
+		1742197A223D1B0900C13DBB /* HighlightPixelsCode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17421979223D1B0900C13DBB /* HighlightPixelsCode.swift */; };
 		174779F822042FEC00FD64EF /* NoParametersSettingsUI.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 174779F722042FEC00FD64EF /* NoParametersSettingsUI.storyboard */; };
 		174779FA2204309600FD64EF /* NoParametersSettingsUICode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 174779F92204309600FD64EF /* NoParametersSettingsUICode.swift */; };
 		174779FC2204338600FD64EF /* CollapsibleHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 174779FB2204338600FD64EF /* CollapsibleHeader.swift */; };
@@ -442,6 +443,7 @@
 		1740CEC32216A10A00BFD1A0 /* LicenseViewer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LicenseViewer.swift; sourceTree = "<group>"; };
 		1740CEC52216A4A300BFD1A0 /* LicensingList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LicensingList.swift; sourceTree = "<group>"; };
 		1740CEC72216B2FE00BFD1A0 /* Platform.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Platform.swift; sourceTree = "<group>"; };
+		17421979223D1B0900C13DBB /* HighlightPixelsCode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HighlightPixelsCode.swift; sourceTree = "<group>"; };
 		174779F722042FEC00FD64EF /* NoParametersSettingsUI.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = NoParametersSettingsUI.storyboard; sourceTree = "<group>"; };
 		174779F92204309600FD64EF /* NoParametersSettingsUICode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoParametersSettingsUICode.swift; sourceTree = "<group>"; };
 		174779FB2204338600FD64EF /* CollapsibleHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollapsibleHeader.swift; sourceTree = "<group>"; };
@@ -1784,6 +1786,7 @@
 				17D60D8B22115CB700933F15 /* Pixellate2SettingsUI.storyboard */,
 				17D60D8D221162F100933F15 /* Pixellate2SettingsUICode.swift */,
 				17D60D9122118EDB00933F15 /* Pixellate2ConditionalUI.swift */,
+				17421979223D1B0900C13DBB /* HighlightPixelsCode.swift */,
 			);
 			path = Pixellate2;
 			sourceTree = "<group>";
@@ -1862,8 +1865,8 @@
 		17E9F0DE2201721F00BA7B46 /* FilterSettingUIs */ = {
 			isa = PBXGroup;
 			children = (
-				17A409D62201E941003D4EC6 /* FilterSettingUIBase.swift */,
 				17BC007C22313AE10076A5D5 /* SampleViewer */,
+				17A409D62201E941003D4EC6 /* FilterSettingUIBase.swift */,
 				17D60D882210511800933F15 /* SampleContainerView.swift */,
 				1709A6FA2220FBC600D9B43D /* RatingCell.swift */,
 				17E9F0DC2201719600BA7B46 /* FilterSettingsUI.storyboard */,
@@ -2250,6 +2253,7 @@
 				1773C9FE22353006008DE0FE /* ColorMap2SettingsUICode.swift in Sources */,
 				173F5CFF220BDF0A00067ABB /* Threshold.metal in Sources */,
 				17C6757C222D3D0800D53B93 /* ColorInverterSettingsUICode.swift in Sources */,
+				1742197A223D1B0900C13DBB /* HighlightPixelsCode.swift in Sources */,
 				171375FB2219319B000E49C2 /* GrayscaleToRGB.metal in Sources */,
 				173FDCC1220EB86C00EFA90D /* MainUIUserInteractions.swift in Sources */,
 				1709A6FE2220FDED00D9B43D /* Ratings.swift in Sources */,
