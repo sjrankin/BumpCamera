@@ -15,7 +15,7 @@ struct BlockInfoParameters
     uint Height;
     // Highlight values: 0 = Hue, 1 = Saturation, 2 = Brightness, 3 = none
     uint Highlight;
-    //0 = set to color, 1 = set to grayscale, 2 = set to transparent, 3 = invert brightness, 4 = invert color
+    uint HighlightPixelBy;
     uint HighlightAction;
     float4 Highlight_Color;
     uint ColorDetermination;
@@ -130,8 +130,11 @@ float4 RGBtoHSB(float4 Source)
     return float4(Hue, S, L, 1);
 }
 
+// Input is HSB color to potentially modify. Output is RGB color ready to be sent to the output texture.
 float4 ApplyHighlight(float4 Source, uint Action)
 {
+    float4 RGB = HSBtoRGB(Source);
+    return float4(1.0 - RGB.r, 1.0 - RGB.g, 1.0 - RGB.b, 1.0);
     switch (Action)
     {
         case 0:
@@ -202,6 +205,12 @@ float4 ApplyHighlight(float4 Source, uint Action)
         return HSBtoRGB(Source);
         }
         
+        case 10:
+        {
+        float4 RGB = HSBtoRGB(Source);
+        return float4(RGB.b, RGB.g, RGB.r, 1.0);
+        }
+        
         default:
         {
         return HSBtoRGB(Source);
@@ -222,23 +231,32 @@ kernel void PixellateKernel(texture2d<float, access::read> InTexture [[texture(0
     
     float4 HSB = RGBtoHSB(ColorAtPixel);
     float4 FinalColor = float4(1.0, 1.0, 1.0, 1.0);
-    switch (BlockInfo.Highlight)
+    switch (BlockInfo.HighlightPixelBy)
     {
         case 0:
         {
         float H = HSB.r / 360.0;
+        /*
+        if (HSB.r > 1.0)
+            {
+            FinalColor = float4(1.0,1.0,0.0,1.0);
+            break;
+            }
+         */
         if (BlockInfo.HighlightIfGreater)
             {
-            if (H > BlockInfo.HighlightValue)
+            if (H >= BlockInfo.HighlightValue)
                 {
                 FinalColor = ApplyHighlight(HSB, BlockInfo.HighlightAction);
+                //FinalColor = float4(1.0,1.0,0.0,1.0);
                 }
             }
         else
             {
-            if (H < BlockInfo.HighlightValue)
+            if (H <= BlockInfo.HighlightValue)
                 {
                 FinalColor = ApplyHighlight(HSB, BlockInfo.HighlightAction);
+                                //FinalColor = float4(0.0,1.0,1.0,1.0);
                 }
             }
         break;
@@ -249,14 +267,14 @@ kernel void PixellateKernel(texture2d<float, access::read> InTexture [[texture(0
         float S = HSB.g;
         if (BlockInfo.HighlightIfGreater)
             {
-            if (S > BlockInfo.HighlightValue)
+            if (S >= BlockInfo.HighlightValue)
                 {
                 FinalColor = ApplyHighlight(HSB, BlockInfo.HighlightAction);
                 }
             }
         else
             {
-            if (S < BlockInfo.HighlightValue)
+            if (S <= BlockInfo.HighlightValue)
                 {
                 FinalColor = ApplyHighlight(HSB, BlockInfo.HighlightAction);
                 }
@@ -269,14 +287,14 @@ kernel void PixellateKernel(texture2d<float, access::read> InTexture [[texture(0
         float B = HSB.b;
         if (BlockInfo.HighlightIfGreater)
             {
-            if (B > BlockInfo.HighlightValue)
+            if (B >= BlockInfo.HighlightValue)
                 {
                 FinalColor = ApplyHighlight(HSB, BlockInfo.HighlightAction);
                 }
             }
         else
             {
-            if (B < BlockInfo.HighlightValue)
+            if (B <= BlockInfo.HighlightValue)
                 {
                 FinalColor = ApplyHighlight(HSB, BlockInfo.HighlightAction);
                 }
