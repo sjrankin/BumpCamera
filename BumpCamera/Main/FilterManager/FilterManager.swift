@@ -1475,6 +1475,9 @@ class FilterManager
             .PixelOutlineColor: .ColorType,
             .PixelOutlineThickness: .IntType,
             .PixellateShape: .IntType,
+            .PixelHighlightAction: .IntType,
+            .PixelHighlightActionValue: .DoubleType,
+            .PixelHighlightActionIfGreater: .BoolType,
     ]
     
     /// Maps fields to names used to store field data in user settings.
@@ -1654,6 +1657,9 @@ class FilterManager
             .PixelOutlineColor: "_PixelOutlineColor",
             .PixelOutlineThickness: "_PixelOutlineThickness",
             .PixellateShape: "_PixelShape",
+            .PixelHighlightAction: "_HighlightAction",
+            .PixelHighlightActionValue: "_HighlightActionValue",
+            .PixelHighlightActionIfGreater: "_HighlightActionIfGreater",
     ]
 }
 
