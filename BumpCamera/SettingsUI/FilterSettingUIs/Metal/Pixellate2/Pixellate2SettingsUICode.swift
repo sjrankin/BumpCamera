@@ -20,7 +20,7 @@ class Pixellate2SettingsUICode: FilterSettingUIBase, DescendentDelta
         BlockWidthSlider.value = Float(BWidth * 10)
         WidthOut.text = "\(BWidth)"
         let BHeight = ParameterManager.GetInt(From: FilterID, Field: .BlockHeight, Default: 32)
-        BlockWidthSlider.value = Float(BHeight * 10)
+        BlockHeightSlider.value = Float(BHeight * 10)
         HeightOut.text = "\(BHeight)"
         BlockWidthSlider.addTarget(self, action: #selector(HandleWidthStoppedSliding), for: [.touchUpInside, .touchUpOutside])
         BlockHeightSlider.addTarget(self, action: #selector(HandleHeightStoppedSliding), for: [.touchUpInside, .touchUpOutside])
