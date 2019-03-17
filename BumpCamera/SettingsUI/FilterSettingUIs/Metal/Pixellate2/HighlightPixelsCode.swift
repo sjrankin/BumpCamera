@@ -57,7 +57,8 @@ class HighlightPixelsCode: FilterSettingUIBase, UIPickerViewDelegate, UIPickerVi
             "Invert hue",
             "Set brightness to max",
             "Set saturation to max",
-            "Outline pixel"
+            "Outline pixel",
+            "Swap R & B",
     ]
     
     func numberOfComponents(in pickerView: UIPickerView) -> Int
