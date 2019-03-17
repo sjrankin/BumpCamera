@@ -139,11 +139,14 @@ class Pixellate_Metal: FilterParent, Renderer
         
         let FinalWidth = ParameterManager.GetInt(From: ID(), Field: .BlockWidth, Default: 20)
         let FinalHeight = ParameterManager.GetInt(From: ID(), Field: .BlockHeight, Default: 20)
-        let HAction = ParameterManager.GetInt(From: ID(), Field: .PixelHighlightAction, Default: 3)
+        let HAction = ParameterManager.GetInt(From: ID(), Field: .PixelHighlightAction, Default: 0)
+        print("HAction = \(HAction)")
         let HValue = ParameterManager.GetDouble(From: ID(), Field: .PixelHighlightActionValue, Default: 0.5)
         let HIfGreat = ParameterManager.GetBool(From: ID(), Field: .PixelHighlightActionIfGreater, Default: true)
+        let HBy = ParameterManager.GetInt(From: ID(), Field: .PixellationHighlighting, Default: 3)
         let Buffer0 = BlockInfoParameters(Width: simd_uint1(FinalWidth), Height: simd_uint1(FinalHeight),
-                                          HighlightAction: simd_uint1(HAction), BrightnessHighlight: simd_uint1(0),
+                                          HighlightAction: simd_uint1(HAction), HighlightPixelBy: simd_uint1(HBy),
+                                          BrightnessHighlight: simd_uint1(0),
                                           HighlightColor: UIColor.yellow.ToFloat4(),
                                           ColorDetermination: simd_uint1(0), HighlightValue: simd_float1(HValue),
                                           HighlightIfGreater: simd_bool(HIfGreat))
@@ -295,8 +298,10 @@ class Pixellate_Metal: FilterParent, Renderer
         let HAction = ParameterManager.GetInt(From: ID(), Field: .PixelHighlightAction, Default: 3)
         let HValue = ParameterManager.GetDouble(From: ID(), Field: .PixelHighlightActionValue, Default: 0.5)
         let HIfGreat = ParameterManager.GetBool(From: ID(), Field: .PixelHighlightActionIfGreater, Default: true)
+        let HBy = ParameterManager.GetInt(From: ID(), Field: .PixellationHighlighting, Default: 3)
         let Buffer0 = BlockInfoParameters(Width: simd_uint1(FinalWidth), Height: simd_uint1(FinalHeight),
-                                          HighlightAction: simd_uint1(HAction), BrightnessHighlight: simd_uint1(0),
+                                          HighlightAction: simd_uint1(HAction), HighlightPixelBy: simd_uint1(HBy),
+                                          BrightnessHighlight: simd_uint1(0),
                                           HighlightColor: UIColor.yellow.ToFloat4(),
                                           ColorDetermination: simd_uint1(0), HighlightValue: simd_float1(HValue),
                                           HighlightIfGreater: simd_bool(HIfGreat))
