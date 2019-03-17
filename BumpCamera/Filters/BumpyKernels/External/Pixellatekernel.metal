@@ -13,11 +13,14 @@ struct BlockInfoParameters
 {
     uint Width;
     uint Height;
-    // Highlight values: 0 = no highlighting, 1 = brightness highlighting, 2 = hue highlighting, 3 = saturation highlighting
+    // Highlight values: 0 = Hue, 1 = Saturation, 2 = Brightness, 3 = none
     uint Highlight;
     //0 = set to color, 1 = set to grayscale, 2 = set to transparent, 3 = invert brightness, 4 = invert color
-    uint BrightnessHighlight;
+    uint HighlightAction;
     float4 Highlight_Color;
+    uint ColorDetermination;
+    float HighlightValue;
+    bool HighlightIfGreater;
 };
 
 //https://stackoverflow.com/questions/11704664/converting-hsb-color-to-rgb-in-objective-c
@@ -127,6 +130,85 @@ float4 RGBtoHSB(float4 Source)
     return float4(Hue, S, L, 1);
 }
 
+float4 ApplyHighlight(float4 Source, uint Action)
+{
+    switch (Action)
+    {
+        case 0:
+        {
+        //grayscale
+        float4 RGB = HSBtoRGB(Source);
+        float Gray = (RGB.r + RGB.g + RGB.b) / 3.0;
+        float4 Grayscale = float4(Gray, Gray, Gray, 1.0);
+        return Grayscale;
+        }
+        
+        case 1:
+        {
+        //transparent
+        return float4(1.0, 1.0, 1.0, 0.0);
+        }
+        
+        case 2:
+        {
+        //set to black
+        return float4(0.0, 0.0, 0.0, 1.0);
+        }
+        
+        case 3:
+        {
+        //set to white
+        return float4(1.0, 1.0, 1.0, 1.0);
+        }
+        
+        case 4:
+        {
+        //set to gray
+        return float4(0.5, 0.5, 0.5, 1.0);
+        }
+        
+        case 5:
+        {
+        //invert color
+        float4 RGB = HSBtoRGB(Source);
+        return float4(1.0 - RGB.r, 1.0 - RGB.g, 1.0 - RGB.b, 1.0);
+        }
+        
+        case 6:
+        {
+        //invert hue
+        float H = 360.0 - Source.r;
+        float4 scratch = float4(H, Source.g, Source.b, 1.0);
+        return HSBtoRGB(scratch);
+        }
+        
+        case 7:
+        {
+        //brightness to max
+        float4 scratch = float4(Source.r, Source.g, 1.0, 1.0);
+        return HSBtoRGB(scratch);
+        }
+        
+        case 8:
+        {
+        //saturation to max
+        float4 scratch = float4(Source.r, 1.0, Source.b, 1.0);
+        return HSBtoRGB(scratch);
+        }
+        
+        case 9:
+        {
+        //draw border
+        return HSBtoRGB(Source);
+        }
+        
+        default:
+        {
+        return HSBtoRGB(Source);
+        }
+    }
+}
+
 kernel void PixellateKernel(texture2d<float, access::read> InTexture [[texture(0)]],
                             texture2d<float, access::write> OutTexture [[texture(1)]],
                             constant BlockInfoParameters &BlockInfo [[buffer(0)]],
@@ -139,27 +221,75 @@ kernel void PixellateKernel(texture2d<float, access::read> InTexture [[texture(0
     const float4 ColorAtPixel = InTexture.read(PixelattedGrid);
     
     float4 HSB = RGBtoHSB(ColorAtPixel);
-    //HSB = RGBtoHSB(InTexture.read(gid));
-    //float H = HSB.r;
-    //float S = HSB.g;
-    //float L = HSB.b;
-    
-    //float4 FinalColor = float4(H, S, L, 1.0);
-    //FinalColor = HSBtoRGB(FinalColor);
-    float4 FinalColor = HSBtoRGB(HSB);
-    /*
-     if (L < 0.5)
-     {
-     float NewL = L * 1.5;
-     if (NewL > 1.0)
-     {
-     NewL = 1.0;
-     }
-     float4 NewHSB = float4(H, S, NewL, 1.0);
-     FinalColor = ToRGB(NewHSB);
-     }
-     */
-    //float4 FinalColor = L < 0.5 ? float4(1.0 - ColorAtPixel.r, 1.0 - ColorAtPixel.g, 1.0 - ColorAtPixel.b, 0) : ColorAtPixel;
+    float4 FinalColor = float4(1.0, 1.0, 1.0, 1.0);
+    switch (BlockInfo.Highlight)
+    {
+        case 0:
+        {
+        float H = HSB.r / 360.0;
+        if (BlockInfo.HighlightIfGreater)
+            {
+            if (H > BlockInfo.HighlightValue)
+                {
+                FinalColor = ApplyHighlight(HSB, BlockInfo.HighlightAction);
+                }
+            }
+        else
+            {
+            if (H < BlockInfo.HighlightValue)
+                {
+                FinalColor = ApplyHighlight(HSB, BlockInfo.HighlightAction);
+                }
+            }
+        break;
+        }
+        
+        case 1:
+        {
+        float S = HSB.g;
+        if (BlockInfo.HighlightIfGreater)
+            {
+            if (S > BlockInfo.HighlightValue)
+                {
+                FinalColor = ApplyHighlight(HSB, BlockInfo.HighlightAction);
+                }
+            }
+        else
+            {
+            if (S < BlockInfo.HighlightValue)
+                {
+                FinalColor = ApplyHighlight(HSB, BlockInfo.HighlightAction);
+                }
+            }
+        break;
+        }
+        
+        case 2:
+        {
+        float B = HSB.b;
+        if (BlockInfo.HighlightIfGreater)
+            {
+            if (B > BlockInfo.HighlightValue)
+                {
+                FinalColor = ApplyHighlight(HSB, BlockInfo.HighlightAction);
+                }
+            }
+        else
+            {
+            if (B < BlockInfo.HighlightValue)
+                {
+                FinalColor = ApplyHighlight(HSB, BlockInfo.HighlightAction);
+                }
+            }
+        break;
+        }
+        
+        default:
+        {
+        FinalColor = HSBtoRGB(HSB);
+        break;
+        }
+    }
     
     OutTexture.write(FinalColor, gid);
 }
