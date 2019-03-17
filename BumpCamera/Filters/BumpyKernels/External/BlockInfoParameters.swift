@@ -13,7 +13,10 @@ struct BlockInfoParameters
 {
     let Width: simd_uint1
     let Height: simd_uint1
-    let Highlight: simd_uint1
+    let HighlightAction: simd_uint1
     let BrightnessHighlight: simd_uint1
     let HighlightColor: simd_float4
+    let ColorDetermination: simd_uint1
+    let HighlightValue: simd_float1
+    let HighlightIfGreater: simd_bool
 }
