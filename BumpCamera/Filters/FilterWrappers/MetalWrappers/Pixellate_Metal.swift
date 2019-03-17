@@ -139,16 +139,21 @@ class Pixellate_Metal: FilterParent, Renderer
         
         let FinalWidth = ParameterManager.GetInt(From: ID(), Field: .BlockWidth, Default: 20)
         let FinalHeight = ParameterManager.GetInt(From: ID(), Field: .BlockHeight, Default: 20)
+        let HAction = ParameterManager.GetInt(From: ID(), Field: .PixelHighlightAction, Default: 3)
+        let HValue = ParameterManager.GetDouble(From: ID(), Field: .PixelHighlightActionValue, Default: 0.5)
+        let HIfGreat = ParameterManager.GetBool(From: ID(), Field: .PixelHighlightActionIfGreater, Default: true)
         let Buffer0 = BlockInfoParameters(Width: simd_uint1(FinalWidth), Height: simd_uint1(FinalHeight),
-                                          Highlight: simd_uint1(0), BrightnessHighlight: simd_uint1(0),
-                                          HighlightColor: UIColor.yellow.ToFloat4())
+                                          HighlightAction: simd_uint1(HAction), BrightnessHighlight: simd_uint1(0),
+                                          HighlightColor: UIColor.yellow.ToFloat4(),
+                                          ColorDetermination: simd_uint1(0), HighlightValue: simd_float1(HValue),
+                                          HighlightIfGreater: simd_bool(HIfGreat))
         let Buffers = [Buffer0]
         ParameterBuffer = MetalDevice!.makeBuffer(length: MemoryLayout<BlockInfoParameters>.stride, options: [])
         memcpy(ParameterBuffer?.contents(), Buffers, MemoryLayout<BlockInfoParameters>.stride)
         
         var NewPixelBuffer: CVPixelBuffer? = nil
         CVPixelBufferPoolCreatePixelBuffer(kCFAllocatorDefault, BufferPool!, &NewPixelBuffer)
-        guard let OutputBuffer = NewPixelBuffer else
+        guard var OutputBuffer = NewPixelBuffer else
         {
             print("Allocation failure for new pixel buffer pool in Pixellate_Metal.")
             return nil
@@ -186,6 +191,13 @@ class Pixellate_Metal: FilterParent, Renderer
         CommandEncoder.endEncoding()
         CommandBuffer.commit()
         
+        if ParameterManager.GetBool(From: ID(), Field: .MergeWithBackground, Default: false)
+        {
+            let MaskFilter = Masking1()
+            MaskFilter.Initialize(With: InputFormatDescription!, BufferCountHint: 3)
+            OutputBuffer = MaskFilter.RenderWith(PixelBuffer: PixelBuffer, And: OutputBuffer)!
+        }
+        
         LiveRenderTime = CACurrentMediaTime() - Start
         ParameterManager.UpdateRenderAccumulator(NewValue: LiveRenderTime, ID: ID(), ForImage: false)
         return OutputBuffer
@@ -216,7 +228,7 @@ class Pixellate_Metal: FilterParent, Renderer
         InitializedForImage = true
     }
     
-        var ImageParameterBuffer: MTLBuffer? = nil
+    var ImageParameterBuffer: MTLBuffer? = nil
     
     //http://flexmonkey.blogspot.com/2014/10/metal-kernel-functions-compute-shaders.html
     func Render(Image: UIImage) -> UIImage?
@@ -268,7 +280,7 @@ class Pixellate_Metal: FilterParent, Renderer
         Texture.replace(region: Region, mipmapLevel: 0, withBytes: &RawData, bytesPerRow: Int((CgImage?.bytesPerRow)!))
         let OutputTextureDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: Texture.pixelFormat,
                                                                                width: Texture.width, height: Texture.height, mipmapped: true)
-       OutputTextureDescriptor.usage = .shaderWrite
+        OutputTextureDescriptor.usage = .shaderWrite
         let OutputTexture = ImageDevice?.makeTexture(descriptor: OutputTextureDescriptor)
         
         let CommandBuffer = ImageCommandQueue?.makeCommandBuffer()
@@ -280,9 +292,14 @@ class Pixellate_Metal: FilterParent, Renderer
         
         let FinalWidth = ParameterManager.GetInt(From: ID(), Field: .BlockWidth, Default: 20)
         let FinalHeight = ParameterManager.GetInt(From: ID(), Field: .BlockHeight, Default: 20)
+        let HAction = ParameterManager.GetInt(From: ID(), Field: .PixelHighlightAction, Default: 3)
+        let HValue = ParameterManager.GetDouble(From: ID(), Field: .PixelHighlightActionValue, Default: 0.5)
+        let HIfGreat = ParameterManager.GetBool(From: ID(), Field: .PixelHighlightActionIfGreater, Default: true)
         let Buffer0 = BlockInfoParameters(Width: simd_uint1(FinalWidth), Height: simd_uint1(FinalHeight),
-                                          Highlight: simd_uint1(0), BrightnessHighlight: simd_uint1(0),
-                                          HighlightColor: UIColor.yellow.ToFloat4())
+                                          HighlightAction: simd_uint1(HAction), BrightnessHighlight: simd_uint1(0),
+                                          HighlightColor: UIColor.yellow.ToFloat4(),
+                                          ColorDetermination: simd_uint1(0), HighlightValue: simd_float1(HValue),
+                                          HighlightIfGreater: simd_bool(HIfGreat))
         let Buffers = [Buffer0]
         ImageParameterBuffer = MetalDevice!.makeBuffer(length: MemoryLayout<BlockInfoParameters>.stride, options: [])
         memcpy(ImageParameterBuffer?.contents(), Buffers, MemoryLayout<BlockInfoParameters>.stride)
@@ -317,6 +334,14 @@ class Pixellate_Metal: FilterParent, Renderer
                                  decode: nil, shouldInterpolate: false, intent: RenderingIntent)
         LastUIImage = UIImage(cgImage: FinalImage!)
         
+        if ParameterManager.GetBool(From: ID(), Field: .MergeWithBackground, Default: false)
+        {
+            let MaskFilter = Masking1()
+            MaskFilter.InitializeForImage()
+            let BottomImage = LastUIImage!
+            LastUIImage = MaskFilter.RenderWith(Images: [BottomImage, Image])!
+        }
+        
         ImageRenderTime = CACurrentMediaTime() - Start
         ParameterManager.UpdateRenderAccumulator(NewValue: LiveRenderTime, ID: ID(), ForImage: true)
         return UIImage(cgImage: FinalImage!)
@@ -344,7 +369,7 @@ class Pixellate_Metal: FilterParent, Renderer
             return nil
         }
     }
-
+    
     var LastUIImage: UIImage? = nil
     var LastCIImage: CIImage? = nil
     
@@ -367,11 +392,20 @@ class Pixellate_Metal: FilterParent, Renderer
         case .BlockWidth:
             return (.IntType, 20 as Any?)
             
+        case .PixelHighlightAction:
+            return (.IntType, 0 as Any?)
+            
         case .BlockHeight:
             return (.IntType, 20 as Any?)
             
         case .PixellationHighlighting:
             return (.IntType, 3 as Any?)
+            
+        case .PixelHighlightActionValue:
+            return (.DoubleType, 0.5 as Any?)
+            
+        case .PixelHighlightActionIfGreater:
+            return (.BoolType, true as Any?)
             
         case .HighlightColor:
             return (.BoolType, false as Any?)
@@ -435,7 +469,10 @@ class Pixellate_Metal: FilterParent, Renderer
     public static func SupportedFields() -> [FilterManager.InputFields]
     {
         var Fields = [FilterManager.InputFields]()
+        Fields.append(.PixelHighlightActionIfGreater)
         Fields.append(.PixellationHighlighting)
+        Fields.append(.PixelHighlightAction)
+        Fields.append(.PixelHighlightActionValue)
         Fields.append(.BlockWidth)
         Fields.append(.BlockHeight)
         Fields.append(.HighlightColor)
