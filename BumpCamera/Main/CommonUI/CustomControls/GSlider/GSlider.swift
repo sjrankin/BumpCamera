@@ -630,6 +630,93 @@ import UIKit
         }
     }
     
+    private var _EnableRangedValues: Bool = false
+    {
+        didSet
+        {
+            DrawIndicator()
+        }
+    }
+    /// Enables the ranged values mode. In this mode, there are two indicators and the
+    /// range is the "value" rather than any indicator. In the range values mode, there
+    /// are two indicators, one for the low end of the range and one for the high end of
+    /// the range.
+    @IBInspectable var EnableRangedValues: Bool
+    {
+        get
+        {
+            return _EnableRangedValues
+        }
+        set
+        {
+            _EnableRangedValues = newValue
+        }
+    }
+    
+    private var _Range: (Double, Double) = (0.0, 1.0)
+    {
+        didSet
+        {
+            DrawIndicator()
+        }
+    }
+    /// Get or set the range. Valid only when `EnableRangedValues` is true.
+    var Range: (Double, Double)
+    {
+        get
+        {
+            return _Range
+        }
+        set
+        {
+            _Range = newValue
+        }
+    }
+    
+    private var _RangeLow: Double = 0.0
+    {
+        didSet
+        {
+            let (_, OldHigh) = _Range
+            Range = (_RangeLow, OldHigh)
+        }
+    }
+    /// Get or set the low range value. Valid only when `EnableRangedValue` is true.
+    /// Provided for the Interface Builder, which doesn't support tuples.
+    @IBInspectable var RangeLow: Double
+    {
+        get
+        {
+            return _RangeLow
+        }
+        set
+        {
+            _RangeLow = newValue
+        }
+    }
+    
+    private var _RangeHigh: Double = 0.0
+    {
+        didSet
+        {
+            let (OldLow, _) = _Range
+            Range = (OldLow, _RangeHigh)
+        }
+    }
+    /// Get or set the high range value. Valid only when `EnableRangedValue` is true.
+    /// Provided for the Interface Builder, which doesn't support tuples.
+    @IBInspectable var RangeHigh: Double
+        {
+        get
+        {
+            return _RangeHigh
+        }
+        set
+        {
+            _RangeHigh = newValue
+        }
+    }
+    
     /// Holds the current value of the control. Updates the indicator when set.
     private var _Value: Double = 0.0
     {
