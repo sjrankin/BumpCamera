@@ -306,6 +306,9 @@ extension FilterManager
         case PixelOutlineColor = 171
         case PixelOutlineThickness = 172
         case PixellateShape = 173
+        case PixelHighlightAction = 174
+        case PixelHighlightActionValue = 175
+        case PixelHighlightActionIfGreater = 176
         case NoField = 10000
     }
     
