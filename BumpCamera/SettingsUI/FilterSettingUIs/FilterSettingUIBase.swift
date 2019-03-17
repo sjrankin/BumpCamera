@@ -30,6 +30,7 @@ class FilterSettingUIBase: UITableViewController,
     var MainFilter: FilterManager? = nil
     var CallsFilter: Bool = true
     var SampleViewImage: UIImage? = nil
+    var IsChild: Bool = false
     
     /// Initializes the base class.
     ///
@@ -37,12 +38,18 @@ class FilterSettingUIBase: UITableViewController,
     ///   - Sample: The UIImageView where the sample image will be shown.
     ///   - FilterType: The filter type.
     ///   - CallFilter: Set to false only if there is input but no output (eg, measuration filters).
-    func Initialize(FilterType: FilterManager.FilterTypes, EnableSelectImage: Bool = true, CallFilter: Bool = true)
+    ///   - IsChildDialog: Set to true if using this base class on a controller that is called from the
+    ///                    main filter settings controller.
+    func Initialize(FilterType: FilterManager.FilterTypes, EnableSelectImage: Bool = true, CallFilter: Bool = true,
+                    IsChildDialog: Bool = false)
     {
         print("\(FilterType) start at \(CACurrentMediaTime())")
-        CallsFilter = CallFilter
         let Start = CACurrentMediaTime()
+        Filter = FilterType
+        FilterID = FilterManager.FilterInfoMap[Filter]!.0
+        IsChild = IsChildDialog
         LoadUIElements()
+        CallsFilter = CallFilter
         ADelegate = UIApplication.shared.delegate as? AppDelegate
         MainFilter = ADelegate?.Filters
         SampleView = UIImageView(image: UIImage(named: "Norio"))
@@ -55,8 +62,7 @@ class FilterSettingUIBase: UITableViewController,
         }
         //The next line effectively removes blank table cells from the trailing end of the table view.
         tableView.tableFooterView = UIView()
-        Filter = FilterType
-        FilterID = FilterManager.FilterInfoMap[Filter]!.0
+        
         SampleFilter = Filters.CreateFilter(For: Filter)
         SampleFilter?.InitializeForImage()
         if !(SampleFilter?.Ports().contains(.Input))!
@@ -81,9 +87,11 @@ class FilterSettingUIBase: UITableViewController,
             SampleView.isUserInteractionEnabled = true
             ShowSampleView()
         }
+        #if false
         let Cell = RatingCell(style: UITableViewCell.CellStyle.default, reuseIdentifier: "RatingCell")
         Cell.SetData(FilterType: Filter)
         tableView.tableFooterView = Cell
+        #endif
         
         let End = CACurrentMediaTime()
         print("FilterSettingUIBase(Filter) start-up duration: \(End - Start) seconds")
@@ -100,7 +108,11 @@ class FilterSettingUIBase: UITableViewController,
         self.navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Back", style: UIBarButtonItem.Style.plain, target: self, action: #selector(HandleBBackButton(_:)))
         //See note in function documentation.
         self.toolbarItems?.removeAll()
-        self.toolbarItems?.append(UIBarButtonItem(image: UIImage(named: "CameraHome"), style: UIBarButtonItem.Style.plain, target: self, action: #selector(HandleCameraHomeBButton(_:))))
+        if !IsChild
+        {
+            LoadHeartButton()
+            LoadRatingButtons()
+        }
         self.toolbarItems?.append(UIBarButtonItem(barButtonSystemItem: UIBarButtonItem.SystemItem.flexibleSpace, target: nil, action: nil))
         let PersonIcon = UIBarButtonItem(image: UIImage(named: "PersonIcon"), style: UIBarButtonItem.Style.plain, target: self, action: #selector(HandlePersonButton(_:)))
         self.toolbarItems?.append(PersonIcon)
@@ -111,6 +123,66 @@ class FilterSettingUIBase: UITableViewController,
         else
         {
             PersonIcon.isEnabled = false
+        }
+    }
+    
+    var HeartButton: UIBarButtonItem!
+    
+    /// Load the heart button into the toolbar.
+    func LoadHeartButton()
+    {
+        let FilterRatings = FilterManager.RatingsFor(FilterID, CreateOnDemand: true)
+        let ImageName = FilterRatings!.Faved ? "FilledHeart" : "EmptyHeart"
+        let HeartImage = UIImage(named: ImageName)?.withRenderingMode(UIImage.RenderingMode.alwaysOriginal)
+        HeartButton = UIBarButtonItem(image: HeartImage, style: UIBarButtonItem.Style.plain, target: self, action: #selector(HandleHeartButton))
+        self.toolbarItems?.append(HeartButton)
+        self.toolbarItems?.append(UIBarButtonItem(barButtonSystemItem: UIBarButtonItem.SystemItem.flexibleSpace, target: nil, action: nil))
+    }
+    
+    /// Respond to heart button presses.
+    ///
+    /// - Parameter sender: The heat button.
+    @objc func HandleHeartButton(_ sender: Any)
+    {
+        let FilterRatings = FilterManager.RatingsFor(FilterID, CreateOnDemand: true)
+        FilterRatings!.Faved = !FilterRatings!.Faved
+        let ImageName = FilterRatings!.Faved ? "FilledHeart" : "EmptyHeart"
+        HeartButton.image = UIImage(named: ImageName)?.withRenderingMode(UIImage.RenderingMode.alwaysOriginal)
+    }
+    
+    /// Holds the star buttons.
+    var StarButtons = [UIBarButtonItem](repeating: UIBarButtonItem(), count: 5)
+    
+    /// Load the star buttons into the toolbar.
+    func LoadRatingButtons()
+    {
+        let FilterRatings = FilterManager.RatingsFor(FilterID, CreateOnDemand: true)
+        for Index in 0 ..< 5
+        {
+            let ImageName = Index <= FilterRatings!.StarCount ? "FilledStar" : "EmptyStar"
+            let StarImage = UIImage(named: ImageName)?.withRenderingMode(UIImage.RenderingMode.alwaysOriginal)
+            StarButtons[Index] = UIBarButtonItem(image: StarImage, style: UIBarButtonItem.Style.plain, target: self, action: #selector(HandleStarButton))
+            StarButtons[Index].tag = Index
+            self.toolbarItems?.append(StarButtons[Index])
+        }
+    }
+    
+    /// Respond to star button presses.
+    ///
+    /// - Parameter sender: The star button that was pressed.
+    @objc func HandleStarButton(_ sender: Any)
+    {
+        if let StarButton = sender as? UIBarButtonItem
+        {
+            let FilterRatings = FilterManager.RatingsFor(FilterID, CreateOnDemand: true)
+            let StarCount = StarButton.tag
+            FilterRatings?.StarCount = StarCount
+            for Index in 0 ..< 5
+            {
+                let ImageName = Index <= StarCount ? "FilledStar" : "EmptyStar"
+                let StarImage = UIImage(named: ImageName)?.withRenderingMode(UIImage.RenderingMode.alwaysOriginal)
+                StarButtons[Index].image = StarImage
+            }
         }
     }
     
@@ -228,7 +300,14 @@ class FilterSettingUIBase: UITableViewController,
     /// - Parameter sender: Not used.
     @objc func HandleBBackButton(_ sender: Any)
     {
-        dismiss(animated: true, completion: nil)
+        if IsChild
+        {
+            navigationController?.popViewController(animated: true)
+        }
+        else
+        {
+            dismiss(animated: true, completion: nil)
+        }
     }
     
     @objc func HandlePersonButton(_ sender: Any)
