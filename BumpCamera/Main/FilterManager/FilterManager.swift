@@ -66,7 +66,7 @@ class FilterManager
             .Generator: [(.Grid, 0), (.SmoothLinearGradient, 1), (.CornerGradient, 2), (.Checkerboard, 3),
                          (.MetalCheckerboard, 4)],
             .Blur: [(.GaussianBlur, 0)],
-            .Measuration: [(.PixelCounter, 0)]
+            .Measuration: [(.PixelCounter, 0), (.BlockMean, 1)]
     ]
     
     public static let FilterInfoMap: [FilterTypes: (UUID, FilterKernelTypes, String)] =
@@ -125,6 +125,7 @@ class FilterManager
             .ColorMap2: (ColorMap2.ID(), ColorMap2.FilterKernel, ColorMap2.Title()),
             .Mask1: (Masking1.ID(), Masking1.FilterKernel, Masking1.Title()),
             .ShapePixellate: (ShapePixellate.ID(), ShapePixellate.FilterKernel, ShapePixellate.Title()),
+            .BlockMean: (BlockMean.ID(), BlockMean.FilterKernel, BlockMean.Title()),
     ]
     
     /// Determines if the specified filter supports the specified target type. Not all filters support all targets - slow
@@ -224,6 +225,7 @@ class FilterManager
             .ColorMap2: ColorMap2.FilterTarget(),
             .Mask1: Masking1.FilterTarget(),
             .ShapePixellate: ShapePixellate.FilterTarget(),
+            .BlockMean: BlockMean.FilterTarget(),
     ]
     
     /// Load all of the filter classes into the filter manager.
@@ -343,6 +345,7 @@ class FilterManager
         ParameterCount![.ColorMap2] = ColorMap2.SupportedFields().count
         ParameterCount![.Mask1] = Masking1.SupportedFields().count
         ParameterCount![.ShapePixellate] = ShapePixellate.SupportedFields().count
+        ParameterCount![.BlockMean] = BlockMean.SupportedFields().count
     }
     
     private static var ParameterCount: [FilterManager.FilterTypes: Int]? = nil
@@ -419,6 +422,7 @@ class FilterManager
         StoryboardList![.ColorMap2] = ColorMap2.SettingsStoryboard()
         StoryboardList![.Mask1] = Masking1.SettingsStoryboard()
         StoryboardList![.ShapePixellate] = ShapePixellate.SettingsStoryboard()
+        StoryboardList![.BlockMean] = BlockMean.SettingsStoryboard()
     }
     
     private static var StoryboardList: [FilterTypes: String?]? = nil
@@ -728,6 +732,9 @@ class FilterManager
             
         case .ShapePixellate:
             return ShapePixellate()
+            
+        case .BlockMean:
+            return BlockMean()
             
         default:
             return nil
@@ -1161,6 +1168,7 @@ class FilterManager
             .ColorMap2: "Color Map 2",
             .Mask1: "Masking 1",
             .ShapePixellate: "Shape Pixellate",
+            .BlockMean: "Block Mean",
     ]
     
     public static func GetFilterTitle(_ Filter: FilterTypes) -> String?
@@ -1236,6 +1244,7 @@ class FilterManager
             .ColorMap2: true,
             .Mask1: true,
             .ShapePixellate: true,
+            .BlockMean: true,
     ]
     
     /// Determines if the given filter type is implemented.
