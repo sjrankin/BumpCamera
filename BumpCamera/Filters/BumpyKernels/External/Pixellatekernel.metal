@@ -14,14 +14,74 @@ struct BlockInfoParameters
     uint Width;
     uint Height;
     // Highlight values: 0 = Hue, 1 = Saturation, 2 = Brightness, 3 = none
-    uint Highlight;
-    uint HighlightPixelBy;
     uint HighlightAction;
+    uint HighlightPixelBy;
+    uint BrightnessHighlight;
     float4 Highlight_Color;
     uint ColorDetermination;
     float HighlightValue;
     bool HighlightIfGreater;
 };
+
+//https://software.intel.com/en-us/ipp-dev-reference-color-models
+float4 RGBtoYCbCr(float4 Source)
+{
+    float R = Source.r * 255.0;
+    float G = Source.g * 255.0;
+    float B = Source.b * 255.0;
+    float Y = (0.257 * R) + (0.504 * G) + (0.098 * B) + 16.0;
+    float Cb = (-0.148 * R) - (0.291 * G) + (0.439 * B) + 128.0;
+    float Cr = (0.439 * R) - (0.368 * G) - (0.071 * B) + 128.0;
+    return float4(Y, Cb, Cr, 1.0);
+}
+
+//https://software.intel.com/en-us/ipp-dev-reference-color-models
+float4 YCbCrtoRGB(float4 Source)
+{
+    float R = (1.164 * (Source.r - 16.0)) + (1.596 * (Source.b - 128.0));
+    R = R / 255.0;
+    float G = (1.164 * (Source.r - 16.0)) - (0.813 * (Source.b - 128.0)) - (0.392 * (Source.g - 128.0));
+    G = G / 255.0;
+    float B = (1.164 * (Source.r - 16.0)) + (2.017 * (Source.g - 128.0));
+    B = B / 255.0;
+    return float4(R, G, B, 1.0);
+}
+
+//https://software.intel.com/en-us/ipp-dev-reference-color-models
+float4 RGBtoYUV(float4 Source)
+{
+    float Y = (0.299 * Source.r) + (0.587 * Source.g) + (0.114 * Source.b);
+    float U = (Source.b - Y) * 0.492; //or, -0.147 * R - 0.289 * G + 0.436 * B
+    float V = (Source.r - Y) * 0.877; //or, 0.615 * R - 0.515 * G - 0.100 * B
+    return float4(Y, U, V, 1.0);
+}
+
+//https://software.intel.com/en-us/ipp-dev-reference-color-models
+float4 YUVtoRGB(float4 Source)
+{
+    float R = Source.r + (1.140 * Source.b);
+    float G = Source.r - (0.394 * Source.g) - (0.581 * Source.b);
+    float B = Source.r + (2.032 * Source.g);
+    return float4(R, G, B, 1.0);
+}
+
+//https://software.intel.com/en-us/ipp-dev-reference-color-models
+float4 RGBtoXYZ(float4 Source)
+{
+    float X = (0.412453 * Source.r) + (0.35758 * Source.g) + (0.180423 * Source.b);
+    float Y = (0.212671 * Source.r) + (0.71516 * Source.g) + (0.072169 * Source.b);
+    float Z = (0.019334 * Source.r) + (0.119193 * Source.g) + (0.950227 * Source.b);
+    return float4(X, Y, Z, 1.0);
+}
+
+//https://software.intel.com/en-us/ipp-dev-reference-color-models
+float4 XYZtoRGB(float4 Source)
+{
+    float R = (3.240479 * Source.x) - (1.53715 * Source.y) - (0.498535 * Source.z);
+    float G = (-0.969256 * Source.x) + (1.875991 * Source.y) + (0.041556 * Source.z);
+    float B = (0.055648 * Source.x) - (0.204043 * Source.y) + (1.057311 * Source.z);
+    return float4(R, G, B, 1.0);
+}
 
 //https://stackoverflow.com/questions/11704664/converting-hsb-color-to-rgb-in-objective-c
 float4 HSBtoRGB(float4 Source)
@@ -133,8 +193,6 @@ float4 RGBtoHSB(float4 Source)
 // Input is HSB color to potentially modify. Output is RGB color ready to be sent to the output texture.
 float4 ApplyHighlight(float4 Source, uint Action)
 {
-    float4 RGB = HSBtoRGB(Source);
-    return float4(1.0 - RGB.r, 1.0 - RGB.g, 1.0 - RGB.b, 1.0);
     switch (Action)
     {
         case 0:
@@ -221,6 +279,7 @@ float4 ApplyHighlight(float4 Source, uint Action)
 kernel void PixellateKernel(texture2d<float, access::read> InTexture [[texture(0)]],
                             texture2d<float, access::write> OutTexture [[texture(1)]],
                             constant BlockInfoParameters &BlockInfo [[buffer(0)]],
+                            device float *Output [[buffer(1)]],
                             uint2 gid [[thread_position_in_grid]])
 {
     uint Width = BlockInfo.Width;
@@ -235,14 +294,8 @@ kernel void PixellateKernel(texture2d<float, access::read> InTexture [[texture(0
     {
         case 0:
         {
+        //Hue
         float H = HSB.r / 360.0;
-        /*
-        if (HSB.r > 1.0)
-            {
-            FinalColor = float4(1.0,1.0,0.0,1.0);
-            break;
-            }
-         */
         if (BlockInfo.HighlightIfGreater)
             {
             if (H >= BlockInfo.HighlightValue)
@@ -264,6 +317,7 @@ kernel void PixellateKernel(texture2d<float, access::read> InTexture [[texture(0
         
         case 1:
         {
+        //Saturation
         float S = HSB.g;
         if (BlockInfo.HighlightIfGreater)
             {
@@ -284,12 +338,14 @@ kernel void PixellateKernel(texture2d<float, access::read> InTexture [[texture(0
         
         case 2:
         {
+        //Brightness
         float B = HSB.b;
         if (BlockInfo.HighlightIfGreater)
             {
             if (B >= BlockInfo.HighlightValue)
                 {
                 FinalColor = ApplyHighlight(HSB, BlockInfo.HighlightAction);
+                //FinalColor = float4(1.0,1.0,0.0,1.0);
                 }
             }
         else
@@ -297,6 +353,7 @@ kernel void PixellateKernel(texture2d<float, access::read> InTexture [[texture(0
             if (B <= BlockInfo.HighlightValue)
                 {
                 FinalColor = ApplyHighlight(HSB, BlockInfo.HighlightAction);
+                //FinalColor = float4(0.0,1.0,1.0,1.0);
                 }
             }
         break;
