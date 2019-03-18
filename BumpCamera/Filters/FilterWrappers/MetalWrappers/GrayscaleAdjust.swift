@@ -244,22 +244,7 @@ class GrayscaleAdjust: FilterParent, Renderer
         
         let Start = CACurrentMediaTime()
         var CgImage = Image.cgImage
-        let ImageColorspace = CgImage?.colorSpace
-        //Handle sneaky grayscale images.
-        if ImageColorspace?.model == CGColorSpaceModel.monochrome
-        {
-            let NewColorSpace = CGColorSpaceCreateDeviceRGB()
-            let NewBMInfo = CGBitmapInfo(rawValue: CGImageAlphaInfo.noneSkipLast.rawValue)
-            let IWidth: Int = Int((CgImage?.width)!)
-            let IHeight: Int = Int((CgImage?.height)!)
-            var RawData = [UInt8](repeating: 0, count: Int(IWidth * IHeight * 4))
-            let GContext = CGContext(data: &RawData, width: IWidth, height: IHeight,
-                                     bitsPerComponent: 8, bytesPerRow: 4 * IWidth,
-                                     space: NewColorSpace, bitmapInfo: NewBMInfo.rawValue)
-            let ImageRect = CGRect(x: 0, y: 0, width: IWidth, height: IHeight)
-            GContext!.draw(CgImage!, in: ImageRect)
-            CgImage = GContext!.makeImage()
-        }
+        CgImage = AdjustForMonochrome(Image: CgImage!)
         let ImageWidth: Int = (CgImage?.width)!
         let ImageHeight: Int = (CgImage?.height)!
         var RawData = [UInt8](repeating: 0, count: Int(ImageWidth * ImageHeight * 4))
@@ -370,29 +355,6 @@ class GrayscaleAdjust: FilterParent, Renderer
             print("Error returned from Render(UIImage) in GrayscaleAdjust.Render(CIImage)")
             return nil
         }
-    }
-    
-    /// Returns the generated image. If the filter does not support generated images nil is returned.
-    ///
-    /// - Returns: Nil is always returned.
-    func Generate() -> CIImage?
-    {
-        return nil
-    }
-    
-    func Query(PixelBuffer: CVPixelBuffer, Parameters: [String: Any]) -> [String: Any]?
-    {
-        return nil
-    }
-    
-    func Query(Image: UIImage, Parameters: [String: Any]) -> [String: Any]?
-    {
-        return nil
-    }
-    
-    func Query(Image: CIImage, Parameters: [String: Any]) -> [String: Any]?
-    {
-        return nil
     }
     
     var LastUIImage: UIImage? = nil
