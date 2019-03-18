@@ -82,17 +82,17 @@ class BlockMeanSettingsUICode: FilterSettingUIBase
                 ResultsTable.reloadData()
                 return
             }
-            if let Means = Final["BlockMeans"] as? [simd_float4]
+            if let Means = Final["BlockMeans"] as? [ReturnBlockData]
             {
+                                    let PixelCount = CGFloat(CurrentBlockWidth * CurrentBlockHeight)
                 MeanResults.removeAll()
-                for Y in 0 ..< YCount!
+                for Returned in Means
                 {
-                    for X in 0 ..< XCount!
-                    {
-                        let Index = (XCount! * Y) + X
-                        let Color = UIColor.From(Float4: Means[Index])
-                        MeanResults.append((X, Y, Color))
-                    }
+                    let Red = CGFloat(Returned.Red) / PixelCount
+                    let Green = CGFloat(Returned.Green) / PixelCount
+                    let Blue = CGFloat(Returned.Blue) / PixelCount
+                    let Color = UIColor(red: Red, green: Green, blue: Blue, alpha: 1.0)
+                    MeanResults.append((Int(Returned.X), Int(Returned.Y), Color))
                 }
                 ResultsTable.reloadData()
             }
