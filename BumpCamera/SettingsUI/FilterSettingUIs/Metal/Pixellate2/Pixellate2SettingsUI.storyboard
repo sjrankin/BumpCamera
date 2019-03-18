@@ -123,6 +123,9 @@
                                                         <segment title="Center"/>
                                                         <segment title="Mean Color"/>
                                                     </segments>
+                                                    <connections>
+                                                        <action selector="HandleColorDeterminationChanged:" destination="2A2-io-Zq2" eventType="primaryActionTriggered" id="hUF-Cf-Hem"/>
+                                                    </connections>
                                                 </segmentedControl>
                                             </subviews>
                                             <constraints>
@@ -265,6 +268,7 @@
                     <connections>
                         <outlet property="BlockHeightSlider" destination="Ev0-Qm-6lO" id="JDk-ht-pp4"/>
                         <outlet property="BlockWidthSlider" destination="5eI-ht-FUp" id="K6h-Wr-fJ1"/>
+                        <outlet property="ColorDeterminationSegment" destination="AHN-EV-cQI" id="lpB-dU-tzW"/>
                         <outlet property="ConditionalLabel" destination="BFT-FT-CnW" id="hv7-Vm-Tvb"/>
                         <outlet property="HeightOut" destination="7fk-5v-xAc" id="nUq-cs-DIs"/>
                         <outlet property="MergeSwitch" destination="bdS-Ut-TOa" id="42q-A3-NZx"/>
@@ -727,7 +731,7 @@
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <pickerView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="8ky-1l-Pw8">
-                                                    <rect key="frame" x="16" y="40" width="304" height="199"/>
+                                                    <rect key="frame" x="16" y="40" width="343" height="199"/>
                                                 </pickerView>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Actions" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="OA4-nM-Piv">
                                                     <rect key="frame" x="16" y="11" width="58" height="21"/>
