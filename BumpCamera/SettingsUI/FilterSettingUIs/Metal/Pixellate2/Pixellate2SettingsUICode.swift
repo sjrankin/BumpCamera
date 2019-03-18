@@ -26,6 +26,7 @@ class Pixellate2SettingsUICode: FilterSettingUIBase, DescendentDelta
         BlockHeightSlider.addTarget(self, action: #selector(HandleHeightStoppedSliding), for: [.touchUpInside, .touchUpOutside])
         let DoMerge = ParameterManager.GetBool(From: FilterID, Field: .MergeWithBackground, Default: true)
         MergeSwitch.isOn = DoMerge
+        ColorDeterminationSegment.selectedSegmentIndex = ParameterManager.GetInt(From: FilterID, Field: .BlockColorDetermination, Default: 0)
         ShowSampleView()
     }
     
@@ -68,6 +69,13 @@ class Pixellate2SettingsUICode: FilterSettingUIBase, DescendentDelta
         ShowSampleView()
     }
     
+    @IBAction func HandleColorDeterminationChanged(_ sender: Any)
+    {
+        UpdateValue(WithValue: ColorDeterminationSegment.selectedSegmentIndex, ToField: .BlockColorDetermination)
+        ShowSampleView()
+    }
+    
+    @IBOutlet weak var ColorDeterminationSegment: UISegmentedControl!
     @IBOutlet weak var ConditionalLabel: UILabel!
     @IBOutlet weak var BlockWidthSlider: UISlider!
     @IBOutlet weak var BlockHeightSlider: UISlider!
