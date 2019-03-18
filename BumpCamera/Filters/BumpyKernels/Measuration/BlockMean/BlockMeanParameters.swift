@@ -15,3 +15,14 @@ struct BlockMeanParameters
     let Height: simd_int1
     let CalculateMean: simd_bool
 }
+
+struct ReturnBlockData
+{
+    let X: simd_int1
+    let Y: simd_int1
+    let Red: simd_float1
+    let Green: simd_float1
+    let Blue: simd_float1
+    let Alpha: simd_float1
+    let Count: simd_int1
+}
