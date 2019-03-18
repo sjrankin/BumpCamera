@@ -188,6 +188,12 @@
 		1779F3D1221833A900140EEA /* SepiaTone.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1779F3D0221833A900140EEA /* SepiaTone.swift */; };
 		1779F3D42218347800140EEA /* SepiaToneSettingsUI.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1779F3D32218347800140EEA /* SepiaToneSettingsUI.storyboard */; };
 		1779F3D62218352E00140EEA /* SepiaToneSettingsUICode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1779F3D52218352E00140EEA /* SepiaToneSettingsUICode.swift */; };
+		17854039223F6C5500DBD309 /* BlockMean.metal in Sources */ = {isa = PBXBuildFile; fileRef = 17854038223F6C5500DBD309 /* BlockMean.metal */; };
+		1785403B223F6F7A00DBD309 /* BlockMeanParameters.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1785403A223F6F7A00DBD309 /* BlockMeanParameters.swift */; };
+		1785403D223F6FC400DBD309 /* BlockMean.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1785403C223F6FC400DBD309 /* BlockMean.swift */; };
+		17854040223F73E900DBD309 /* BlockMeanSettingsUI.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1785403F223F73E900DBD309 /* BlockMeanSettingsUI.storyboard */; };
+		17854042223F761500DBD309 /* BlockMeanResultCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17854041223F761500DBD309 /* BlockMeanResultCell.swift */; };
+		17854044223F762900DBD309 /* BlockMeanSettingsUICode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17854043223F762900DBD309 /* BlockMeanSettingsUICode.swift */; };
 		17881ADB223B7961001ABE7D /* ShapePixellate.metal in Sources */ = {isa = PBXBuildFile; fileRef = 17881ADA223B7961001ABE7D /* ShapePixellate.metal */; };
 		17881ADD223B960E001ABE7D /* ShapePixellateParameters.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17881ADC223B960E001ABE7D /* ShapePixellateParameters.swift */; };
 		17881ADF223B9699001ABE7D /* ShapePixellate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17881ADE223B9699001ABE7D /* ShapePixellate.swift */; };
@@ -522,6 +528,12 @@
 		1779F3D0221833A900140EEA /* SepiaTone.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SepiaTone.swift; sourceTree = "<group>"; };
 		1779F3D32218347800140EEA /* SepiaToneSettingsUI.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = SepiaToneSettingsUI.storyboard; sourceTree = "<group>"; };
 		1779F3D52218352E00140EEA /* SepiaToneSettingsUICode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SepiaToneSettingsUICode.swift; sourceTree = "<group>"; };
+		17854038223F6C5500DBD309 /* BlockMean.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = BlockMean.metal; sourceTree = "<group>"; };
+		1785403A223F6F7A00DBD309 /* BlockMeanParameters.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlockMeanParameters.swift; sourceTree = "<group>"; };
+		1785403C223F6FC400DBD309 /* BlockMean.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlockMean.swift; sourceTree = "<group>"; };
+		1785403F223F73E900DBD309 /* BlockMeanSettingsUI.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = BlockMeanSettingsUI.storyboard; sourceTree = "<group>"; };
+		17854041223F761500DBD309 /* BlockMeanResultCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlockMeanResultCell.swift; sourceTree = "<group>"; };
+		17854043223F762900DBD309 /* BlockMeanSettingsUICode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlockMeanSettingsUICode.swift; sourceTree = "<group>"; };
 		17881ADA223B7961001ABE7D /* ShapePixellate.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = ShapePixellate.metal; sourceTree = "<group>"; };
 		17881ADC223B960E001ABE7D /* ShapePixellateParameters.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShapePixellateParameters.swift; sourceTree = "<group>"; };
 		17881ADE223B9699001ABE7D /* ShapePixellate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShapePixellate.swift; sourceTree = "<group>"; };
@@ -1505,6 +1517,25 @@
 			path = SepiaTone;
 			sourceTree = "<group>";
 		};
+		17854037223F6C2500DBD309 /* BlockMean */ = {
+			isa = PBXGroup;
+			children = (
+				17854038223F6C5500DBD309 /* BlockMean.metal */,
+				1785403A223F6F7A00DBD309 /* BlockMeanParameters.swift */,
+			);
+			path = BlockMean;
+			sourceTree = "<group>";
+		};
+		1785403E223F73D300DBD309 /* BlockMean */ = {
+			isa = PBXGroup;
+			children = (
+				1785403F223F73E900DBD309 /* BlockMeanSettingsUI.storyboard */,
+				17854041223F761500DBD309 /* BlockMeanResultCell.swift */,
+				17854043223F762900DBD309 /* BlockMeanSettingsUICode.swift */,
+			);
+			path = BlockMean;
+			sourceTree = "<group>";
+		};
 		17881AD9223B7905001ABE7D /* ShapePixellate */ = {
 			isa = PBXGroup;
 			children = (
@@ -1925,6 +1956,7 @@
 		17FA648D2234A67E0060D5CA /* Measuration */ = {
 			isa = PBXGroup;
 			children = (
+				17854037223F6C2500DBD309 /* BlockMean */,
 				175A332A222E98E400670547 /* ImageScan */,
 				17110DDA221E960500223990 /* FindPixel */,
 				17FA64912234C4B90060D5CA /* PixelCounter */,
@@ -1954,6 +1986,7 @@
 			isa = PBXGroup;
 			children = (
 				17FA64942234CA380060D5CA /* PixelCounter.swift */,
+				1785403C223F6FC400DBD309 /* BlockMean.swift */,
 			);
 			path = Measuration;
 			sourceTree = "<group>";
@@ -1961,6 +1994,7 @@
 		17FA64992234DAAB0060D5CA /* Measuration */ = {
 			isa = PBXGroup;
 			children = (
+				1785403E223F73D300DBD309 /* BlockMean */,
 				17FA649A2234DAB40060D5CA /* PixelCounter */,
 			);
 			path = Measuration;
@@ -2078,6 +2112,7 @@
 				17E15FEF220575DD0037B35F /* MirroringFilterSettingsUI.storyboard in Resources */,
 				17E15FEA220562890037B35F /* DesaturateSettingsUI.storyboard in Resources */,
 				17787F072202DC2A00D15761 /* ChannelMixerSettingsUI.storyboard in Resources */,
+				17854040223F73E900DBD309 /* BlockMeanSettingsUI.storyboard in Resources */,
 				17E10F02220B24040041EC42 /* SolarizeSettingsUI2.storyboard in Resources */,
 				171E542E21E44E180045ED77 /* Assets.xcassets in Resources */,
 				17787F022202C43900D15761 /* HSBFilterSettingsUI.storyboard in Resources */,
@@ -2152,6 +2187,7 @@
 				17F9A2D62238E406000A0369 /* MaskingKernel.metal in Sources */,
 				17D7510E21F41ACD0050A2B5 /* MainUISettings.swift in Sources */,
 				1740CEC62216A4A300BFD1A0 /* LicensingList.swift in Sources */,
+				17854039223F6C5500DBD309 /* BlockMean.metal in Sources */,
 				17D7512021F466AE0050A2B5 /* RosyEffect.metal in Sources */,
 				178CF92621F5B98D007229FD /* ParameterManager.swift in Sources */,
 				17D7511C21F462CE0050A2B5 /* MinMaxFromBuffer.m in Sources */,
@@ -2233,6 +2269,7 @@
 				17FF72CD2236076C00670977 /* GradientStopCell.swift in Sources */,
 				17F2369B22152A4B0091B865 /* PredefinedColorGroup.swift in Sources */,
 				173F632D21FFFBEE006CB67C /* BlockInfoParameters.swift in Sources */,
+				1785403D223F6FC400DBD309 /* BlockMean.swift in Sources */,
 				1779F3D62218352E00140EEA /* SepiaToneSettingsUICode.swift in Sources */,
 				17CE37402213C38F0070ED87 /* ColorSpaceGradient.swift in Sources */,
 				171D626421EDBE4B004D3545 /* RenderPacket.swift in Sources */,
@@ -2268,6 +2305,7 @@
 				171D625E21EDB446004D3545 /* PassThrough.metal in Sources */,
 				17EC44D421F05B6600197804 /* FilterSelectorBlock.swift in Sources */,
 				17C7F4BB22255F77001F05F3 /* MainUIModes.swift in Sources */,
+				17854044223F762900DBD309 /* BlockMeanSettingsUICode.swift in Sources */,
 				1756CE1421FD87CB00C4E638 /* HSBSwizzling.metal in Sources */,
 				17E15FF822058C5A0037B35F /* MirroringFilterSettingsUICode.swift in Sources */,
 				171F3D04220AB0470098E2B7 /* LineOverlaySettingsUICode.swift in Sources */,
@@ -2366,6 +2404,7 @@
 				1791A07E222AC23E007AF021 /* GSliderProtocol.swift in Sources */,
 				175A332C222E98F800670547 /* ImageScan.metal in Sources */,
 				17F51B0321E9E86F00843092 /* Times.swift in Sources */,
+				17854042223F761500DBD309 /* BlockMeanResultCell.swift in Sources */,
 				17D7510A21F414390050A2B5 /* MainUILabelManagement.swift in Sources */,
 				1779F3CD2218314A00140EEA /* ProcessEffect.swift in Sources */,
 				171E639E222A5FEE003E03E6 /* ColorPicker2Code.swift in Sources */,
@@ -2386,6 +2425,7 @@
 				17C392672215A5CB0049B8FD /* DilateErodeSettingsUICode.swift in Sources */,
 				1764FA8A21F1E6F90059FAFD /* FilterSettings.swift in Sources */,
 				1797BCF82222CFD800C47510 /* ManageFilterRatingsCode.swift in Sources */,
+				1785403B223F6F7A00DBD309 /* BlockMeanParameters.swift in Sources */,
 				17D7511921F461DA0050A2B5 /* DepthToGrayscaleConverter.swift in Sources */,
 				17BEE0B421FC2F8500A9370B /* DesaturationKernelParameters.swift in Sources */,
 				17BA12E62227970B0035A1FC /* CheckerboardGeneratorSettingsUICode.swift in Sources */,
