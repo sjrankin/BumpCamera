@@ -144,8 +144,8 @@ class GridGenerator: FilterParent, Renderer
                                        InvertGridColor: simd_bool(InvertGColor),
                                        InvertBackgroundColor: simd_bool(InvertBGColor))
         let Parameters = [Parameter]
-        ParameterBuffer = MetalDevice!.makeBuffer(length: MemoryLayout<GridParameters>.size, options: [])
-        memcpy(ParameterBuffer.contents(), Parameters, MemoryLayout<GridParameters>.size)
+        ParameterBuffer = MetalDevice!.makeBuffer(length: MemoryLayout<GridParameters>.stride, options: [])
+        memcpy(ParameterBuffer.contents(), Parameters, MemoryLayout<GridParameters>.stride)
         
         var NewPixelBuffer: CVPixelBuffer? = nil
         CVPixelBufferPoolCreatePixelBuffer(kCFAllocatorDefault, BufferPool!, &NewPixelBuffer)
