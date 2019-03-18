@@ -276,6 +276,8 @@ class BlockMean: FilterParent, Renderer
             print("Error creating input texture in Query.")
             return nil
         }
+        let Region = MTLRegionMake2D(0, 0, Int(ImageWidth), Int(ImageHeight))
+        Texture.replace(region: Region, mipmapLevel: 0, withBytes: &RawData, bytesPerRow: Int((CgImage?.bytesPerRow)!))
         
         let CommandBuffer = ImageCommandQueue?.makeCommandBuffer()
         let CommandEncoder = CommandBuffer?.makeComputeCommandEncoder()
@@ -287,9 +289,11 @@ class BlockMean: FilterParent, Renderer
         let HorizontalBlocks = ceil(Double(ImageWidth) / Double(BlockWidth))
         let VerticalBlocks = ceil(Double(ImageHeight) / Double(BlockHeight))
         let BufferCount = Int(HorizontalBlocks * VerticalBlocks)
-        let MeanBuffer = [simd_float4](repeating: simd_float4(0.0, 0.0, 0.0, 0.0), count: BufferCount)
+        let MeanBuffer = [ReturnBlockData](repeating:
+            ReturnBlockData(X: -1, Y: -1, Red: simd_float1(0.0), Green: simd_float1(0.0), Blue: simd_float1(0.0), Alpha: simd_float1(0.0), Count: simd_int1(0)),
+                                           count: BufferCount)
         let MeanBufferPtr = UnsafePointer(MeanBuffer)
-        let MeanBufferSize = MemoryLayout<simd_float4>.stride * BufferCount
+        let MeanBufferSize = MemoryLayout<ReturnBlockData>.stride * BufferCount
         let FinalMeanBuffer = MetalDevice!.makeBuffer(bytes: MeanBufferPtr, length: MeanBufferSize, options: [])
         
         let Parameter = BlockMeanParameters(Width: simd_int1(BlockWidth),
@@ -301,7 +305,7 @@ class BlockMean: FilterParent, Renderer
         CommandEncoder?.setBuffer(ParameterBuffer, offset: 0, index: 0)
         CommandEncoder?.setBuffer(FinalMeanBuffer, offset: 0, index: 1)
         
-        let ResultsCount = 1000
+        let ResultsCount = 10000
         let ResultsBuffer = MetalDevice!.makeBuffer(length: MemoryLayout<ReturnBufferType>.stride * ResultsCount, options: [])
         let Results = UnsafeBufferPointer<ReturnBufferType>(start: UnsafePointer(ResultsBuffer!.contents().assumingMemoryBound(to: ReturnBufferType.self)),
                                                             count: ResultsCount)
@@ -327,19 +331,23 @@ class BlockMean: FilterParent, Renderer
         CommandBuffer?.commit()
         CommandBuffer?.waitUntilCompleted()
         
-        let FilterResults = ResultsBuffer?.contents().bindMemory(to: Float.self, capacity: 1000)
-        var FinalFilterResults = [Float](repeating: 0.0, count: 1000)
-        for i in 0 ... 9
+        let FilterResults = ResultsBuffer?.contents().bindMemory(to: Float.self, capacity: 10000)
+        var FinalFilterResults = [Float](repeating: 0.0, count: 10000)
+        for i in 0 ..< 10000
         {
             FinalFilterResults[i] = FilterResults![i]
         }
         
-        let MeanResults = FinalMeanBuffer?.contents().bindMemory(to: simd_float4.self, capacity: MeanBufferSize)//BufferCount)
-        var MeanValues = [simd_float4]()
+        let MeanResults = FinalMeanBuffer?.contents().bindMemory(to: ReturnBlockData.self, capacity: MeanBufferSize)//BufferCount)
+        var MeanValues = [ReturnBlockData]()
         for i in 0 ..< BufferCount
         {
             MeanValues.append(MeanResults![i])
         }
+        //Remove invalid values.
+        MeanValues.removeAll(where: {$0.X < 0 || $0.Y < 0})
+        //Sort by X then Y within X.
+        MeanValues.sort{$0.X == $1.X ? $0.Y < $1.Y : $0.X < $1.X}
         var FinalResults = [String: Any]()
         FinalResults["BlockMeans"] = MeanValues
         FinalResults["HorizontalBlocks"] = HorizontalBlocks
