@@ -32,6 +32,8 @@ class FilterSettingUIBase: UITableViewController,
     var SampleViewImage: UIImage? = nil
     var IsChild: Bool = false
     
+    let TableTag: Int = 85385970
+    
     /// Initializes the base class.
     ///
     /// - Parameters:
@@ -44,6 +46,7 @@ class FilterSettingUIBase: UITableViewController,
                     IsChildDialog: Bool = false)
     {
         print("\(FilterType) start at \(CACurrentMediaTime())")
+        self.tableView.tag = TableTag
         let Start = CACurrentMediaTime()
         Filter = FilterType
         FilterID = FilterManager.FilterInfoMap[Filter]!.0
@@ -87,17 +90,12 @@ class FilterSettingUIBase: UITableViewController,
             SampleView.isUserInteractionEnabled = true
             ShowSampleView()
         }
-        #if false
-        let Cell = RatingCell(style: UITableViewCell.CellStyle.default, reuseIdentifier: "RatingCell")
-        Cell.SetData(FilterType: Filter)
-        tableView.tableFooterView = Cell
-        #endif
         
         let End = CACurrentMediaTime()
         print("FilterSettingUIBase(Filter) start-up duration: \(End - Start) seconds")
     }
     
-    /// Load common UI elements. Specifically, the Back, Action, and Camera Home buttons are added.
+    /// Load common UI elements. Specifically, the Back, Action, and toolbar buttons are added.
     /// - Note: For some reason, if you don't have any buttons in the toolbar, this function is not able to add new buttons. So, it
     ///         is important that when you create a filter settings UI you leave at least one dummy item in the toolbar or no
     ///         buttons will appear at run time. (This function will remove all original buttons so the dummy button/item will be
@@ -288,13 +286,6 @@ class FilterSettingUIBase: UITableViewController,
         }
     }
     
-    /// Handle presses of the camera home button.
-    ///
-    /// - Parameter sender: Not used.
-    @objc func HandleCameraHomeBButton(_ sender: Any)
-    {
-    }
-    
     /// Handle presses of the back button - returns to the calling view controller.
     ///
     /// - Parameter sender: Not used.
@@ -310,6 +301,9 @@ class FilterSettingUIBase: UITableViewController,
         }
     }
     
+    /// Handle the person button press by showing a menu of options related to the sample image.
+    ///
+    /// - Parameter sender: Not used.
     @objc func HandlePersonButton(_ sender: Any)
     {
         let Alert = UIAlertController(title: "Manage Sample Image",
@@ -333,7 +327,14 @@ class FilterSettingUIBase: UITableViewController,
     /// - Returns: Previously created UIImageView where the sample image lives.
     override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView
     {
-        return SampleView
+        if tableView.tag == TableTag
+        {
+            return SampleView
+        }
+        else
+        {
+            return UIView()
+        }
     }
     
     /// Set the size of the header row. The header row is where the sample image is displayed. It's displayed
@@ -348,7 +349,14 @@ class FilterSettingUIBase: UITableViewController,
     /// - Returns: The vertical height of the header row.
     override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat
     {
-        return 180.0
+        if tableView.tag == TableTag
+        {
+            return 180.0
+        }
+        else
+        {
+            return 0.0
+        }
     }
     #endif
     
@@ -388,8 +396,8 @@ class FilterSettingUIBase: UITableViewController,
         {
             if DoEnableSelect
             {
-                let Tap = UITapGestureRecognizer(target: self, action: #selector(HandleSampleSelection))
-                SampleView.addGestureRecognizer(Tap)
+                //let Tap = UITapGestureRecognizer(target: self, action: #selector(HandleSampleSelection))
+                //SampleView.addGestureRecognizer(Tap)
                 let LeftSwipe = UISwipeGestureRecognizer(target: self, action: #selector(HandleSampleChange))
                 LeftSwipe.direction = UISwipeGestureRecognizer.Direction.left
                 SampleView.addGestureRecognizer(LeftSwipe)
