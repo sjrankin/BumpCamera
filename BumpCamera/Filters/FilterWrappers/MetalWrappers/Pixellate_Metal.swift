@@ -140,19 +140,24 @@ class Pixellate_Metal: FilterParent, Renderer
         let FinalWidth = ParameterManager.GetInt(From: ID(), Field: .BlockWidth, Default: 20)
         let FinalHeight = ParameterManager.GetInt(From: ID(), Field: .BlockHeight, Default: 20)
         let HAction = ParameterManager.GetInt(From: ID(), Field: .PixelHighlightAction, Default: 0)
-        print("HAction = \(HAction)")
         let HValue = ParameterManager.GetDouble(From: ID(), Field: .PixelHighlightActionValue, Default: 0.5)
         let HIfGreat = ParameterManager.GetBool(From: ID(), Field: .PixelHighlightActionIfGreater, Default: true)
         let HBy = ParameterManager.GetInt(From: ID(), Field: .PixellationHighlighting, Default: 3)
+        let CDet = ParameterManager.GetInt(From: ID(), Field: .BlockColorDetermination, Default: 0)
         let Buffer0 = BlockInfoParameters(Width: simd_uint1(FinalWidth), Height: simd_uint1(FinalHeight),
                                           HighlightAction: simd_uint1(HAction), HighlightPixelBy: simd_uint1(HBy),
                                           BrightnessHighlight: simd_uint1(0),
                                           HighlightColor: UIColor.yellow.ToFloat4(),
-                                          ColorDetermination: simd_uint1(0), HighlightValue: simd_float1(HValue),
+                                          ColorDetermination: simd_uint1(CDet), HighlightValue: simd_float1(HValue),
                                           HighlightIfGreater: simd_bool(HIfGreat))
         let Buffers = [Buffer0]
         ParameterBuffer = MetalDevice!.makeBuffer(length: MemoryLayout<BlockInfoParameters>.stride, options: [])
         memcpy(ParameterBuffer?.contents(), Buffers, MemoryLayout<BlockInfoParameters>.stride)
+        
+        let ResultCount = 10
+        let ResultsBuffer = MetalDevice!.makeBuffer(length: MemoryLayout<ReturnBufferType>.stride * ResultCount, options: [])
+        let Results = UnsafeBufferPointer<ReturnBufferType>(start: UnsafePointer(ResultsBuffer!.contents().assumingMemoryBound(to: ReturnBufferType.self)),
+                                                            count: ResultCount)
         
         var NewPixelBuffer: CVPixelBuffer? = nil
         CVPixelBufferPoolCreatePixelBuffer(kCFAllocatorDefault, BufferPool!, &NewPixelBuffer)
@@ -183,6 +188,7 @@ class Pixellate_Metal: FilterParent, Renderer
         CommandEncoder.setTexture(InputTexture, index: 0)
         CommandEncoder.setTexture(OutputTexture, index: 1)
         CommandEncoder.setBuffer(ParameterBuffer, offset: 0, index: 0)
+        CommandEncoder.setBuffer(ResultsBuffer, offset: 0, index: 1)
         
         let w = ComputePipelineState!.threadExecutionWidth
         let h = ComputePipelineState!.maxTotalThreadsPerThreadgroup / w
@@ -279,6 +285,11 @@ class Pixellate_Metal: FilterParent, Renderer
             return nil
         }
         
+        let ResultCount = 10
+        let ResultsBuffer = MetalDevice!.makeBuffer(length: MemoryLayout<ReturnBufferType>.stride * ResultCount, options: [])
+        let Results = UnsafeBufferPointer<ReturnBufferType>(start: UnsafePointer(ResultsBuffer!.contents().assumingMemoryBound(to: ReturnBufferType.self)),
+                                                            count: ResultCount)
+        
         let Region = MTLRegionMake2D(0, 0, Int(ImageWidth), Int(ImageHeight))
         Texture.replace(region: Region, mipmapLevel: 0, withBytes: &RawData, bytesPerRow: Int((CgImage?.bytesPerRow)!))
         let OutputTextureDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: Texture.pixelFormat,
@@ -292,6 +303,7 @@ class Pixellate_Metal: FilterParent, Renderer
         CommandEncoder?.setComputePipelineState(ImageComputePipelineState!)
         CommandEncoder?.setTexture(Texture, index: 0)
         CommandEncoder?.setTexture(OutputTexture, index: 1)
+        CommandEncoder?.setBuffer(ResultsBuffer, offset: 0, index: 1)
         
         let FinalWidth = ParameterManager.GetInt(From: ID(), Field: .BlockWidth, Default: 20)
         let FinalHeight = ParameterManager.GetInt(From: ID(), Field: .BlockHeight, Default: 20)
@@ -299,11 +311,12 @@ class Pixellate_Metal: FilterParent, Renderer
         let HValue = ParameterManager.GetDouble(From: ID(), Field: .PixelHighlightActionValue, Default: 0.5)
         let HIfGreat = ParameterManager.GetBool(From: ID(), Field: .PixelHighlightActionIfGreater, Default: true)
         let HBy = ParameterManager.GetInt(From: ID(), Field: .PixellationHighlighting, Default: 3)
+                let CDet = ParameterManager.GetInt(From: ID(), Field: .BlockColorDetermination, Default: 0)
         let Buffer0 = BlockInfoParameters(Width: simd_uint1(FinalWidth), Height: simd_uint1(FinalHeight),
                                           HighlightAction: simd_uint1(HAction), HighlightPixelBy: simd_uint1(HBy),
                                           BrightnessHighlight: simd_uint1(0),
                                           HighlightColor: UIColor.yellow.ToFloat4(),
-                                          ColorDetermination: simd_uint1(0), HighlightValue: simd_float1(HValue),
+                                          ColorDetermination: simd_uint1(CDet), HighlightValue: simd_float1(HValue),
                                           HighlightIfGreater: simd_bool(HIfGreat))
         let Buffers = [Buffer0]
         ImageParameterBuffer = MetalDevice!.makeBuffer(length: MemoryLayout<BlockInfoParameters>.stride, options: [])
