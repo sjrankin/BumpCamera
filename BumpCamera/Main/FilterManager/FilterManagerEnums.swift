@@ -86,6 +86,7 @@ extension FilterManager
         case ColorMap2 = 59
         case Mask1 = 60
         case ShapePixellate = 61
+        case BlockMean = 62
         case NotSet = 10000
     }
     
