@@ -217,19 +217,26 @@ class FilterParent
     /// Return a metal texture from a pixel buffer.
     ///
     /// - Parameters:
-    ///   - pixelBuffer: The pixel buffer that serves as the source for the resultant metal texture.
-    ///   - textureFormat: Format description of the texture.
+    ///   - PixelBuffer: The pixel buffer that serves as the source for the resultant metal texture.
+    ///   - TextureFormat: Format description of the texture.
     /// - Returns: Metal texture with the contents as the pixel buffer.
-    func MakeTextureFromCVPixelBuffer(pixelBuffer: CVPixelBuffer, textureFormat: MTLPixelFormat) -> MTLTexture?
+    func MakeTextureFromCVPixelBuffer(PixelBuffer: CVPixelBuffer, TextureFormat: MTLPixelFormat) -> MTLTexture?
     {
-        let width = CVPixelBufferGetWidth(pixelBuffer)
-        let height = CVPixelBufferGetHeight(pixelBuffer)
+        let Width = CVPixelBufferGetWidth(PixelBuffer)
+        let Height = CVPixelBufferGetHeight(PixelBuffer)
         
         // Create a Metal texture from the image buffer
         var cvTextureOut: CVMetalTexture?
-        CVMetalTextureCacheCreateTextureFromImage(kCFAllocatorDefault, TextureCache, pixelBuffer, nil, textureFormat, width, height, 0, &cvTextureOut)
+        let Result = CVMetalTextureCacheCreateTextureFromImage(kCFAllocatorDefault, TextureCache, PixelBuffer, nil,
+                                                               TextureFormat, Width, Height, 0, &cvTextureOut)
+        if Result != kCVReturnSuccess
+        {
+            print("Error returned by CVMetalTextureCacheCreateTextureFromImage")
+            return nil
+        }
         
-        guard let cvTexture = cvTextureOut, let texture = CVMetalTextureGetTexture(cvTexture) else {
+        guard let cvTexture = cvTextureOut, let texture = CVMetalTextureGetTexture(cvTexture) else
+        {
             CVMetalTextureCacheFlush(TextureCache, 0)
             return nil
         }
