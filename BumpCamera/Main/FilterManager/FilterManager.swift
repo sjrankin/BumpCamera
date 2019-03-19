@@ -51,7 +51,7 @@ class FilterManager
                         (.LineOverlay, 9), (.EdgeWork, 10), (.Posterize, 14), (.Pointillize, 13)],
             .Combined: [(.CircleAndLines, 0)],
             .Effects: [(.PixellateMetal, 0), (.ShapePixellate, 1), (.DilateErode, 2), (.Kuwahara, 3),
-                       (.Silhouette, 4), (.BayerDecode, 5)],
+                       (.Silhouette, 4), (.Sobel, 5), (.BayerDecode, 6)],
             .PhotoEffects: [(.Noir, 0), (.Chrome, 1), (.Vibrance, 2), (.XRay, 3), (.Instant, 4), (.ProcessEffect, 5),
                             (.TransferEffect, 6), (.SepiaTone, 7), (.Thermal, 8), (.TemperatureAndTint, 9),
                             (.Tonal, 10),],
@@ -126,6 +126,7 @@ class FilterManager
             .Mask1: (Masking1.ID(), Masking1.FilterKernel, Masking1.Title()),
             .ShapePixellate: (ShapePixellate.ID(), ShapePixellate.FilterKernel, ShapePixellate.Title()),
             .BlockMean: (BlockMean.ID(), BlockMean.FilterKernel, BlockMean.Title()),
+            .Sobel: (Sobel.ID(), Sobel.FilterKernel, Sobel.Title()),
     ]
     
     /// Determines if the specified filter supports the specified target type. Not all filters support all targets - slow
@@ -226,6 +227,7 @@ class FilterManager
             .Mask1: Masking1.FilterTarget(),
             .ShapePixellate: ShapePixellate.FilterTarget(),
             .BlockMean: BlockMean.FilterTarget(),
+            .Sobel: Sobel.FilterTarget(),
     ]
     
     /// Load all of the filter classes into the filter manager.
@@ -346,6 +348,7 @@ class FilterManager
         ParameterCount![.Mask1] = Masking1.SupportedFields().count
         ParameterCount![.ShapePixellate] = ShapePixellate.SupportedFields().count
         ParameterCount![.BlockMean] = BlockMean.SupportedFields().count
+        ParameterCount![.Sobel] = Sobel.SupportedFields().count
     }
     
     private static var ParameterCount: [FilterManager.FilterTypes: Int]? = nil
@@ -423,6 +426,7 @@ class FilterManager
         StoryboardList![.Mask1] = Masking1.SettingsStoryboard()
         StoryboardList![.ShapePixellate] = ShapePixellate.SettingsStoryboard()
         StoryboardList![.BlockMean] = BlockMean.SettingsStoryboard()
+        StoryboardList![.Sobel] = Sobel.SettingsStoryboard()
     }
     
     private static var StoryboardList: [FilterTypes: String?]? = nil
@@ -735,6 +739,9 @@ class FilterManager
             
         case .BlockMean:
             return BlockMean()
+            
+        case .Sobel:
+            return Sobel()
             
         default:
             return nil
@@ -1169,6 +1176,7 @@ class FilterManager
             .Mask1: "Masking 1",
             .ShapePixellate: "Shape Pixellate",
             .BlockMean: "Block Mean",
+            .Sobel: "Sobel",
     ]
     
     public static func GetFilterTitle(_ Filter: FilterTypes) -> String?
@@ -1245,6 +1253,7 @@ class FilterManager
             .Mask1: true,
             .ShapePixellate: true,
             .BlockMean: true,
+            .Sobel: true,
     ]
     
     /// Determines if the given filter type is implemented.
