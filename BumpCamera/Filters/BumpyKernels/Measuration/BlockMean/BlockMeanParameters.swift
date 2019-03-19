@@ -13,7 +13,11 @@ struct BlockMeanParameters
 {
     let Width: simd_int1
     let Height: simd_int1
-    let CalculateMean: simd_bool
+    let BlockStride: simd_int1
+    let OriginX: simd_int1
+    let OriginY: simd_int1
+    let RegionWidth: simd_int1
+    let RegionHeight: simd_int1
 }
 
 struct ReturnBlockData
