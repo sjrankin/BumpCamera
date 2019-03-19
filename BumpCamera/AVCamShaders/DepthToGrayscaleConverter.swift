@@ -162,8 +162,8 @@ class DepthToGrayscaleConverter
             return nil
         }
         
-        guard let outputTexture = makeTextureFromCVPixelBuffer(pixelBuffer: outputPixelBuffer, textureFormat: .bgra8Unorm),
-            let inputTexture = makeTextureFromCVPixelBuffer(pixelBuffer: pixelBuffer, textureFormat: inputTextureFormat) else
+        guard let outputTexture = MakeTextureFromCVPixelBuffer(PixelBuffer: outputPixelBuffer, TextureFormat: .bgra8Unorm), 
+            let inputTexture = MakeTextureFromCVPixelBuffer(PixelBuffer: pixelBuffer, TextureFormat: inputTextureFormat) else
         {
                 return nil
         }
@@ -213,14 +213,14 @@ class DepthToGrayscaleConverter
         return outputPixelBuffer
     }
     
-    func makeTextureFromCVPixelBuffer(pixelBuffer: CVPixelBuffer, textureFormat: MTLPixelFormat) -> MTLTexture?
+    func MakeTextureFromCVPixelBuffer(PixelBuffer: CVPixelBuffer, TextureFormat: MTLPixelFormat) -> MTLTexture?
     {
-        let width = CVPixelBufferGetWidth(pixelBuffer)
-        let height = CVPixelBufferGetHeight(pixelBuffer)
+        let width = CVPixelBufferGetWidth(PixelBuffer)
+        let height = CVPixelBufferGetHeight(PixelBuffer)
         
         // Create a Metal texture from the image buffer
         var cvTextureOut: CVMetalTexture?
-        CVMetalTextureCacheCreateTextureFromImage(kCFAllocatorDefault, textureCache, pixelBuffer, nil, textureFormat, width, height, 0, &cvTextureOut)
+        CVMetalTextureCacheCreateTextureFromImage(kCFAllocatorDefault, textureCache, PixelBuffer, nil, TextureFormat, width, height, 0, &cvTextureOut)
         guard let cvTexture = cvTextureOut, let texture = CVMetalTextureGetTexture(cvTexture) else
         {
             print("Depth converter failed to create preview texture")

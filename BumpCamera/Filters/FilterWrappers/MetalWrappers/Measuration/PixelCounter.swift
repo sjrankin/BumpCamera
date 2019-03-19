@@ -208,7 +208,7 @@ class PixelCounter: FilterParent, Renderer
         ParameterBuffer = MetalDevice!.makeBuffer(length: MemoryLayout<PixelCounterParameters>.stride, options: [])
         memcpy(ParameterBuffer.contents(), Parameters, MemoryLayout<PixelCounterParameters>.stride)
         
-        guard let InputTexture = MakeTextureFromCVPixelBuffer(pixelBuffer: PixelBuffer, textureFormat: .bgra8Unorm) else
+        guard let InputTexture = MakeTextureFromCVPixelBuffer(PixelBuffer: PixelBuffer, TextureFormat: .bgra8Unorm) else
         {
             print("Error creating textures in PixelCounter.")
             return nil

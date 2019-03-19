@@ -158,8 +158,8 @@ class MetalCheckerboard: FilterParent, Renderer
             return nil
         }
         
-        guard let InputTexture = MakeTextureFromCVPixelBuffer(pixelBuffer: PixelBuffer, textureFormat: .bgra8Unorm),
-            let OutputTexture = MakeTextureFromCVPixelBuffer(pixelBuffer: OutputBuffer, textureFormat: .bgra8Unorm) else
+        guard let InputTexture = MakeTextureFromCVPixelBuffer(PixelBuffer: PixelBuffer, TextureFormat: .bgra8Unorm),
+            let OutputTexture = MakeTextureFromCVPixelBuffer(PixelBuffer: OutputBuffer, TextureFormat: .bgra8Unorm) else
         {
             print("Error creating textures in MetalCheckerboard.")
             return nil
@@ -383,7 +383,7 @@ class MetalCheckerboard: FilterParent, Renderer
         var DummyTexture: MTLTexture!
         if let DummyBuffer = GetPixelBufferFrom(DummyImage)
         {
-            DummyTexture = MakeTextureFromCVPixelBuffer(pixelBuffer: DummyBuffer, textureFormat: .bgra8Unorm)
+            DummyTexture = MakeTextureFromCVPixelBuffer(PixelBuffer: DummyBuffer, TextureFormat: .bgra8Unorm)
         }
         else
         {

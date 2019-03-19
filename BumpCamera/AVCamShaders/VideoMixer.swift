@@ -23,7 +23,8 @@ class VideoMixer
                                   outputRetainedBufferCountHint: Int) ->(
         outputBufferPool: CVPixelBufferPool?,
         outputColorSpace: CGColorSpace?,
-        outputFormatDescription: CMFormatDescription?) {
+        outputFormatDescription: CMFormatDescription?)
+    {
             
             let inputMediaSubType = CMFormatDescriptionGetMediaSubType(inputFormatDescription)
             if inputMediaSubType != kCVPixelFormatType_32BGRA {
@@ -41,26 +42,31 @@ class VideoMixer
             
             // Get pixel buffer attributes and color space from the input format description
             var cgColorSpace = CGColorSpaceCreateDeviceRGB()
-            if let inputFormatDescriptionExtension = CMFormatDescriptionGetExtensions(inputFormatDescription) as Dictionary? {
+            if let inputFormatDescriptionExtension = CMFormatDescriptionGetExtensions(inputFormatDescription) as Dictionary?
+            {
                 let colorPrimaries = inputFormatDescriptionExtension[kCVImageBufferColorPrimariesKey]
                 
                 if let colorPrimaries = colorPrimaries {
                     var colorSpaceProperties: [String: AnyObject] = [kCVImageBufferColorPrimariesKey as String: colorPrimaries]
                     
-                    if let yCbCrMatrix = inputFormatDescriptionExtension[kCVImageBufferYCbCrMatrixKey] {
+                    if let yCbCrMatrix = inputFormatDescriptionExtension[kCVImageBufferYCbCrMatrixKey]
+                    {
                         colorSpaceProperties[kCVImageBufferYCbCrMatrixKey as String] = yCbCrMatrix
                     }
                     
-                    if let transferFunction = inputFormatDescriptionExtension[kCVImageBufferTransferFunctionKey] {
+                    if let transferFunction = inputFormatDescriptionExtension[kCVImageBufferTransferFunctionKey]
+                    {
                         colorSpaceProperties[kCVImageBufferTransferFunctionKey as String] = transferFunction
                     }
                     
                     pixelBufferAttributes[kCVBufferPropagatedAttachmentsKey as String] = colorSpaceProperties
                 }
                 
-                if let cvColorspace = inputFormatDescriptionExtension[kCVImageBufferCGColorSpaceKey] {
+                if let cvColorspace = inputFormatDescriptionExtension[kCVImageBufferCGColorSpaceKey]
+                {
                     cgColorSpace = cvColorspace as! CGColorSpace
-                } else if (colorPrimaries as? String) == (kCVImageBufferColorPrimaries_P3_D65 as String) {
+                } else if (colorPrimaries as? String) == (kCVImageBufferColorPrimaries_P3_D65 as String)
+                {
                     cgColorSpace = CGColorSpace(name: CGColorSpace.displayP3)!
                 }
             }
@@ -69,7 +75,8 @@ class VideoMixer
             let poolAttributes = [kCVPixelBufferPoolMinimumBufferCountKey as String: outputRetainedBufferCountHint]
             var cvPixelBufferPool: CVPixelBufferPool?
             CVPixelBufferPoolCreate(kCFAllocatorDefault, poolAttributes as NSDictionary?, pixelBufferAttributes as NSDictionary?, &cvPixelBufferPool)
-            guard let pixelBufferPool = cvPixelBufferPool else {
+            guard let pixelBufferPool = cvPixelBufferPool else
+            {
                 assertionFailure("Allocation failure: Could not allocate pixel buffer pool")
                 return (nil, nil, nil)
             }
@@ -81,7 +88,8 @@ class VideoMixer
             var outputFormatDescription: CMFormatDescription?
             let auxAttributes = [kCVPixelBufferPoolAllocationThresholdKey as String: outputRetainedBufferCountHint] as NSDictionary
             CVPixelBufferPoolCreatePixelBufferWithAuxAttributes(kCFAllocatorDefault, pixelBufferPool, auxAttributes, &pixelBuffer)
-            if let pixelBuffer = pixelBuffer {
+            if let pixelBuffer = pixelBuffer
+            {
                 CMVideoFormatDescriptionCreateForImageBuffer(allocator: kCFAllocatorDefault, imageBuffer: pixelBuffer, formatDescriptionOut: &outputFormatDescription)
             }
             pixelBuffer = nil
@@ -89,14 +97,17 @@ class VideoMixer
             return (pixelBufferPool, cgColorSpace, outputFormatDescription)
     }
     
-    private func preallocateBuffers(pool: CVPixelBufferPool, allocationThreshold: Int) {
+    private func preallocateBuffers(pool: CVPixelBufferPool, allocationThreshold: Int)
+    {
         var pixelBuffers = [CVPixelBuffer]()
         var error: CVReturn = kCVReturnSuccess
         let auxAttributes = [kCVPixelBufferPoolAllocationThresholdKey as String: allocationThreshold] as NSDictionary
         var pixelBuffer: CVPixelBuffer?
-        while error == kCVReturnSuccess {
+        while error == kCVReturnSuccess
+        {
             error = CVPixelBufferPoolCreatePixelBufferWithAuxAttributes(kCFAllocatorDefault, pool, auxAttributes, &pixelBuffer)
-            if let pixelBuffer = pixelBuffer {
+            if let pixelBuffer = pixelBuffer
+            {
                 pixelBuffers.append(pixelBuffer)
             }
             pixelBuffer = nil
@@ -123,7 +134,8 @@ class VideoMixer
     
     private var textureCache: CVMetalTextureCache!
     
-    private lazy var commandQueue: MTLCommandQueue? = {
+    private lazy var commandQueue: MTLCommandQueue? =
+    {
         return self.metalDevice.makeCommandQueue()
     }()
     
@@ -131,7 +143,8 @@ class VideoMixer
     
     var mixFactor: Float = 0.5
     
-    init() {
+    init()
+    {
         let vertexData: [Float] = [
             -1.0, 1.0,
             1.0, 1.0,
@@ -148,9 +161,12 @@ class VideoMixer
         pipelineDescriptor.vertexFunction = defaultLibrary.makeFunction(name: "vertexMixer")
         pipelineDescriptor.fragmentFunction = defaultLibrary.makeFunction(name: "fragmentMixer")
         
-        do {
+        do
+        {
             renderPipelineState = try metalDevice.makeRenderPipelineState(descriptor: pipelineDescriptor)
-        } catch {
+        }
+        catch
+        {
             fatalError("Unable to create video mixer pipeline state. (\(error))")
         }
         
@@ -162,27 +178,33 @@ class VideoMixer
         sampler = metalDevice.makeSamplerState(descriptor: samplerDescriptor)
     }
     
-    func prepare(with videoFormatDescription: CMFormatDescription, outputRetainedBufferCountHint: Int) {
+    func prepare(with videoFormatDescription: CMFormatDescription, outputRetainedBufferCountHint: Int)
+    {
         reset()
 
         (outputPixelBufferPool, _, outputFormatDescription) = allocateOutputBufferPool(with: videoFormatDescription,
                                                                                        outputRetainedBufferCountHint: outputRetainedBufferCountHint)
-        if outputPixelBufferPool == nil {
+        if outputPixelBufferPool == nil
+        {
             return
         }
         inputFormatDescription = videoFormatDescription
         
         var metalTextureCache: CVMetalTextureCache?
-        if CVMetalTextureCacheCreate(kCFAllocatorDefault, nil, metalDevice, nil, &metalTextureCache) != kCVReturnSuccess {
+        if CVMetalTextureCacheCreate(kCFAllocatorDefault, nil, metalDevice, nil, &metalTextureCache) != kCVReturnSuccess
+        {
             assertionFailure("Unable to allocate video mixer texture cache")
-        } else {
+        }
+        else
+        {
             textureCache = metalTextureCache
         }
         
         isPrepared = true
     }
     
-    func reset() {
+    func reset()
+    {
         outputPixelBufferPool = nil
         outputFormatDescription = nil
         inputFormatDescription = nil
@@ -190,11 +212,13 @@ class VideoMixer
         isPrepared = false
     }
     
-    struct MixerParameters {
+    struct MixerParameters
+    {
         var mixFactor: Float
     }
     
-    func mix(videoPixelBuffer: CVPixelBuffer, depthPixelBuffer: CVPixelBuffer) -> CVPixelBuffer? {
+    func mix(videoPixelBuffer: CVPixelBuffer, depthPixelBuffer: CVPixelBuffer) -> CVPixelBuffer?
+    {
         if !isPrepared {
             assertionFailure("Invalid state: Not prepared")
             return nil
@@ -202,13 +226,15 @@ class VideoMixer
         
         var newPixelBuffer: CVPixelBuffer?
         CVPixelBufferPoolCreatePixelBuffer(kCFAllocatorDefault, outputPixelBufferPool!, &newPixelBuffer)
-        guard let outputPixelBuffer = newPixelBuffer else {
+        guard let outputPixelBuffer = newPixelBuffer else
+        {
             print("Allocation failure: Could not get pixel buffer from pool (\(self.description))")
             return nil
         }
-        guard let outputTexture = makeTextureFromCVPixelBuffer(pixelBuffer: outputPixelBuffer),
-            let inputTexture0 = makeTextureFromCVPixelBuffer(pixelBuffer: videoPixelBuffer),
-            let inputTexture1 = makeTextureFromCVPixelBuffer(pixelBuffer: depthPixelBuffer) else {
+        guard let outputTexture = MakeTextureFromCVPixelBuffer(PixelBuffer: outputPixelBuffer),
+            let inputTexture0 = MakeTextureFromCVPixelBuffer(PixelBuffer: videoPixelBuffer),
+            let inputTexture1 = MakeTextureFromCVPixelBuffer(PixelBuffer: depthPixelBuffer) else
+        {
                 return nil
         }
         
@@ -217,13 +243,15 @@ class VideoMixer
         let renderPassDescriptor = MTLRenderPassDescriptor()
         renderPassDescriptor.colorAttachments[0].texture = outputTexture
         
-        guard let fullRangeVertexBuffer = fullRangeVertexBuffer else {
+        guard let fullRangeVertexBuffer = fullRangeVertexBuffer else
+        {
             print("Failed to create Metal vertex buffer")
             CVMetalTextureCacheFlush(textureCache!, 0)
             return nil
         }
         
-        guard let sampler = sampler else {
+        guard let sampler = sampler else
+        {
             print("Failed to create Metal sampler")
             CVMetalTextureCacheFlush(textureCache!, 0)
             return nil
@@ -232,7 +260,8 @@ class VideoMixer
         // Set up command queue, buffer, and encoder
         guard let commandQueue = commandQueue,
             let commandBuffer = commandQueue.makeCommandBuffer(),
-            let commandEncoder = commandBuffer.makeRenderCommandEncoder(descriptor: renderPassDescriptor) else {
+            let commandEncoder = commandBuffer.makeRenderCommandEncoder(descriptor: renderPassDescriptor) else
+        {
                 print("Failed to create Metal command queue")
                 CVMetalTextureCacheFlush(textureCache!, 0)
                 return nil
@@ -253,14 +282,16 @@ class VideoMixer
         return outputPixelBuffer
     }
     
-    func makeTextureFromCVPixelBuffer(pixelBuffer: CVPixelBuffer) -> MTLTexture? {
-        let width = CVPixelBufferGetWidth(pixelBuffer)
-        let height = CVPixelBufferGetHeight(pixelBuffer)
+    func MakeTextureFromCVPixelBuffer(PixelBuffer: CVPixelBuffer) -> MTLTexture?
+    {
+        let width = CVPixelBufferGetWidth(PixelBuffer)
+        let height = CVPixelBufferGetHeight(PixelBuffer)
         
         // Create a Metal texture from the image buffer
         var cvTextureOut: CVMetalTexture?
-        CVMetalTextureCacheCreateTextureFromImage(kCFAllocatorDefault, textureCache, pixelBuffer, nil, .bgra8Unorm, width, height, 0, &cvTextureOut)
-        guard let cvTexture = cvTextureOut, let texture = CVMetalTextureGetTexture(cvTexture) else {
+        CVMetalTextureCacheCreateTextureFromImage(kCFAllocatorDefault, textureCache, PixelBuffer, nil, .bgra8Unorm, width, height, 0, &cvTextureOut)
+        guard let cvTexture = cvTextureOut, let texture = CVMetalTextureGetTexture(cvTexture) else
+        {
             print("Video mixer failed to create preview texture")
             
             CVMetalTextureCacheFlush(textureCache, 0)

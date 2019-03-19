@@ -177,9 +177,9 @@ class Masking1: FilterParent, Renderer
             return nil
         }
         
-        guard let BottomTexture = MakeTextureFromCVPixelBuffer(pixelBuffer: PixelBuffer, textureFormat: .bgra8Unorm),
-            let TopTexture = MakeTextureFromCVPixelBuffer(pixelBuffer: And, textureFormat: .bgra8Unorm),
-            let OutputTexture = MakeTextureFromCVPixelBuffer(pixelBuffer: OutputBuffer, textureFormat: .bgra8Unorm) else
+        guard let BottomTexture = MakeTextureFromCVPixelBuffer(PixelBuffer: PixelBuffer, TextureFormat: .bgra8Unorm),
+            let TopTexture = MakeTextureFromCVPixelBuffer(PixelBuffer: And, TextureFormat: .bgra8Unorm),
+            let OutputTexture = MakeTextureFromCVPixelBuffer(PixelBuffer: OutputBuffer, TextureFormat: .bgra8Unorm) else
         {
             print("Error creating textures in MaskingKernel.")
             return nil

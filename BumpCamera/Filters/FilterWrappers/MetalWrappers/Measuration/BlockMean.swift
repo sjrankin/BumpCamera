@@ -172,7 +172,6 @@ class BlockMean: FilterParent, Renderer
         
         let BlockWidth = Parameters["Width"] as! Int
         let BlockHeight = Parameters["Height"] as! Int
-        let CalculateMean = Parameters["CalculateMean"] as! Bool
         
         let BufferWidth = CVPixelBufferGetWidth(PixelBuffer)
         let BufferHeight = CVPixelBufferGetHeight(PixelBuffer)
@@ -184,14 +183,19 @@ class BlockMean: FilterParent, Renderer
         let MeanBufferSize = MemoryLayout<simd_float4>.stride * BufferCount
         let FinalMeanBuffer = MetalDevice!.makeBuffer(bytes: MeanBufferPtr, length: MeanBufferSize, options: [])
         
+        let BlockStride = (BufferWidth / BlockWidth) + 1
         let Parameter = BlockMeanParameters(Width: simd_int1(BlockWidth),
                                             Height: simd_int1(BlockHeight),
-                                            CalculateMean: simd_bool(CalculateMean))
+                                            BlockStride: simd_int1(BlockStride),
+                                            OriginX: simd_int1(0),
+                                            OriginY: simd_int1(0),
+                                            RegionWidth: simd_int1(BufferWidth),
+                                            RegionHeight: simd_int1(1000))
         let Parameters = [Parameter]
         ParameterBuffer = MetalDevice!.makeBuffer(length: MemoryLayout<BlockMeanParameters>.stride, options: [])
         memcpy(ParameterBuffer.contents(), Parameters, MemoryLayout<BlockMeanParameters>.stride)
         
-        guard let InputTexture = MakeTextureFromCVPixelBuffer(pixelBuffer: PixelBuffer, textureFormat: .bgra8Unorm) else
+        guard let InputTexture = MakeTextureFromCVPixelBuffer(PixelBuffer: PixelBuffer, TextureFormat: .bgra8Unorm) else
         {
             print("Error creating textures in BlockMean.")
             return nil
@@ -263,6 +267,7 @@ class BlockMean: FilterParent, Renderer
         CgImage = AdjustForMonochrome(Image: CgImage!)
         let ImageWidth: Int = (CgImage?.width)!
         let ImageHeight: Int = (CgImage?.height)!
+        print("ImageWidth: \(ImageWidth), ImageHeight: \(ImageHeight)")
         var RawData = [UInt8](repeating: 0, count: Int(ImageWidth * ImageHeight * 4))
         let RGBColorSpace = CGColorSpaceCreateDeviceRGB()
         let BitmapInfo = CGBitmapInfo(rawValue: CGBitmapInfo.byteOrder32Big.rawValue | CGImageAlphaInfo.premultipliedLast.rawValue)
@@ -282,9 +287,16 @@ class BlockMean: FilterParent, Renderer
         let CommandBuffer = ImageCommandQueue?.makeCommandBuffer()
         let CommandEncoder = CommandBuffer?.makeComputeCommandEncoder()
         
-        let BlockWidth = Parameters["Width"] as! Int
-        let BlockHeight = Parameters["Height"] as! Int
-        let CalculateMean = Parameters["CalculateMean"] as! Bool
+        var BlockWidth = Parameters["Width"] as! Int
+        if BlockWidth == 0
+        {
+            BlockWidth = 20
+        }
+        var BlockHeight = Parameters["Height"] as! Int
+        if BlockHeight == 0
+        {
+            BlockHeight = 20
+        }
         
         let HorizontalBlocks = ceil(Double(ImageWidth) / Double(BlockWidth))
         let VerticalBlocks = ceil(Double(ImageHeight) / Double(BlockHeight))
@@ -296,9 +308,16 @@ class BlockMean: FilterParent, Renderer
         let MeanBufferSize = MemoryLayout<ReturnBlockData>.stride * BufferCount
         let FinalMeanBuffer = MetalDevice!.makeBuffer(bytes: MeanBufferPtr, length: MeanBufferSize, options: [])
         
+        let Rem = fmod(Double(ImageWidth), Double(BlockWidth))
+        let BlockStride = (ImageWidth / BlockWidth) + Int(Rem > 0.0 ? 1 : 0)
+        print("Image block stride: \(BlockStride)")
         let Parameter = BlockMeanParameters(Width: simd_int1(BlockWidth),
                                             Height: simd_int1(BlockHeight),
-                                            CalculateMean: simd_bool(CalculateMean))
+                                            BlockStride: simd_int1(BlockStride),
+                                            OriginX: simd_int1(0),
+                                            OriginY: simd_int1(0),
+                                            RegionWidth: simd_int1(ImageWidth),
+                                            RegionHeight: simd_int1(100))
         let Parameters = [Parameter]
         ParameterBuffer = MetalDevice!.makeBuffer(length: MemoryLayout<BlockMeanParameters>.stride, options: [])
         memcpy(ParameterBuffer.contents(), Parameters, MemoryLayout<BlockMeanParameters>.stride)
@@ -314,11 +333,19 @@ class BlockMean: FilterParent, Renderer
         CommandEncoder?.setComputePipelineState(ImageComputePipelineState!)
         CommandEncoder?.setTexture(Texture, index: 0)
         
-        #if true
+        #if false
+        let w = ComputePipelineState!.threadExecutionWidth
+        let h = ComputePipelineState!.maxTotalThreadsPerThreadgroup / w
+        let ThreadGroupCount = MTLSize(width: w, height: h, depth: 1)
+        let ThreadGroups = MTLSize(width: (Texture.width + w - 1) / w,
+                                          height: (Texture.height + h - 1) / h,
+                                          depth: 1)
+        /*
         let ThreadGroupCount  = MTLSizeMake(8, 8, 1)
         let ThreadGroups = MTLSizeMake(Texture.width / ThreadGroupCount.width,
                                        Texture.height / ThreadGroupCount.height,
                                        1)
+ */
         #else
         let ThreadGroupCount = MTLSizeMake(1, 1, 1)
         let ThreadGroups = MTLSizeMake(1, 1, 1)
@@ -337,6 +364,13 @@ class BlockMean: FilterParent, Renderer
         {
             FinalFilterResults[i] = FilterResults![i]
         }
+        print("Output[0]=\(FinalFilterResults[0])")
+        #if false
+        for i in 100 ... 119
+        {
+            print("Output[\(i)]=\(FinalFilterResults[i])")
+        }
+        #endif
         
         let MeanResults = FinalMeanBuffer?.contents().bindMemory(to: ReturnBlockData.self, capacity: MeanBufferSize)//BufferCount)
         var MeanValues = [ReturnBlockData]()
@@ -345,9 +379,17 @@ class BlockMean: FilterParent, Renderer
             MeanValues.append(MeanResults![i])
         }
         //Remove invalid values.
+        let MeanCount = MeanValues.count
         MeanValues.removeAll(where: {$0.X < 0 || $0.Y < 0})
+        print("Removed \(MeanCount - MeanValues.count) mean values due to invalid index.")
         //Sort by X then Y within X.
         MeanValues.sort{$0.X == $1.X ? $0.Y < $1.Y : $0.X < $1.X}
+        #if false
+        for i in 0 ... 19
+        {
+            print("MeanValues[\(i)].count=\(MeanValues[i].Count)")
+        }
+        #endif
         var FinalResults = [String: Any]()
         FinalResults["BlockMeans"] = MeanValues
         FinalResults["HorizontalBlocks"] = HorizontalBlocks
