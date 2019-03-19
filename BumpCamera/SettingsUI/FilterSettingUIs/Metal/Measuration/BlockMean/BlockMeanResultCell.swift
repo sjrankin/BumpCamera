@@ -25,12 +25,12 @@ class BlockMeanResultCell: UITableViewCell
     {
         super.init(style: Style, reuseIdentifier: ReuseIdentifier)
         
-        IndexLabel = UILabel(frame: CGRect(x: 10, y: 5, width: 70, height: 40))
-        IndexLabel.textAlignment = .right
+        IndexLabel = UILabel(frame: CGRect(x: 10, y: 5, width: 100, height: 40))
+        IndexLabel.textAlignment = .left
         IndexLabel.font = UIFont(name: "Courier", size: 20.0)
         contentView.addSubview(IndexLabel)
         
-        ColorSample = UIView(frame: CGRect(x: 100, y: 5, width: 100, height: 40))
+        ColorSample = UIView(frame: CGRect(x: 140, y: 5, width: 150, height: 40))
         ColorSample.layer.borderColor = UIColor.black.cgColor
         ColorSample.layer.borderWidth = 0.5
         ColorSample.layer.cornerRadius = 5.0
