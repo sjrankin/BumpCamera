@@ -23,14 +23,6 @@ class BlockMeanSettingsUICode: FilterSettingUIBase
         WidthSlider.value = Float(CurrentBlockWidth * 10)
         BlockHeightValue.text = "\(CurrentBlockHeight)"
         HeightSlider.value = Float(CurrentBlockHeight * 10)
-        
-        ResultsTable.layer.borderWidth = 0.5
-        ResultsTable.layer.borderColor = UIColor.black.cgColor
-        ResultsTable.layer.cornerRadius = 5.0
-        
-        ResultsTable.delegate = self
-        ResultsTable.dataSource = self
-        ResultsTable.reloadData()
     }
     
     @IBAction func HandleWidthChanged(_ sender: Any)
@@ -79,70 +71,44 @@ class BlockMeanSettingsUICode: FilterSettingUIBase
             {
                 BlockCountValue.text = "?"
                 MeanResults.removeAll()
-                ResultsTable.reloadData()
                 return
             }
             if let Means = Final["BlockMeans"] as? [ReturnBlockData]
             {
-                                    let PixelCount = CGFloat(CurrentBlockWidth * CurrentBlockHeight)
                 MeanResults.removeAll()
                 for Returned in Means
                 {
-                    let Red = CGFloat(Returned.Red) / PixelCount
-                    let Green = CGFloat(Returned.Green) / PixelCount
-                    let Blue = CGFloat(Returned.Blue) / PixelCount
+                    let Count = CGFloat(Returned.Count)
+                    let Red = CGFloat(Returned.Red) / Count
+                    let Green = CGFloat(Returned.Green) / Count
+                    let Blue = CGFloat(Returned.Blue) / Count
                     let Color = UIColor(red: Red, green: Green, blue: Blue, alpha: 1.0)
-                    MeanResults.append((Int(Returned.X), Int(Returned.Y), Color))
+                    MeanResults.append((Int(Returned.X), Int(Returned.Y), Color, Int(Returned.Count)))
                 }
-                ResultsTable.reloadData()
             }
         }
     }
     
-    var MeanResults = [(Int, Int, UIColor)]()
-    
-    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?)
     {
-        if tableView.tag == 100
+        switch segue.identifier
         {
-            return MeanResults.count
+        case "ToResultViewer":
+            if let Dest = segue.destination as? BlockmeanResultViewerCode
+            {
+                Dest.SetMeanData(MeanData: MeanResults)
+            }
+            
+        default:
+            break
         }
-        return super.tableView(tableView, numberOfRowsInSection: section)
     }
     
-    override func numberOfSections(in tableView: UITableView) -> Int
-    {
-        if tableView.tag == 100
-        {
-            return 1
-        }
-        return super.numberOfSections(in: tableView)
-    }
-    
-    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
-    {
-        if tableView.tag == 100
-        {
-            let Cell = BlockMeanResultCell(style: UITableViewCell.CellStyle.default, reuseIdentifier: "MeanColorAtBlock")
-            let (X, Y, Color) = MeanResults[indexPath.row]
-            Cell.SetData(IndexValue: "(\(X),\(Y))", Color: Color)
-        }
-        return super.tableView(tableView, cellForRowAt: indexPath)
-    }
-    
-    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat
-    {
-        if tableView.tag == 100
-        {
-            return BlockMeanResultCell.CellHeight
-        }
-        return super.tableView(tableView, heightForRowAt: indexPath)
-    }
+    var MeanResults = [(Int, Int, UIColor, Int)]()
     
     @IBOutlet weak var BlockHeightValue: UILabel!
     @IBOutlet weak var BlockWidthValue: UILabel!
     @IBOutlet weak var HeightSlider: UISlider!
     @IBOutlet weak var WidthSlider: UISlider!
     @IBOutlet weak var BlockCountValue: UILabel!
-    @IBOutlet weak var ResultsTable: UITableView!
 }
