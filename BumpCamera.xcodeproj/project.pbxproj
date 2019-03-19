@@ -152,6 +152,7 @@
 		175A3332222EA00300670547 /* ChannelMangler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 175A3331222EA00300670547 /* ChannelMangler.swift */; };
 		175A3335222EA32400670547 /* ChannelManglerSettingsUI.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 175A3334222EA32400670547 /* ChannelManglerSettingsUI.storyboard */; };
 		175A3337222EA49D00670547 /* ChannelManglerSettingsUICode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 175A3336222EA49D00670547 /* ChannelManglerSettingsUICode.swift */; };
+		175A64BA2240D9F500F563D4 /* Sobel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 175A64B92240D9F500F563D4 /* Sobel.swift */; };
 		175E260E21F4A5AB00B6BF8F /* HueAdjust.swift in Sources */ = {isa = PBXBuildFile; fileRef = 175E260D21F4A5AB00B6BF8F /* HueAdjust.swift */; };
 		1763F0722221443B00E1E2E8 /* MainUIProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1763F0712221443B00E1E2E8 /* MainUIProtocol.swift */; };
 		1763F076222167AB00E1E2E8 /* GaussianBlurSettingsUI.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1763F075222167AB00E1E2E8 /* GaussianBlurSettingsUI.storyboard */; };
@@ -238,6 +239,8 @@
 		17BC007B223139BC0076A5D5 /* SampleViewer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17BC007A223139BC0076A5D5 /* SampleViewer.swift */; };
 		17BC007E22313AFC0076A5D5 /* SampleViewerCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17BC007D22313AFC0076A5D5 /* SampleViewerCell.swift */; };
 		17BC0081223140580076A5D5 /* GradientEditorUI.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 17BC0080223140580076A5D5 /* GradientEditorUI.storyboard */; };
+		17BC936822409F6B00C4ADC2 /* BlockMeanProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17BC936722409F6B00C4ADC2 /* BlockMeanProtocol.swift */; };
+		17BC936A22409FB400C4ADC2 /* BlockMeanResultViewerCode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17BC936922409FB400C4ADC2 /* BlockMeanResultViewerCode.swift */; };
 		17BEE0B221FC20FF00A9370B /* DesaturateColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17BEE0B121FC20FF00A9370B /* DesaturateColors.swift */; };
 		17BEE0B421FC2F8500A9370B /* DesaturationKernelParameters.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17BEE0B321FC2F8500A9370B /* DesaturationKernelParameters.swift */; };
 		17C18AD4222FF93300DBDD79 /* ColorMapSettingsUI.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 17C18AD3222FF93300DBDD79 /* ColorMapSettingsUI.storyboard */; };
@@ -492,6 +495,7 @@
 		175A3331222EA00300670547 /* ChannelMangler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelMangler.swift; sourceTree = "<group>"; };
 		175A3334222EA32400670547 /* ChannelManglerSettingsUI.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = ChannelManglerSettingsUI.storyboard; sourceTree = "<group>"; };
 		175A3336222EA49D00670547 /* ChannelManglerSettingsUICode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelManglerSettingsUICode.swift; sourceTree = "<group>"; };
+		175A64B92240D9F500F563D4 /* Sobel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sobel.swift; sourceTree = "<group>"; };
 		175E260D21F4A5AB00B6BF8F /* HueAdjust.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HueAdjust.swift; sourceTree = "<group>"; };
 		1763F0712221443B00E1E2E8 /* MainUIProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainUIProtocol.swift; sourceTree = "<group>"; };
 		1763F075222167AB00E1E2E8 /* GaussianBlurSettingsUI.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = GaussianBlurSettingsUI.storyboard; sourceTree = "<group>"; };
@@ -578,6 +582,8 @@
 		17BC007A223139BC0076A5D5 /* SampleViewer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SampleViewer.swift; sourceTree = "<group>"; };
 		17BC007D22313AFC0076A5D5 /* SampleViewerCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SampleViewerCell.swift; sourceTree = "<group>"; };
 		17BC0080223140580076A5D5 /* GradientEditorUI.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = GradientEditorUI.storyboard; sourceTree = "<group>"; };
+		17BC936722409F6B00C4ADC2 /* BlockMeanProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlockMeanProtocol.swift; sourceTree = "<group>"; };
+		17BC936922409FB400C4ADC2 /* BlockMeanResultViewerCode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlockMeanResultViewerCode.swift; sourceTree = "<group>"; };
 		17BEE0B121FC20FF00A9370B /* DesaturateColors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DesaturateColors.swift; sourceTree = "<group>"; };
 		17BEE0B321FC2F8500A9370B /* DesaturationKernelParameters.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DesaturationKernelParameters.swift; sourceTree = "<group>"; };
 		17C18AD3222FF93300DBDD79 /* ColorMapSettingsUI.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = ColorMapSettingsUI.storyboard; sourceTree = "<group>"; };
@@ -1123,6 +1129,7 @@
 			isa = PBXGroup;
 			children = (
 				172A902B221FEBE5002015CD /* GaussianBlur.swift */,
+				175A64B92240D9F500F563D4 /* Sobel.swift */,
 			);
 			path = MPSWrappers;
 			sourceTree = "<group>";
@@ -1530,8 +1537,10 @@
 			isa = PBXGroup;
 			children = (
 				1785403F223F73E900DBD309 /* BlockMeanSettingsUI.storyboard */,
+				17BC936722409F6B00C4ADC2 /* BlockMeanProtocol.swift */,
 				17854041223F761500DBD309 /* BlockMeanResultCell.swift */,
 				17854043223F762900DBD309 /* BlockMeanSettingsUICode.swift */,
+				17BC936922409FB400C4ADC2 /* BlockMeanResultViewerCode.swift */,
 			);
 			path = BlockMean;
 			sourceTree = "<group>";
@@ -2187,6 +2196,7 @@
 				17F9A2D62238E406000A0369 /* MaskingKernel.metal in Sources */,
 				17D7510E21F41ACD0050A2B5 /* MainUISettings.swift in Sources */,
 				1740CEC62216A4A300BFD1A0 /* LicensingList.swift in Sources */,
+				17BC936A22409FB400C4ADC2 /* BlockMeanResultViewerCode.swift in Sources */,
 				17854039223F6C5500DBD309 /* BlockMean.metal in Sources */,
 				17D7512021F466AE0050A2B5 /* RosyEffect.metal in Sources */,
 				178CF92621F5B98D007229FD /* ParameterManager.swift in Sources */,
@@ -2222,6 +2232,7 @@
 				17C93EA622224C2B00B7F697 /* Privacy.swift in Sources */,
 				170BFE75221C2DDF00754BF6 /* SmoothLinearGradient.swift in Sources */,
 				178C75BE21F337C100844FFF /* AVCaptureVideoOrientationExtension.swift in Sources */,
+				17BC936822409F6B00C4ADC2 /* BlockMeanProtocol.swift in Sources */,
 				1756CE1221FD874800C4E638 /* ChannelSwizzleParameters.swift in Sources */,
 				17D60D892210511800933F15 /* SampleContainerView.swift in Sources */,
 				1712981B2223E348000D5EF5 /* ExifDataCell.swift in Sources */,
@@ -2341,6 +2352,7 @@
 				171D626021EDB46D004D3545 /* Mixer.metal in Sources */,
 				17FA64902234A69D0060D5CA /* Octree.metal in Sources */,
 				17BA12E122278F140035A1FC /* CheckerboardGenerator.swift in Sources */,
+				175A64BA2240D9F500F563D4 /* Sobel.swift in Sources */,
 				172B87A7221BCC6100F0A508 /* ThermalEffect.swift in Sources */,
 				17C93EAB2222582500B7F697 /* GeneralSettings.swift in Sources */,
 				174F82EA221FDDC7009A004C /* MonochromeSettingsUICode.swift in Sources */,
