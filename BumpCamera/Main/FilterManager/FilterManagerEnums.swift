@@ -88,6 +88,7 @@ extension FilterManager
         case ShapePixellate = 61
         case BlockMean = 62
         case Sobel = 63
+        case HistogramGeneration = 64
         case NotSet = 10000
     }
     
@@ -311,6 +312,7 @@ extension FilterManager
         case PixelHighlightAction = 174
         case PixelHighlightActionValue = 175
         case PixelHighlightActionIfGreater = 176
+        case SobelMergeWithBackground = 177
         case NoField = 10000
     }
     
