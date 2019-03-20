@@ -850,6 +850,10 @@ class GradientManager
         return nil
     }
     
+    /// Determines if the passed gradient desciption is in the predefined gradient list.
+    ///
+    /// - Parameter Description: Description to compare against the predefined gradient list.
+    /// - Returns: True if the gradient is in the predefined gradient list, false if not.
     public static func IsPredefinedGradient(_ Description: String) -> Bool
     {
         let Parsed = ParseGradient(Description)
@@ -873,6 +877,22 @@ class GradientManager
             }
         }
         return true
+    }
+    
+    /// Given a predefined gradient name (from the Gradients enum), return the gradient description.
+    ///
+    /// - Parameter GradientName: The name of the gradient whose description will be returned.
+    /// - Returns: Gradient description of the passed gradient name if found, nil if not found.
+    public static func PredefinedGradientFromName(_ GradientName: String) -> String?
+    {
+            for (_, Title, GradientDescription) in GradientList
+            {
+                if Title == GradientName
+                {
+                    return GradientDescription
+                }
+            }
+        return nil
     }
     
     /// List of predefined gradients.
