@@ -330,6 +330,30 @@
                                             <segue destination="otn-NI-ZbM" kind="show" id="nrT-Up-Jg8"/>
                                         </connections>
                                     </tableViewCell>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" accessoryType="disclosureIndicator" indentationWidth="10" rowHeight="45" id="7PA-vR-yjh">
+                                        <rect key="frame" x="0.0" y="626" width="375" height="45"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="7PA-vR-yjh" id="GHd-u2-ICj">
+                                            <rect key="frame" x="0.0" y="0.0" width="341" height="44.5"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Gradient editor" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="hKA-iG-y8j">
+                                                    <rect key="frame" x="8" y="6" width="115" height="32.5"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstItem="hKA-iG-y8j" firstAttribute="centerY" secondItem="GHd-u2-ICj" secondAttribute="centerY" id="IYo-Ag-RdW"/>
+                                                <constraint firstItem="hKA-iG-y8j" firstAttribute="leading" secondItem="GHd-u2-ICj" secondAttribute="leadingMargin" id="nnA-kU-Aly"/>
+                                                <constraint firstAttribute="bottomMargin" secondItem="hKA-iG-y8j" secondAttribute="bottom" constant="-2" id="vPI-pR-r2o"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                        <connections>
+                                            <segue destination="Emo-7t-wrD" kind="show" identifier="ToGradientEditor" id="XLn-cs-lal"/>
+                                        </connections>
+                                    </tableViewCell>
                                 </cells>
                             </tableViewSection>
                         </sections>
@@ -367,6 +391,14 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Hwe-ej-gBt" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="2201" y="4"/>
+        </scene>
+        <!--MainEditor-->
+        <scene sceneID="LUC-fc-Yui">
+            <objects>
+                <viewControllerPlaceholder storyboardName="GradientEditorUI" referencedIdentifier="MainEditor" id="Emo-7t-wrD" sceneMemberID="viewController"/>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="CtK-ej-ncM" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2194" y="215"/>
         </scene>
         <!--Gradient Test-->
         <scene sceneID="qbG-RT-Mmb">
