@@ -62,10 +62,25 @@ protocol Renderer: class
 
     /// Render the image with the filter.
     ///
+    /// - Parameter PixelBuffer: Pixel buffer of the image that is the source for the filter.
+    /// - Parameter AltSettings: Alternative settings to use rather than the settings in the user settings database.
+    /// - Returns: Pixel buffer of the result of the filtering operation.
+    func Render(PixelBuffer: CVPixelBuffer, AltSettings: FilterSettingsBlob) -> CVPixelBuffer?
+
+    /// Render the image with the filter.
+    ///
     /// - Parameter Image: The UIImage that is the source for the filter.
     /// - Returns: UIImage with the result of the filtering operation. Returned image is CGImage-backed, which makes it
     ///            a lot easier to use built-in APIs to save it.
     func Render(Image: UIImage) -> UIImage?
+    
+    /// Render the image with the filter.
+    ///
+    /// - Parameter Image: The UIImage that is the source for the filter.
+    /// - Parameter AltSettings: Alternative settings to use rather than the settings in the user settings database.
+    /// - Returns: UIImage with the result of the filtering operation. Returned image is CGImage-backed, which makes it
+    ///            a lot easier to use built-in APIs to save it.
+    func Render(Image: UIImage, AltSettings: FilterSettingsBlob) -> UIImage?
 
     /// Render the image with the filter.
     ///
@@ -74,11 +89,26 @@ protocol Renderer: class
     ///            a lot easier to use built-in APIs to save it.
     func Render(Image: CIImage) -> CIImage?
     
+    /// Render the image with the filter.
+    ///
+    /// - Parameter Image: The CIImage that is the source for the filter.
+    /// - Parameter AltSettings: Alternative settings to use rather than the settings in the user settings database.
+    /// - Returns: CIImage with the result of the filtering operation. Returned image is CGImage-backed, which makes it
+    ///            a lot easier to use built-in APIs to save it.
+    func Render(Image: CIImage, AltSettings: FilterSettingsBlob) -> CIImage?
+    
     /// Render an image with a filter and multiple images.
     ///
     /// - Parameter PixelBuffers: List of pixel buffers to use to render the image.
     /// - Returns: Pixel buffer of the result on success, nil on error.
     func RenderWith(PixelBuffers: [CVPixelBuffer]) -> CVPixelBuffer?
+    
+    /// Render an image with a filter and multiple images.
+    ///
+    /// - Parameter PixelBuffers: List of pixel buffers to use to render the image.
+    /// - Parameter AltSettings: Alternative settings to use rather than the settings in the user settings database.
+    /// - Returns: Pixel buffer of the result on success, nil on error.
+    func RenderWith(PixelBuffers: [CVPixelBuffer], AltSettings: FilterSettingsBlob) -> CVPixelBuffer?
     
     /// Render an image with a filter and another image.
     ///
@@ -87,6 +117,15 @@ protocol Renderer: class
     ///   - And: Top image that is merged.
     /// - Returns: Pixel buffer with the result on success, nil on error.
     func RenderWith(PixelBuffer: CVPixelBuffer, And: CVPixelBuffer) -> CVPixelBuffer?
+    
+    /// Render an image with a filter and another image.
+    ///
+    /// - Parameters:
+    ///   - PixelBuffer: A pixel buffer with an image.
+    ///   - And: Top image that is merged.
+    ///   - AltSettings: Alternative settings to use rather than the settings in the user settings database.
+    /// - Returns: Pixel buffer with the result on success, nil on error.
+    func RenderWith(PixelBuffer: CVPixelBuffer, And: CVPixelBuffer, AltSettings: FilterSettingsBlob) -> CVPixelBuffer?
     
     /// Render an image with a filter and multiple images.
     ///
@@ -98,6 +137,15 @@ protocol Renderer: class
     
     /// Render an image with a filter and multiple images.
     ///
+    /// - Parameters:
+    ///   - PixelBuffer: A pixel buffer with an image.
+    ///   - And: List of other images needed by the filter.
+    ///   - AltSettings: Alternative settings to use rather than the settings in the user settings database.
+    /// - Returns: Pixel buffer of the result on success, nil on error.
+    func RenderWith(PixelBuffer: CVPixelBuffer, And: [UIImage], AltSettings: FilterSettingsBlob) -> CVPixelBuffer?
+    
+    /// Render an image with a filter and multiple images.
+    ///
     /// - Parameter Images: List of images to use to render the image.
     /// - Returns: Image of the result on success, nil on error.
     func RenderWith(Images: [UIImage]) -> UIImage?
@@ -105,14 +153,35 @@ protocol Renderer: class
     /// Render an image with a filter and multiple images.
     ///
     /// - Parameter Images: List of images to use to render the image.
+    /// - Parameter AltSettings: Alternative settings to use rather than the settings in the user settings database.
+    /// - Returns: Image of the result on success, nil on error.
+    func RenderWith(Images: [UIImage], AltSettings: FilterSettingsBlob) -> UIImage?
+    
+    /// Render an image with a filter and multiple images.
+    ///
+    /// - Parameter Images: List of images to use to render the image.
     /// - Returns: Image of the result on success, nil on error.
     func RenderWith(Images: [CIImage]) -> CIImage?
+    
+    /// Render an image with a filter and multiple images.
+    ///
+    /// - Parameter Images: List of images to use to render the image.
+    /// - Parameter AltSettings: Alternative settings to use rather than the settings in the user settings database.
+    /// - Returns: Image of the result on success, nil on error.
+    func RenderWith(Images: [CIImage], AltSettings: FilterSettingsBlob) -> CIImage?
     
     /// Generates an image. Valid only for those filter that do not support input images.
     ///
     /// - Returns: Generated image. If the filter supports input images, you must use Render instead and this function
     ///            will return nil.
     func Generate() -> CIImage?
+    
+    /// Generates an image. Valid only for those filter that do not support input images.
+    ///
+    /// - Parameter AltSettings: Alternative settings to use rather than the settings in the user settings database.
+    /// - Returns: Generated image. If the filter supports input images, you must use Render instead and this function
+    ///            will return nil.
+    func Generate(AltSettings: FilterSettingsBlob) -> CIImage?
     
     /// Queries the pixel buffer as per input parameters.
     ///
@@ -219,7 +288,17 @@ extension Renderer
         return nil
     }
     
+        func Render(PixelBuffer: CVPixelBuffer, AltSettings: FilterSettingsBlob) -> CVPixelBuffer?
+        {
+            return nil
+    }
+    
     func Render(Image: CIImage) -> CIImage?
+    {
+        return nil
+    }
+    
+    func Render(Image: CIImage, AltSettings: FilterSettingsBlob) -> CIImage?
     {
         return nil
     }
@@ -229,7 +308,17 @@ extension Renderer
         return nil
     }
     
+    func Render(Image: UIImage, AltSettings: FilterSettingsBlob) -> UIImage?
+    {
+        return nil
+    }
+    
     func RenderWith(PixelBuffer: CVPixelBuffer, And: CVPixelBuffer) -> CVPixelBuffer?
+    {
+        return nil
+    }
+    
+    func RenderWith(PixelBuffer: CVPixelBuffer, And: CVPixelBuffer, AltSettings: FilterSettingsBlob) -> CVPixelBuffer?
     {
         return nil
     }
@@ -239,7 +328,17 @@ extension Renderer
         return nil
     }
     
+    func RenderWith(PixelBuffers: [CVPixelBuffer], AltSettings: FilterSettingsBlob) -> CVPixelBuffer?
+    {
+        return nil
+    }
+    
     func RenderWith(PixelBuffer: CVPixelBuffer, And: [UIImage]) -> CVPixelBuffer?
+    {
+        return nil
+    }
+    
+    func RenderWith(PixelBuffer: CVPixelBuffer, And: [UIImage], AltSettings: FilterSettingsBlob) -> CVPixelBuffer?
     {
         return nil
     }
@@ -249,12 +348,27 @@ extension Renderer
         return nil
     }
     
+    func RenderWith(Images: [UIImage], AltSettings: FilterSettingsBlob) -> UIImage?
+    {
+        return nil
+    }
+    
     func RenderWith(Images: [CIImage]) -> CIImage?
     {
         return nil
     }
     
+    func RenderWith(Images: [CIImage], AltSettings: FilterSettingsBlob) -> CIImage?
+    {
+        return nil
+    }
+    
     func Generate() -> CIImage?
+    {
+        return nil
+    }
+    
+    func Generate(AltSettings: FilterSettingsBlob) -> CIImage?
     {
         return nil
     }
