@@ -409,4 +409,33 @@ class FilterParent
     {
         return .Failure(Reason: "Not implemented.")
     }
+    
+    // MARK: Settings management.
+    
+    func NonPerformanceSettings(For Child: Renderer) -> [FilterManager.InputFields]
+    {
+        var Results = [FilterManager.InputFields]()
+        for SomeSetting in Child.SupportedFields()
+        {
+            if [.RenderImageCount, .CumulativeImageRenderDuration, .RenderLiveCount, .CumulativeLiveRenderDuration].contains(SomeSetting)
+            {
+                continue
+            }
+            Results.append(SomeSetting)
+        }
+        return Results
+    }
+    
+    var SettingsStack: [FilterSettingsBlob]? = nil
+    
+    func PushSettings(For Child: Renderer)
+    {
+        
+    }
+    
+    func PopSettings()
+    {
+        
+    }
 }
+
