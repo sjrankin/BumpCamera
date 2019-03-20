@@ -75,6 +75,7 @@ class Sobel: FilterParent, Renderer
             print("BufferPool nil in Sobel.Initialize.")
             return
         }
+        InputFormatDescription = FormatDescription
         CommandQueue = MetalDevice?.makeCommandQueue()
         bciContext = CIContext()
         Initialized = true
@@ -126,7 +127,7 @@ class Sobel: FilterParent, Renderer
         
         var NewPixelBuffer: CVPixelBuffer? = nil
         CVPixelBufferPoolCreatePixelBuffer(kCFAllocatorDefault, BufferPool!, &NewPixelBuffer)
-        guard let OutputBuffer = NewPixelBuffer else
+        guard var OutputBuffer = NewPixelBuffer else
         {
             print("Allocation failure for new pixel buffer pool in Sobel.")
             return nil
@@ -155,6 +156,13 @@ class Sobel: FilterParent, Renderer
         Shader.encode(commandBuffer: CommandBuffer, sourceTexture: InputTexture, destinationTexture: OutputTexture)
         CommandBuffer.commit()
         CommandBuffer.waitUntilCompleted()
+        
+        if ParameterManager.GetBool(From: ID(), Field: .SobelMergeWithBackground, Default: true)
+        {
+            let MaskFilter = Masking1()
+            MaskFilter.Initialize(With: InputFormatDescription!, BufferCountHint: 3)
+            OutputBuffer = MaskFilter.RenderWith(PixelBuffer: PixelBuffer, And: OutputBuffer)!
+        }
         
         LiveRenderTime = CACurrentMediaTime() - Start
         ParameterManager.UpdateRenderAccumulator(NewValue: LiveRenderTime, ID: ID(), ForImage: false)
@@ -229,6 +237,16 @@ class Sobel: FilterParent, Renderer
         let fcontext = CIContext(options: nil)
         let cgimage = fcontext.createCGImage(ciimage!, from: ciimage!.extent)
         ImageToReturn = UIImage(cgImage: cgimage!)
+        LastUIImage = ImageToReturn
+        
+        if ParameterManager.GetBool(From: ID(), Field: .SobelMergeWithBackground, Default: true)
+        {
+            let MaskFilter = Masking1()
+            MaskFilter.InitializeForImage()
+            let BottomImage = LastUIImage
+            LastUIImage = MaskFilter.RenderWith(Images: [BottomImage!, Image])
+            ImageToReturn = LastUIImage
+        }
         
         LiveRenderTime = CACurrentMediaTime() - Start
         ParameterManager.UpdateRenderAccumulator(NewValue: LiveRenderTime, ID: ID(), ForImage: false)
@@ -374,6 +392,9 @@ class Sobel: FilterParent, Renderer
     {
         switch Field
         {
+        case .SobelMergeWithBackground:
+            return (.BoolType, true as Any?)
+            
         case .RenderImageCount:
             return (.IntType, 0 as Any?)
             
@@ -398,12 +419,8 @@ class Sobel: FilterParent, Renderer
     
     public static func SupportedFields() -> [FilterManager.InputFields]
     {
-        var Fields = [FilterManager.InputFields]()
-        Fields.append(.RenderImageCount)
-        Fields.append(.CumulativeImageRenderDuration)
-        Fields.append(.RenderLiveCount)
-        Fields.append(.CumulativeLiveRenderDuration)
-        return Fields
+        return [.SobelMergeWithBackground,
+                .RenderImageCount, .CumulativeImageRenderDuration, .RenderLiveCount, .CumulativeLiveRenderDuration]
     }
     
     func SettingsStoryboard() -> String?
@@ -413,7 +430,7 @@ class Sobel: FilterParent, Renderer
     
     public static func SettingsStoryboard() -> String?
     {
-        return "NoParametersSettingsUI"
+        return "SobelSettingsUI"
     }
     
     func IsSlow() -> Bool
