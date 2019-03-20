@@ -58,6 +58,8 @@ class MainUIViewer: UIViewController,
         super.viewDidLoad()
         
         MainBottomToolbar.layer.zPosition = 1000
+        MainBottomToolbar.layer.borderColor = UIColor.white.cgColor
+        MainBottomToolbar.layer.borderWidth = 0.5
         
         FrameCountLabel.textColor = UIColor.clear
         FrameCountLabel.backgroundColor = UIColor.clear
@@ -816,3 +818,31 @@ extension SetupResults: Equatable
     }
 }
 
+extension CALayer
+{
+    //https://stackoverflow.com/questions/17355280/how-to-add-a-border-just-on-the-top-side-of-a-uiview
+    func AddBorder(Edge: UIRectEdge, Color: UIColor, Width: CGFloat)
+    {
+        let Border = CALayer()
+        switch Edge
+        {
+        case UIRectEdge.top:
+            Border.frame = CGRect(x: 0, y: 0, width: self.frame.width, height: Width)
+            
+        case UIRectEdge.bottom:
+            Border.frame = CGRect(x: 0, y: self.frame.height - Width, width: self.frame.width, height: Width)
+            
+        case UIRectEdge.left:
+            Border.frame = CGRect(x: 0, y: 0, width: Width, height: self.frame.height)
+            
+        case UIRectEdge.right:
+            Border.frame = CGRect(x: self.frame.width - Width, y: 0, width: Width, height: self.frame.height)
+            
+        default:
+            break
+        }
+        
+        Border.backgroundColor = Color.cgColor
+        self.addSublayer(Border)
+    }
+}
