@@ -9,8 +9,10 @@
 import Foundation
 import UIKit
 
-class DebugSettingsCode: UITableViewController
+class DebugSettingsCode: UITableViewController, GradientPickerProtocol
 {
+
+    
     #if DEBUG
     let _Settings = UserDefaults.standard
     
@@ -169,6 +171,36 @@ class DebugSettingsCode: UITableViewController
                                       message: "The directory \(FileHandler.DebugDirectory) was cleared.",
                                       preferredStyle: UIAlertController.Style.alert)
         Alert.addAction(UIAlertAction(title: "OK", style: UIAlertAction.Style.default, handler: nil))
+    }
+    
+    func EditedGradient(_ Edited: String?, Tag: Any?)
+    {
+    }
+    
+    func GradientToEdit(_ EditMe: String?, Tag: Any?)
+    {
+    }
+    
+    func SetStop(StopColorIndex: Int)
+    {
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?)
+    {
+        switch segue.identifier
+        {
+        case "ToGradientEditor":
+            if let Dest = segue.destination as? GradientEditorUICode
+            {
+                Dest.GradientToEdit(GradientManager.PredefinedGradientFromName("Hue"), Tag: "NotUsed")
+                Dest.ParentDelegate = self
+            }
+            
+        default:
+            break
+        }
+        
+        super.prepare(for: segue, sender: self)
     }
     
     #endif
