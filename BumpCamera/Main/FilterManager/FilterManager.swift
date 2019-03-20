@@ -66,7 +66,7 @@ class FilterManager
             .Generator: [(.Grid, 0), (.SmoothLinearGradient, 1), (.CornerGradient, 2), (.Checkerboard, 3),
                          (.MetalCheckerboard, 4)],
             .Blur: [(.GaussianBlur, 0)],
-            .Measuration: [(.PixelCounter, 0), (.BlockMean, 1)]
+            .Measuration: [(.PixelCounter, 0), (.BlockMean, 1), (.HistogramGeneration, 2)]
     ]
     
     public static let FilterInfoMap: [FilterTypes: (UUID, FilterKernelTypes, String)] =
@@ -127,6 +127,7 @@ class FilterManager
             .ShapePixellate: (ShapePixellate.ID(), ShapePixellate.FilterKernel, ShapePixellate.Title()),
             .BlockMean: (BlockMean.ID(), BlockMean.FilterKernel, BlockMean.Title()),
             .Sobel: (Sobel.ID(), Sobel.FilterKernel, Sobel.Title()),
+            .HistogramGeneration: (Histogram.ID(), Histogram.FilterKernel, Histogram.Title()),
     ]
     
     /// Determines if the specified filter supports the specified target type. Not all filters support all targets - slow
@@ -228,6 +229,7 @@ class FilterManager
             .ShapePixellate: ShapePixellate.FilterTarget(),
             .BlockMean: BlockMean.FilterTarget(),
             .Sobel: Sobel.FilterTarget(),
+            .HistogramGeneration: Histogram.FilterTarget(),
     ]
     
     /// Load all of the filter classes into the filter manager.
@@ -349,6 +351,7 @@ class FilterManager
         ParameterCount![.ShapePixellate] = ShapePixellate.SupportedFields().count
         ParameterCount![.BlockMean] = BlockMean.SupportedFields().count
         ParameterCount![.Sobel] = Sobel.SupportedFields().count
+        ParameterCount![.HistogramGeneration] = Histogram.SupportedFields().count
     }
     
     private static var ParameterCount: [FilterManager.FilterTypes: Int]? = nil
@@ -427,6 +430,7 @@ class FilterManager
         StoryboardList![.ShapePixellate] = ShapePixellate.SettingsStoryboard()
         StoryboardList![.BlockMean] = BlockMean.SettingsStoryboard()
         StoryboardList![.Sobel] = Sobel.SettingsStoryboard()
+        StoryboardList![.HistogramGeneration] = Histogram.SettingsStoryboard()
     }
     
     private static var StoryboardList: [FilterTypes: String?]? = nil
@@ -742,6 +746,9 @@ class FilterManager
             
         case .Sobel:
             return Sobel()
+            
+        case .HistogramGeneration:
+            return Histogram()
             
         default:
             return nil
@@ -1177,6 +1184,7 @@ class FilterManager
             .ShapePixellate: "Shape Pixellate",
             .BlockMean: "Block Mean",
             .Sobel: "Sobel",
+            .HistogramGeneration: "Create Histogram",
     ]
     
     public static func GetFilterTitle(_ Filter: FilterTypes) -> String?
@@ -1254,6 +1262,7 @@ class FilterManager
             .ShapePixellate: true,
             .BlockMean: true,
             .Sobel: true,
+            .HistogramGeneration: true,
     ]
     
     /// Determines if the given filter type is implemented.
@@ -1496,6 +1505,7 @@ class FilterManager
             .PixelHighlightAction: .IntType,
             .PixelHighlightActionValue: .DoubleType,
             .PixelHighlightActionIfGreater: .BoolType,
+            .SobelMergeWithBackground: .BoolType,
     ]
     
     /// Maps fields to names used to store field data in user settings.
@@ -1678,6 +1688,7 @@ class FilterManager
             .PixelHighlightAction: "_HighlightAction",
             .PixelHighlightActionValue: "_HighlightActionValue",
             .PixelHighlightActionIfGreater: "_HighlightActionIfGreater",
+            .SobelMergeWithBackground: "_SobelMergeWithBackground",
     ]
 }
 
