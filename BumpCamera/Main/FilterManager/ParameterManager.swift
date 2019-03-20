@@ -248,6 +248,19 @@ class ParameterManager
         return (ExpectedType, AnyValue, StorageName)
     }
     
+    public static func GetFieldData(Blob: FilterSettingsBlob, Field: FilterManager.InputFields) -> (FilterManager.InputTypes, Any?)
+    {
+        if !Blob.HasSetting(Field)
+        {
+            return (FilterManager.InputTypes.NoType, nil)
+        }
+        guard let ExpectedType = FilterManager.FieldMap[Field] else
+        {
+            fatalError("Specified field has no associated type.")
+        }
+        return (ExpectedType, Blob.GetSetting(Field))
+    }
+    
     /// Get field information for the filter/field type passed.
     ///
     /// - Parameters:
@@ -315,6 +328,20 @@ class ParameterManager
         return Default
     }
     
+    public static func GetColor(Blob: FilterSettingsBlob, Field: FilterManager.InputFields, Default: UIColor) -> UIColor
+    {
+        let FieldData = GetFieldData(Blob: Blob, Field: Field)
+        if FieldData.0 == .NoType
+        {
+            fatalError("No data found for \(Field) in FilterSettingsBlob.")
+        }
+        if let CVal = FieldData.1 as? UIColor
+        {
+            return CVal
+        }
+        return Default
+    }
+    
     /// Return a color stored in user settings. The color is converted to simd_float4 before being returned.
     ///
     /// - Note: Calls GetColor which may generate a fatal error on bad data.
@@ -327,6 +354,12 @@ class ParameterManager
     public static func GetFloat4(From: UUID, Field: FilterManager.InputFields, Default: UIColor) -> simd_float4
     {
         let Color = GetColor(From: From, Field: Field, Default: Default)
+        return Color.ToFloat4()
+    }
+    
+    public static func GetFloat4(Blob: FilterSettingsBlob, Field: FilterManager.InputFields, Default: UIColor) -> simd_float4
+    {
+        let Color = GetColor(Blob: Blob, Field: Field, Default: Default)
         return Color.ToFloat4()
     }
     
@@ -354,6 +387,20 @@ class ParameterManager
         return Default
     }
     
+    public static func GetDouble(Blob: FilterSettingsBlob, Field: FilterManager.InputFields, Default: Double) -> Double
+    {
+        let FieldData = GetFieldData(Blob: Blob, Field: Field)
+        if FieldData.0 == .NoType
+        {
+            fatalError("No data found for \(Field) in FilterSettingsBlob.")
+        }
+        if let DVal = FieldData.1 as? Double
+        {
+            return DVal
+        }
+        return Default
+    }
+    
     /// Return a double value stored in user settings. Value is converted into a simd_float1 before being returned.
     ///
     /// - Note: This function calls GetDouble which may generate a fatal error on bad data.
@@ -366,6 +413,11 @@ class ParameterManager
     public static func GetFloat1(From: UUID, Field: FilterManager.InputFields, Default: Double) -> simd_float1
     {
         return simd_float1(GetDouble(From: From, Field: Field, Default: Default))
+    }
+    
+    public static func GetFloat1(Blob: FilterSettingsBlob, Field: FilterManager.InputFields, Default: Double) -> simd_float1
+    {
+        return simd_float1(GetDouble(Blob: Blob, Field: Field, Default: Default))
     }
     
     /// Return an integer stored in user settings.
@@ -392,6 +444,20 @@ class ParameterManager
         return Default
     }
     
+    public static func GetInt(Blob: FilterSettingsBlob, Field: FilterManager.InputFields, Default: Int) -> Int
+    {
+        let FieldData = GetFieldData(Blob: Blob, Field: Field)
+        if FieldData.0 == .NoType
+        {
+            fatalError("No data found for \(Field) in FilterSettingsBlob.")
+        }
+        if let IVal = FieldData.1 as? Int
+        {
+            return IVal
+        }
+        return Default
+    }
+    
     /// Return an integer stored in user settings as a simd_uint1 value.
     ///
     /// - Note: This function calls GetInt which may generate a fatal error on bad data.
@@ -404,6 +470,11 @@ class ParameterManager
     public static func GetUInt1(From: UUID, Field: FilterManager.InputFields, Default: Int) -> simd_uint1
     {
         return simd_uint1(GetInt(From: From, Field: Field, Default: Default))
+    }
+    
+    public static func GetUInt1(Blob: FilterSettingsBlob, Field: FilterManager.InputFields, Default: Int) -> simd_uint1
+    {
+        return simd_uint1(GetInt(Blob: Blob, Field: Field, Default: Default))
     }
     
     /// Return a boolean value stored in user settings.
@@ -430,6 +501,20 @@ class ParameterManager
         return Default
     }
     
+    public static func GetBool(Blob: FilterSettingsBlob, Field: FilterManager.InputFields, Default: Bool) -> Bool
+    {
+        let FieldData = GetFieldData(Blob: Blob, Field: Field)
+        if FieldData.0 == .NoType
+        {
+            fatalError("No data found for \(Field) in FilterSettingsBlob.")
+        }
+        if let BVal = FieldData.1 as? Bool
+        {
+            return BVal
+        }
+        return Default
+    }
+    
     /// Return a boolean stored in user settings cast as a simd_bool.
     ///
     /// - Note: This function calls GetBool which may cause a fatal error if the data cannot be read.
@@ -441,7 +526,12 @@ class ParameterManager
     /// - Returns: Value of the boolean stored in user settings on success converted to simd_bool, default boolean on failure.
     public static func GetSimdBool(From: UUID, Field: FilterManager.InputFields, Default: Bool) -> simd_bool
     {
-        return GetBool(From: From, Field: Field, Default: Default)
+        return simd_bool(GetBool(From: From, Field: Field, Default: Default))
+    }
+    
+    public static func GetSimdBool(Blob: FilterSettingsBlob, Field: FilterManager.InputFields, Default: Bool) -> simd_bool
+    {
+        return simd_bool(GetBool(Blob: Blob, Field: Field, Default: Default))
     }
     
     /// Return a string stored in user settings.
@@ -460,6 +550,20 @@ class ParameterManager
         if FieldData.0 == .NoType
         {
             fatalError("No data found for \(Field) in \(From).")
+        }
+        if let SVal = FieldData.1 as? String
+        {
+            return SVal
+        }
+        return Default
+    }
+    
+    public static func GetString(Blob: FilterSettingsBlob, Field: FilterManager.InputFields, Default: String) -> String
+    {
+        let FieldData = GetFieldData(Blob: Blob, Field: Field)
+        if FieldData.0 == .NoType
+        {
+            fatalError("No data found for \(Field) in FilterSettingsBlob.")
         }
         if let SVal = FieldData.1 as? String
         {
@@ -493,6 +597,21 @@ class ParameterManager
         return Default.Clamp(0.0, 1.0)
     }
     
+    public static func GetNormal(Blob: FilterSettingsBlob, Field: FilterManager.InputFields, Default: Double) -> Double
+    {
+        let FieldData = GetFieldData(Blob: Blob, Field: Field)
+        if FieldData.0 == .NoType
+        {
+            fatalError("No data found for \(Field) in FilterSettingsBlob.")
+        }
+        if var NVal = FieldData.1 as? Double
+        {
+            NVal = NVal.Clamp(0.0, 1.0)
+            return NVal
+        }
+        return Default.Clamp(0.0, 1.0)
+    }
+    
     /// Return a CGPoint stored in user settings.
     ///
     /// - Note: This function generate a fatal error if the specified field is not found or the data cannot be converted
@@ -517,6 +636,24 @@ class ParameterManager
         return Default
     }
     
+    public static func GetPoint(Blob: FilterSettingsBlob, Field: FilterManager.InputFields, Default: CGPoint) -> CGPoint
+    {
+        if !Blob.HasSetting(Field)
+        {
+            return Default
+        }
+        let FieldData = GetFieldData(Blob: Blob, Field: Field)
+        if FieldData.0 == .NoType
+        {
+            fatalError("No data found for \(Field) in passed FilterSettingsBlob.")
+        }
+        if let PVal = FieldData.1 as? CGPoint
+        {
+            return PVal
+        }
+        return Default
+    }
+    
     /// Return a CIVector stored in user settings.
     ///
     /// - Note: This function generate a fatal error if the specified field is not found or the data cannot be converted
@@ -531,6 +668,16 @@ class ParameterManager
     public static func GetVector(From: UUID, Field: FilterManager.InputFields, Default: CIVector) -> CIVector
     {
         let Point = GetPoint(From: From, Field: Field, Default: CGPoint(x: 0, y: 0))
+        return CIVector(x: Point.x, y: Point.y)
+    }
+    
+    public static func GetVector(Blob: FilterSettingsBlob, Field: FilterManager.InputFields, Default: CIVector) -> CIVector
+    {
+        if !Blob.HasSetting(Field)
+        {
+            return Default
+        }
+        let Point = GetPoint(Blob: Blob, Field: Field, Default: CGPoint(x: 0, y: 0))
         return CIVector(x: Point.x, y: Point.y)
     }
     
