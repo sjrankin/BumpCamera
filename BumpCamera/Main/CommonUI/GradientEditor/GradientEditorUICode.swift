@@ -63,7 +63,7 @@ class GradientEditorUICode: UIViewController, GradientPickerProtocol,
         else
         {
             let SampleGradient = GradientManager.CreateGradientImage(From: WithGradient, WithFrame: GradientView.bounds,
-                                                                    IsVertical: IsVertical, ReverseColors: false)
+                                                                     IsVertical: IsVertical, ReverseColors: false)
             GradientView.image = SampleGradient
             GradientStopList = GradientManager.ParseGradient(WithGradient)
         }
@@ -189,7 +189,7 @@ class GradientEditorUICode: UIViewController, GradientPickerProtocol,
     func tableView(_ tableView: UITableView, moveRowAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath)
     {
         if let NewGradient = GradientManager.SwapGradientStops(CurrentGradient, Index1: sourceIndexPath.row,
-                                                              Index2: destinationIndexPath.row)
+                                                               Index2: destinationIndexPath.row)
         {
             CurrentGradient = NewGradient
             ShowSample(WithGradient: CurrentGradient)
@@ -233,11 +233,63 @@ class GradientEditorUICode: UIViewController, GradientPickerProtocol,
                 Dest.SetStop(StopColorIndex: SelectedIndex)
             }
             
+        case "ToExportGradient":
+            if let Dest = segue.destination as? ExportGradientAsImageCode
+            {
+                Dest.ParentDelegate = self
+                Dest.GradientToEdit(CurrentGradient, Tag: "NotUsed")
+            }
+            break
+            
         default:
             break
         }
         super.prepare(for: segue, sender: self)
     }
+    
+    @IBAction func HandleLoadPresetGradient(_ sender: Any)
+    {
+        let Alert = UIAlertController(title: "Load Predefined Gradient",
+                                      message: "Load the editor with a predefined gradient. You can make changes but the predefined gradient will not change.",
+                                      preferredStyle: UIAlertController.Style.alert)
+        
+        for Gradient in GradientList
+        {
+            let AAction = UIAlertAction(title: "\(Gradient.rawValue)", style: UIAlertAction.Style.default, handler: HandleLoadPreset)
+            Alert.addAction(AAction)
+        }
+        Alert.addAction(UIAlertAction(title: "Cancel", style: UIAlertAction.Style.cancel, handler: nil))
+        present(Alert, animated: true)
+    }
+    
+    @objc func HandleLoadPreset(AlertAction: UIAlertAction)
+    {
+        let Title = AlertAction.title
+        if let NewGradient = GradientManager.PredefinedGradientFromName(Title!)
+        {
+            CurrentGradient = NewGradient
+            ShowSample(WithGradient: CurrentGradient)
+        }
+    }
+    
+    let GradientList: [Gradients] =
+        [
+            .WhiteRed,
+            .WhiteGreen,
+            .WhiteBlue,
+            .WhiteBlack,
+            .YellowRed,
+            .PistachioBlack,
+            .TomatoBlack,
+            .RedGreenBlue,
+            .CyanMagentaYellowBlack,
+            .Metallic,
+            .Rainbow,
+            .Hue,
+            .Stripes1,
+            .Stripes2,
+            .Blueprint
+    ]
     
     @IBOutlet weak var ClearButton: UIBarButtonItem!
     @IBOutlet weak var ResetButton: UIBarButtonItem!
