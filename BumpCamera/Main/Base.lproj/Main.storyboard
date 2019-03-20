@@ -20,11 +20,11 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="9Hm-3f-Kzi">
-                                <rect key="frame" x="0.0" y="28" width="414" height="648"/>
+                                <rect key="frame" x="0.0" y="20" width="414" height="656"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             </view>
-                            <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" translatesAutoresizingMaskIntoConstraints="NO" id="0yY-vc-s0Q">
-                                <rect key="frame" x="0.0" y="676" width="414" height="60"/>
+                            <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" misplaced="YES" preservesSuperviewLayoutMargins="YES" translatesAutoresizingMaskIntoConstraints="NO" id="0yY-vc-s0Q">
+                                <rect key="frame" x="-2" y="676" width="418" height="60"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="60" id="Emd-ze-2lQ"/>
                                 </constraints>
@@ -338,6 +338,7 @@
                         <outlet property="SaveButton" destination="If5-uR-elY" id="vR8-WF-zDN"/>
                         <outlet property="StatusLabel" destination="AoI-5y-9h0" id="gt1-iL-eHZ"/>
                         <segue destination="aQc-7v-Nth" kind="show" identifier="ToSettings" id="MpJ-te-UpX"/>
+                        <segue destination="Dft-r9-9Pf" kind="show" identifier="ToImageEditor" id="oxI-b9-q4b"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
@@ -350,7 +351,45 @@
                 <viewControllerPlaceholder storyboardName="Settings" id="aQc-7v-Nth" sceneMemberID="viewController"/>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="lrG-ga-5aA" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="953" y="130"/>
+            <point key="canvasLocation" x="130" y="622"/>
+        </scene>
+        <!--View Controller-->
+        <scene sceneID="oRT-aN-lol">
+            <objects>
+                <viewController id="Dft-r9-9Pf" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="9X4-y2-JZj">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" translatesAutoresizingMaskIntoConstraints="NO" id="G30-CL-4w5">
+                                <rect key="frame" x="0.0" y="643" width="414" height="73"/>
+                                <color key="backgroundColor" name="YellowPastel"/>
+                                <viewLayoutGuide key="safeArea" id="rDw-5Z-0kD"/>
+                            </view>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" preservesSuperviewLayoutMargins="YES" translatesAutoresizingMaskIntoConstraints="NO" id="mCV-JT-01l">
+                                <rect key="frame" x="20" y="20" width="374" height="615"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="615" id="7og-nG-IiN"/>
+                                </constraints>
+                                <viewLayoutGuide key="safeArea" id="m9g-ql-YmA"/>
+                            </imageView>
+                        </subviews>
+                        <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstAttribute="bottom" secondItem="G30-CL-4w5" secondAttribute="bottom" constant="20" symbolic="YES" id="7kS-wt-x4V"/>
+                            <constraint firstItem="mCV-JT-01l" firstAttribute="centerX" secondItem="G30-CL-4w5" secondAttribute="centerX" id="IDZ-Ot-9y7"/>
+                            <constraint firstItem="G30-CL-4w5" firstAttribute="leading" secondItem="9X4-y2-JZj" secondAttribute="leading" id="bHt-Vt-NhR"/>
+                            <constraint firstItem="mCV-JT-01l" firstAttribute="top" secondItem="t81-Im-7yG" secondAttribute="top" id="cMl-Yd-VTT"/>
+                            <constraint firstItem="mCV-JT-01l" firstAttribute="leading" secondItem="9X4-y2-JZj" secondAttribute="leadingMargin" id="ohD-MK-6e3"/>
+                            <constraint firstItem="G30-CL-4w5" firstAttribute="top" secondItem="mCV-JT-01l" secondAttribute="bottom" constant="8" symbolic="YES" id="pwm-2g-rGU"/>
+                            <constraint firstAttribute="trailing" secondItem="G30-CL-4w5" secondAttribute="trailing" id="rRi-2Q-Uip"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="t81-Im-7yG"/>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="vFu-DE-Xp3" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1253.6231884057972" y="130.43478260869566"/>
         </scene>
     </scenes>
     <resources>
@@ -371,6 +410,9 @@
         </namedColor>
         <namedColor name="PastelYellow">
             <color red="0.99215686274509807" green="0.99215686274509807" blue="0.58823529411764708" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+        <namedColor name="YellowPastel">
+            <color red="0.98039215686274506" green="0.97254901960784312" blue="0.51764705882352946" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>
         <namedColor name="YellowProcess">
             <color red="1" green="0.93725490196078431" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
