@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14490.68" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="q0U-bA-oFS">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14490.49"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--Sobel Settings-->
+        <scene sceneID="tDg-o3-9Yz">
+            <objects>
+                <tableViewController id="UJC-EP-lnG" customClass="SobelSettingsUICode" customModule="BumpCamera" customModuleProvider="target" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="static" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" id="PYF-pi-Lqb">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <sections>
+                            <tableViewSection id="tSD-LB-hYM">
+                                <cells>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" rowHeight="45" id="TMZ-qg-E8M">
+                                        <rect key="frame" x="0.0" y="0.0" width="375" height="45"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="TMZ-qg-E8M" id="tvz-YU-i1d">
+                                            <rect key="frame" x="0.0" y="0.0" width="375" height="44.5"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" preservesSuperviewLayoutMargins="YES" text="Merge with background" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Koh-as-l2h">
+                                                    <rect key="frame" x="16" y="11.5" width="181" height="21.5"/>
+                                                    <viewLayoutGuide key="safeArea" id="hYl-W0-cWL"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" preservesSuperviewLayoutMargins="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="i0g-k5-nMB">
+                                                    <rect key="frame" x="310" y="7.5" width="51" height="29.5"/>
+                                                    <viewLayoutGuide key="safeArea" id="yst-tr-MAf"/>
+                                                    <connections>
+                                                        <action selector="HandleMergeChanged:" destination="UJC-EP-lnG" eventType="primaryActionTriggered" id="WH6-Ql-4O6"/>
+                                                    </connections>
+                                                </switch>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstItem="Koh-as-l2h" firstAttribute="leading" secondItem="tvz-YU-i1d" secondAttribute="leadingMargin" id="6Qu-Ty-l2n"/>
+                                                <constraint firstItem="Koh-as-l2h" firstAttribute="centerY" secondItem="tvz-YU-i1d" secondAttribute="centerY" id="ZG6-2V-bUp"/>
+                                                <constraint firstItem="i0g-k5-nMB" firstAttribute="centerY" secondItem="tvz-YU-i1d" secondAttribute="centerY" id="ayd-1m-Pla"/>
+                                                <constraint firstAttribute="bottomMargin" secondItem="Koh-as-l2h" secondAttribute="bottom" constant="1" id="b54-bo-v4p"/>
+                                                <constraint firstAttribute="bottomMargin" secondItem="i0g-k5-nMB" secondAttribute="bottom" constant="-3" id="iQi-8l-Cx2"/>
+                                                <constraint firstItem="i0g-k5-nMB" firstAttribute="trailing" secondItem="tvz-YU-i1d" secondAttribute="trailingMargin" id="tRV-oz-de9"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
+                                </cells>
+                            </tableViewSection>
+                        </sections>
+                        <connections>
+                            <outlet property="dataSource" destination="UJC-EP-lnG" id="MKt-4m-Vtp"/>
+                            <outlet property="delegate" destination="UJC-EP-lnG" id="YSY-6o-yOk"/>
+                        </connections>
+                    </tableView>
+                    <toolbarItems>
+                        <barButtonItem title="Placeholder" id="abG-xm-g2k"/>
+                    </toolbarItems>
+                    <navigationItem key="navigationItem" title="Sobel Settings" id="YXm-m8-gxp"/>
+                    <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
+                    <connections>
+                        <outlet property="MergeSwitch" destination="i0g-k5-nMB" id="cYa-gQ-DQ3"/>
+                    </connections>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="d2L-8Q-x1Y" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-67" y="303"/>
+        </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="qdb-pw-lFh">
+            <objects>
+                <navigationController storyboardIdentifier="SobelSettingsUI" toolbarHidden="NO" id="q0U-bA-oFS" sceneMemberID="viewController">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="JNM-us-eEO">
+                        <rect key="frame" x="0.0" y="20" width="375" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <toolbar key="toolbar" opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="XFb-fo-e42">
+                        <rect key="frame" x="0.0" y="623" width="375" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </toolbar>
+                    <connections>
+                        <segue destination="UJC-EP-lnG" kind="relationship" relationship="rootViewController" id="GTT-0d-fVh"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="kIQ-Gx-YCm" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-986" y="303"/>
+        </scene>
+    </scenes>
+</document>
