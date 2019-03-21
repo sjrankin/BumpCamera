@@ -437,6 +437,7 @@ class LiveMetalView: MTKView
         commandEncoder.endEncoding()
         
         commandBuffer.present(drawable) // Draw to the screen
+        //draw()
         commandBuffer.commit()
     }
 }
