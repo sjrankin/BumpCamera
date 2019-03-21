@@ -63,8 +63,8 @@ class MPSDilateSettingsUICode: FilterSettingUIBase
         if LockSwitch.isOn
         {
             WidthSlider.value = HeightSlider.value
-            HeightValue.text = "\(SliderValue)"
-            UpdateValue(WithValue: SliderValue, ToField: .IHeight)
+            WidthValue.text = "\(SliderValue)"
+            UpdateValue(WithValue: SliderValue, ToField: .IWidth)
         }
         ShowSampleView()
     }
