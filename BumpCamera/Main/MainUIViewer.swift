@@ -52,10 +52,14 @@ class MainUIViewer: UIViewController,
     var DepthDataSupported = false
     var ADelegate: AppDelegate? = nil
     var OnDebugger = false
+    var StartUpTime: Date!
     
+    /// Main setup.
     override func viewDidLoad()
     {
         super.viewDidLoad()
+        
+        StartUpTime = Date()
         
         MainBottomToolbar.layer.zPosition = 1000
         MainBottomToolbar.layer.borderColor = UIColor.white.cgColor
