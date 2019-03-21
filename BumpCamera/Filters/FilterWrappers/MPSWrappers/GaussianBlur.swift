@@ -64,12 +64,30 @@ class GaussianBlur: FilterParent, Renderer
     
     var bciContext: CIContext!
     
+    private var BufferPool: CVPixelBufferPool? = nil
+    
     func Initialize(With FormatDescription: CMFormatDescription, BufferCountHint: Int)
     {
-        Reset("type(of: self).Initialize")
+        Reset("GaussianBlur.Initialize")
+        (BufferPool, _, OutputFormatDescription) = CreateBufferPool(From: FormatDescription, BufferCountHint: BufferCountHint)
+        if BufferPool == nil
+        {
+            print("BufferPool nil in GaussianBlur.Initialize.")
+            return
+        }
+        InputFormatDescription = FormatDescription
         CommandQueue = MetalDevice?.makeCommandQueue()
         bciContext = CIContext()
         Initialized = true
+        var MetalTextureCache: CVMetalTextureCache? = nil
+        if CVMetalTextureCacheCreate(kCFAllocatorDefault, nil, MetalDevice!, nil, &MetalTextureCache) != kCVReturnSuccess
+        {
+            fatalError("Unable to allocation texture cache in GaussianBlur.")
+        }
+        else
+        {
+            TextureCache = MetalTextureCache
+        }
     }
     
     func Reset(_ CalledBy: String = "")
@@ -100,10 +118,6 @@ class GaussianBlur: FilterParent, Renderer
         return buffer.device.makeTexture(descriptor: descriptor)!
     }
     
-    /// Render the buffer passed with the Gaussian Blur MPS filter. The buffer is assumed to be from the live view.
-    ///
-    /// - Parameter PixelBuffer: The (assumedly) live view buffer.
-    /// - Returns: Pixel buffer with the rendered image.
     func Render(PixelBuffer: CVPixelBuffer) -> CVPixelBuffer?
     {
         objc_sync_enter(AccessLock)
@@ -115,49 +129,42 @@ class GaussianBlur: FilterParent, Renderer
             fatalError("GaussianBlur not initialized at Render(CVPixelBuffer) call.")
         }
         
-        let LVTextureLoader = MTKTextureLoader(device: MetalDevice!)
-        guard let CommandBuffer = CommandQueue?.makeCommandBuffer() else
+        var NewPixelBuffer: CVPixelBuffer? = nil
+        CVPixelBufferPoolCreatePixelBuffer(kCFAllocatorDefault, BufferPool!, &NewPixelBuffer)
+        guard let OutputBuffer = NewPixelBuffer else
         {
-            print("Error making command buffer.")
+            print("Allocation failure for new pixel buffer pool in GaussianBlur.")
             return nil
         }
-        let CiImage = CIImage(cvPixelBuffer: PixelBuffer)
-        var InputTexture: MTLTexture!
-        if let CgImage = bciContext.createCGImage(CiImage, from: CiImage.extent)
+        
+        guard let InputTexture = MakeTextureFromCVPixelBuffer(PixelBuffer: PixelBuffer, TextureFormat: .bgra8Unorm) else
         {
-            do
-            {
-                InputTexture = try LVTextureLoader.newTexture(cgImage: CgImage, options: [:])
-            }
-            catch
-            {
-                print("Error loading texture: \(error.localizedDescription)")
-                return nil
-            }
+            print("Error creating input texture in GaussianBlur.")
+            return nil
         }
-        let InPlaceTexture = UnsafeMutablePointer<MTLTexture>.allocate(capacity: 1)
-        InPlaceTexture.initialize(to: InputTexture)
-        let Sigma = ParameterManager.GetDouble(From: ID(), Field: .Sigma, Default: 5.0)
-        let Shader = MPSImageGaussianBlur(device: MetalDevice!, sigma: Float(Sigma))
-        Shader.encode(commandBuffer: CommandBuffer, inPlaceTexture: InPlaceTexture, fallbackCopyAllocator: SomeAllocator)
+        guard let OutputTexture = MakeTextureFromCVPixelBuffer(PixelBuffer: OutputBuffer, TextureFormat: .bgra8Unorm) else
+        {
+            print("Error creating output texture in GaussianBlur.")
+            return nil
+        }
+        
+        guard let CommandQ = CommandQueue,
+            let CommandBuffer = CommandQ.makeCommandBuffer() else
+        {
+            print("Error creating Metal command queue in GaussianBlur.")
+            CVMetalTextureCacheFlush(TextureCache!, 0)
+            return nil
+        }
+        
+                let Sigma = ParameterManager.GetDouble(From: ID(), Field: .Sigma, Default: 5.0)
+                let Shader = MPSImageGaussianBlur(device: MetalDevice!, sigma: Float(Sigma))
+        Shader.encode(commandBuffer: CommandBuffer, sourceTexture: InputTexture, destinationTexture: OutputTexture)
         CommandBuffer.commit()
         CommandBuffer.waitUntilCompleted()
-        var Final: CIImage = CIImage(mtlTexture: InputTexture, options: [:])!
-        Final = RotateImageRight(Final, AndMirror: true)
-        InPlaceTexture.deallocate()
+        
         LiveRenderTime = CACurrentMediaTime() - Start
         ParameterManager.UpdateRenderAccumulator(NewValue: LiveRenderTime, ID: ID(), ForImage: false)
-        if Final.pixelBuffer == nil
-        {
-            //Need to render with CIContext in this case.
-            //https://stackoverflow.com/questions/33053412/how-to-initialise-cvpixelbufferref-in-swift
-            var PixelBuffer: CVPixelBuffer? = nil
-            CVPixelBufferCreate(kCFAllocatorDefault, Int(Final.extent.width), Int(Final.extent.height),
-                                kCVPixelFormatType_32BGRA, nil, &PixelBuffer)
-            bciContext.render(Final, to: PixelBuffer!)
-            return PixelBuffer
-        }
-        return Final.pixelBuffer
+        return OutputBuffer
     }
     
     var ImageDevice: MTLDevice? = nil
@@ -173,7 +180,7 @@ class GaussianBlur: FilterParent, Renderer
     func InitializeForImage()
     {
         ImageDevice = MTLCreateSystemDefaultDevice()
-        Reset("type(of: self).Initialize")
+        Reset("GaussianBlur.Initialize")
         CommandQueue = ImageDevice?.makeCommandQueue()
         IGTextureLoader = MTKTextureLoader(device: MetalDevice!)
         InitializedForImage = true
@@ -182,56 +189,60 @@ class GaussianBlur: FilterParent, Renderer
     
     var ciContext: CIContext!
     
-    /// Renders the image with the wrapper's MPS image filter. In our case, the MPSImagetype(of: self).
-    ///
-    /// - Note: [Metal kernel functions compute shaders](http://flexmonkey.blogspot.com/2014/10/metal-kernel-functions-compute-shaders.html)
-    ///
-    /// - Parameter Image: The image to render.
-    /// - Returns: the rendered image.
     func Render(Image: UIImage) -> UIImage?
     {
         objc_sync_enter(AccessLock)
         defer{objc_sync_exit(AccessLock)}
         
         let Start = CACurrentMediaTime()
-        if !InitializedForImage
+        
+        let CgImage = Image.cgImage
+        let PixelBuffer = GetPixelBufferFrom(Image)
+        let Width = CVPixelBufferGetWidth(PixelBuffer!)
+        let Height = CVPixelBufferGetHeight(PixelBuffer!)
+        
+        var SourceTexture: MTLTexture!
+        let Loader = MTKTextureLoader(device: ImageDevice!)
+        do
         {
-            fatalError("GaussianBlur not initialized at Render(UIImage) call.")
+            let OriginalTexture = try Loader.newTexture(cgImage: CgImage!, options: nil)
+            SourceTexture = OriginalTexture.makeTextureView(pixelFormat: .bgra8Unorm)
         }
-        guard let CommandBuffer = ImageCommandQueue?.makeCommandBuffer() else
+        catch
         {
-            print("Error making command buffer.")
+            print("Error when trying to load texture from passed image: \(error.localizedDescription)")
             return nil
         }
-        let CiImage = CIImage(image: Image)
-        //let ciContext = CIContext()
-        var InputTexture: MTLTexture!
-        if let CgImage = ciContext.createCGImage(CiImage!, from: CiImage!.extent)
+        
+        let InputTexture = SourceTexture
+        let OutDesc = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .bgra8Unorm, width: Width, height: Height, mipmapped: true)
+        OutDesc.usage = [.shaderWrite, .shaderRead]
+        let OutputTexture = ImageDevice!.makeTexture(descriptor: OutDesc)
+        
+        guard let CommandQ = CommandQueue,
+            let CommandBuffer = CommandQ.makeCommandBuffer() else
         {
-            do
-            {
-                InputTexture = try IGTextureLoader?.newTexture(cgImage: CgImage, options: [:])
-            }
-            catch
-            {
-                print("Error loading texture.")
-                return nil
-            }
+            print("Error creating Metal command queue in GaussianBlur.")
+            CVMetalTextureCacheFlush(TextureCache!, 0)
+            return nil
         }
-        let InPlaceTexture = UnsafeMutablePointer<MTLTexture>.allocate(capacity: 1)
-        InPlaceTexture.initialize(to: InputTexture)
+        
         let Sigma = ParameterManager.GetDouble(From: ID(), Field: .Sigma, Default: 5.0)
-        let Shader = MPSImageGaussianBlur(device: MetalDevice!, sigma: Float(Sigma))
-        Shader.encode(commandBuffer: CommandBuffer, inPlaceTexture: InPlaceTexture, fallbackCopyAllocator: SomeAllocator)
+        let Shader = MPSImageGaussianBlur(device: ImageDevice!, sigma: Float(Sigma))
+        Shader.encode(commandBuffer: CommandBuffer, sourceTexture: InputTexture!, destinationTexture: OutputTexture!)
         CommandBuffer.commit()
         CommandBuffer.waitUntilCompleted()
-        var Final: CIImage = CIImage(mtlTexture: InputTexture, options: [:])!
-        Final = RotateImage180(Final)
-        InPlaceTexture.deallocate()
-        ImageRenderTime = CACurrentMediaTime() - Start
-        ParameterManager.UpdateRenderAccumulator(NewValue: ImageRenderTime, ID: ID(), ForImage: true)
-
-        return UIImage(ciImage: Final)
+        
+        var ImageToReturn: UIImage? = nil
+        let ciimage = CIImage(mtlTexture: OutputTexture!, options: nil)?.oriented(CGImagePropertyOrientation.downMirrored)
+        let fcontext = CIContext(options: nil)
+        let cgimage = fcontext.createCGImage(ciimage!, from: ciimage!.extent)
+        ImageToReturn = UIImage(cgImage: cgimage!)
+        LastUIImage = ImageToReturn
+        
+        LiveRenderTime = CACurrentMediaTime() - Start
+        ParameterManager.UpdateRenderAccumulator(NewValue: LiveRenderTime, ID: ID(), ForImage: false)
+        return ImageToReturn
     }
     
     func Render(Image: CIImage) -> CIImage?
@@ -246,13 +257,13 @@ class GaussianBlur: FilterParent, Renderer
             }
             else
             {
-                print("Error converting UIImage to CIImage in type(of: self).Render(CIImage)")
+                print("Error converting UIImage to CIImage in GaussianBlur.Render(CIImage)")
                 return nil
             }
         }
         else
         {
-            print("Error returned from Render(UIImage) in type(of: self).Render(CIImage)")
+            print("Error returned from Render(UIImage) in GaussianBlur.Render(CIImage)")
             return nil
         }
     }
