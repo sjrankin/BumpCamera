@@ -110,6 +110,47 @@ class MPSDilate: FilterParent, Renderer
     
     var AccessLock = NSObject()
     
+    /// Return the distance between the two passed points.
+    ///
+    /// - Parameters:
+    ///   - From: First point.
+    ///   - To: Second point.
+    /// - Returns: Distance between the two, passed points.
+    func Distance(From: (Int, Int), To: (Int, Int)) -> Double
+    {
+        let Xsq = (To.0 - To.1) * (To.0 - To.1)
+        let Ysq = (To.0 - To.1) * (To.0 - To.1)
+        return sqrt(Double(Xsq + Ysq))
+    }
+    
+    /// Create the probe matrix for the MPS kernel.
+    ///
+    /// - Parameters:
+    ///   - Width: Width of the kernel.
+    ///   - Height: Height of the kernel.
+    /// - Returns: Populated kernel to use as the probe.
+    func CreateProbe(_ Width: Int, _ Height: Int) -> [Float]
+    {
+        var Probe = [Float](repeating: 0.0, count: Width * Height)
+                let (Center, CenterX, CenterY) = CalculateCenter(Width: Width, Height: Height)
+        let MaxDistance = Distance(From: (0,0), To: (CenterX, CenterY))
+        
+        for Y in 0 ..< Height
+        {
+            for X in 0 ..< Width
+            {
+                let Dist = Distance(From: (X,Y), To: (CenterX, CenterY))
+                var Final = Dist / MaxDistance
+                Final = X % 2 == 0 ? 1.0 : 0.0
+                let Index = (Y * Width) + X
+                Probe[Index] = Float(Final)
+            }
+        }
+
+        Probe[Center] = 0.0
+        return Probe
+    }
+    
     /// Render the buffer passed with the Sobel MPS filter. The buffer is assumed to be from the live view.
     ///
     /// - Parameter PixelBuffer: The (assumedly) live view buffer.
@@ -127,7 +168,7 @@ class MPSDilate: FilterParent, Renderer
         
         var NewPixelBuffer: CVPixelBuffer? = nil
         CVPixelBufferPoolCreatePixelBuffer(kCFAllocatorDefault, BufferPool!, &NewPixelBuffer)
-        guard var OutputBuffer = NewPixelBuffer else
+        guard let OutputBuffer = NewPixelBuffer else
         {
             print("Allocation failure for new pixel buffer pool in MPSDilate.")
             return nil
@@ -154,13 +195,14 @@ class MPSDilate: FilterParent, Renderer
         
         let KWidth = ParameterManager.GetInt(From: ID(), Field: .IWidth, Default: 3)
         let KHeight = ParameterManager.GetInt(From: ID(), Field: .IHeight, Default: 3)
-        var Probe = [Float](repeating: 0.0, count: KWidth * KHeight)
-        for Index in 0 ..< KWidth * KHeight
-        {
-            Probe[Index] = 0.5
-        }
+        //var Probe = [Float](repeating: 0.0, count: KWidth * KHeight)
+        //for Index in 0 ..< KWidth * KHeight
+        //{
+        //    Probe[Index] = 0.5
+        //}
+        let Probe = CreateProbe(KWidth, KHeight)
         
-        Probe[CalculateCenter(Width: KWidth, Height: KHeight)] = 0.0
+//        Probe[CalculateCenter(Width: KWidth, Height: KHeight).0] = 0.0
         
         let Shader = MPSImageDilate(device: MetalDevice!, kernelWidth: KWidth, kernelHeight: KHeight, values: UnsafePointer(Probe))
         Shader.encode(commandBuffer: CommandBuffer, sourceTexture: InputTexture, destinationTexture: OutputTexture)
@@ -192,14 +234,14 @@ class MPSDilate: FilterParent, Renderer
         ciContext = CIContext()
     }
     
-    func CalculateCenter(Width: Int, Height: Int) -> Int
+    func CalculateCenter(Width: Int, Height: Int) -> (Int, Int, Int)
     {
         //Get the coordinates of the center.
         let MV = (Height / 2) + 1
         let MH = (Width / 2) + 1
         //Generate the index of the coordinates.
         let Index = (MV * Width) + MH
-        return Index
+        return (Index, MH, MV)
     }
     
     func Render(Image: UIImage) -> UIImage?
@@ -242,13 +284,14 @@ class MPSDilate: FilterParent, Renderer
         
         let KWidth = ParameterManager.GetInt(From: ID(), Field: .IWidth, Default: 3)
         let KHeight = ParameterManager.GetInt(From: ID(), Field: .IHeight, Default: 3)
-        var Probe = [Float](repeating: 0.0, count: KWidth * KHeight)
-        for Index in 0 ..< KWidth * KHeight
-        {
-            Probe[Index] = 0.5
-        }
+        //var Probe = [Float](repeating: 0.0, count: KWidth * KHeight)
+        //for Index in 0 ..< KWidth * KHeight
+        //{
+        //    Probe[Index] = 0.5
+        //}
         
-        Probe[CalculateCenter(Width: KWidth, Height: KHeight)] = 0.0
+        //Probe[CalculateCenter(Width: KWidth, Height: KHeight).0] = 0.0
+                let Probe = CreateProbe(KWidth, KHeight)
         
         let Shader = MPSImageDilate(device: MetalDevice!, kernelWidth: KWidth, kernelHeight: KHeight, values: UnsafePointer(Probe))
         Shader.encode(commandBuffer: CommandBuffer, sourceTexture: InputTexture!, destinationTexture: OutputTexture!)
