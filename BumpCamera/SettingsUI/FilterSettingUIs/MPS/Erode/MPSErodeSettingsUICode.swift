@@ -58,7 +58,7 @@ class MPSErodeSettingsUICode: FilterSettingUIBase
         if LockSwitch.isOn
         {
             WidthSlider.value = HeightSlider.value
-            HeightValue.text = "\(SliderValue)"
+            WidthValue.text = "\(SliderValue)"
             UpdateValue(WithValue: SliderValue, ToField: .IHeight)
         }
         ShowSampleView()
