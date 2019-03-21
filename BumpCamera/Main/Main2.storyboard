@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14490.68" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14490.49"/>
+        <capability name="Named colors" minToolsVersion="9.0"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--View Controller-->
+        <scene sceneID="XA2-XI-av7">
+            <objects>
+                <viewController id="EB2-9B-Y71" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="KI4-v5-j86">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" translatesAutoresizingMaskIntoConstraints="NO" id="S7V-My-hV4">
+                                <rect key="frame" x="-5" y="20" width="385" height="540"/>
+                                <color key="backgroundColor" name="GrannySmith"/>
+                                <viewLayoutGuide key="safeArea" id="RWx-ND-Nz2"/>
+                            </view>
+                            <view contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" translatesAutoresizingMaskIntoConstraints="NO" id="SVg-RI-r6W">
+                                <rect key="frame" x="-5" y="852" width="385" height="90"/>
+                                <subviews>
+                                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" preservesSuperviewLayoutMargins="YES" image="CameraIcon" translatesAutoresizingMaskIntoConstraints="NO" id="hwx-we-Rjp">
+                                        <rect key="frame" x="160.5" y="13" width="64" height="64"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="64" id="qW2-Ke-D5u"/>
+                                            <constraint firstAttribute="height" constant="64" id="vWm-wV-AIF"/>
+                                        </constraints>
+                                        <viewLayoutGuide key="safeArea" id="ONr-O5-g1v"/>
+                                    </imageView>
+                                </subviews>
+                                <color key="backgroundColor" name="YellowProcess"/>
+                                <constraints>
+                                    <constraint firstItem="hwx-we-Rjp" firstAttribute="centerX" secondItem="SVg-RI-r6W" secondAttribute="centerX" id="2Ha-x3-puY"/>
+                                    <constraint firstItem="hwx-we-Rjp" firstAttribute="centerX" secondItem="SVg-RI-r6W" secondAttribute="centerX" id="RI4-9U-nuJ"/>
+                                    <constraint firstAttribute="height" constant="90" id="dNJ-62-j4H"/>
+                                    <constraint firstItem="hwx-we-Rjp" firstAttribute="centerX" secondItem="SVg-RI-r6W" secondAttribute="centerX" id="eI1-Xa-Y1h"/>
+                                    <constraint firstItem="hwx-we-Rjp" firstAttribute="centerY" secondItem="SVg-RI-r6W" secondAttribute="centerY" id="fju-Zk-nga"/>
+                                    <constraint firstItem="hwx-we-Rjp" firstAttribute="centerY" secondItem="SVg-RI-r6W" secondAttribute="centerY" id="nsy-eb-VJ4"/>
+                                </constraints>
+                                <viewLayoutGuide key="safeArea" id="TYy-19-agx"/>
+                            </view>
+                        </subviews>
+                        <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstItem="S7V-My-hV4" firstAttribute="trailing" secondItem="SVg-RI-r6W" secondAttribute="trailing" id="GwP-gH-kpI"/>
+                            <constraint firstItem="S7V-My-hV4" firstAttribute="top" secondItem="3Wi-xt-41A" secondAttribute="top" id="Iv1-q3-giQ"/>
+                            <constraint firstItem="SVg-RI-r6W" firstAttribute="top" secondItem="S7V-My-hV4" secondAttribute="bottom" id="Qsz-GB-MXv"/>
+                            <constraint firstItem="3Wi-xt-41A" firstAttribute="bottom" secondItem="SVg-RI-r6W" secondAttribute="bottom" constant="17" id="WFB-Ip-xY2"/>
+                            <constraint firstItem="SVg-RI-r6W" firstAttribute="centerX" secondItem="KI4-v5-j86" secondAttribute="centerX" id="aPt-Th-ipm"/>
+                            <constraint firstItem="SVg-RI-r6W" firstAttribute="leading" secondItem="KI4-v5-j86" secondAttribute="leadingMargin" constant="-21" id="sZI-Cp-Fyy"/>
+                            <constraint firstItem="S7V-My-hV4" firstAttribute="leading" secondItem="SVg-RI-r6W" secondAttribute="leading" id="tlP-Rd-P7s"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="3Wi-xt-41A"/>
+                    </view>
+                    <connections>
+                        <segue destination="RJl-Tl-mpK" kind="show" identifier="ToSettings" id="ukE-Tx-02y"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Rae-fM-2ZV" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="92.753623188405811" y="277.98913043478262"/>
+        </scene>
+        <!--Settings-->
+        <scene sceneID="yRo-mR-qTL">
+            <objects>
+                <viewControllerPlaceholder storyboardName="Settings" id="RJl-Tl-mpK" sceneMemberID="viewController"/>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="PHO-2h-1Yp" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1049" y="526"/>
+        </scene>
+    </scenes>
+    <resources>
+        <image name="CameraIcon" width="16" height="16"/>
+        <namedColor name="GrannySmith">
+            <color red="0.6588235294117647" green="0.89411764705882357" blue="0.62745098039215685" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+        <namedColor name="YellowProcess">
+            <color red="1" green="0.93725490196078431" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+    </resources>
+</document>
