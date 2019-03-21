@@ -412,6 +412,10 @@ class FilterParent
     
     // MARK: Settings management.
     
+    /// Return a list of all non-performance-related setting fields for the filter.
+    ///
+    /// - Parameter Child: The filter whose non-performance settings will be returned.
+    /// - Returns: List of non-performance settings for the passed filter.
     func NonPerformanceSettings(For Child: Renderer) -> [FilterManager.InputFields]
     {
         var Results = [FilterManager.InputFields]()
@@ -426,16 +430,22 @@ class FilterParent
         return Results
     }
     
-    var SettingsStack: [FilterSettingsBlob]? = nil
-    
-    func PushSettings(For Child: Renderer)
+    /// Return a filter blob for the passed filter. Only non-performance settings will be added to the blob (which means
+    /// if the filter doesn't have settings, the result will be an empty blob). The filter blob will be populated with
+    /// the field values from the current state of the user settings database.
+    ///
+    /// - Parameter Child: The filter whose filter blob will be returned.
+    /// - Returns: Setting filter blob for the passed filter.
+    func MakeFilterBlob(For Child: Renderer) -> FilterSettingsBlob
     {
-        
-    }
-    
-    func PopSettings()
-    {
-        
+        let Blob = FilterSettingsBlob()
+        let Supported = Child.SupportedFields()
+        for SomeField in Supported
+        {
+            let SomeValue = ParameterManager.GetField(From: Child.ID(), Field: SomeField)
+            Blob.AddSetting(SomeField, SomeValue)
+        }
+        return Blob
     }
 }
 
