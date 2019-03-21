@@ -15,10 +15,16 @@ class MPSDilateSettingsUICode: FilterSettingUIBase
     {
         super.viewDidLoad()
         
-        Initialize(FilterType: FilterManager.FilterTypes.MPSErode)
+        Initialize(FilterType: FilterManager.FilterTypes.MPSDilate)
         
-        let KWidth = ParameterManager.GetInt(From: FilterID, Field: .IWidth, Default: 3)
-        let KHeight = ParameterManager.GetInt(From: FilterID, Field: .IHeight, Default: 3)
+        LockSwitch.isOn = ParameterManager.GetBool(From: FilterID, Field: .LockDimensions, Default: true)
+        var KWidth = ParameterManager.GetInt(From: FilterID, Field: .IWidth, Default: 15)
+        var KHeight = ParameterManager.GetInt(From: FilterID, Field: .IHeight, Default: 15)
+        if LockSwitch.isOn
+        {
+            KWidth = min(KWidth, KHeight)
+            KHeight = KWidth
+        }
         
         WidthValue.text = "\(KWidth)"
         HeightValue.text = "\(KHeight)"
@@ -36,6 +42,12 @@ class MPSDilateSettingsUICode: FilterSettingUIBase
         }
         WidthValue.text = "\(SliderValue)"
         UpdateValue(WithValue: SliderValue, ToField: .IWidth)
+        if LockSwitch.isOn
+        {
+            HeightSlider.value = WidthSlider.value
+            HeightValue.text = "\(SliderValue)"
+            UpdateValue(WithValue: SliderValue, ToField: .IHeight)
+        }
         ShowSampleView()
     }
     
@@ -48,9 +60,21 @@ class MPSDilateSettingsUICode: FilterSettingUIBase
         }
         HeightValue.text = "\(SliderValue)"
         UpdateValue(WithValue: SliderValue, ToField: .IHeight)
+        if LockSwitch.isOn
+        {
+            WidthSlider.value = HeightSlider.value
+            HeightValue.text = "\(SliderValue)"
+            UpdateValue(WithValue: SliderValue, ToField: .IHeight)
+        }
         ShowSampleView()
     }
     
+    @IBAction func HandleLockChanged(_ sender: Any)
+    {
+        UpdateValue(WithValue: LockSwitch.isOn, ToField: .LockDimensions)
+    }
+    
+    @IBOutlet weak var LockSwitch: UISwitch!
     @IBOutlet weak var HeightValue: UILabel!
     @IBOutlet weak var WidthValue: UILabel!
     @IBOutlet weak var HeightSlider: UISlider!
