@@ -316,6 +316,7 @@ extension FilterManager
         case PixelHighlightActionIfGreater = 176
         case SobelMergeWithBackground = 177
         case MaskTolerance = 178
+        case LockDimensions = 179
         case NoField = 10000
     }
     
