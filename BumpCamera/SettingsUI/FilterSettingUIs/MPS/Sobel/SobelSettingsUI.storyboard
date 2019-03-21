@@ -53,6 +53,43 @@
                                             </constraints>
                                         </tableViewCellContentView>
                                     </tableViewCell>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" rowHeight="45" id="vIw-Qg-mt1">
+                                        <rect key="frame" x="0.0" y="45" width="375" height="45"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="vIw-Qg-mt1" id="68a-Kq-6WY">
+                                            <rect key="frame" x="0.0" y="0.0" width="375" height="44.5"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Merge tolerance" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="WTB-3F-dVb">
+                                                    <rect key="frame" x="16" y="11" width="125" height="22"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="7Ue-Rt-Y2A">
+                                                    <rect key="frame" x="163" y="7" width="196" height="31"/>
+                                                    <segments>
+                                                        <segment title="0"/>
+                                                        <segment title="10"/>
+                                                        <segment title="20"/>
+                                                        <segment title="30"/>
+                                                    </segments>
+                                                    <connections>
+                                                        <action selector="HandleToleranceChanged:" destination="UJC-EP-lnG" eventType="primaryActionTriggered" id="awj-vI-Xq5"/>
+                                                    </connections>
+                                                </segmentedControl>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstItem="WTB-3F-dVb" firstAttribute="leading" secondItem="68a-Kq-6WY" secondAttribute="leadingMargin" id="6FA-Wt-IVv"/>
+                                                <constraint firstItem="7Ue-Rt-Y2A" firstAttribute="top" secondItem="68a-Kq-6WY" secondAttribute="topMargin" constant="-4" id="9zD-Ac-h0S"/>
+                                                <constraint firstItem="7Ue-Rt-Y2A" firstAttribute="trailing" secondItem="68a-Kq-6WY" secondAttribute="trailingMargin" id="BqC-hi-FBm"/>
+                                                <constraint firstItem="7Ue-Rt-Y2A" firstAttribute="leading" secondItem="WTB-3F-dVb" secondAttribute="trailing" constant="22" id="J2j-5m-V5l"/>
+                                                <constraint firstItem="WTB-3F-dVb" firstAttribute="centerY" secondItem="7Ue-Rt-Y2A" secondAttribute="centerY" id="fwc-Zp-QvM"/>
+                                                <constraint firstAttribute="bottomMargin" secondItem="WTB-3F-dVb" secondAttribute="bottom" constant="1" id="ids-fs-l46"/>
+                                                <constraint firstItem="WTB-3F-dVb" firstAttribute="top" secondItem="68a-Kq-6WY" secondAttribute="topMargin" id="sHj-cC-PNh"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
                                 </cells>
                             </tableViewSection>
                         </sections>
@@ -68,11 +105,13 @@
                     <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
                     <connections>
                         <outlet property="MergeSwitch" destination="i0g-k5-nMB" id="cYa-gQ-DQ3"/>
+                        <outlet property="ToleranceLabel" destination="WTB-3F-dVb" id="ZIG-uh-xFI"/>
+                        <outlet property="ToleranceSegments" destination="7Ue-Rt-Y2A" id="HUW-yb-lVG"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="d2L-8Q-x1Y" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-67" y="303"/>
+            <point key="canvasLocation" x="-68" y="302.6986506746627"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="qdb-pw-lFh">
