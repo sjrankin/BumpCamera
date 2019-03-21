@@ -51,4 +51,19 @@ class FilterSettingsBlob
         }
         return nil
     }
+    
+    /// Change a setting in the blob. If the setting doesn't exist, it is added.
+    ///
+    /// - Parameters:
+    ///   - SettingField: The field whose setting value will change.
+    ///   - NewValue: The new value for the setting.
+    func ChangeSetting(_ SettingField: FilterManager.InputFields, To NewValue: Any?)
+    {
+        if !HasSetting(SettingField)
+        {
+            SettingMap[SettingField] = NewValue
+            return
+        }
+        SettingMap[SettingField] = NewValue
+    }
 }
