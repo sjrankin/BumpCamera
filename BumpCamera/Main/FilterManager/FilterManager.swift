@@ -1525,6 +1525,7 @@ class FilterManager
             .PixelHighlightActionIfGreater: .BoolType,
             .SobelMergeWithBackground: .BoolType,
             .MaskTolerance: .IntType,
+            .LockDimensions: .BoolType,
     ]
     
     /// Maps fields to names used to store field data in user settings.
@@ -1709,6 +1710,7 @@ class FilterManager
             .PixelHighlightActionIfGreater: "_HighlightActionIfGreater",
             .SobelMergeWithBackground: "_SobelMergeWithBackground",
             .MaskTolerance: "_MaskTolerance",
+            .LockDimensions: "_LockDimensions",
     ]
 }
 
