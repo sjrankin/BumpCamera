@@ -407,6 +407,9 @@ class Pixellate_Metal: FilterParent, Renderer
     {
         switch Field
         {
+        case .BlockColorDetermination:
+            return (.IntType, 0 as Any?)
+            
         case .BlockWidth:
             return (.IntType, 20 as Any?)
             
@@ -487,6 +490,7 @@ class Pixellate_Metal: FilterParent, Renderer
     public static func SupportedFields() -> [FilterManager.InputFields]
     {
         var Fields = [FilterManager.InputFields]()
+        Fields.append(.BlockColorDetermination)
         Fields.append(.PixelHighlightActionIfGreater)
         Fields.append(.PixellationHighlighting)
         Fields.append(.PixelHighlightAction)
