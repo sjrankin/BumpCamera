@@ -160,8 +160,11 @@ class Sobel: FilterParent, Renderer
         if ParameterManager.GetBool(From: ID(), Field: .SobelMergeWithBackground, Default: true)
         {
             let MaskFilter = Masking1()
+            let MaskBlob = MakeFilterBlob(For: MaskFilter)
+            MaskBlob.ChangeSetting(.MaskColor, To: UIColor.black)
+            MaskBlob.ChangeSetting(.MaskTolerance, To: ParameterManager.GetInt(From: ID(), Field: .MaskTolerance, Default: 0))
             MaskFilter.Initialize(With: InputFormatDescription!, BufferCountHint: 3)
-            OutputBuffer = MaskFilter.RenderWith(PixelBuffer: PixelBuffer, And: OutputBuffer)!
+            OutputBuffer = MaskFilter.RenderWith(PixelBuffer: PixelBuffer, And: OutputBuffer, AltSettings: MaskBlob)!
         }
         
         LiveRenderTime = CACurrentMediaTime() - Start
@@ -242,9 +245,12 @@ class Sobel: FilterParent, Renderer
         if ParameterManager.GetBool(From: ID(), Field: .SobelMergeWithBackground, Default: true)
         {
             let MaskFilter = Masking1()
+            let MaskBlob = MakeFilterBlob(For: MaskFilter)
+            MaskBlob.ChangeSetting(.MaskColor, To: UIColor.black)
+            MaskBlob.ChangeSetting(.MaskTolerance, To: ParameterManager.GetInt(From: ID(), Field: .MaskTolerance, Default: 0))
             MaskFilter.InitializeForImage()
             let BottomImage = LastUIImage
-            LastUIImage = MaskFilter.RenderWith(Images: [BottomImage!, Image])
+            LastUIImage = MaskFilter.RenderWith(Images: [BottomImage!, Image], AltSettings: MaskBlob)
             ImageToReturn = LastUIImage
         }
         
@@ -254,101 +260,6 @@ class Sobel: FilterParent, Renderer
     }
     
     var ciContext: CIContext!
-    
-    /// Renders the image with the wrapper's MPS image filter. In our case, Sobel.
-    ///
-    /// - Parameter Image: The image to render.
-    /// - Returns: the rendered image.
-    func RenderX(Image: UIImage) -> UIImage?
-    {
-        objc_sync_enter(AccessLock)
-        defer{objc_sync_exit(AccessLock)}
-        
-        #if true
-        if let Buffer = GetPixelBufferFrom(Image)
-        {
-            if !Initialized
-            {
-                var IDescription: CMFormatDescription?
-                CMVideoFormatDescriptionCreateForImageBuffer(allocator: kCFAllocatorDefault, imageBuffer: Buffer,
-                                                             formatDescriptionOut: &IDescription)
-                print("\(IDescription!)")
-                Initialize(With: IDescription!, BufferCountHint: 3)
-            }
-            if let Results = Render(PixelBuffer: Buffer)
-            {
-                if let NewImage = UIImage(PixelBuffer: Results)
-                {
-                    return NewImage
-                }
-                else
-                {
-                    print("Error return when creating new image from PixelBuffer")
-                    return nil
-                }
-            }
-            else
-            {
-                print("Error returned from Sobel.Render(PixelBuffer)")
-                return nil
-            }
-        }
-        else
-        {
-            print("Error returned from FilterParent.GetPixelBufferFrom")
-            return nil
-        }
-        #else
-        
-        let Start = CACurrentMediaTime()
-        if !InitializedForImage
-        {
-            fatalError("Sobel not initialized at Render(UIImage) call.")
-        }
-        guard let CommandBuffer = ImageCommandQueue?.makeCommandBuffer() else
-        {
-            print("Error making command buffer.")
-            return nil
-        }
-        
-        var CgImage = Image.cgImage
-        CgImage = AdjustForMonochrome(Image: CgImage!)
-        let ImageWidth: Int = (CgImage?.width)!
-        let ImageHeight: Int = (CgImage?.height)!
-        var RawData = [UInt8](repeating: 0, count: Int(ImageWidth * ImageHeight * 4))
-        let RGBColorSpace = CGColorSpaceCreateDeviceRGB()
-        let BitmapInfo = CGBitmapInfo(rawValue: CGBitmapInfo.byteOrder32Big.rawValue | CGImageAlphaInfo.premultipliedLast.rawValue)
-        let Context = CGContext(data: &RawData, width: ImageWidth, height: ImageHeight, bitsPerComponent: (CgImage?.bitsPerComponent)!,
-                                bytesPerRow: (CgImage?.bytesPerRow)!, space: RGBColorSpace, bitmapInfo: BitmapInfo.rawValue)
-        Context!.draw(CgImage!, in: CGRect(x: 0, y: 0, width: CGFloat(ImageWidth), height: CGFloat(ImageHeight)))
-        let TextureDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .rgba8Unorm,
-                                                                         width: Int(ImageWidth), height: Int(ImageHeight), mipmapped: true)
-        TextureDescriptor.usage = .shaderRead
-        guard let Texture = ImageDevice?.makeTexture(descriptor: TextureDescriptor) else
-        {
-            print("Error creating input texture in Pixellate_Metal.Render.")
-            return nil
-        }
-        
-        let OutputTextureDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: Texture.pixelFormat,
-                                                                               width: Texture.width, height: Texture.height,
-                                                                               mipmapped: true)
-        OutputTextureDescriptor.usage = .shaderWrite
-        let OutputTexture = ImageDevice?.makeTexture(descriptor: OutputTextureDescriptor)
-        
-        let Shader = MPSImageSobel(device: ImageDevice!)
-        Shader.encode(commandBuffer: CommandBuffer, sourceTexture: Texture, destinationTexture: OutputTexture!)
-        CommandBuffer.commit()
-        CommandBuffer.waitUntilCompleted()
-        
-        var Final: CIImage = CIImage(mtlTexture: OutputTexture!, options: [:])!
-        Final = RotateImage180(Final)
-        ImageRenderTime = CACurrentMediaTime() - Start
-        ParameterManager.UpdateRenderAccumulator(NewValue: ImageRenderTime, ID: ID(), ForImage: true)
-        
-        return UIImage(ciImage: Final)
-        #endif
-    }
     
     func Render(Image: CIImage) -> CIImage?
     {
@@ -395,6 +306,9 @@ class Sobel: FilterParent, Renderer
         case .SobelMergeWithBackground:
             return (.BoolType, true as Any?)
             
+        case .MaskTolerance:
+            return (.IntType, 10 as Any?)
+            
         case .RenderImageCount:
             return (.IntType, 0 as Any?)
             
@@ -419,7 +333,7 @@ class Sobel: FilterParent, Renderer
     
     public static func SupportedFields() -> [FilterManager.InputFields]
     {
-        return [.SobelMergeWithBackground,
+        return [.SobelMergeWithBackground, .MaskTolerance,
                 .RenderImageCount, .CumulativeImageRenderDuration, .RenderLiveCount, .CumulativeLiveRenderDuration]
     }
     
