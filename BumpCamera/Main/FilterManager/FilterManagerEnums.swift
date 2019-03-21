@@ -91,6 +91,7 @@ extension FilterManager
         case HistogramGeneration = 64
         case MPSDilate = 65
         case MPSErode = 66
+        case MPSLaplacian = 67
         case NotSet = 10000
     }
     
@@ -317,6 +318,7 @@ extension FilterManager
         case SobelMergeWithBackground = 177
         case MaskTolerance = 178
         case LockDimensions = 179
+        case Bias = 180
         case NoField = 10000
     }
     
