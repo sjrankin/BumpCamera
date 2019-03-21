@@ -51,7 +51,7 @@ class FilterManager
                         (.LineOverlay, 9), (.EdgeWork, 10), (.Posterize, 14), (.Pointillize, 13)],
             .Combined: [(.CircleAndLines, 0)],
             .Effects: [(.PixellateMetal, 0), (.ShapePixellate, 1), (.DilateErode, 2), (.Kuwahara, 3),
-                       (.Silhouette, 4), (.Sobel, 5), (.BayerDecode, 6)],
+                       (.Silhouette, 4), (.Sobel, 5), (.MPSDilate, 6), (.MPSErode, 7), (.BayerDecode, 8)],
             .PhotoEffects: [(.Noir, 0), (.Chrome, 1), (.Vibrance, 2), (.XRay, 3), (.Instant, 4), (.ProcessEffect, 5),
                             (.TransferEffect, 6), (.SepiaTone, 7), (.Thermal, 8), (.TemperatureAndTint, 9),
                             (.Tonal, 10),],
@@ -128,6 +128,8 @@ class FilterManager
             .BlockMean: (BlockMean.ID(), BlockMean.FilterKernel, BlockMean.Title()),
             .Sobel: (Sobel.ID(), Sobel.FilterKernel, Sobel.Title()),
             .HistogramGeneration: (Histogram.ID(), Histogram.FilterKernel, Histogram.Title()),
+            .MPSDilate: (MPSDilate.ID(), MPSDilate.FilterKernel, MPSDilate.Title()),
+            .MPSErode: (MPSErode.ID(), MPSErode.FilterKernel, MPSErode.Title()),
     ]
     
     /// Determines if the specified filter supports the specified target type. Not all filters support all targets - slow
@@ -230,6 +232,8 @@ class FilterManager
             .BlockMean: BlockMean.FilterTarget(),
             .Sobel: Sobel.FilterTarget(),
             .HistogramGeneration: Histogram.FilterTarget(),
+            .MPSDilate: MPSDilate.FilterTarget(),
+            .MPSErode: MPSErode.FilterTarget(),
     ]
     
     /// Load all of the filter classes into the filter manager.
@@ -352,6 +356,8 @@ class FilterManager
         ParameterCount![.BlockMean] = BlockMean.SupportedFields().count
         ParameterCount![.Sobel] = Sobel.SupportedFields().count
         ParameterCount![.HistogramGeneration] = Histogram.SupportedFields().count
+        ParameterCount![.MPSDilate] = MPSDilate.SupportedFields().count
+        ParameterCount![.MPSErode] = MPSErode.SupportedFields().count
     }
     
     private static var ParameterCount: [FilterManager.FilterTypes: Int]? = nil
@@ -431,6 +437,8 @@ class FilterManager
         StoryboardList![.BlockMean] = BlockMean.SettingsStoryboard()
         StoryboardList![.Sobel] = Sobel.SettingsStoryboard()
         StoryboardList![.HistogramGeneration] = Histogram.SettingsStoryboard()
+        StoryboardList![.MPSDilate] = MPSDilate.SettingsStoryboard()
+        StoryboardList![.MPSErode] = MPSErode.SettingsStoryboard()
     }
     
     private static var StoryboardList: [FilterTypes: String?]? = nil
@@ -749,6 +757,12 @@ class FilterManager
             
         case .HistogramGeneration:
             return Histogram()
+            
+        case .MPSDilate:
+            return MPSDilate()
+            
+        case .MPSErode:
+            return MPSErode()
             
         default:
             return nil
@@ -1185,6 +1199,8 @@ class FilterManager
             .BlockMean: "Block Mean",
             .Sobel: "Sobel",
             .HistogramGeneration: "Create Histogram",
+            .MPSDilate: "Dilate",
+            .MPSErode: "Erode",
     ]
     
     public static func GetFilterTitle(_ Filter: FilterTypes) -> String?
@@ -1263,6 +1279,8 @@ class FilterManager
             .BlockMean: true,
             .Sobel: true,
             .HistogramGeneration: true,
+            .MPSDilate: true,
+            .MPSErode: true,
     ]
     
     /// Determines if the given filter type is implemented.
@@ -1506,6 +1524,7 @@ class FilterManager
             .PixelHighlightActionValue: .DoubleType,
             .PixelHighlightActionIfGreater: .BoolType,
             .SobelMergeWithBackground: .BoolType,
+            .MaskTolerance: .IntType,
     ]
     
     /// Maps fields to names used to store field data in user settings.
@@ -1689,6 +1708,7 @@ class FilterManager
             .PixelHighlightActionValue: "_HighlightActionValue",
             .PixelHighlightActionIfGreater: "_HighlightActionIfGreater",
             .SobelMergeWithBackground: "_SobelMergeWithBackground",
+            .MaskTolerance: "_MaskTolerance",
     ]
 }
 
