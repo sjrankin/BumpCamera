@@ -435,7 +435,9 @@ class ParameterManager
         let FieldData = GetFieldData(From: From, Field: Field)
         if FieldData.0 == .NoType
         {
-            fatalError("No data found for \(Field) in \(From).")
+            let FromType = FilterManager.GetFilterTypeFrom(ID: From)
+            let FromTitle = FilterManager.GetFilterTitle(FromType!)
+            fatalError("No data found for \(Field) in \(FromTitle!).")
         }
         if let IVal = FieldData.1 as? Int
         {
