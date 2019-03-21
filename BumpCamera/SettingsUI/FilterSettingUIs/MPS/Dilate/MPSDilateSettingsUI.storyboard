@@ -38,7 +38,7 @@
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <slider opaque="NO" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="0.5" minValue="0.0" maxValue="1" translatesAutoresizingMaskIntoConstraints="NO" id="dpg-Rt-V3s">
+                                                <slider opaque="NO" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="500" minValue="0.0" maxValue="1000" translatesAutoresizingMaskIntoConstraints="NO" id="dpg-Rt-V3s">
                                                     <rect key="frame" x="26" y="40" width="254" height="30"/>
                                                     <viewLayoutGuide key="safeArea" id="YNe-ME-RFC"/>
                                                     <connections>
@@ -86,7 +86,7 @@
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <slider opaque="NO" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="0.5" minValue="0.0" maxValue="1" translatesAutoresizingMaskIntoConstraints="NO" id="26v-58-Hbh">
+                                                <slider opaque="NO" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="500" minValue="0.0" maxValue="1000" translatesAutoresizingMaskIntoConstraints="NO" id="26v-58-Hbh">
                                                     <rect key="frame" x="26" y="40" width="254" height="30"/>
                                                     <viewLayoutGuide key="safeArea" id="uDp-48-rcr"/>
                                                     <connections>
@@ -117,6 +117,60 @@
                                             </constraints>
                                         </tableViewCellContentView>
                                     </tableViewCell>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" rowHeight="45" id="EXe-yR-Ees">
+                                        <rect key="frame" x="0.0" y="180" width="375" height="45"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="EXe-yR-Ees" id="88s-Um-n1J">
+                                            <rect key="frame" x="0.0" y="0.0" width="375" height="44.5"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Lock dimensions" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Vfb-dr-9pN">
+                                                    <rect key="frame" x="16" y="11" width="128" height="21"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="GKB-Qx-brp">
+                                                    <rect key="frame" x="310" y="6" width="51" height="31"/>
+                                                    <connections>
+                                                        <action selector="HandleLockChanged:" destination="Fcr-hX-8Ye" eventType="primaryActionTriggered" id="Lzq-EQ-dj9"/>
+                                                    </connections>
+                                                </switch>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstItem="Vfb-dr-9pN" firstAttribute="top" secondItem="88s-Um-n1J" secondAttribute="topMargin" id="0x4-1d-N2O"/>
+                                                <constraint firstAttribute="bottomMargin" secondItem="Vfb-dr-9pN" secondAttribute="bottom" constant="2" id="6Rq-OO-9KE"/>
+                                                <constraint firstItem="GKB-Qx-brp" firstAttribute="top" secondItem="88s-Um-n1J" secondAttribute="topMargin" constant="-5" id="8nM-vN-eaV"/>
+                                                <constraint firstItem="GKB-Qx-brp" firstAttribute="trailing" secondItem="88s-Um-n1J" secondAttribute="trailingMargin" id="SU3-FI-eGB"/>
+                                                <constraint firstItem="Vfb-dr-9pN" firstAttribute="leading" secondItem="88s-Um-n1J" secondAttribute="leadingMargin" id="hPM-Ml-y37"/>
+                                                <constraint firstItem="Vfb-dr-9pN" firstAttribute="centerY" secondItem="GKB-Qx-brp" secondAttribute="centerY" id="mtc-6g-tJ4"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" rowHeight="96" id="PD2-Uz-3ab">
+                                        <rect key="frame" x="0.0" y="225" width="375" height="96"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="PD2-Uz-3ab" id="3QV-u9-KgQ">
+                                            <rect key="frame" x="0.0" y="0.0" width="375" height="95.5"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" preservesSuperviewLayoutMargins="YES" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="5" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="9hV-QW-ZWU">
+                                                    <rect key="frame" x="16" y="11" width="343" height="74"/>
+                                                    <viewLayoutGuide key="safeArea" id="enI-wp-gBX"/>
+                                                    <string key="text">Large kernel widths and/or heights will slow the filter (and your device) significantly. Consider using large sizes for still images. </string>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                                    <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstItem="9hV-QW-ZWU" firstAttribute="leading" secondItem="3QV-u9-KgQ" secondAttribute="leadingMargin" id="9A5-qA-Pj7"/>
+                                                <constraint firstItem="9hV-QW-ZWU" firstAttribute="bottom" secondItem="3QV-u9-KgQ" secondAttribute="bottomMargin" id="Ckh-q5-bH7"/>
+                                                <constraint firstItem="9hV-QW-ZWU" firstAttribute="top" secondItem="3QV-u9-KgQ" secondAttribute="topMargin" id="ftl-8f-14v"/>
+                                                <constraint firstItem="9hV-QW-ZWU" firstAttribute="trailing" secondItem="3QV-u9-KgQ" secondAttribute="trailingMargin" id="ihd-mr-DJd"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
                                 </cells>
                             </tableViewSection>
                         </sections>
@@ -133,13 +187,14 @@
                     <connections>
                         <outlet property="HeightSlider" destination="26v-58-Hbh" id="wP1-39-MzG"/>
                         <outlet property="HeightValue" destination="VZT-ER-p8K" id="IgQ-sc-E7g"/>
+                        <outlet property="LockSwitch" destination="GKB-Qx-brp" id="G97-JU-LNb"/>
                         <outlet property="WidthSlider" destination="dpg-Rt-V3s" id="Ya2-lQ-x8w"/>
                         <outlet property="WidthValue" destination="kIE-PS-CvQ" id="hH1-Sb-DaH"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="oyI-lq-bbF" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="141.59999999999999" y="177.66116941529236"/>
+            <point key="canvasLocation" x="140.625" y="177.46478873239437"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="4uu-gR-ADJ">
