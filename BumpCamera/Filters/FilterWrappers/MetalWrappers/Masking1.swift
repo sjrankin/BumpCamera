@@ -144,8 +144,91 @@ class Masking1: FilterParent, Renderer
         InitializedForImage = true
     }
     
+    func RenderWith(PixelBuffer: CVPixelBuffer, And: CVPixelBuffer, AltSettings: FilterSettingsBlob) -> CVPixelBuffer?
+    {
+        objc_sync_enter(AccessLock)
+        defer{objc_sync_exit(AccessLock)}
+        
+        if !Initialized
+        {
+            fatalError("MaskingKernel not initialized at Render(CVPixelBuffer) call.")
+        }
+        
+        //BufferPool is nil - nothing to do (or can do). This probably occurred because the user changed
+        //filters out from under us and the video sub-system hadn't quite caught up to the new filter and
+        //sent a frame to the no-longer-active filter.
+        if BufferPool == nil
+        {
+            return nil
+        }
+        
+        let Start = CACurrentMediaTime()
+        let MaskColor = ParameterManager.GetColor(Blob: AltSettings, Field: .MaskColor, Default: UIColor.white)
+        let Tolerance = ParameterManager.GetInt(Blob: AltSettings, Field: .MaskTolerance, Default: 10)
+        let Parameter = MaskingKernelParameters(MaskColor: MaskColor.ToFloat4(), Tolerance: simd_int1(Tolerance))
+        let Parameters = [Parameter]
+        ParameterBuffer = MetalDevice!.makeBuffer(length: MemoryLayout<MaskingKernelParameters>.stride, options: [])
+        memcpy(ParameterBuffer.contents(), Parameters, MemoryLayout<MaskingKernelParameters>.stride)
+        
+        var NewPixelBuffer: CVPixelBuffer? = nil
+        CVPixelBufferPoolCreatePixelBuffer(kCFAllocatorDefault, BufferPool!, &NewPixelBuffer)
+        guard let OutputBuffer = NewPixelBuffer else
+        {
+            print("Allocation failure for new pixel buffer pool in MaskingKernel.")
+            return nil
+        }
+        
+        guard let BottomTexture = MakeTextureFromCVPixelBuffer(PixelBuffer: PixelBuffer, TextureFormat: .bgra8Unorm),
+            let TopTexture = MakeTextureFromCVPixelBuffer(PixelBuffer: And, TextureFormat: .bgra8Unorm),
+            let OutputTexture = MakeTextureFromCVPixelBuffer(PixelBuffer: OutputBuffer, TextureFormat: .bgra8Unorm) else
+        {
+            print("Error creating textures in MaskingKernel.")
+            return nil
+        }
+        
+        guard let CommandQ = CommandQueue,
+            let CommandBuffer = CommandQ.makeCommandBuffer(),
+            let CommandEncoder = CommandBuffer.makeComputeCommandEncoder() else
+        {
+            print("Error creating Metal command queue.")
+            CVMetalTextureCacheFlush(TextureCache!, 0)
+            return nil
+        }
+        
+        let ResultsCount = 10
+        let ResultsBuffer = MetalDevice!.makeBuffer(length: MemoryLayout<ReturnBufferType>.stride * ResultsCount, options: [])
+        let Results = UnsafeBufferPointer<ReturnBufferType>(start: UnsafePointer(ResultsBuffer!.contents().assumingMemoryBound(to: ReturnBufferType.self)),
+                                                            count: ResultsCount)
+        
+        CommandEncoder.label = "MaskingKernel1"
+        CommandEncoder.setComputePipelineState(ComputePipelineState!)
+        CommandEncoder.setTexture(BottomTexture, index: 0)
+        CommandEncoder.setTexture(TopTexture, index: 1)
+        CommandEncoder.setTexture(OutputTexture, index: 2)
+        CommandEncoder.setBuffer(ParameterBuffer, offset: 0, index: 0)
+        CommandEncoder.setBuffer(ResultsBuffer, offset: 0, index: 1)
+        
+        let w = ComputePipelineState!.threadExecutionWidth
+        let h = ComputePipelineState!.maxTotalThreadsPerThreadgroup / w
+        let ThreadsPerThreadGroup = MTLSize(width: w, height: h, depth: 1)
+        let ThreadGroupsPerGrid = MTLSize(width: (BottomTexture.width + w - 1) / w,
+                                          height: (BottomTexture.height + h - 1) / h,
+                                          depth: 1)
+        CommandEncoder.dispatchThreadgroups(ThreadGroupsPerGrid, threadsPerThreadgroup: ThreadsPerThreadGroup)
+        CommandEncoder.endEncoding()
+        CommandBuffer.commit()
+        
+        LiveRenderTime = CACurrentMediaTime() - Start
+        ParameterManager.UpdateRenderAccumulator(NewValue: LiveRenderTime, ID: ID(), ForImage: false)
+        return OutputBuffer
+    }
+    
     func RenderWith(PixelBuffer: CVPixelBuffer, And: CVPixelBuffer) -> CVPixelBuffer?
     {
+        #if true
+        let Blob = super.MakeFilterBlob(For: self)
+        return RenderWith(PixelBuffer: PixelBuffer, And: And, AltSettings: Blob)
+        #else
         objc_sync_enter(AccessLock)
         defer{objc_sync_exit(AccessLock)}
         
@@ -220,6 +303,7 @@ class Masking1: FilterParent, Renderer
         LiveRenderTime = CACurrentMediaTime() - Start
         ParameterManager.UpdateRenderAccumulator(NewValue: LiveRenderTime, ID: ID(), ForImage: false)
         return OutputBuffer
+        #endif
     }
     
     /// Merge the top image (in And[0]) with the bottom image (in PixelBuffer) and return the result.
@@ -238,12 +322,7 @@ class Masking1: FilterParent, Renderer
         return RenderWith(PixelBuffer: PixelBuffer, And: TopBuffer!)
     }
     
-    /// Mask the images together. First image (index 0) is the top image to which the mask will be applied, and the second
-    /// image (index 1) is the bottom image.
-    ///
-    /// - Parameter Images: List of images to mask together.
-    /// - Returns: Merged image on success, nil on error.
-    func RenderWith(Images: [UIImage]) -> UIImage?
+    func RenderWith(Images: [UIImage], AltSettings: FilterSettingsBlob) -> UIImage?
     {
         if !InitializedForImage
         {
@@ -263,26 +342,121 @@ class Masking1: FilterParent, Renderer
         {
             var CgImage = Image.cgImage
             LastCGImage = CgImage
-            #if true
             CgImage = AdjustForMonochrome(Image: CgImage!)
-            #else
-            let ImageColorspace = CgImage?.colorSpace
-            //Handle sneaky grayscale images.
-            if ImageColorspace?.model == CGColorSpaceModel.monochrome
+            let ImageWidth: Int = (CgImage?.width)!
+            let ImageHeight: Int = (CgImage?.height)!
+            var RawData = [UInt8](repeating: 0, count: Int(ImageWidth * ImageHeight * 4))
+            let RGBColorSpace = CGColorSpaceCreateDeviceRGB()
+            let BitmapInfo = CGBitmapInfo(rawValue: CGBitmapInfo.byteOrder32Big.rawValue | CGImageAlphaInfo.premultipliedLast.rawValue)
+            let Context = CGContext(data: &RawData, width: ImageWidth, height: ImageHeight, bitsPerComponent: (CgImage?.bitsPerComponent)!,
+                                    bytesPerRow: (CgImage?.bytesPerRow)!, space: RGBColorSpace, bitmapInfo: BitmapInfo.rawValue)
+            Context!.draw(CgImage!, in: CGRect(x: 0, y: 0, width: CGFloat(ImageWidth), height: CGFloat(ImageHeight)))
+            let TextureDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .rgba8Unorm,
+                                                                             width: Int(ImageWidth), height: Int(ImageHeight), mipmapped: true)
+            guard let Texture = ImageDevice?.makeTexture(descriptor: TextureDescriptor) else
             {
-                let NewColorSpace = CGColorSpaceCreateDeviceRGB()
-                let NewBMInfo = CGBitmapInfo(rawValue: CGImageAlphaInfo.noneSkipLast.rawValue)
-                let IWidth: Int = Int((CgImage?.width)!)
-                let IHeight: Int = Int((CgImage?.height)!)
-                var RawData = [UInt8](repeating: 0, count: Int(IWidth * IHeight * 4))
-                let GContext = CGContext(data: &RawData, width: IWidth, height: IHeight,
-                                         bitsPerComponent: 8, bytesPerRow: 4 * IWidth,
-                                         space: NewColorSpace, bitmapInfo: NewBMInfo.rawValue)
-                let ImageRect = CGRect(x: 0, y: 0, width: IWidth, height: IHeight)
-                GContext!.draw(CgImage!, in: ImageRect)
-                CgImage = GContext!.makeImage()
+                print("Error creating input texture in Masking1.Render.")
+                return nil
             }
-            #endif
+            
+            let Region = MTLRegionMake2D(0, 0, Int(ImageWidth), Int(ImageHeight))
+            Texture.replace(region: Region, mipmapLevel: 0, withBytes: &RawData, bytesPerRow: Int((CgImage?.bytesPerRow)!))
+            TextureList.append(Texture)
+        }
+        
+        let OutputTextureDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: TextureList[0].pixelFormat,
+                                                                               width: TextureList[0].width,
+                                                                               height: TextureList[0].height, mipmapped: true)
+        OutputTextureDescriptor.usage = MTLTextureUsage.shaderWrite
+        let OutputTexture = ImageDevice?.makeTexture(descriptor: OutputTextureDescriptor)
+        
+        let CommandBuffer = ImageCommandQueue?.makeCommandBuffer()
+        let CommandEncoder = CommandBuffer?.makeComputeCommandEncoder()
+        
+        let ResultsCount = 10
+        let ResultsBuffer = MetalDevice!.makeBuffer(length: MemoryLayout<ReturnBufferType>.stride * ResultsCount, options: [])
+        let Results = UnsafeBufferPointer<ReturnBufferType>(start: UnsafePointer(ResultsBuffer!.contents().assumingMemoryBound(to: ReturnBufferType.self)),
+                                                            count: ResultsCount)
+        
+        CommandEncoder?.setComputePipelineState(ImageComputePipelineState!)
+        CommandEncoder?.setTexture(TextureList[1], index: 0)
+        CommandEncoder?.setTexture(TextureList[0], index: 1)
+        CommandEncoder?.setTexture(OutputTexture, index: 2)
+        CommandEncoder?.setBuffer(ResultsBuffer, offset: 0, index: 1)
+        
+        let MaskColor = ParameterManager.GetColor(Blob: AltSettings, Field: .MaskColor, Default: UIColor.white)
+        let Tolerance = ParameterManager.GetInt(Blob: AltSettings, Field: .MaskTolerance, Default: 10)
+        let Parameter = MaskingKernelParameters(MaskColor: MaskColor.ToFloat4(), Tolerance: simd_int1(Tolerance))
+        let Parameters = [Parameter]
+        ParameterBuffer = MetalDevice!.makeBuffer(length: MemoryLayout<MaskingKernelParameters>.stride, options: [])
+        memcpy(ParameterBuffer.contents(), Parameters, MemoryLayout<MaskingKernelParameters>.stride)
+        CommandEncoder!.setBuffer(ParameterBuffer, offset: 0, index: 0)
+        
+        let ThreadGroupCount  = MTLSizeMake(8, 8, 1)
+        let ThreadGroups = MTLSizeMake(TextureList[0].width / ThreadGroupCount.width,
+                                       TextureList[0].height / ThreadGroupCount.height,
+                                       1)
+        
+        ImageCommandQueue = ImageDevice?.makeCommandQueue()
+        
+        CommandEncoder!.dispatchThreadgroups(ThreadGroups, threadsPerThreadgroup: ThreadGroupCount)
+        CommandEncoder!.endEncoding()
+        CommandBuffer?.commit()
+        CommandBuffer?.waitUntilCompleted()
+        
+        let ImageSize = CGSize(width: TextureList[0].width, height: TextureList[0].height)
+        let ImageByteCount = Int(ImageSize.width * ImageSize.height * 4)
+        let BytesPerRow = LastCGImage?.bytesPerRow
+        var ImageBytes = [UInt8](repeating: 0, count: ImageByteCount)
+        let ORegion = MTLRegionMake2D(0, 0, Int(ImageSize.width), Int(ImageSize.height))
+        OutputTexture?.getBytes(&ImageBytes, bytesPerRow: BytesPerRow!, from: ORegion, mipmapLevel: 0)
+        
+        let SizeOfUInt8 = UInt8.SizeOf()
+        let Provider = CGDataProvider(data: NSData(bytes: &ImageBytes, length: ImageBytes.count * SizeOfUInt8))
+        let OBitmapInfo = CGBitmapInfo(rawValue: CGBitmapInfo.byteOrder32Big.rawValue | CGImageAlphaInfo.premultipliedLast.rawValue)
+        let RenderingIntent = CGColorRenderingIntent.defaultIntent
+        let FinalImage = CGImage(width: Int(ImageSize.width), height: Int(ImageSize.height),
+                                 bitsPerComponent: (LastCGImage?.bitsPerComponent)!, bitsPerPixel: (LastCGImage?.bitsPerPixel)!,
+                                 bytesPerRow: BytesPerRow!, space: CGColorSpaceCreateDeviceRGB(),
+                                 bitmapInfo: OBitmapInfo, provider: Provider!, decode: nil, shouldInterpolate: false,
+                                 intent: RenderingIntent)
+        LastUIImage = UIImage(cgImage: FinalImage!)
+        
+        ImageRenderTime = CACurrentMediaTime() - Start
+        ParameterManager.UpdateRenderAccumulator(NewValue: ImageRenderTime, ID: ID(), ForImage: true)
+        return UIImage(cgImage: FinalImage!)
+    }
+    
+    /// Mask the images together. First image (index 0) is the top image to which the mask will be applied, and the second
+    /// image (index 1) is the bottom image.
+    ///
+    /// - Parameter Images: List of images to mask together.
+    /// - Returns: Merged image on success, nil on error.
+    func RenderWith(Images: [UIImage]) -> UIImage?
+    {
+        #if true
+        let Blob = MakeFilterBlob(For: self)
+        return RenderWith(Images: Images, AltSettings: Blob)
+        #else
+        if !InitializedForImage
+        {
+            fatalError("Not initialized.")
+        }
+        if Images.count != 2
+        {
+            print("Must have two images.")
+            return nil
+        }
+        
+        let Start = CACurrentMediaTime()
+        var TextureList = [MTLTexture]()
+        //Convert each UIImage into a texture.
+        var LastCGImage: CGImage? = nil
+        for Image in Images
+        {
+            var CgImage = Image.cgImage
+            LastCGImage = CgImage
+            CgImage = AdjustForMonochrome(Image: CgImage!)
             let ImageWidth: Int = (CgImage?.width)!
             let ImageHeight: Int = (CgImage?.height)!
             var RawData = [UInt8](repeating: 0, count: Int(ImageWidth * ImageHeight * 4))
@@ -364,6 +538,7 @@ class Masking1: FilterParent, Renderer
         ImageRenderTime = CACurrentMediaTime() - Start
         ParameterManager.UpdateRenderAccumulator(NewValue: ImageRenderTime, ID: ID(), ForImage: true)
         return UIImage(cgImage: FinalImage!)
+        #endif
     }
     
     func RenderWith(Images: [CIImage]) -> CIImage?
@@ -416,6 +591,9 @@ class Masking1: FilterParent, Renderer
         case .MaskColor:
             return (.ColorType, UIColor.white as Any?)
             
+        case .MaskTolerance:
+            return (.IntType, 10 as Any?)
+            
         case .RenderImageCount:
             return (.IntType, 0 as Any?)
             
@@ -440,7 +618,7 @@ class Masking1: FilterParent, Renderer
     
     public static func SupportedFields() -> [FilterManager.InputFields]
     {
-        return [.MaskColor,
+        return [.MaskColor, .MaskTolerance,
                 .RenderImageCount, .CumulativeImageRenderDuration, .RenderLiveCount, .CumulativeLiveRenderDuration]
     }
     
