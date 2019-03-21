@@ -81,6 +81,12 @@
 		171F3D0F220AD5AA0098E2B7 /* Solarize.metal in Sources */ = {isa = PBXBuildFile; fileRef = 171F3D0E220AD5AA0098E2B7 /* Solarize.metal */; };
 		171F3D11220ADC780098E2B7 /* SolarizeParameters.swift in Sources */ = {isa = PBXBuildFile; fileRef = 171F3D10220ADC780098E2B7 /* SolarizeParameters.swift */; };
 		171F3D16220AF9CA0098E2B7 /* SolarizeSettingsUICode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 171F3D15220AF9CA0098E2B7 /* SolarizeSettingsUICode.swift */; };
+		172551A52243660000DC5028 /* MPSDilate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 172551A42243660000DC5028 /* MPSDilate.swift */; };
+		172551A722436B0B00DC5028 /* MPSErode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 172551A622436B0B00DC5028 /* MPSErode.swift */; };
+		172551AA224374BD00DC5028 /* MPSErodeSettingsUI.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 172551A9224374BD00DC5028 /* MPSErodeSettingsUI.storyboard */; };
+		172551AD224375DF00DC5028 /* MPSErodeSettingsUICode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 172551AC224375DF00DC5028 /* MPSErodeSettingsUICode.swift */; };
+		172551AF224379AB00DC5028 /* MPSDilateSettingsUI.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 172551AE224379AB00DC5028 /* MPSDilateSettingsUI.storyboard */; };
+		172551B122437AB700DC5028 /* MPSDilateSettingsUICode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 172551B022437AB700DC5028 /* MPSDilateSettingsUICode.swift */; };
 		1726241521F840D200C7688C /* PixellateTableCode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1726241421F840D200C7688C /* PixellateTableCode.swift */; };
 		1726241721F840E500C7688C /* PixellateTable.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1726241621F840E500C7688C /* PixellateTable.storyboard */; };
 		1726241A21F844DF00C7688C /* FilterTableBase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1726241921F844DF00C7688C /* FilterTableBase.swift */; };
@@ -432,6 +438,12 @@
 		171F3D10220ADC780098E2B7 /* SolarizeParameters.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SolarizeParameters.swift; sourceTree = "<group>"; };
 		171F3D13220AF95F0098E2B7 /* SolarizeSettingsUI2.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = SolarizeSettingsUI2.storyboard; sourceTree = "<group>"; };
 		171F3D15220AF9CA0098E2B7 /* SolarizeSettingsUICode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SolarizeSettingsUICode.swift; sourceTree = "<group>"; };
+		172551A42243660000DC5028 /* MPSDilate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MPSDilate.swift; sourceTree = "<group>"; };
+		172551A622436B0B00DC5028 /* MPSErode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MPSErode.swift; sourceTree = "<group>"; };
+		172551A9224374BD00DC5028 /* MPSErodeSettingsUI.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = MPSErodeSettingsUI.storyboard; sourceTree = "<group>"; };
+		172551AC224375DF00DC5028 /* MPSErodeSettingsUICode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MPSErodeSettingsUICode.swift; sourceTree = "<group>"; };
+		172551AE224379AB00DC5028 /* MPSDilateSettingsUI.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = MPSDilateSettingsUI.storyboard; sourceTree = "<group>"; };
+		172551B022437AB700DC5028 /* MPSDilateSettingsUICode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MPSDilateSettingsUICode.swift; sourceTree = "<group>"; };
 		1726241421F840D200C7688C /* PixellateTableCode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PixellateTableCode.swift; sourceTree = "<group>"; };
 		1726241621F840E500C7688C /* PixellateTable.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = PixellateTable.storyboard; sourceTree = "<group>"; };
 		1726241921F844DF00C7688C /* FilterTableBase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterTableBase.swift; sourceTree = "<group>"; };
@@ -1124,6 +1136,24 @@
 			path = Solarize;
 			sourceTree = "<group>";
 		};
+		172551A8224374A800DC5028 /* Erode */ = {
+			isa = PBXGroup;
+			children = (
+				172551A9224374BD00DC5028 /* MPSErodeSettingsUI.storyboard */,
+				172551AC224375DF00DC5028 /* MPSErodeSettingsUICode.swift */,
+			);
+			path = Erode;
+			sourceTree = "<group>";
+		};
+		172551AB224375C700DC5028 /* Dilate */ = {
+			isa = PBXGroup;
+			children = (
+				172551AE224379AB00DC5028 /* MPSDilateSettingsUI.storyboard */,
+				172551B022437AB700DC5028 /* MPSDilateSettingsUICode.swift */,
+			);
+			path = Dilate;
+			sourceTree = "<group>";
+		};
 		1726241321F840B100C7688C /* HueAdjust */ = {
 			isa = PBXGroup;
 			children = (
@@ -1148,6 +1178,8 @@
 				176B965C2241F3D2009BFD5B /* Measuration */,
 				172A902B221FEBE5002015CD /* GaussianBlur.swift */,
 				175A64B92240D9F500F563D4 /* Sobel.swift */,
+				172551A42243660000DC5028 /* MPSDilate.swift */,
+				172551A622436B0B00DC5028 /* MPSErode.swift */,
 			);
 			path = MPSWrappers;
 			sourceTree = "<group>";
@@ -1420,6 +1452,8 @@
 		1763F0732221676F00E1E2E8 /* MPS */ = {
 			isa = PBXGroup;
 			children = (
+				172551AB224375C700DC5028 /* Dilate */,
+				172551A8224374A800DC5028 /* Erode */,
 				176B966922426E99009BFD5B /* Sobel */,
 				176B965F2242033D009BFD5B /* Measuration */,
 				1763F0742221677D00E1E2E8 /* GaussianBlur */,
@@ -2158,6 +2192,7 @@
 				17110DD9221E910500223990 /* TemperatureAndTintSettingsUI.storyboard in Resources */,
 				17D60D87220FEAD000933F15 /* MonochromeColorsSettingsUI.storyboard in Resources */,
 				1726241721F840E500C7688C /* PixellateTable.storyboard in Resources */,
+				172551AF224379AB00DC5028 /* MPSDilateSettingsUI.storyboard in Resources */,
 				171298132223AF52000D5EF5 /* ExifViewer.storyboard in Resources */,
 				1775DDB2222BC27E0061DC87 /* BumpCameraLimitations.pdf in Resources */,
 				1797BCF52222CF7900C47510 /* ManageFilterRatings.storyboard in Resources */,
@@ -2195,6 +2230,7 @@
 				17CE37362213AB5E0070ED87 /* FalseColorSettingsUI.storyboard in Resources */,
 				17F23696221528290091B865 /* ColorListPicker.storyboard in Resources */,
 				17BA6047221E70A500AEC044 /* GeneralHelp.storyboard in Resources */,
+				172551AA224374BD00DC5028 /* MPSErodeSettingsUI.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2333,6 +2369,7 @@
 				1756CDF221FD60B300C4E638 /* RGBtoRGB.metal in Sources */,
 				174F82E0221FBED6009A004C /* PointillizeSettingsUICode.swift in Sources */,
 				17F236A122152AF30091B865 /* Utility.swift in Sources */,
+				172551A52243660000DC5028 /* MPSDilate.swift in Sources */,
 				171D625721ED974A004D3545 /* Renderer.swift in Sources */,
 				172A902C221FEBE5002015CD /* GaussianBlur.swift in Sources */,
 				175A3337222EA49D00670547 /* ChannelManglerSettingsUICode.swift in Sources */,
@@ -2382,6 +2419,7 @@
 				17E15FF822058C5A0037B35F /* MirroringFilterSettingsUICode.swift in Sources */,
 				171F3D04220AB0470098E2B7 /* LineOverlaySettingsUICode.swift in Sources */,
 				174779FE220433CB00FD64EF /* CollapsibleTableViewHeaderDelegate.swift in Sources */,
+				172551A722436B0B00DC5028 /* MPSErode.swift in Sources */,
 				175A3329222E98C800670547 /* ChannelMangler.metal in Sources */,
 				17110DDE221EA21C00223990 /* TemperatureAndTint.swift in Sources */,
 				171298152223B20A000D5EF5 /* ExifViewerCode.swift in Sources */,
@@ -2464,6 +2502,7 @@
 				171D626621EDC409004D3545 /* FilterManager.swift in Sources */,
 				176B965E2241F3E6009BFD5B /* Histogram.swift in Sources */,
 				17D7512621F497DF0050A2B5 /* FilterParent.swift in Sources */,
+				172551AD224375DF00DC5028 /* MPSErodeSettingsUICode.swift in Sources */,
 				17E1856721F2C8E800192D03 /* FilterCell.swift in Sources */,
 				17FA09AC21E8A6B700405B2D /* PixelatorKernel.metal in Sources */,
 				1779F3C722182A7900140EEA /* PosterizeSettingsUICode.swift in Sources */,
@@ -2525,6 +2564,7 @@
 				174779FA2204309600FD64EF /* NoParametersSettingsUICode.swift in Sources */,
 				175E260E21F4A5AB00B6BF8F /* HueAdjust.swift in Sources */,
 				17FF72CB2235FF8E00670977 /* GradientEditorUICode.swift in Sources */,
+				172551B122437AB700DC5028 /* MPSDilateSettingsUICode.swift in Sources */,
 				17BEE0B221FC20FF00A9370B /* DesaturateColors.swift in Sources */,
 				1756CE1021FD860A00C4E638 /* RGBSwizzling.metal in Sources */,
 			);
