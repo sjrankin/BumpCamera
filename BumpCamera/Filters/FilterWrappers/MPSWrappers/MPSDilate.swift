@@ -317,6 +317,9 @@ class MPSDilate: FilterParent, Renderer
         case .IHeight:
             return (.IntType, 5 as Any?)
             
+        case .LockDimensions:
+            return (.BoolType, true as Any?)
+            
         case .RenderImageCount:
             return (.IntType, 0 as Any?)
             
@@ -341,7 +344,7 @@ class MPSDilate: FilterParent, Renderer
     
     public static func SupportedFields() -> [FilterManager.InputFields]
     {
-        return [.IWidth, .IHeight,
+        return [.IWidth, .IHeight, .LockDimensions,
                 .RenderImageCount, .CumulativeImageRenderDuration, .RenderLiveCount, .CumulativeLiveRenderDuration]
     }
     
