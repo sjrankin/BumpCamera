@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14490.68" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="rXM-BD-KkF">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14490.49"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--Laplacian Settings-->
+        <scene sceneID="ehu-re-ZUA">
+            <objects>
+                <tableViewController id="PVZ-2n-48Z" customClass="LaplacianSettingsUICode" customModule="BumpCamera" customModuleProvider="target" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="static" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" id="pPr-70-JhQ">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <sections>
+                            <tableViewSection id="Vle-SG-UVw">
+                                <cells>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" rowHeight="90" id="cqE-fm-Uzv">
+                                        <rect key="frame" x="0.0" y="0.0" width="375" height="90"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="cqE-fm-Uzv" id="BsM-us-XvF">
+                                            <rect key="frame" x="0.0" y="0.0" width="375" height="89.5"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Bias" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="JY4-19-bUX">
+                                                    <rect key="frame" x="16" y="11" width="33" height="21"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" minValue="-1000" maxValue="1000" translatesAutoresizingMaskIntoConstraints="NO" id="soU-T0-AEB">
+                                                    <rect key="frame" x="25" y="40" width="265" height="30"/>
+                                                    <connections>
+                                                        <action selector="HandleBiasChanged:" destination="PVZ-2n-48Z" eventType="primaryActionTriggered" id="ICu-SV-j6l"/>
+                                                    </connections>
+                                                </slider>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="z9u-B5-FpR">
+                                                    <rect key="frame" x="306" y="44" width="53" height="21"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="width" constant="53" id="v7U-MH-WYI"/>
+                                                    </constraints>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="20"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstItem="JY4-19-bUX" firstAttribute="leading" secondItem="BsM-us-XvF" secondAttribute="leadingMargin" id="J1h-FO-TCc"/>
+                                                <constraint firstItem="soU-T0-AEB" firstAttribute="top" secondItem="JY4-19-bUX" secondAttribute="bottom" constant="8" symbolic="YES" id="KB1-fN-Hgd"/>
+                                                <constraint firstItem="z9u-B5-FpR" firstAttribute="leading" secondItem="soU-T0-AEB" secondAttribute="trailing" constant="18" id="R7L-yn-iGa"/>
+                                                <constraint firstItem="z9u-B5-FpR" firstAttribute="top" secondItem="BsM-us-XvF" secondAttribute="topMargin" constant="33" id="Xu9-aR-MK2"/>
+                                                <constraint firstItem="soU-T0-AEB" firstAttribute="centerY" secondItem="z9u-B5-FpR" secondAttribute="centerY" id="Y5y-Jg-WQL"/>
+                                                <constraint firstAttribute="bottomMargin" secondItem="soU-T0-AEB" secondAttribute="bottom" constant="10" id="g2T-2J-iFy"/>
+                                                <constraint firstItem="JY4-19-bUX" firstAttribute="top" secondItem="BsM-us-XvF" secondAttribute="topMargin" id="kxR-cQ-qfX"/>
+                                                <constraint firstItem="z9u-B5-FpR" firstAttribute="trailing" secondItem="BsM-us-XvF" secondAttribute="trailingMargin" id="vdS-qo-Wzd"/>
+                                                <constraint firstItem="soU-T0-AEB" firstAttribute="leading" secondItem="BsM-us-XvF" secondAttribute="leadingMargin" constant="11" id="x4e-cc-9og"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
+                                </cells>
+                            </tableViewSection>
+                        </sections>
+                        <connections>
+                            <outlet property="dataSource" destination="PVZ-2n-48Z" id="3m6-x9-Tah"/>
+                            <outlet property="delegate" destination="PVZ-2n-48Z" id="8S4-yD-EkG"/>
+                        </connections>
+                    </tableView>
+                    <toolbarItems>
+                        <barButtonItem title="Placeholder" id="nCP-pM-Ihq"/>
+                    </toolbarItems>
+                    <navigationItem key="navigationItem" title="Laplacian Settings" id="UK9-r3-itQ"/>
+                    <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
+                    <connections>
+                        <outlet property="BiasSlider" destination="soU-T0-AEB" id="maj-5N-fDN"/>
+                        <outlet property="BiasValue" destination="z9u-B5-FpR" id="5Wf-0p-dGi"/>
+                    </connections>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="tMt-xh-c9j" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="242.40000000000001" y="317.99100449775113"/>
+        </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="0oh-XR-1xg">
+            <objects>
+                <navigationController storyboardIdentifier="LaplacianSettingsUI" toolbarHidden="NO" id="rXM-BD-KkF" sceneMemberID="viewController">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="FeN-Qg-Gag">
+                        <rect key="frame" x="0.0" y="20" width="375" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <toolbar key="toolbar" opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="4zT-Zf-uBI">
+                        <rect key="frame" x="0.0" y="623" width="375" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </toolbar>
+                    <connections>
+                        <segue destination="PVZ-2n-48Z" kind="relationship" relationship="rootViewController" id="u8y-rt-NUq"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="p2A-2T-lnf" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-675" y="318"/>
+        </scene>
+    </scenes>
+</document>
