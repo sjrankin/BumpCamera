@@ -6,6 +6,7 @@
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14490.49"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -104,6 +105,60 @@
                                             </constraints>
                                         </tableViewCellContentView>
                                     </tableViewCell>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" rowHeight="45" id="QgM-lJ-IXd">
+                                        <rect key="frame" x="0.0" y="180" width="375" height="45"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="QgM-lJ-IXd" id="TeX-I8-BYe">
+                                            <rect key="frame" x="0.0" y="0.0" width="375" height="44.5"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="CCf-3u-EEB">
+                                                    <rect key="frame" x="310" y="6.5" width="51" height="31.5"/>
+                                                    <connections>
+                                                        <action selector="HandleLockChanged:" destination="O9z-BZ-WWL" eventType="primaryActionTriggered" id="aff-Oj-iG2"/>
+                                                    </connections>
+                                                </switch>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Lock dimensions" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Xll-9i-2P6">
+                                                    <rect key="frame" x="16" y="11" width="128" height="21"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstAttribute="bottomMargin" secondItem="Xll-9i-2P6" secondAttribute="bottom" constant="2" id="QmC-hd-sjK"/>
+                                                <constraint firstItem="CCf-3u-EEB" firstAttribute="trailing" secondItem="TeX-I8-BYe" secondAttribute="trailingMargin" id="l2X-FY-tUE"/>
+                                                <constraint firstItem="CCf-3u-EEB" firstAttribute="centerY" secondItem="TeX-I8-BYe" secondAttribute="centerY" id="nL7-yd-WM2"/>
+                                                <constraint firstItem="Xll-9i-2P6" firstAttribute="top" secondItem="TeX-I8-BYe" secondAttribute="topMargin" id="oVn-FW-SC5"/>
+                                                <constraint firstAttribute="bottomMargin" secondItem="CCf-3u-EEB" secondAttribute="bottom" constant="-4" id="smZ-Ub-d1h"/>
+                                                <constraint firstItem="Xll-9i-2P6" firstAttribute="leading" secondItem="TeX-I8-BYe" secondAttribute="leadingMargin" id="zy2-lk-19k"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" rowHeight="96" id="PRH-DO-ibk">
+                                        <rect key="frame" x="0.0" y="225" width="375" height="96"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="PRH-DO-ibk" id="eA2-6b-h5N">
+                                            <rect key="frame" x="0.0" y="0.0" width="375" height="95.5"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" preservesSuperviewLayoutMargins="YES" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="5" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="2M4-tw-C2Y">
+                                                    <rect key="frame" x="16" y="11" width="343" height="74"/>
+                                                    <viewLayoutGuide key="safeArea" id="acI-9S-YMB"/>
+                                                    <string key="text">Large kernel widths and/or heights will slow the filter (and your device) significantly. Consider using large sizes for still images. </string>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                                    <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstItem="2M4-tw-C2Y" firstAttribute="bottom" secondItem="eA2-6b-h5N" secondAttribute="bottomMargin" id="EVf-71-qcR"/>
+                                                <constraint firstItem="2M4-tw-C2Y" firstAttribute="top" secondItem="eA2-6b-h5N" secondAttribute="topMargin" id="RTw-mq-89F"/>
+                                                <constraint firstItem="2M4-tw-C2Y" firstAttribute="trailing" secondItem="eA2-6b-h5N" secondAttribute="trailingMargin" id="YYe-h5-3eI"/>
+                                                <constraint firstItem="2M4-tw-C2Y" firstAttribute="leading" secondItem="eA2-6b-h5N" secondAttribute="leadingMargin" id="d99-mn-RjX"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
                                 </cells>
                             </tableViewSection>
                         </sections>
@@ -120,13 +175,14 @@
                     <connections>
                         <outlet property="HeightSlider" destination="Y1k-ck-KFm" id="6UT-a7-eIr"/>
                         <outlet property="HeightValue" destination="Tu9-b6-pQt" id="y7W-zz-kxa"/>
+                        <outlet property="LockSwitch" destination="CCf-3u-EEB" id="nez-eZ-cj3"/>
                         <outlet property="WidthSlider" destination="Wlw-IH-58j" id="gn6-nj-JYN"/>
                         <outlet property="WidthValue" destination="9cL-oB-K77" id="opT-Rq-8zv"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="1Db-oO-6Ja" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-95.200000000000003" y="112.89355322338831"/>
+            <point key="canvasLocation" x="-95.625" y="111.97183098591549"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="zPp-fg-1bS">
