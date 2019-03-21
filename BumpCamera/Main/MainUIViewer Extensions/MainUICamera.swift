@@ -498,11 +498,14 @@ extension MainUIViewer
         if Delta > 60
         {
             PreviousTime = Now
-            var Message = "Heart beat at \((Now - StartTime).Round(To: 3)) seconds"
+            let Duration = Now - StartTime
+            var Message = "Heart beat at \(Duration.Round(To: 3)) seconds"
             #if DEBUG
             if _Settings.bool(forKey: "ShowFramerateOverlay")
             {
-                Message = Message + ", frames: \(FrameCount)"
+                
+                let OverallFPS = Double(FrameCount) / Duration
+                Message = Message + ", frames: \(FrameCount), FPS \(OverallFPS.Round(To: 3))"
             }
             #else
             Message = Message + "."
