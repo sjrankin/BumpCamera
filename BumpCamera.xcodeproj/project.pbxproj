@@ -180,6 +180,10 @@
 		176C969F222CFD2C004DB727 /* ConditionalSilhouetteSettingsUI.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 176C969E222CFD2C004DB727 /* ConditionalSilhouetteSettingsUI.storyboard */; };
 		176C96A1222D04AD004DB727 /* ConditionalSilhouetteSettingsUICode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 176C96A0222D04AD004DB727 /* ConditionalSilhouetteSettingsUICode.swift */; };
 		176D6829221D921C00BA6267 /* FilterPerformanceCode2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 176D6828221D921C00BA6267 /* FilterPerformanceCode2.swift */; };
+		1772C0632243AF6A002CDCE5 /* MPSLapacian.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1772C0622243AF6A002CDCE5 /* MPSLapacian.swift */; };
+		1772C0662243B472002CDCE5 /* LaplacianSettingsUI.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1772C0652243B472002CDCE5 /* LaplacianSettingsUI.storyboard */; };
+		1772C0682243B514002CDCE5 /* LaplacianSettingsUICode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1772C0672243B514002CDCE5 /* LaplacianSettingsUICode.swift */; };
+		1772C06A2243C016002CDCE5 /* Main2.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1772C0692243C016002CDCE5 /* Main2.storyboard */; };
 		1773C9F5223528CC008DE0FE /* ColorMap2.metal in Sources */ = {isa = PBXBuildFile; fileRef = 1773C9F4223528CC008DE0FE /* ColorMap2.metal */; };
 		1773C9F722352A5E008DE0FE /* ColorMap2Parameters.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1773C9F622352A5E008DE0FE /* ColorMap2Parameters.swift */; };
 		1773C9F922352A90008DE0FE /* ColorMap2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1773C9F822352A90008DE0FE /* ColorMap2.swift */; };
@@ -537,6 +541,10 @@
 		176C969E222CFD2C004DB727 /* ConditionalSilhouetteSettingsUI.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = ConditionalSilhouetteSettingsUI.storyboard; sourceTree = "<group>"; };
 		176C96A0222D04AD004DB727 /* ConditionalSilhouetteSettingsUICode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConditionalSilhouetteSettingsUICode.swift; sourceTree = "<group>"; };
 		176D6828221D921C00BA6267 /* FilterPerformanceCode2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterPerformanceCode2.swift; sourceTree = "<group>"; };
+		1772C0622243AF6A002CDCE5 /* MPSLapacian.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MPSLapacian.swift; sourceTree = "<group>"; };
+		1772C0652243B472002CDCE5 /* LaplacianSettingsUI.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = LaplacianSettingsUI.storyboard; sourceTree = "<group>"; };
+		1772C0672243B514002CDCE5 /* LaplacianSettingsUICode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaplacianSettingsUICode.swift; sourceTree = "<group>"; };
+		1772C0692243C016002CDCE5 /* Main2.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Main2.storyboard; sourceTree = "<group>"; };
 		1773C9F4223528CC008DE0FE /* ColorMap2.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = ColorMap2.metal; sourceTree = "<group>"; };
 		1773C9F622352A5E008DE0FE /* ColorMap2Parameters.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorMap2Parameters.swift; sourceTree = "<group>"; };
 		1773C9F822352A90008DE0FE /* ColorMap2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorMap2.swift; sourceTree = "<group>"; };
@@ -982,6 +990,7 @@
 			children = (
 				171E542621E44E170045ED77 /* AppDelegate.swift */,
 				171E542A21E44E170045ED77 /* Main.storyboard */,
+				1772C0692243C016002CDCE5 /* Main2.storyboard */,
 				171E542821E44E170045ED77 /* MainUIViewer.swift */,
 				17D7510F21F41B820050A2B5 /* MainUIViewer Extensions */,
 				175A3320222E45FB00670547 /* ActivityLog */,
@@ -1178,6 +1187,7 @@
 				176B965C2241F3D2009BFD5B /* Measuration */,
 				172A902B221FEBE5002015CD /* GaussianBlur.swift */,
 				175A64B92240D9F500F563D4 /* Sobel.swift */,
+				1772C0622243AF6A002CDCE5 /* MPSLapacian.swift */,
 				172551A42243660000DC5028 /* MPSDilate.swift */,
 				172551A622436B0B00DC5028 /* MPSErode.swift */,
 			);
@@ -1452,6 +1462,7 @@
 		1763F0732221676F00E1E2E8 /* MPS */ = {
 			isa = PBXGroup;
 			children = (
+				1772C0642243B3B6002CDCE5 /* Laplacian */,
 				172551AB224375C700DC5028 /* Dilate */,
 				172551A8224374A800DC5028 /* Erode */,
 				176B966922426E99009BFD5B /* Sobel */,
@@ -1539,6 +1550,15 @@
 				176C96A0222D04AD004DB727 /* ConditionalSilhouetteSettingsUICode.swift */,
 			);
 			path = ConditionalSilhouette;
+			sourceTree = "<group>";
+		};
+		1772C0642243B3B6002CDCE5 /* Laplacian */ = {
+			isa = PBXGroup;
+			children = (
+				1772C0652243B472002CDCE5 /* LaplacianSettingsUI.storyboard */,
+				1772C0672243B514002CDCE5 /* LaplacianSettingsUICode.swift */,
+			);
+			path = Laplacian;
 			sourceTree = "<group>";
 		};
 		1773C9F3223527EB008DE0FE /* ColorMap2 */ = {
@@ -2217,6 +2237,7 @@
 				17854040223F73E900DBD309 /* BlockMeanSettingsUI.storyboard in Resources */,
 				17E10F02220B24040041EC42 /* SolarizeSettingsUI2.storyboard in Resources */,
 				171E542E21E44E180045ED77 /* Assets.xcassets in Resources */,
+				1772C0662243B472002CDCE5 /* LaplacianSettingsUI.storyboard in Resources */,
 				17787F022202C43900D15761 /* HSBFilterSettingsUI.storyboard in Resources */,
 				173B16A822015766005A5B0B /* About.storyboard in Resources */,
 				174F82E8221FDBD0009A004C /* MonochromeSettingsUI.storyboard in Resources */,
@@ -2230,6 +2251,7 @@
 				17CE37362213AB5E0070ED87 /* FalseColorSettingsUI.storyboard in Resources */,
 				17F23696221528290091B865 /* ColorListPicker.storyboard in Resources */,
 				17BA6047221E70A500AEC044 /* GeneralHelp.storyboard in Resources */,
+				1772C06A2243C016002CDCE5 /* Main2.storyboard in Resources */,
 				172551AA224374BD00DC5028 /* MPSErodeSettingsUI.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2317,6 +2339,7 @@
 				174779FC2204338600FD64EF /* CollapsibleHeader.swift in Sources */,
 				176D6829221D921C00BA6267 /* FilterPerformanceCode2.swift in Sources */,
 				17CDB9B622166B1700C708F5 /* SystemReport.swift in Sources */,
+				1772C0632243AF6A002CDCE5 /* MPSLapacian.swift in Sources */,
 				178C75BC21F3247E00844FFF /* LiveMetalViewExtension.swift in Sources */,
 				1756CE0821FD737100C4E638 /* RGBtoSHB.metal in Sources */,
 				17A686EB21F824AA00F252CA /* HueAdustTableCode.swift in Sources */,
@@ -2552,6 +2575,7 @@
 				17B2ED8421F1A5CF00E3B56A /* MainSettings.swift in Sources */,
 				1726243421F8964E00C7688C /* HSBAdjust.swift in Sources */,
 				17BA6049221E71CA00AEC044 /* HelpUICode.swift in Sources */,
+				1772C0682243B514002CDCE5 /* LaplacianSettingsUICode.swift in Sources */,
 				17020ED921FDD25D006DE7ED /* GrayscaleKernel.metal in Sources */,
 				1756CE0C21FD73D200C4E638 /* RGBtoBHS.metal in Sources */,
 				171E63A0222A683B003E03E6 /* GSlider.swift in Sources */,
