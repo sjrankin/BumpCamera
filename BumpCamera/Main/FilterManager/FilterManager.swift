@@ -50,7 +50,7 @@ class FilterManager
                         (.HatchScreen, 6), (.CMYKHalftone, 8), (.Pixellate, 11), (.Comic, 2),
                         (.LineOverlay, 9), (.EdgeWork, 10), (.Posterize, 14), (.Pointillize, 13)],
             .Combined: [(.CircleAndLines, 0)],
-            .Effects: [(.PixellateMetal, 0), (.ShapePixellate, 1), (.DilateErode, 2), (.Kuwahara, 3),
+            .Effects: [(.PixellateMetal, 0), (.ShapePixellate, 1), (.MPSLaplacian, 2), (.Kuwahara, 3),
                        (.Silhouette, 4), (.Sobel, 5), (.MPSDilate, 6), (.MPSErode, 7), (.BayerDecode, 8)],
             .PhotoEffects: [(.Noir, 0), (.Chrome, 1), (.Vibrance, 2), (.XRay, 3), (.Instant, 4), (.ProcessEffect, 5),
                             (.TransferEffect, 6), (.SepiaTone, 7), (.Thermal, 8), (.TemperatureAndTint, 9),
@@ -130,6 +130,7 @@ class FilterManager
             .HistogramGeneration: (Histogram.ID(), Histogram.FilterKernel, Histogram.Title()),
             .MPSDilate: (MPSDilate.ID(), MPSDilate.FilterKernel, MPSDilate.Title()),
             .MPSErode: (MPSErode.ID(), MPSErode.FilterKernel, MPSErode.Title()),
+            .MPSLaplacian: (MPSLaplacian.ID(), MPSLaplacian.FilterKernel, MPSLaplacian.Title()),
     ]
     
     /// Determines if the specified filter supports the specified target type. Not all filters support all targets - slow
@@ -234,6 +235,7 @@ class FilterManager
             .HistogramGeneration: Histogram.FilterTarget(),
             .MPSDilate: MPSDilate.FilterTarget(),
             .MPSErode: MPSErode.FilterTarget(),
+            .MPSLaplacian: MPSLaplacian.FilterTarget(),
     ]
     
     /// Load all of the filter classes into the filter manager.
@@ -358,6 +360,7 @@ class FilterManager
         ParameterCount![.HistogramGeneration] = Histogram.SupportedFields().count
         ParameterCount![.MPSDilate] = MPSDilate.SupportedFields().count
         ParameterCount![.MPSErode] = MPSErode.SupportedFields().count
+        ParameterCount![.MPSLaplacian] = MPSLaplacian.SupportedFields().count
     }
     
     private static var ParameterCount: [FilterManager.FilterTypes: Int]? = nil
@@ -439,6 +442,7 @@ class FilterManager
         StoryboardList![.HistogramGeneration] = Histogram.SettingsStoryboard()
         StoryboardList![.MPSDilate] = MPSDilate.SettingsStoryboard()
         StoryboardList![.MPSErode] = MPSErode.SettingsStoryboard()
+        StoryboardList![.MPSLaplacian] = MPSLaplacian.SettingsStoryboard()
     }
     
     private static var StoryboardList: [FilterTypes: String?]? = nil
@@ -763,6 +767,9 @@ class FilterManager
             
         case .MPSErode:
             return MPSErode()
+            
+        case .MPSLaplacian:
+            return MPSLaplacian()
             
         default:
             return nil
@@ -1201,6 +1208,7 @@ class FilterManager
             .HistogramGeneration: "Create Histogram",
             .MPSDilate: "Dilate",
             .MPSErode: "Erode",
+            .MPSLaplacian: "Laplacian",
     ]
     
     public static func GetFilterTitle(_ Filter: FilterTypes) -> String?
@@ -1281,6 +1289,7 @@ class FilterManager
             .HistogramGeneration: true,
             .MPSDilate: true,
             .MPSErode: true,
+            .MPSLaplacian: true,
     ]
     
     /// Determines if the given filter type is implemented.
@@ -1526,6 +1535,7 @@ class FilterManager
             .SobelMergeWithBackground: .BoolType,
             .MaskTolerance: .IntType,
             .LockDimensions: .BoolType,
+            .Bias: .DoubleType,
     ]
     
     /// Maps fields to names used to store field data in user settings.
@@ -1711,6 +1721,7 @@ class FilterManager
             .SobelMergeWithBackground: "_SobelMergeWithBackground",
             .MaskTolerance: "_MaskTolerance",
             .LockDimensions: "_LockDimensions",
+            .Bias: "_Bias",
     ]
 }
 
