@@ -92,6 +92,7 @@ extension FilterManager
         case MPSDilate = 65
         case MPSErode = 66
         case MPSLaplacian = 67
+        case Combined4 = 68
         case NotSet = 10000
     }
     
@@ -353,6 +354,7 @@ extension FilterManager
     /// - Accelerate: Filter implemented with the Accelerate framework.
     /// - Software: Filter implemented in code running on the CPU (one hopes not too
     ///             many of these...).
+    /// - Combined: Filter that is a composite of other filters.
     public enum FilterKernelTypes: String
     {
         case CIFilter = "CIFilter"
@@ -360,6 +362,7 @@ extension FilterManager
         case MPS = "Metal Performance Shader"
         case Accelerate = "Accelerate"
         case Software = "CPU-Bound"
+        case Combined = "Filter Combination"
     }
     
     /// Describes the types of files that can be exported.
