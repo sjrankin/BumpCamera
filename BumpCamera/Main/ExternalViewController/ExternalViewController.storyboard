@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14490.68" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="wt9-EL-oYl">
+    <device id="retina5_5" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14490.49"/>
+        <capability name="Named colors" minToolsVersion="9.0"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--BumpCampera-->
+        <scene sceneID="CGM-JK-pUb">
+            <objects>
+                <viewController storyboardIdentifier="ExternalViewController" title="BumpCampera" id="wt9-EL-oYl" customClass="ExternalViewControllerCode" customModule="BumpCamera" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="fLH-dm-vvp">
+                        <rect key="frame" x="0.0" y="0.0" width="700" height="700"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="fjF-kW-mov">
+                                <rect key="frame" x="331" y="66" width="349" height="128"/>
+                                <subviews>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Thermal Status" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="TOZ-Nz-99Z">
+                                        <rect key="frame" x="57.666666666666686" y="44" width="234" height="40"/>
+                                        <fontDescription key="fontDescription" type="boldSystem" pointSize="33"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                </subviews>
+                                <color key="backgroundColor" name="Tomato"/>
+                                <constraints>
+                                    <constraint firstItem="TOZ-Nz-99Z" firstAttribute="centerX" secondItem="fjF-kW-mov" secondAttribute="centerX" id="V02-9A-pF4"/>
+                                    <constraint firstItem="TOZ-Nz-99Z" firstAttribute="centerY" secondItem="fjF-kW-mov" secondAttribute="centerY" id="n9S-bd-wYu"/>
+                                    <constraint firstItem="TOZ-Nz-99Z" firstAttribute="centerX" secondItem="fjF-kW-mov" secondAttribute="centerX" id="vrQ-zX-877"/>
+                                    <constraint firstItem="TOZ-Nz-99Z" firstAttribute="centerX" secondItem="fjF-kW-mov" secondAttribute="centerX" id="x0J-SK-7Ss"/>
+                                </constraints>
+                            </view>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="BumpCamera Status" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="QcY-L0-G6C">
+                                <rect key="frame" x="20" y="20" width="660" height="29"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" name="Avenir-Black" family="Avenir" pointSize="28"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="crm-wb-RTj">
+                                <rect key="frame" x="20" y="66" width="296" height="126"/>
+                                <subviews>
+                                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="EmptyHeart" translatesAutoresizingMaskIntoConstraints="NO" id="Z5I-cH-ems">
+                                        <rect key="frame" x="8" y="8" width="64" height="64"/>
+                                    </imageView>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Frame count" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="dHS-vz-j5z">
+                                        <rect key="frame" x="100" y="8" width="109" height="24"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="20"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Overall FPS" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="XgL-fC-syk">
+                                        <rect key="frame" x="100" y="40" width="101" height="24"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="20"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Current FPS" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="60D-4C-9Ju">
+                                        <rect key="frame" x="100" y="72" width="105" height="24"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="20"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                </subviews>
+                                <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <constraints>
+                                    <constraint firstAttribute="trailing" secondItem="60D-4C-9Ju" secondAttribute="trailing" constant="91" id="0K0-dE-HGs"/>
+                                    <constraint firstAttribute="width" constant="296" id="7BW-hm-XTs"/>
+                                    <constraint firstItem="dHS-vz-j5z" firstAttribute="leading" secondItem="Z5I-cH-ems" secondAttribute="trailing" constant="28" id="8ow-6M-a9g"/>
+                                    <constraint firstItem="Z5I-cH-ems" firstAttribute="top" secondItem="crm-wb-RTj" secondAttribute="topMargin" id="C99-5K-bnl"/>
+                                    <constraint firstItem="Z5I-cH-ems" firstAttribute="leading" secondItem="crm-wb-RTj" secondAttribute="leadingMargin" id="DpF-lt-uIb"/>
+                                    <constraint firstItem="dHS-vz-j5z" firstAttribute="leading" secondItem="XgL-fC-syk" secondAttribute="leading" id="KgF-Fy-PLc"/>
+                                    <constraint firstItem="XgL-fC-syk" firstAttribute="top" secondItem="dHS-vz-j5z" secondAttribute="bottom" constant="8" symbolic="YES" id="Lpm-xk-BdZ"/>
+                                    <constraint firstAttribute="bottom" secondItem="60D-4C-9Ju" secondAttribute="bottom" constant="30" id="Rl6-F2-jDT"/>
+                                    <constraint firstAttribute="trailing" secondItem="dHS-vz-j5z" secondAttribute="trailing" constant="87" id="TW4-sB-lJ1"/>
+                                    <constraint firstItem="Z5I-cH-ems" firstAttribute="top" secondItem="dHS-vz-j5z" secondAttribute="top" id="Yb9-Wa-0yq"/>
+                                    <constraint firstItem="XgL-fC-syk" firstAttribute="leading" secondItem="60D-4C-9Ju" secondAttribute="leading" id="Z2i-wg-A7o"/>
+                                    <constraint firstAttribute="bottom" secondItem="Z5I-cH-ems" secondAttribute="bottom" constant="54" id="dXj-Dr-Qks"/>
+                                    <constraint firstItem="60D-4C-9Ju" firstAttribute="top" secondItem="XgL-fC-syk" secondAttribute="bottom" constant="8" symbolic="YES" id="qXz-1C-0N9"/>
+                                </constraints>
+                            </view>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstItem="ow4-hT-YgW" firstAttribute="trailing" secondItem="crm-wb-RTj" secondAttribute="trailing" constant="384" id="2GA-m1-fHt"/>
+                            <constraint firstItem="fjF-kW-mov" firstAttribute="trailing" secondItem="fLH-dm-vvp" secondAttribute="trailingMargin" id="8hM-Mc-lqP"/>
+                            <constraint firstItem="crm-wb-RTj" firstAttribute="leading" secondItem="fLH-dm-vvp" secondAttribute="leadingMargin" id="I45-pw-977"/>
+                            <constraint firstItem="crm-wb-RTj" firstAttribute="top" secondItem="ow4-hT-YgW" secondAttribute="top" constant="46" id="Ins-TO-Plz"/>
+                            <constraint firstItem="fjF-kW-mov" firstAttribute="leading" secondItem="crm-wb-RTj" secondAttribute="trailing" constant="15" id="NaT-gP-wbm"/>
+                            <constraint firstItem="ow4-hT-YgW" firstAttribute="bottom" secondItem="fjF-kW-mov" secondAttribute="bottom" constant="506" id="yRX-QT-RAS"/>
+                            <constraint firstItem="fjF-kW-mov" firstAttribute="top" secondItem="crm-wb-RTj" secondAttribute="top" id="yZo-3d-QEX"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="ow4-hT-YgW"/>
+                    </view>
+                    <size key="freeformSize" width="700" height="700"/>
+                    <connections>
+                        <outlet property="CurrentFPS" destination="60D-4C-9Ju" id="ZBx-fh-HlO"/>
+                        <outlet property="FrameCountLabel" destination="dHS-vz-j5z" id="D0a-j0-yMn"/>
+                        <outlet property="FramesBox" destination="crm-wb-RTj" id="B1P-OK-kvl"/>
+                        <outlet property="HeartBeatDisplay" destination="Z5I-cH-ems" id="OiD-oO-tXo"/>
+                        <outlet property="OverallFPS" destination="XgL-fC-syk" id="qR1-J3-Tbh"/>
+                        <outlet property="ThermalStatusIndicator" destination="fjF-kW-mov" id="rdu-em-J85"/>
+                        <outlet property="ThermalStatusText" destination="TOZ-Nz-99Z" id="gby-4a-pcn"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Lt0-HT-1Cy" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="366.66666666666669" y="312.22826086956525"/>
+        </scene>
+    </scenes>
+    <resources>
+        <image name="EmptyHeart" width="21.333333969116211" height="21.333333969116211"/>
+        <namedColor name="Tomato">
+            <color red="1" green="0.3880000114440918" blue="0.27799999713897705" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+    </resources>
+</document>
