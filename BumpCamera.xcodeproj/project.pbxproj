@@ -122,6 +122,11 @@
 		174779FE220433CB00FD64EF /* CollapsibleTableViewHeaderDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 174779FD220433CB00FD64EF /* CollapsibleTableViewHeaderDelegate.swift */; };
 		17477A0022048C6600FD64EF /* FilterSectionData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 174779FF22048C6600FD64EF /* FilterSectionData.swift */; };
 		17477A0322049B1500FD64EF /* GrayscaleSettingsUI.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 17477A0222049B1500FD64EF /* GrayscaleSettingsUI.storyboard */; };
+		1749AA352244982600525984 /* ExternalViewController.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1749AA342244982600525984 /* ExternalViewController.storyboard */; };
+		1749AA37224498F200525984 /* ExternalViewControllerCode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1749AA36224498F200525984 /* ExternalViewControllerCode.swift */; };
+		1749AA58224512B100525984 /* CombinedFilterSettingsUI.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1749AA57224512B100525984 /* CombinedFilterSettingsUI.storyboard */; };
+		1749AA5B224521D200525984 /* CombinedFilterSettingsUICode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1749AA5A224521D200525984 /* CombinedFilterSettingsUICode.swift */; };
+		1749AA5D2245253E00525984 /* Combined4.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1749AA5C2245253E00525984 /* Combined4.swift */; };
 		174D6D5B220803E70066AE93 /* GroupNodeManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 174D6D5A220803E70066AE93 /* GroupNodeManager.swift */; };
 		174D6D5D220804000066AE93 /* GroupNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 174D6D5C220804000066AE93 /* GroupNode.swift */; };
 		174D6D5F220804AC0066AE93 /* FilterNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 174D6D5E220804AC0066AE93 /* FilterNode.swift */; };
@@ -483,6 +488,11 @@
 		174779FD220433CB00FD64EF /* CollapsibleTableViewHeaderDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollapsibleTableViewHeaderDelegate.swift; sourceTree = "<group>"; };
 		174779FF22048C6600FD64EF /* FilterSectionData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterSectionData.swift; sourceTree = "<group>"; };
 		17477A0222049B1500FD64EF /* GrayscaleSettingsUI.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = GrayscaleSettingsUI.storyboard; sourceTree = "<group>"; };
+		1749AA342244982600525984 /* ExternalViewController.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = ExternalViewController.storyboard; sourceTree = "<group>"; };
+		1749AA36224498F200525984 /* ExternalViewControllerCode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExternalViewControllerCode.swift; sourceTree = "<group>"; };
+		1749AA57224512B100525984 /* CombinedFilterSettingsUI.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = CombinedFilterSettingsUI.storyboard; sourceTree = "<group>"; };
+		1749AA5A224521D200525984 /* CombinedFilterSettingsUICode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CombinedFilterSettingsUICode.swift; sourceTree = "<group>"; };
+		1749AA5C2245253E00525984 /* Combined4.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Combined4.swift; sourceTree = "<group>"; };
 		174D6D5A220803E70066AE93 /* GroupNodeManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupNodeManager.swift; sourceTree = "<group>"; };
 		174D6D5C220804000066AE93 /* GroupNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupNode.swift; sourceTree = "<group>"; };
 		174D6D5E220804AC0066AE93 /* FilterNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterNode.swift; sourceTree = "<group>"; };
@@ -975,6 +985,7 @@
 		171D627421EDD4B2004D3545 /* FilterWrappers */ = {
 			isa = PBXGroup;
 			children = (
+				1749AA592245135600525984 /* Combined */,
 				173FDCBD220E946000EFA90D /* MetalWrappers */,
 				170BFE76221C2DE600754BF6 /* CIFilterWrappers */,
 				172A902A221FEBBF002015CD /* MPSWrappers */,
@@ -993,6 +1004,7 @@
 				1772C0692243C016002CDCE5 /* Main2.storyboard */,
 				171E542821E44E170045ED77 /* MainUIViewer.swift */,
 				17D7510F21F41B820050A2B5 /* MainUIViewer Extensions */,
+				1749AA382244990400525984 /* ExternalViewController */,
 				175A3320222E45FB00670547 /* ActivityLog */,
 				179B599221EF0A9F00905058 /* FilterSelector */,
 				17C7F4B522252F02001F05F3 /* ModeSelector */,
@@ -1311,6 +1323,32 @@
 				17E15FE622053A620037B35F /* GrayscaleAdjustChannelMultipliersCode.swift */,
 			);
 			path = Grayscale;
+			sourceTree = "<group>";
+		};
+		1749AA382244990400525984 /* ExternalViewController */ = {
+			isa = PBXGroup;
+			children = (
+				1749AA342244982600525984 /* ExternalViewController.storyboard */,
+				1749AA36224498F200525984 /* ExternalViewControllerCode.swift */,
+			);
+			path = ExternalViewController;
+			sourceTree = "<group>";
+		};
+		1749AA562245129500525984 /* Combined */ = {
+			isa = PBXGroup;
+			children = (
+				1749AA57224512B100525984 /* CombinedFilterSettingsUI.storyboard */,
+				1749AA5A224521D200525984 /* CombinedFilterSettingsUICode.swift */,
+			);
+			path = Combined;
+			sourceTree = "<group>";
+		};
+		1749AA592245135600525984 /* Combined */ = {
+			isa = PBXGroup;
+			children = (
+				1749AA5C2245253E00525984 /* Combined4.swift */,
+			);
+			path = Combined;
 			sourceTree = "<group>";
 		};
 		174F82DC221FBD21009A004C /* Pointillize */ = {
@@ -2025,6 +2063,7 @@
 				174779FF22048C6600FD64EF /* FilterSectionData.swift */,
 				174779FB2204338600FD64EF /* CollapsibleHeader.swift */,
 				174779FD220433CB00FD64EF /* CollapsibleTableViewHeaderDelegate.swift */,
+				1749AA562245129500525984 /* Combined */,
 				1763F0732221676F00E1E2E8 /* MPS */,
 				174F82E4221FDB6D009A004C /* CIFilter */,
 				174F82E3221FDB0C009A004C /* Metal */,
@@ -2201,6 +2240,7 @@
 				17110DE3221EC24E00223990 /* VibranceSettingsUI.storyboard in Resources */,
 				1775DDB1222BC27E0061DC87 /* BumpCameraPrivacy.pdf in Resources */,
 				17FA649C2234DAD00060D5CA /* PixelCounterSettingsUI.storyboard in Resources */,
+				1749AA352244982600525984 /* ExternalViewController.storyboard in Resources */,
 				171E543121E44E180045ED77 /* LaunchScreen.storyboard in Resources */,
 				176B966B22426EBD009BFD5B /* SobelSettingsUI.storyboard in Resources */,
 				17BC0081223140580076A5D5 /* GradientEditorUI.storyboard in Resources */,
@@ -2216,6 +2256,7 @@
 				171298132223AF52000D5EF5 /* ExifViewer.storyboard in Resources */,
 				1775DDB2222BC27E0061DC87 /* BumpCameraLimitations.pdf in Resources */,
 				1797BCF52222CF7900C47510 /* ManageFilterRatings.storyboard in Resources */,
+				1749AA58224512B100525984 /* CombinedFilterSettingsUI.storyboard in Resources */,
 				173F633422001800006CB67C /* Pixellate2Table.storyboard in Resources */,
 				17C6757A222D37B700D53B93 /* ColorInverterSettingsUI.storyboard in Resources */,
 				1779F3D42218347800140EEA /* SepiaToneSettingsUI.storyboard in Resources */,
@@ -2451,6 +2492,7 @@
 				17C18AD6222FFAF000DBDD79 /* ColorMapSettingsUICode.swift in Sources */,
 				171D626221EDB66F004D3545 /* DotScreen.swift in Sources */,
 				17D60D82220FD7A900933F15 /* MonochromeColors.swift in Sources */,
+				1749AA5D2245253E00525984 /* Combined4.swift in Sources */,
 				1799C89A21FF1B890069D5AC /* KuwaharaEffect.swift in Sources */,
 				1726243221F8640100C7688C /* Numeric.swift in Sources */,
 				176C96A1222D04AD004DB727 /* ConditionalSilhouetteSettingsUICode.swift in Sources */,
@@ -2556,6 +2598,7 @@
 				17D7511321F41CD40050A2B5 /* MainUIPhoto.swift in Sources */,
 				171D626F21EDD143004D3545 /* CircularScreen.swift in Sources */,
 				1779F3D1221833A900140EEA /* SepiaTone.swift in Sources */,
+				1749AA37224498F200525984 /* ExternalViewControllerCode.swift in Sources */,
 				17E9F0E722017E9600BA7B46 /* FilterSettingsUICode.swift in Sources */,
 				1797BCF32222CC0800C47510 /* DebugSettingsCode.swift in Sources */,
 				17BC00792230EE8F0076A5D5 /* ColorMap.swift in Sources */,
@@ -2590,6 +2633,7 @@
 				17FF72CB2235FF8E00670977 /* GradientEditorUICode.swift in Sources */,
 				172551B122437AB700DC5028 /* MPSDilateSettingsUICode.swift in Sources */,
 				17BEE0B221FC20FF00A9370B /* DesaturateColors.swift in Sources */,
+				1749AA5B224521D200525984 /* CombinedFilterSettingsUICode.swift in Sources */,
 				1756CE1021FD860A00C4E638 /* RGBSwizzling.metal in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
