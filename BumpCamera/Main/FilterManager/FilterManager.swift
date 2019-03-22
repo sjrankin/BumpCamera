@@ -47,9 +47,9 @@ class FilterManager
             .Favorites: [],
             .FiveStar: [],
             .Standard: [(.PassThrough, 0), (.LineScreen, 4), (.DotScreen, 5), (.CircularScreen, 7),
-                        (.HatchScreen, 6), (.CMYKHalftone, 8), (.Pixellate, 11), (.Comic, 2),
-                        (.LineOverlay, 9), (.EdgeWork, 10), (.Posterize, 14), (.Pointillize, 13)],
-            .Combined: [(.CircleAndLines, 0)],
+                        (.HatchScreen, 6), (.CircleAndLines, 8), (.CMYKHalftone, 9), (.Pixellate, 12), (.Comic, 2),
+                        (.LineOverlay, 10), (.EdgeWork, 11), (.Posterize, 14), (.Pointillize, 13)],
+            .Combined: [(.Combined4, 0)],
             .Effects: [(.PixellateMetal, 0), (.ShapePixellate, 1), (.MPSLaplacian, 2), (.Kuwahara, 3),
                        (.Silhouette, 4), (.Sobel, 5), (.MPSDilate, 6), (.MPSErode, 7), (.BayerDecode, 8)],
             .PhotoEffects: [(.Noir, 0), (.Chrome, 1), (.Vibrance, 2), (.XRay, 3), (.Instant, 4), (.ProcessEffect, 5),
@@ -131,6 +131,7 @@ class FilterManager
             .MPSDilate: (MPSDilate.ID(), MPSDilate.FilterKernel, MPSDilate.Title()),
             .MPSErode: (MPSErode.ID(), MPSErode.FilterKernel, MPSErode.Title()),
             .MPSLaplacian: (MPSLaplacian.ID(), MPSLaplacian.FilterKernel, MPSLaplacian.Title()),
+            .Combined4: (Combined4.ID(), Combined4.FilterKernel, Combined4.Title()),
     ]
     
     /// Determines if the specified filter supports the specified target type. Not all filters support all targets - slow
@@ -236,6 +237,7 @@ class FilterManager
             .MPSDilate: MPSDilate.FilterTarget(),
             .MPSErode: MPSErode.FilterTarget(),
             .MPSLaplacian: MPSLaplacian.FilterTarget(),
+            .Combined4: Combined4.FilterTarget(),
     ]
     
     /// Load all of the filter classes into the filter manager.
@@ -361,6 +363,7 @@ class FilterManager
         ParameterCount![.MPSDilate] = MPSDilate.SupportedFields().count
         ParameterCount![.MPSErode] = MPSErode.SupportedFields().count
         ParameterCount![.MPSLaplacian] = MPSLaplacian.SupportedFields().count
+        ParameterCount![.Combined4] = Combined4.SupportedFields().count
     }
     
     private static var ParameterCount: [FilterManager.FilterTypes: Int]? = nil
@@ -443,6 +446,7 @@ class FilterManager
         StoryboardList![.MPSDilate] = MPSDilate.SettingsStoryboard()
         StoryboardList![.MPSErode] = MPSErode.SettingsStoryboard()
         StoryboardList![.MPSLaplacian] = MPSLaplacian.SettingsStoryboard()
+        StoryboardList![.Combined4] = Combined4.SettingsStoryboard()
     }
     
     private static var StoryboardList: [FilterTypes: String?]? = nil
@@ -770,6 +774,9 @@ class FilterManager
             
         case .MPSLaplacian:
             return MPSLaplacian()
+            
+        case .Combined4:
+            return Combined4()
             
         default:
             return nil
@@ -1209,6 +1216,7 @@ class FilterManager
             .MPSDilate: "Dilate",
             .MPSErode: "Erode",
             .MPSLaplacian: "Laplacian",
+            .Combined4: "4-Way Combined",
     ]
     
     public static func GetFilterTitle(_ Filter: FilterTypes) -> String?
@@ -1290,6 +1298,7 @@ class FilterManager
             .MPSDilate: true,
             .MPSErode: true,
             .MPSLaplacian: true,
+            .Combined4: true,
     ]
     
     /// Determines if the given filter type is implemented.
@@ -1337,7 +1346,8 @@ class FilterManager
             .Metal: "Metal",
             .MPS: "Metal Performance Shader",
             .Accelerate: "Accelerate",
-            .Software: "CPU-Bound"
+            .Software: "CPU-Bound",
+            .Combined: "Combined"
     ]
     
     /// Map of file types to file type names.
