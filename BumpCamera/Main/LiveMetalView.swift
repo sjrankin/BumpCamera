@@ -49,7 +49,8 @@ class LiveMetalView: MTKView
     
     var rotation: Rotation = .rotate0Degrees
     {
-        didSet {
+        didSet
+        {
             SyncQueue.sync
                 {
                     InternalRotation = rotation
@@ -153,6 +154,7 @@ class LiveMetalView: MTKView
     
     private func setupTransform(width: Int, height: Int, mirroring: Bool, rotation: Rotation)
     {
+                print("LiveMetalView.setupTransform")
         var scaleX: Float = 1.0
         var scaleY: Float = 1.0
         var resizeAspect: Float = 1.0
@@ -297,7 +299,9 @@ class LiveMetalView: MTKView
     {
         if let defaultLibrary = device!.makeDefaultLibrary()
         {
+            print("Configuring Metal in LiveMetalView.")
             let pipelineDescriptor = MTLRenderPipelineDescriptor()
+            pipelineDescriptor.label = "LiveMetalView.RenderPipeline"
             pipelineDescriptor.colorAttachments[0].pixelFormat = .bgra8Unorm
             pipelineDescriptor.vertexFunction = defaultLibrary.makeFunction(name: "vertexPassThrough")
             pipelineDescriptor.fragmentFunction = defaultLibrary.makeFunction(name: "fragmentPassThrough")
@@ -305,6 +309,7 @@ class LiveMetalView: MTKView
             // To determine how our textures are sampled, we create a sampler descriptor, which
             // will be used to ask for a sampler state object from our device below.
             let samplerDescriptor = MTLSamplerDescriptor()
+            samplerDescriptor.label = "LiveMetalView.sampler"
             samplerDescriptor.sAddressMode = .clampToEdge
             samplerDescriptor.tAddressMode = .clampToEdge
             samplerDescriptor.minFilter = .linear
@@ -312,7 +317,8 @@ class LiveMetalView: MTKView
             sampler = device!.makeSamplerState(descriptor: samplerDescriptor)
             if sampler != nil
             {
-                do {
+                do
+                {
                     renderPipelineState = try device!.makeRenderPipelineState(descriptor: pipelineDescriptor)
                 }
                 catch
@@ -335,8 +341,10 @@ class LiveMetalView: MTKView
     
     func createTextureCache()
     {
+        print("LiveMetalView.createTextureCache")
         var newTextureCache: CVMetalTextureCache?
-        if CVMetalTextureCacheCreate(kCFAllocatorDefault, nil, device!, nil, &newTextureCache) == kCVReturnSuccess {
+        if CVMetalTextureCacheCreate(kCFAllocatorDefault, nil, device!, nil, &newTextureCache) == kCVReturnSuccess
+        {
             textureCache = newTextureCache
         }
         else
@@ -349,8 +357,8 @@ class LiveMetalView: MTKView
     
     override func draw(_ rect: CGRect)
     {
-        //objc_sync_enter(DrawingLock)
-        //defer {objc_sync_exit(DrawingLock)}
+        objc_sync_enter(DrawingLock)
+        defer {objc_sync_exit(DrawingLock)}
         //objc_sync_enter(PixelBufferLock)
         //defer {objc_sync_exit(PixelBufferLock)}
         var pixelBuffer: CVPixelBuffer?
@@ -370,6 +378,7 @@ class LiveMetalView: MTKView
         {
             return
         }
+        currentRenderPassDescriptor.accessibilityLabel = "LiveMetalView.currentRenderPassDescriptor"
         
         // Create a Metal texture from the image buffer
         let width = CVPixelBufferGetWidth(previewPixelBuffer)
@@ -401,7 +410,8 @@ class LiveMetalView: MTKView
             texture.height != textureHeight ||
             self.bounds != InternalBounds ||
             mirroring != textureMirroring ||
-            rotation != textureRotation {
+            rotation != textureRotation
+        {
             setupTransform(width: texture.width, height: texture.height, mirroring: mirroring, rotation: rotation)
         }
         
@@ -437,7 +447,6 @@ class LiveMetalView: MTKView
         commandEncoder.endEncoding()
         
         commandBuffer.present(drawable) // Draw to the screen
-        //draw()
         commandBuffer.commit()
     }
 }
