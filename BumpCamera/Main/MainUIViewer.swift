@@ -53,6 +53,11 @@ class MainUIViewer: UIViewController,
     var ADelegate: AppDelegate? = nil
     var OnDebugger = false
     var StartUpTime: Date!
+    var ExternalScreen: UIScreen? = nil
+    var ExternalWindow: UIWindow? = nil
+    var HaveExternalDisplay: Bool = false
+    var ExVC: ExternalViewControllerCode? = nil
+    var Windows = [UIWindow]()
     
     /// Main setup.
     override func viewDidLoad()
@@ -60,6 +65,31 @@ class MainUIViewer: UIViewController,
         super.viewDidLoad()
         
         StartUpTime = Date()
+        
+        HaveExternalDisplay = FindExternalDisplay()
+        print("Found external display: \(HaveExternalDisplay)")
+        if HaveExternalDisplay
+{
+    ConnectToExternalDisplay(ExScreen: ExternalScreen!)
+        }
+        
+        NotificationCenter.default.addObserver(forName: UIScreen.didConnectNotification,
+                                               object: nil,
+                                               queue: nil)
+        {
+            (notification) in
+            print("External display connected.")
+            self.ExternalScreen = notification.object as? UIScreen
+        }
+        NotificationCenter.default.addObserver(forName: UIScreen.didDisconnectNotification,
+                                               object: nil,
+                                               queue: nil)
+        {
+            (notification) in
+            print("External display disconnected.")
+            let Screen = notification.object as? UIScreen
+            self.DisconnectFromExternalDisplay(ExScreen: Screen!)
+        }
         
         MainBottomToolbar.layer.zPosition = 1000
         MainBottomToolbar.layer.borderColor = UIColor.white.cgColor
@@ -186,6 +216,49 @@ class MainUIViewer: UIViewController,
         //StartHeartBeat()
     }
     
+    func LoadExternalWindow(With: UIWindow)
+    {
+        ExVC = UIStoryboard(name: "ExternalViewController", bundle: nil).instantiateInitialViewController() as? ExternalViewControllerCode
+        With.rootViewController = ExVC
+    }
+    
+    func ConnectToExternalDisplay(ExScreen: UIScreen)
+    {
+        let Dimensions = ExScreen.bounds
+        ExternalWindow = UIWindow(frame: Dimensions)
+        LoadExternalWindow(With: ExternalWindow!)
+        ExternalWindow?.isHidden = false
+        ExternalWindow?.makeKeyAndVisible()
+        Windows.append(ExternalWindow!)
+    }
+    
+    func DisconnectFromExternalDisplay(ExScreen: UIScreen)
+    {
+        for Window in self.Windows
+        {
+            if Window.screen == ExScreen
+            {
+                let Index = Windows.firstIndex(of: Window)
+                Windows.remove(at: Index!)
+                break
+            }
+        }
+    }
+    
+    /// Find external displays.
+    ///
+    /// - Returns: True if an external display was found and "created", false if not.
+    func FindExternalDisplay() -> Bool
+    {
+        if UIScreen.screens.count == 1
+        {
+            return false
+        }
+        ExternalScreen = UIScreen.screens[1]
+        return true
+    }
+    
+    /// Start the heartbeat timer.
     func StartHeartBeat()
     {
         if HeartBeatTimer != nil
