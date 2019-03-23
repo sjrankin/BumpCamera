@@ -21,11 +21,11 @@ struct GradientTable
 };
 
 kernel void ColorMap2(texture2d<float, access::read> InTexture [[texture(0)]],
-                           texture2d<float, access::write> OutTexture [[texture(1)]],
-                           constant ColorMapParameters &Parameters [[buffer(0)]],
-                           constant GradientTable &Gradient [[buffer(1)]],
-                           device float *ToCPU [[buffer(2)]],
-                           uint2 gid [[thread_position_in_grid]])
+                      texture2d<float, access::write> OutTexture [[texture(1)]],
+                      constant ColorMapParameters &Parameters [[buffer(0)]],
+                      constant GradientTable &Gradient [[buffer(1)]],
+                      device float *ToCPU [[buffer(2)]],
+                      uint2 gid [[thread_position_in_grid]])
 {
     float4 InColor = InTexture.read(gid);
     
