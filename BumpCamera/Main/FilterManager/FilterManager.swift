@@ -47,9 +47,9 @@ class FilterManager
             .Favorites: [],
             .FiveStar: [],
             .Standard: [(.PassThrough, 0), (.LineScreen, 4), (.DotScreen, 5), (.CircularScreen, 7),
-                        (.HatchScreen, 6), (.CircleAndLines, 8), (.CMYKHalftone, 9), (.Pixellate, 12), (.Comic, 2),
-                        (.LineOverlay, 10), (.EdgeWork, 11), (.Posterize, 14), (.Pointillize, 13)],
-            .Combined: [(.Combined4, 0)],
+                        (.HatchScreen, 6), (.CircleAndLines, 8), (.CMYKHalftone, 9), (.Pixellate, 10), (.Comic, 2),
+                         (.Posterize, 12), (.Pointillize, 11)],
+            .Combined: [(.Combined4, 0), (.HalfAndHalf, 1)],
             .Effects: [(.PixellateMetal, 0), (.ShapePixellate, 1), (.MPSLaplacian, 2), (.Kuwahara, 3),
                        (.Silhouette, 4), (.Sobel, 5), (.MPSDilate, 6), (.MPSErode, 7), (.BayerDecode, 8)],
             .PhotoEffects: [(.Noir, 0), (.Chrome, 1), (.Vibrance, 2), (.XRay, 3), (.Instant, 4), (.ProcessEffect, 5),
@@ -66,7 +66,8 @@ class FilterManager
             .Generator: [(.Grid, 0), (.SmoothLinearGradient, 1), (.CornerGradient, 2), (.Checkerboard, 3),
                          (.MetalCheckerboard, 4)],
             .Blur: [(.GaussianBlur, 0)],
-            .Measuration: [(.PixelCounter, 0), (.BlockMean, 1), (.HistogramGeneration, 2)]
+            .Measuration: [(.PixelCounter, 0), (.BlockMean, 1), (.HistogramGeneration, 2)],
+            .Edges: [(.ConvolutionEmboss, 0), (.EdgeWork, 100), (.LineOverlay, 101)]
     ]
     
     public static let FilterInfoMap: [FilterTypes: (UUID, FilterKernelTypes, String)] =
@@ -132,6 +133,12 @@ class FilterManager
             .MPSErode: (MPSErode.ID(), MPSErode.FilterKernel, MPSErode.Title()),
             .MPSLaplacian: (MPSLaplacian.ID(), MPSLaplacian.FilterKernel, MPSLaplacian.Title()),
             .Combined4: (Combined4.ID(), Combined4.FilterKernel, Combined4.Title()),
+            .AlphaBlend: (AlphaBlend.ID(), AlphaBlend.FilterKernel, AlphaBlend.Title()),
+            .GradientToAlpha: (GradientToAlpha.ID(), GradientToAlpha.FilterKernel, GradientToAlpha.Title()),
+            .HalfAndHalf: (HalfAndHalf.ID(), HalfAndHalf.FilterKernel, HalfAndHalf.Title()),
+            .MPSEmboss: (MPSEmboss.ID(), MPSEmboss.FilterKernel, MPSEmboss.Title()),
+            .Convolution: (Convolution.ID(), Convolution.FilterKernel, Convolution.Title()),
+            .ConvolutionEmboss: (ConvolutionEmboss.ID(), ConvolutionEmboss.FilterKernel, ConvolutionEmboss.Title()),
     ]
     
     /// Determines if the specified filter supports the specified target type. Not all filters support all targets - slow
@@ -238,6 +245,12 @@ class FilterManager
             .MPSErode: MPSErode.FilterTarget(),
             .MPSLaplacian: MPSLaplacian.FilterTarget(),
             .Combined4: Combined4.FilterTarget(),
+            .AlphaBlend: AlphaBlend.FilterTarget(),
+            .GradientToAlpha: GradientToAlpha.FilterTarget(),
+            .HalfAndHalf: HalfAndHalf.FilterTarget(),
+            .MPSEmboss: MPSEmboss.FilterTarget(),
+            .Convolution: Convolution.FilterTarget(),
+            .ConvolutionEmboss: ConvolutionEmboss.FilterTarget(),
     ]
     
     /// Load all of the filter classes into the filter manager.
@@ -364,6 +377,12 @@ class FilterManager
         ParameterCount![.MPSErode] = MPSErode.SupportedFields().count
         ParameterCount![.MPSLaplacian] = MPSLaplacian.SupportedFields().count
         ParameterCount![.Combined4] = Combined4.SupportedFields().count
+        ParameterCount![.AlphaBlend] = AlphaBlend.SupportedFields().count
+        ParameterCount![.GradientToAlpha] = GradientToAlpha.SupportedFields().count
+        ParameterCount![.HalfAndHalf] = HalfAndHalf.SupportedFields().count
+        ParameterCount![.MPSEmboss] = MPSEmboss.SupportedFields().count
+        ParameterCount![.Convolution] = Convolution.SupportedFields().count
+        ParameterCount![.ConvolutionEmboss] = ConvolutionEmboss.SupportedFields().count
     }
     
     private static var ParameterCount: [FilterManager.FilterTypes: Int]? = nil
@@ -447,6 +466,12 @@ class FilterManager
         StoryboardList![.MPSErode] = MPSErode.SettingsStoryboard()
         StoryboardList![.MPSLaplacian] = MPSLaplacian.SettingsStoryboard()
         StoryboardList![.Combined4] = Combined4.SettingsStoryboard()
+        StoryboardList![.AlphaBlend] = AlphaBlend.SettingsStoryboard()
+        StoryboardList![.GradientToAlpha] = GradientToAlpha.SettingsStoryboard()
+        StoryboardList![.HalfAndHalf] = HalfAndHalf.SettingsStoryboard()
+        StoryboardList![.MPSEmboss] = MPSEmboss.SettingsStoryboard()
+        StoryboardList![.Convolution] = Convolution.SettingsStoryboard()
+        StoryboardList![.ConvolutionEmboss] = ConvolutionEmboss.SettingsStoryboard()
     }
     
     private static var StoryboardList: [FilterTypes: String?]? = nil
@@ -778,6 +803,24 @@ class FilterManager
         case .Combined4:
             return Combined4()
             
+        case .AlphaBlend:
+            return AlphaBlend()
+            
+        case .GradientToAlpha:
+            return GradientToAlpha()
+            
+        case .HalfAndHalf:
+            return HalfAndHalf()
+            
+        case .MPSEmboss:
+            return MPSEmboss()
+            
+        case .Convolution:
+            return Convolution()
+            
+        case .ConvolutionEmboss:
+            return ConvolutionEmboss()
+            
         default:
             return nil
         }
@@ -934,6 +977,7 @@ class FilterManager
             .Favorites: UUID(uuidString: "8f5c963f-f009-40c9-80d9-a528506b7192")!,
             .FiveStar: UUID(uuidString: "5045f4bc-5d07-4a0c-9ed7-7f5fd20354dd")!,
             .Measuration: UUID(uuidString: "3c092135-8a86-4ae1-a53d-26be3a37ac4d")!,
+            .Edges: UUID(uuidString: "25f09934-8709-43d2-b33a-d95240ccd12a")!,
     ]
     
     /// Given a group description, return its ID.
@@ -1001,15 +1045,16 @@ class FilterManager
             .Standard: ("Standard", 0),
             .Combined: ("Combined", 1),
             .Colors: ("Colors", 2),
+                        .Gray: ("Mono- chrome", 3),
             .Effects: ("Effects", 4),
-            .Bumpy: ("3D", 7),
-            .Motion: ("Motion", 8),
-            .Tiles: ("Distortion", 6),
-            .Generator: ("Generators", 10),
-            .Gray: ("Mono- chrome", 3),
-            .PhotoEffects: ("Photo Effects", 5),
-            .Blur: ("Blur", 9),
-            .Measuration: ("Measure", 10),
+                        .Edges: ("Edges", 5),
+                                    .PhotoEffects: ("Photo Effects", 6),
+                                       .Tiles: ("Distortion", 7),
+            .Bumpy: ("3D", 8),
+            .Motion: ("Motion", 9),
+             .Blur: ("Blur", 10),
+            .Generator: ("Generators", 11),
+            .Measuration: ("Measure", 100),
     ]
     
     /// Map between group type and group color.
@@ -1029,6 +1074,7 @@ class FilterManager
             .FiveStar: UIColor.green,
             .Favorites: UIColor.white,
             .Measuration: UIColor.gray,
+            .Edges: UIColor(named: "Tomato")!,
     ]
     
     public func ColorForGroup(_ Group: FilterGroups) -> UIColor
@@ -1217,6 +1263,12 @@ class FilterManager
             .MPSErode: "Erode",
             .MPSLaplacian: "Laplacian",
             .Combined4: "4-Way Combined",
+            .AlphaBlend: "Alpha Blend",
+            .GradientToAlpha: "Gradient to Alpha",
+            .HalfAndHalf: "Half & Half",
+            .MPSEmboss: "Emboss",
+            .Convolution: "Convolution",
+            .ConvolutionEmboss: "Emboss",
     ]
     
     public static func GetFilterTitle(_ Filter: FilterTypes) -> String?
@@ -1299,6 +1351,12 @@ class FilterManager
             .MPSErode: true,
             .MPSLaplacian: true,
             .Combined4: true,
+            .AlphaBlend: true,
+            .GradientToAlpha: true,
+            .HalfAndHalf: true,
+            .MPSEmboss: true,
+            .Convolution: false,
+            .ConvolutionEmboss: true,
     ]
     
     /// Determines if the given filter type is implemented.
@@ -1337,6 +1395,15 @@ class FilterManager
             }
         }
         return Result
+    }
+    
+    /// Given an input field, return its data type.
+    ///
+    /// - Parameter Field: The input field.
+    /// - Returns: The data type for the input field on success, nil if not found.
+    public static func FieldTypeForInputField(_ Field: InputFields) -> InputTypes?
+    {
+        return FieldMap[Field]
     }
     
     /// Maps a filter kernel type to its name.
@@ -1546,6 +1613,22 @@ class FilterManager
             .MaskTolerance: .IntType,
             .LockDimensions: .BoolType,
             .Bias: .DoubleType,
+            .GradientOrientation: .IntType,
+            .EmbossType: .IntType,
+            .ConvolutionWidth: .IntType,
+            .ConvolutionHeight: .IntType,
+            .ConvolutionKernel: .StringType,
+            .CurrentKernelIndex: .IntType,
+            .HaHBlending: .IntType,
+            .HaHOrientation: .IntType,
+            .HaHTopFilterBlob: .StringType,
+            .HaHBottomFilterBlob: .StringType,
+            .HaHLeftFilterBlob: .StringType,
+            .HaHRightFilterBlob: .StringType,
+            .HaHLeftFilter: .IntType,
+            .HaHRightFilter: .IntType,
+            .HaHTopFilter: .IntType,
+            .HaHBottomFilter: .IntType,
     ]
     
     /// Maps fields to names used to store field data in user settings.
@@ -1732,6 +1815,22 @@ class FilterManager
             .MaskTolerance: "_MaskTolerance",
             .LockDimensions: "_LockDimensions",
             .Bias: "_Bias",
+            .GradientOrientation: "_GradientOrientation",
+            .EmbossType: "_EmbossType",
+            .ConvolutionWidth: "_ConvolutionKernelWidth",
+            .ConvolutionHeight: "_ConvolutionKernelHeight",
+            .ConvolutionKernel: "_ConvolutionKernel",
+            .CurrentKernelIndex: "_CurrentKernelIndex",
+            .HaHBlending: "_HaHBlending",
+            .HaHOrientation: "_HaHOrientation",
+            .HaHTopFilterBlob: "_HaHTopFilterBlob",
+            .HaHBottomFilterBlob: "_HaHBottomFilterBlob",
+            .HaHLeftFilterBlob: "_HaHLeftFilterBlob",
+            .HaHRightFilterBlob: "_HaHRightFilterBlob",
+            .HaHLeftFilter: "_HaHLeftFilter",
+            .HaHRightFilter: "_HaHRightFilter",
+            .HaHTopFilter: "_HaHTopFilter",
+            .HaHBottomFilter: "_HaHBottomFilter",
     ]
 }
 
