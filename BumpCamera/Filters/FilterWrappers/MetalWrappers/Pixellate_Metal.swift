@@ -249,26 +249,7 @@ class Pixellate_Metal: FilterParent, Renderer
         
         let Start = CACurrentMediaTime()
         var CgImage = Image.cgImage
-        #if true
         CgImage = AdjustForMonochrome(Image: CgImage!)
-        #else
-        let ImageColorspace = CgImage?.colorSpace
-        //Handle sneaky grayscale images.
-        if ImageColorspace?.model == CGColorSpaceModel.monochrome
-        {
-            let NewColorSpace = CGColorSpaceCreateDeviceRGB()
-            let NewBMInfo = CGBitmapInfo(rawValue: CGImageAlphaInfo.noneSkipLast.rawValue)
-            let IWidth: Int = Int((CgImage?.width)!)
-            let IHeight: Int = Int((CgImage?.height)!)
-            var RawData = [UInt8](repeating: 0, count: Int(IWidth * IHeight * 4))
-            let GContext = CGContext(data: &RawData, width: IWidth, height: IHeight,
-                                     bitsPerComponent: 8, bytesPerRow: 4 * IWidth,
-                                     space: NewColorSpace, bitmapInfo: NewBMInfo.rawValue)
-            let ImageRect = CGRect(x: 0, y: 0, width: IWidth, height: IHeight)
-            GContext!.draw(CgImage!, in: ImageRect)
-            CgImage = GContext!.makeImage()
-        }
-        #endif
         let ImageWidth: Int = (CgImage?.width)!
         let ImageHeight: Int = (CgImage?.height)!
         var RawData = [UInt8](repeating: 0, count: Int(ImageWidth * ImageHeight * 4))
