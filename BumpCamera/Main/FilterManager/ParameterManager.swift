@@ -689,7 +689,7 @@ class ParameterManager
     ///   - Raw: The raw data to convert.
     ///   - FromType: Determines the target type.
     /// - Returns: The converted value cast to Any?
-    private static func ConvertToAny(_ Raw: String, FromType: FilterManager.InputTypes) -> Any?
+    public static func ConvertToAny(_ Raw: String, FromType: FilterManager.InputTypes) -> Any?
     {
         if Raw.isEmpty
         {
