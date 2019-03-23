@@ -93,18 +93,16 @@ extension FilterManager
         case MPSErode = 66
         case MPSLaplacian = 67
         case Combined4 = 68
+        case AlphaBlend = 69
+        case GradientToAlpha = 70
+        case HalfAndHalf = 71
+        case MPSEmboss = 72
+        case Convolution = 73
+        case ConvolutionEmboss = 74
         case NotSet = 10000
     }
     
     /// Logical groups of filters.
-    ///
-    /// - Standard: Standard iOS filters.
-    /// - Combined: Combination of standard filters.
-    /// - Bumpy: Bumpy, eg, pseudo-3D filters.
-    /// - Delta: Filters that show delta values between sequences (eg, videos).
-    /// - Colors: Filters that show colors in unstandard ways.
-    /// - Tiles: Filters related to distortions.
-    /// - NotSet: Used to indicate no group set.
     enum FilterGroups: Int
     {
         case Standard = 0
@@ -121,6 +119,7 @@ extension FilterManager
         case Measuration = 11
         case Favorites = 12
         case FiveStar = 13
+        case Edges = 14
         case NotSet = 10000
     }
     
@@ -320,6 +319,22 @@ extension FilterManager
         case MaskTolerance = 178
         case LockDimensions = 179
         case Bias = 180
+        case GradientOrientation = 181
+        case EmbossType = 182
+        case ConvolutionWidth = 183
+        case ConvolutionHeight = 184
+        case ConvolutionKernel = 185
+        case CurrentKernelIndex = 186
+        case HaHBlending = 187
+        case HaHOrientation = 188
+        case HaHTopFilterBlob = 189
+        case HaHBottomFilterBlob = 190
+        case HaHLeftFilterBlob = 191
+        case HaHRightFilterBlob = 192
+        case HaHLeftFilter = 193
+        case HaHRightFilter = 194
+        case HaHTopFilter = 195
+        case HaHBottomFilter = 196
         case NoField = 10000
     }
     
