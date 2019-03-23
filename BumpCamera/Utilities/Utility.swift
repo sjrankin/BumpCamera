@@ -16,6 +16,40 @@ class Utility
     /// For accessing user-set settings.
     static let _Settings = UserDefaults.standard
     
+    /// Create a name-value pair string. The name and value are separated by an equal sign.
+    ///
+    /// - Parameters:
+    ///   - Name: The name part.
+    ///   - Value: The value part. If the value contains `"` characters, it should be processed
+    ///            by `Utility.MakeSpecialQuotedString` before calling this function.
+    /// - Returns: String in the form Name="Value".
+    public static func MakeNVP(Name: String, Value: String) -> String
+    {
+        return "\(Name)=\"\(Value)\""
+    }
+    
+    /// Converts all occurrences of a `"` character in the passed string to something this is not likely
+    /// to be found in the string (an Egyptian heiroglyphics eye - 𓂀).
+    ///
+    /// - Parameter Raw: The string to potentially modify.
+    /// - Returns: Potentially modified string. If no changes were needed, the string is returned as is.
+    public static func MakeSpecialQuotedString(_ Raw: String) -> String
+    {
+        let Final = Raw.replacingOccurrences(of: "\"", with: "\u{13080}")
+        return Final
+    }
+    
+    /// Removes the special "quote" string (an Egyptian heiroglyphic eye - 𓂀) from the passed string and replaces them
+    /// with a `"` character, undoing what `Utility.MakeSpecialQuotedString` did.
+    ///
+    /// - Parameter From: The string to convert back to normalcy.
+    /// - Returns: String with strange quotation marks changed back to normal quotation marks.
+    public static func RemoveSpecialQuotes(_ From: String) -> String
+    {
+        let Final = From.replacingOccurrences(of: "\u{13080}", with: "\"")
+        return Final
+    }
+    
     /// Returns the physical size of the passed string.
     ///
     /// - Parameters:
