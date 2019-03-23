@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14490.68" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="KuD-MM-S97">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14490.49"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--Emboss Settings-->
+        <scene sceneID="vMQ-HD-ELr">
+            <objects>
+                <tableViewController id="h3h-jr-kcc" customClass="MPSEmbossSettingsUICode" customModule="BumpCamera" customModuleProvider="target" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="static" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" id="VrM-5P-GRL">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <sections>
+                            <tableViewSection id="fcW-Bx-9ta">
+                                <cells>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" rowHeight="95" id="doi-76-fBm">
+                                        <rect key="frame" x="0.0" y="0.0" width="375" height="95"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="doi-76-fBm" id="FfV-99-qLe">
+                                            <rect key="frame" x="0.0" y="0.0" width="375" height="94.5"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Emboss type" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="o2m-mY-IX0">
+                                                    <rect key="frame" x="16" y="11" width="100" height="21"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="height" constant="21" id="WvJ-Q5-n0v"/>
+                                                    </constraints>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="Vbh-Wt-vjF">
+                                                    <rect key="frame" x="16" y="46" width="343" height="29"/>
+                                                    <segments>
+                                                        <segment title="Normal"/>
+                                                        <segment title="45°"/>
+                                                        <segment title="Left-Right"/>
+                                                        <segment title="Intense"/>
+                                                    </segments>
+                                                    <connections>
+                                                        <action selector="HandleEmbossTypeChanged:" destination="h3h-jr-kcc" eventType="primaryActionTriggered" id="027-u6-rvf"/>
+                                                    </connections>
+                                                </segmentedControl>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstItem="o2m-mY-IX0" firstAttribute="leading" secondItem="FfV-99-qLe" secondAttribute="leadingMargin" id="Scn-gm-7ke"/>
+                                                <constraint firstItem="Vbh-Wt-vjF" firstAttribute="trailing" secondItem="FfV-99-qLe" secondAttribute="trailingMargin" id="gGW-2O-aJ5"/>
+                                                <constraint firstItem="o2m-mY-IX0" firstAttribute="leading" secondItem="Vbh-Wt-vjF" secondAttribute="leading" id="lQH-AQ-evx"/>
+                                                <constraint firstItem="Vbh-Wt-vjF" firstAttribute="top" secondItem="o2m-mY-IX0" secondAttribute="bottom" constant="14" id="qKw-vb-lJ3"/>
+                                                <constraint firstItem="o2m-mY-IX0" firstAttribute="top" secondItem="FfV-99-qLe" secondAttribute="topMargin" id="rG2-f8-7J8"/>
+                                                <constraint firstAttribute="bottomMargin" secondItem="Vbh-Wt-vjF" secondAttribute="bottom" constant="10" id="vgz-ci-EPg"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
+                                </cells>
+                            </tableViewSection>
+                        </sections>
+                        <connections>
+                            <outlet property="dataSource" destination="h3h-jr-kcc" id="I6H-RJ-46t"/>
+                            <outlet property="delegate" destination="h3h-jr-kcc" id="FJJ-Fz-83S"/>
+                        </connections>
+                    </tableView>
+                    <toolbarItems>
+                        <barButtonItem title="Placeholder" id="cA8-xj-fEZ"/>
+                    </toolbarItems>
+                    <navigationItem key="navigationItem" title="Emboss Settings" id="4bi-t3-FQX"/>
+                    <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
+                    <connections>
+                        <outlet property="EmbossTypeSegment" destination="Vbh-Wt-vjF" id="aTr-Vn-jnV"/>
+                    </connections>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="kBC-OZ-yNB" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-80.799999999999997" y="174.96251874062969"/>
+        </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="4m7-je-nyt">
+            <objects>
+                <navigationController storyboardIdentifier="MPSEmbossSettingsUI" toolbarHidden="NO" id="KuD-MM-S97" sceneMemberID="viewController">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="IN7-Uj-mpB">
+                        <rect key="frame" x="0.0" y="20" width="375" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <toolbar key="toolbar" opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="sMU-yX-n3k">
+                        <rect key="frame" x="0.0" y="623" width="375" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </toolbar>
+                    <connections>
+                        <segue destination="h3h-jr-kcc" kind="relationship" relationship="rootViewController" id="QjO-ib-gDl"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="rRB-5G-OJE" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-999" y="175"/>
+        </scene>
+    </scenes>
+</document>
