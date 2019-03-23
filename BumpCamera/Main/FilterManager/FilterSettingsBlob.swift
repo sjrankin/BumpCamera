@@ -66,4 +66,63 @@ class FilterSettingsBlob
         }
         SettingMap[SettingField] = NewValue
     }
+    
+    /// Serializes the contents of the passed instance of a FilterSettingsBlob into an
+    /// XML-like string.
+    ///
+    /// - Parameter Instance: The instance whose values will be serialized.
+    /// - Returns: XML-like string of the contents of the passed instance. This string
+    ///            can be passed to `Deserialize` to create a new FilterSettingsBlob
+    ///            instance.
+    public static func Serialize(_ Instance: FilterSettingsBlob) -> String
+    {
+        var Ser = ""
+        for (Field, SomeValue) in Instance.SettingMap
+        {
+            if let InputType = FilterManager.FieldTypeForInputField(Field)
+            {
+                var Result = ParameterManager.ConvertAny(SomeValue, OfType: InputType)
+                Result = Utility.MakeSpecialQuotedString(Result)
+                let SXr = Utility.MakeNVP(Name: "\(Field.rawValue)", Value: Result)
+                Ser = Ser + SXr + "\u{1012}"
+            }
+        }
+        Ser.removeLast(1)
+        return Ser
+    }
+    
+    /// Deserialize the passed string (which needs to have been serialized by
+    /// `FilterSettingsBlob.Serialize` first) and return a new instance of a
+    /// FilterSettingsBlob populated with the passed serialized string.
+    ///
+    /// - Parameter Serialized: The serialized string (which should have been serialized
+    ///                         by `FilterSettingsBlob.Serialize`).
+    /// - Returns: New instance of a FilterSettingsBlob populated by data from the passed
+    ///            string. On failure, nil is returned.
+    public static func Deserialize(_ Serialized: String) -> FilterSettingsBlob?
+    {
+        let Parts = Serialized.split(separator: "\u{1012}")
+        let NewBlob = FilterSettingsBlob()
+        for Part in Parts
+        {
+            let Serialized = String(Part)
+            let SettingParts = Serialized.split(separator: "=")
+            if SettingParts.count != 2
+            {
+                continue
+            }
+            let RawData = Utility.RemoveSpecialQuotes(String(SettingParts[1]))
+            let RawFieldIndex = String(SettingParts[0])
+            if let FieldIndex = Int(RawFieldIndex)
+            {
+                if let Field = FilterManager.InputFields(rawValue: FieldIndex)
+                {
+                    let InputType = FilterManager.FieldTypeForInputField(Field)!
+                    let AnyValue = ParameterManager.ConvertToAny(RawData, FromType: InputType)
+                    NewBlob.AddSetting(Field, AnyValue)
+                }
+            }
+        }
+        return NewBlob
+    }
 }
