@@ -48,7 +48,7 @@ class FilterManager
             .FiveStar: [],
             .Standard: [(.PassThrough, 0), (.LineScreen, 4), (.DotScreen, 5), (.CircularScreen, 7),
                         (.HatchScreen, 6), (.CircleAndLines, 8), (.CMYKHalftone, 9), (.Pixellate, 10), (.Comic, 2),
-                         (.Posterize, 12), (.Pointillize, 11)],
+                        (.Posterize, 12), (.Pointillize, 11)],
             .Combined: [(.Combined4, 0), (.HalfAndHalf, 1)],
             .Effects: [(.PixellateMetal, 0), (.ShapePixellate, 1), (.MPSLaplacian, 2), (.Kuwahara, 3),
                        (.Silhouette, 4), (.Sobel, 5), (.MPSDilate, 6), (.MPSErode, 7), (.BayerDecode, 8)],
@@ -56,7 +56,7 @@ class FilterManager
                             (.TransferEffect, 6), (.SepiaTone, 7), (.Thermal, 8), (.TemperatureAndTint, 9),
                             (.Tonal, 10),],
             .Colors: [(.HueAdjust, 0), (.HSBAdjust, 1), (.Solarize, 2), (.ChannelMixer, 3), (.ChannelMangler, 4),
-                      (.ColorInversion, 5), (.ColorMap, 6), (.ColorMap2, 7),
+                      (.ColorInversion, 5), (.MPSMedian, 6), (.ColorMap2, 7),
                       (.DesaturateColors, 8), (.Threshold, 9), (.MonochromeColor, 10), (.FalseColor, 11),
                       (.Monochrome, 12), (.PaletteShifting, 13)],
             .Gray: [(.GrayscaleKernel, 0), (.Dither, 1)],
@@ -139,6 +139,8 @@ class FilterManager
             .MPSEmboss: (MPSEmboss.ID(), MPSEmboss.FilterKernel, MPSEmboss.Title()),
             .Convolution: (Convolution.ID(), Convolution.FilterKernel, Convolution.Title()),
             .ConvolutionEmboss: (ConvolutionEmboss.ID(), ConvolutionEmboss.FilterKernel, ConvolutionEmboss.Title()),
+            .Median: (Median.ID(), Median.FilterKernel, Median.Title()),
+            .MPSMedian: (MPSMedian.ID(), MPSMedian.FilterKernel, MPSMedian.Title()),
     ]
     
     /// Determines if the specified filter supports the specified target type. Not all filters support all targets - slow
@@ -251,6 +253,8 @@ class FilterManager
             .MPSEmboss: MPSEmboss.FilterTarget(),
             .Convolution: Convolution.FilterTarget(),
             .ConvolutionEmboss: ConvolutionEmboss.FilterTarget(),
+            .Median: Median.FilterTarget(),
+            .MPSMedian: MPSMedian.FilterTarget(),
     ]
     
     /// Load all of the filter classes into the filter manager.
@@ -383,6 +387,8 @@ class FilterManager
         ParameterCount![.MPSEmboss] = MPSEmboss.SupportedFields().count
         ParameterCount![.Convolution] = Convolution.SupportedFields().count
         ParameterCount![.ConvolutionEmboss] = ConvolutionEmboss.SupportedFields().count
+        ParameterCount![.Median] = Median.SupportedFields().count
+        ParameterCount![.MPSMedian] = MPSMedian.SupportedFields().count
     }
     
     private static var ParameterCount: [FilterManager.FilterTypes: Int]? = nil
@@ -472,6 +478,8 @@ class FilterManager
         StoryboardList![.MPSEmboss] = MPSEmboss.SettingsStoryboard()
         StoryboardList![.Convolution] = Convolution.SettingsStoryboard()
         StoryboardList![.ConvolutionEmboss] = ConvolutionEmboss.SettingsStoryboard()
+        StoryboardList![.Median] = Median.SettingsStoryboard()
+        StoryboardList![.MPSMedian] = MPSMedian.SettingsStoryboard()
     }
     
     private static var StoryboardList: [FilterTypes: String?]? = nil
@@ -821,6 +829,12 @@ class FilterManager
         case .ConvolutionEmboss:
             return ConvolutionEmboss()
             
+        case .Median:
+            return Median()
+            
+        case .MPSMedian:
+            return MPSMedian()
+            
         default:
             return nil
         }
@@ -1045,14 +1059,14 @@ class FilterManager
             .Standard: ("Standard", 0),
             .Combined: ("Combined", 1),
             .Colors: ("Colors", 2),
-                        .Gray: ("Mono- chrome", 3),
+            .Gray: ("Mono- chrome", 3),
             .Effects: ("Effects", 4),
-                        .Edges: ("Edges", 5),
-                                    .PhotoEffects: ("Photo Effects", 6),
-                                       .Tiles: ("Distortion", 7),
+            .Edges: ("Edges", 5),
+            .PhotoEffects: ("Photo Effects", 6),
+            .Tiles: ("Distortion", 7),
             .Bumpy: ("3D", 8),
             .Motion: ("Motion", 9),
-             .Blur: ("Blur", 10),
+            .Blur: ("Blur", 10),
             .Generator: ("Generators", 11),
             .Measuration: ("Measure", 100),
     ]
@@ -1269,6 +1283,8 @@ class FilterManager
             .MPSEmboss: "Emboss",
             .Convolution: "Convolution",
             .ConvolutionEmboss: "Emboss",
+            .Median: "Median",
+            .MPSMedian: "Median",
     ]
     
     public static func GetFilterTitle(_ Filter: FilterTypes) -> String?
@@ -1357,6 +1373,8 @@ class FilterManager
             .MPSEmboss: true,
             .Convolution: false,
             .ConvolutionEmboss: true,
+            .Median: true,
+            .MPSMedian: true,
     ]
     
     /// Determines if the given filter type is implemented.
@@ -1629,6 +1647,10 @@ class FilterManager
             .HaHRightFilter: .IntType,
             .HaHTopFilter: .IntType,
             .HaHBottomFilter: .IntType,
+            .ConvolutionBias: .DoubleType,
+            .ConvolutionFactor: .DoubleType,
+            .MedianSize: .IntType,
+            .MedianSwitchOn: .IntType,
     ]
     
     /// Maps fields to names used to store field data in user settings.
@@ -1831,6 +1853,10 @@ class FilterManager
             .HaHRightFilter: "_HaHRightFilter",
             .HaHTopFilter: "_HaHTopFilter",
             .HaHBottomFilter: "_HaHBottomFilter",
+            .ConvolutionBias: "_ConvolutionBias",
+            .ConvolutionFactor: "_ConvolutionFactor",
+            .MedianSize: "_MedianSize",
+            .MedianSwitchOn: "_MedianSwitchOn",
     ]
 }
 
