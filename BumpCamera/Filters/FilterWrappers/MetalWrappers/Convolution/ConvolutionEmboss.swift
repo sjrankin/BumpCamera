@@ -104,6 +104,8 @@ class ConvolutionEmboss: FilterParent, Renderer
             return nil
         }
         let Blob = MakeFilterBlob(For: self)
+        Blob.AddSetting(.ConvolutionBias, ParameterManager.GetDouble(From: ID(), Field: .ConvolutionBias, Default: 0.0))
+        Blob.AddSetting(.ConvolutionFactor, ParameterManager.GetDouble(From: ID(), Field: .ConvolutionFactor, Default: 1.0))
         Blob.AddSetting(.ConvolutionWidth, ParameterManager.GetInt(From: ID(), Field: .ConvolutionWidth, Default: 3))
         Blob.AddSetting(.ConvolutionHeight, ParameterManager.GetInt(From: ID(), Field: .ConvolutionHeight, Default: 3))
         Blob.AddSetting(.ConvolutionKernel, ParameterManager.GetString(From: ID(), Field: .ConvolutionKernel, Default: ""))
@@ -146,6 +148,8 @@ class ConvolutionEmboss: FilterParent, Renderer
             return nil
         }
         let Blob = MakeFilterBlob(For: self)
+        Blob.AddSetting(.ConvolutionBias, ParameterManager.GetDouble(From: ID(), Field: .ConvolutionBias, Default: 0.0))
+        Blob.AddSetting(.ConvolutionFactor, ParameterManager.GetDouble(From: ID(), Field: .ConvolutionFactor, Default: 1.0))
         Blob.AddSetting(.ConvolutionWidth, ParameterManager.GetInt(From: ID(), Field: .ConvolutionWidth, Default: 3))
         Blob.AddSetting(.ConvolutionHeight, ParameterManager.GetInt(From: ID(), Field: .ConvolutionHeight, Default: 3))
         Blob.AddSetting(.ConvolutionKernel, ParameterManager.GetString(From: ID(), Field: .ConvolutionKernel, Default: ""))
@@ -177,29 +181,6 @@ class ConvolutionEmboss: FilterParent, Renderer
         }
     }
     
-    /// Returns the generated image. If the filter does not support generated images nil is returned.
-    ///
-    /// - Returns: Nil is always returned.
-    func Generate() -> CIImage?
-    {
-        return nil
-    }
-    
-    func Query(PixelBuffer: CVPixelBuffer, Parameters: [String: Any]) -> [String: Any]?
-    {
-        return nil
-    }
-    
-    func Query(Image: UIImage, Parameters: [String: Any]) -> [String: Any]?
-    {
-        return nil
-    }
-    
-    func Query(Image: CIImage, Parameters: [String: Any]) -> [String: Any]?
-    {
-        return nil
-    }
-    
     var LastUIImage: UIImage? = nil
     var LastCIImage: CIImage? = nil
     
@@ -219,6 +200,12 @@ class ConvolutionEmboss: FilterParent, Renderer
     {
         switch Field
         {
+        case .ConvolutionFactor:
+            return (.DoubleType, 1.0 as Any?)
+            
+        case .ConvolutionBias:
+            return (.DoubleType, 0.0 as Any?)
+            
         case .ConvolutionWidth:
             return (.IntType, 3 as Any?)
             
@@ -256,6 +243,7 @@ class ConvolutionEmboss: FilterParent, Renderer
     public static func SupportedFields() -> [FilterManager.InputFields]
     {
         return [.ConvolutionWidth, .ConvolutionHeight, .ConvolutionKernel, .CurrentKernelIndex,
+                .ConvolutionBias, .ConvolutionFactor,
                 .RenderImageCount, .CumulativeImageRenderDuration, .RenderLiveCount, .CumulativeLiveRenderDuration]
     }
     
