@@ -66,11 +66,13 @@ class MainUIViewer: UIViewController,
         
         StartUpTime = Date()
         
+        let NC = NetComm()
+        
         HaveExternalDisplay = FindExternalDisplay()
         print("Found external display: \(HaveExternalDisplay)")
         if HaveExternalDisplay
-{
-    ConnectToExternalDisplay(ExScreen: ExternalScreen!)
+        {
+            ConnectToExternalDisplay(ExScreen: ExternalScreen!)
         }
         
         NotificationCenter.default.addObserver(forName: UIScreen.didConnectNotification,
@@ -169,7 +171,7 @@ class MainUIViewer: UIViewController,
             ShowFatalErrorMessage(Title: "Directory Error", Message: "Error getting or setting the debug directory. Unable to continue.")
         }
         #endif
-                ActivityLog.Initialize(TimeStamp: Date())
+        ActivityLog.Initialize(TimeStamp: Date())
         
         if _Settings.bool(forKey: "ClearRuntimeAtStartup")
         {
@@ -269,7 +271,7 @@ class MainUIViewer: UIViewController,
         if _Settings.bool(forKey: "EnableHeartBeat")
         {
             //DispatchSourceTimer
-        ActivityLog.LogMessage("Started heartbeat timer.")
+            ActivityLog.LogMessage("Started heartbeat timer.")
             let Interval = _Settings.integer(forKey: "HeartBeatInterval")
             if Interval <= 0
             {
@@ -857,12 +859,12 @@ class MainUIViewer: UIViewController,
     let HideOffset: CGFloat = 10
     var AvailableBottom: CGFloat = 0
     let ModeIconTable: [CameraModeTypes: [String]] =
-    [
-        CameraModeTypes.LiveView: ["", "", "", ""],
-        CameraModeTypes.GIF: ["", "", "", ""],
-        CameraModeTypes.Video: ["", "", "", ""],
-        CameraModeTypes.Editor: ["", "", "", ""],
-        CameraModeTypes.OnTheFly: ["", "", "", ""],
+        [
+            CameraModeTypes.LiveView: ["", "", "", ""],
+            CameraModeTypes.GIF: ["", "", "", ""],
+            CameraModeTypes.Video: ["", "", "", ""],
+            CameraModeTypes.Editor: ["", "", "", ""],
+            CameraModeTypes.OnTheFly: ["", "", "", ""],
     ]
     var CurrentCameraMode: CameraModeTypes = .LiveView
 }
