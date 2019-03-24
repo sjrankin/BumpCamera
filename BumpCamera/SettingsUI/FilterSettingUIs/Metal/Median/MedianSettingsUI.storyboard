@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14490.68" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="TKZ-zb-wdI">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14490.49"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--Median Settings-->
+        <scene sceneID="WaM-sC-4FH">
+            <objects>
+                <tableViewController id="0hc-bT-wFy" customClass="MedianSettingsUICode" customModule="BumpCamera" customModuleProvider="target" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="static" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" id="0xl-iO-nrE">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <sections>
+                            <tableViewSection id="ZHb-Ha-8ff">
+                                <cells>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" rowHeight="140" id="tyd-v0-LzY">
+                                        <rect key="frame" x="0.0" y="0.0" width="375" height="140"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="tyd-v0-LzY" id="QGe-9y-txw">
+                                            <rect key="frame" x="0.0" y="0.0" width="375" height="139.5"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Median channel" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="jRv-8N-fdk">
+                                                    <rect key="frame" x="16" y="11" width="121" height="21"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="height" constant="21" id="IKt-cQ-dGG"/>
+                                                    </constraints>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="V7l-hc-QDz">
+                                                    <rect key="frame" x="16" y="44" width="343" height="28"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="height" constant="27" id="MUX-QT-nae"/>
+                                                    </constraints>
+                                                    <segments>
+                                                        <segment title="Hue"/>
+                                                        <segment title="Saturation"/>
+                                                        <segment title="Brightness"/>
+                                                    </segments>
+                                                    <connections>
+                                                        <action selector="HandleMedianChannelChanged:" destination="0hc-bT-wFy" eventType="primaryActionTriggered" id="st3-Ga-3YV"/>
+                                                    </connections>
+                                                </segmentedControl>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Determines the value to use to determine the median pixel." textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="axH-yo-UUp">
+                                                    <rect key="frame" x="16" y="82" width="343" height="44"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                                    <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstItem="jRv-8N-fdk" firstAttribute="leading" secondItem="V7l-hc-QDz" secondAttribute="leading" id="6jf-6I-3Kg"/>
+                                                <constraint firstItem="axH-yo-UUp" firstAttribute="top" secondItem="V7l-hc-QDz" secondAttribute="bottom" constant="11" id="9iE-mr-OHs"/>
+                                                <constraint firstItem="V7l-hc-QDz" firstAttribute="trailing" secondItem="axH-yo-UUp" secondAttribute="trailing" id="Ge3-93-HOg"/>
+                                                <constraint firstItem="V7l-hc-QDz" firstAttribute="trailing" secondItem="QGe-9y-txw" secondAttribute="trailingMargin" id="n95-XQ-QLl"/>
+                                                <constraint firstAttribute="bottomMargin" secondItem="axH-yo-UUp" secondAttribute="bottom" constant="3" id="o5P-uE-sF7"/>
+                                                <constraint firstItem="V7l-hc-QDz" firstAttribute="leading" secondItem="axH-yo-UUp" secondAttribute="leading" id="oEo-IE-Vat"/>
+                                                <constraint firstItem="V7l-hc-QDz" firstAttribute="top" secondItem="jRv-8N-fdk" secondAttribute="bottom" constant="12" id="wZl-Wk-9Xa"/>
+                                                <constraint firstItem="jRv-8N-fdk" firstAttribute="top" secondItem="QGe-9y-txw" secondAttribute="topMargin" id="xso-Gz-Khd"/>
+                                                <constraint firstItem="jRv-8N-fdk" firstAttribute="leading" secondItem="QGe-9y-txw" secondAttribute="leadingMargin" id="zIC-rH-Mfa"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" rowHeight="140" id="506-Fp-Q6J">
+                                        <rect key="frame" x="0.0" y="140" width="375" height="140"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="506-Fp-Q6J" id="uct-yJ-H9b">
+                                            <rect key="frame" x="0.0" y="0.0" width="375" height="139.5"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Median window size" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="nff-wM-rTv">
+                                                    <rect key="frame" x="16" y="11" width="154" height="21"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="paF-Cm-QLM">
+                                                    <rect key="frame" x="16" y="44" width="339" height="29"/>
+                                                    <segments>
+                                                        <segment title="3x3"/>
+                                                        <segment title="5x5"/>
+                                                        <segment title="7x7"/>
+                                                        <segment title="9x9"/>
+                                                    </segments>
+                                                    <connections>
+                                                        <action selector="HandleMedianWindowChanged:" destination="0hc-bT-wFy" eventType="primaryActionTriggered" id="wMH-Pd-xv2"/>
+                                                    </connections>
+                                                </segmentedControl>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="The size of the window used to find the median pixel. Bigger windows slow down the filter." textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="oGU-p6-KXJ">
+                                                    <rect key="frame" x="16" y="85" width="339" height="44"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="height" constant="44" id="E8d-Ut-rfd"/>
+                                                    </constraints>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                                    <color key="textColor" white="0.33333333329999998" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstItem="oGU-p6-KXJ" firstAttribute="bottom" secondItem="uct-yJ-H9b" secondAttribute="bottomMargin" id="2Xs-Wr-1Z4"/>
+                                                <constraint firstItem="nff-wM-rTv" firstAttribute="leading" secondItem="paF-Cm-QLM" secondAttribute="leading" id="8hU-mN-d8q"/>
+                                                <constraint firstItem="oGU-p6-KXJ" firstAttribute="top" secondItem="paF-Cm-QLM" secondAttribute="bottom" constant="13" id="Euw-RA-9Ic"/>
+                                                <constraint firstItem="paF-Cm-QLM" firstAttribute="top" secondItem="nff-wM-rTv" secondAttribute="bottom" constant="12" id="FvS-M7-l8N"/>
+                                                <constraint firstAttribute="trailing" secondItem="oGU-p6-KXJ" secondAttribute="trailing" constant="20" id="Hv4-7v-uWg"/>
+                                                <constraint firstItem="nff-wM-rTv" firstAttribute="top" secondItem="uct-yJ-H9b" secondAttribute="topMargin" id="Ltu-Tc-oXg"/>
+                                                <constraint firstItem="nff-wM-rTv" firstAttribute="leading" secondItem="uct-yJ-H9b" secondAttribute="leadingMargin" id="jif-75-WZw"/>
+                                                <constraint firstItem="nff-wM-rTv" firstAttribute="leading" secondItem="oGU-p6-KXJ" secondAttribute="leading" id="rnG-EZ-ob2"/>
+                                                <constraint firstAttribute="trailing" secondItem="paF-Cm-QLM" secondAttribute="trailing" constant="20" id="u8a-Ho-bbb"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
+                                </cells>
+                            </tableViewSection>
+                        </sections>
+                        <connections>
+                            <outlet property="dataSource" destination="0hc-bT-wFy" id="zCG-ou-Pmw"/>
+                            <outlet property="delegate" destination="0hc-bT-wFy" id="HQa-Uu-ngF"/>
+                        </connections>
+                    </tableView>
+                    <toolbarItems>
+                        <barButtonItem title="Placeholder" id="7aP-jt-sn2"/>
+                    </toolbarItems>
+                    <navigationItem key="navigationItem" title="Median Settings" id="0iv-7M-Yop"/>
+                    <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
+                    <connections>
+                        <outlet property="MedianChannelSegment" destination="V7l-hc-QDz" id="3nC-5l-dx2"/>
+                        <outlet property="MedianWindowSegment" destination="paF-Cm-QLM" id="XsX-2C-QmH"/>
+                    </connections>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="aOO-Cv-EWX" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="405.60000000000002" y="174.96251874062969"/>
+        </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="CaR-hh-7PJ">
+            <objects>
+                <navigationController storyboardIdentifier="MedianSettingsUI" toolbarHidden="NO" id="TKZ-zb-wdI" sceneMemberID="viewController">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="Qnb-Iy-zne">
+                        <rect key="frame" x="0.0" y="20" width="375" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <toolbar key="toolbar" opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="IVJ-yd-JpL">
+                        <rect key="frame" x="0.0" y="623" width="375" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </toolbar>
+                    <connections>
+                        <segue destination="0hc-bT-wFy" kind="relationship" relationship="rootViewController" id="J52-Bq-8Uc"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="kyN-ZI-q9E" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-513" y="175"/>
+        </scene>
+    </scenes>
+</document>
