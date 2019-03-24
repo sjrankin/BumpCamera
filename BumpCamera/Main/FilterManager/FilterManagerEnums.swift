@@ -99,6 +99,8 @@ extension FilterManager
         case MPSEmboss = 72
         case Convolution = 73
         case ConvolutionEmboss = 74
+        case Median = 75
+        case MPSMedian = 76
         case NotSet = 10000
     }
     
@@ -335,6 +337,10 @@ extension FilterManager
         case HaHRightFilter = 194
         case HaHTopFilter = 195
         case HaHBottomFilter = 196
+        case ConvolutionBias = 197
+        case ConvolutionFactor = 198
+        case MedianSwitchOn = 199
+        case MedianSize = 200
         case NoField = 10000
     }
     
