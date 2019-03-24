@@ -15,4 +15,6 @@ struct ConvolveParameters
     let Height: simd_int1
     let KernelCenterX: simd_int1
     let KernelCenterY: simd_int1
+    let Factor: simd_float1
+    let Bias: simd_float1
 }
