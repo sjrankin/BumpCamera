@@ -16,10 +16,10 @@ struct ConvolveParameters
     int Height;
     int KernelCenterX;
     int KernelCenterY;
+    float Factor;
+    float Bias;
 };
 
-
-//http://www.songho.ca/dsp/convolution/convolution.html
 kernel void Convolve(texture2d<float, access::read> InTexture [[texture(0)]],
                      texture2d<float, access::write> OutTexture [[texture(1)]],
                      constant ConvolveParameters &Convolve [[buffer(0)]],
@@ -37,7 +37,7 @@ kernel void Convolve(texture2d<float, access::read> InTexture [[texture(0)]],
     float Green = 0.0;
     float Blue = 0.0;
     float Sum = 0.0;
-
+    
     int KHStart = gid.x - Convolve.KernelCenterX;
     if (KHStart < 0)
         {
@@ -73,37 +73,14 @@ kernel void Convolve(texture2d<float, access::read> InTexture [[texture(0)]],
             }
         }
     
-    /*
-    for (int Y = 0; Y < Convolve.Height; Y++)
-        {
-        int RowIndex = Convolve.Height - 1 - Y;
-        for (int X = 0; X < Convolve.Width; X++)
-            {
-            int ColumnIndex = Convolve.Width - 1 - X;
-            int YTest = gid.y + (Convolve.KernelCenterY - RowIndex);
-            int XTest = gid.x + (Convolve.KernelCenterX - ColumnIndex);
-            if (YTest >= 0 && YTest < ImageHeight && XTest >= 0 && XTest < ImageWidth)
-                {
-                float4 KColor = InTexture.read(uint2(YTest, XTest));
-                int KernelIndex = (YTest * Convolve.Width) + XTest;
-                float Multiplier = Element[KernelIndex];
-                ToCPU[8] = Multiplier;
-                float KRed = KColor.r;
-                float KGreen = KColor.g;
-                float KBlue = KColor.b;
-                Red = Red + (KRed * Multiplier);
-                Green = Green + (KGreen * Multiplier);
-                Blue = Blue + (KBlue * Multiplier);
-                }
-            }
-        }
-     */
-
-    float KernelSize = Convolve.Width * Convolve.Height;
+    //float KernelSize = Convolve.Width * Convolve.Height;
     Sum = Sum == 0 ? 1 : Sum;
-    Red = Red / Sum;//KernelSize;
-    Green = Green / Sum;//KernelSize;
-    Blue = Blue / Sum;//KernelSize;
-
+    Red = Red / Sum;
+    Red = min(max(Red * Convolve.Factor + Convolve.Bias, 0.0), 1.0);
+    Green = Green / Sum;
+    Green = min(max(Green * Convolve.Factor + Convolve.Bias, 0.0), 1.0);
+    Blue = Blue / Sum;
+    Blue = min(max(Blue * Convolve.Factor + Convolve.Bias, 0.0), 1.0);
+    
     OutTexture.write(float4(Red, Green, Blue, 1.0), gid);
 }
