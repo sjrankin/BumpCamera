@@ -179,12 +179,16 @@ class Convolution: FilterParent, Renderer
         
         let KWidth = ParameterManager.GetInt(Blob: AltSettings, Field: .ConvolutionWidth, Default: 3)
                 let KHeight = ParameterManager.GetInt(Blob: AltSettings, Field: .ConvolutionHeight, Default: 3)
+        let KFactor = ParameterManager.GetDouble(Blob: AltSettings, Field: .ConvolutionFactor, Default: 1.0)
+        let KBias = ParameterManager.GetDouble(Blob: AltSettings, Field: .ConvolutionBias, Default: 0.0)
         let KCenterX = KWidth / 2
         let KCenterY = KHeight / 2
         let Parameter = ConvolveParameters(Width: simd_int1(KWidth),
                                            Height: simd_int1(KHeight),
                                            KernelCenterX: simd_int1(KCenterX),
-                                           KernelCenterY: simd_int1(KCenterY))
+                                           KernelCenterY: simd_int1(KCenterY),
+                                           Factor: simd_float1(KFactor),
+                                           Bias: simd_float1(KBias))
         let Parameters = [Parameter]
         ParameterBuffer = MetalDevice!.makeBuffer(length: MemoryLayout<ConvolveParameters>.stride, options: [])
         memcpy(ParameterBuffer.contents(), Parameters, MemoryLayout<ConvolveParameters>.stride)
@@ -336,12 +340,16 @@ class Convolution: FilterParent, Renderer
         
         let KWidth = ParameterManager.GetInt(Blob: AltSettings, Field: .ConvolutionWidth, Default: 3)
         let KHeight = ParameterManager.GetInt(Blob: AltSettings, Field: .ConvolutionHeight, Default: 3)
+        let KFactor = ParameterManager.GetDouble(Blob: AltSettings, Field: .ConvolutionFactor, Default: 1.0)
+        let KBias = ParameterManager.GetDouble(Blob: AltSettings, Field: .ConvolutionBias, Default: 0.0)
         let KCenterX = KWidth / 2
         let KCenterY = KHeight / 2
         let Parameter = ConvolveParameters(Width: simd_int1(KWidth),
                                            Height: simd_int1(KHeight),
                                            KernelCenterX: simd_int1(KCenterX),
-                                           KernelCenterY: simd_int1(KCenterY))
+                                           KernelCenterY: simd_int1(KCenterY),
+                                           Factor: simd_float1(KFactor),
+                                           Bias: simd_float1(KBias))
         let Parameters = [Parameter]
         ParameterBuffer = MetalDevice!.makeBuffer(length: MemoryLayout<ConvolveParameters>.stride, options: [])
         memcpy(ParameterBuffer.contents(), Parameters, MemoryLayout<ConvolveParameters>.stride)
@@ -474,33 +482,6 @@ class Convolution: FilterParent, Renderer
     {
         switch Field
         {
-        case .SilhouetteTrigger:
-            return (.IntType, 2 as Any?)
-            
-        case .SilhouetteColor:
-            return (.ColorType, UIColor.black as Any?)
-            
-        case .SHueThreshold:
-            return (.DoubleType, 0.5 as Any?)
-            
-        case .SHueRange:
-            return (.DoubleType, 0.05 as Any?)
-            
-        case .SSaturationThreshold:
-            return (.DoubleType, 0.5 as Any?)
-            
-        case .SSaturationRange:
-            return (.DoubleType, 0.05 as Any?)
-            
-        case .SBrightnessThreshold:
-            return (.DoubleType, 0.3 as Any?)
-            
-        case .SBrightnessRange:
-            return (.DoubleType, 0.0 as Any?)
-            
-        case .SGreaterThan:
-            return (.BoolType, false as Any?)
-            
         case .RenderImageCount:
             return (.IntType, 0 as Any?)
             
@@ -525,9 +506,7 @@ class Convolution: FilterParent, Renderer
     
     public static func SupportedFields() -> [FilterManager.InputFields]
     {
-        return [.SilhouetteTrigger, .SHueThreshold, .SHueRange, .SSaturationThreshold, .SSaturationRange,
-                .SBrightnessThreshold, .SBrightnessRange, .SGreaterThan, .SilhouetteColor,
-                .RenderImageCount, .CumulativeImageRenderDuration, .RenderLiveCount, .CumulativeLiveRenderDuration]
+        return [.RenderImageCount, .CumulativeImageRenderDuration, .RenderLiveCount, .CumulativeLiveRenderDuration]
     }
     
     func SettingsStoryboard() -> String?
