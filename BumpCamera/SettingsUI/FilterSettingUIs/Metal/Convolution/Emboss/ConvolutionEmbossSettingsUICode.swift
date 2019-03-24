@@ -26,52 +26,191 @@ class ConvolutionEmbossSettingsUICode: FilterSettingUIBase, UIPickerViewDelegate
     
     let KernelList: [(String, EmbossKernels)] =
         [
-            (EmbossKernels.Kernel1.rawValue, .Kernel1),
-            (EmbossKernels.Kernel2.rawValue, .Kernel2),
-            (EmbossKernels.Kernel3.rawValue, .Kernel3),
-            (EmbossKernels.Kernel4.rawValue, .Kernel4),
-            (EmbossKernels.Kernel5.rawValue, .Kernel5),
-            (EmbossKernels.Kernel6.rawValue, .Kernel6),
-            (EmbossKernels.Kernel7.rawValue, .Kernel7),
             (EmbossKernels.Identity.rawValue, .Identity),
+            (EmbossKernels.Outline.rawValue, .Outline),
+            (EmbossKernels.Emboss1.rawValue, .Emboss1),
+            (EmbossKernels.Emboss2.rawValue, .Emboss2),
+            (EmbossKernels.Emboss3.rawValue, .Emboss3),
+            (EmbossKernels.Emboss4.rawValue, .Emboss4),
+            (EmbossKernels.Emboss5.rawValue, .Emboss5),
+            (EmbossKernels.Emboss6.rawValue, .Emboss6),
+            (EmbossKernels.Emboss7.rawValue, .Emboss7),
+            (EmbossKernels.Emboss8.rawValue, .Emboss8),
+            (EmbossKernels.EmbossDN.rawValue, .EmbossDN),
+            (EmbossKernels.Edges.rawValue, .Edges),
+            (EmbossKernels.UnsharpMask.rawValue, .UnsharpMask),
+            (EmbossKernels.Sharpen.rawValue, .Sharpen),
+            (EmbossKernels.Sharpen3x3.rawValue, .Sharpen3x3),
+            (EmbossKernels.Sharpen5x5.rawValue, .Sharpen5x5),
+            (EmbossKernels.HighPass.rawValue, .HighPass),
+            (EmbossKernels.LowPass3x3.rawValue, .LowPass3x3),
+            (EmbossKernels.LowPass5x5.rawValue, .LowPass5x5),
+            (EmbossKernels.Gaussian3x3.rawValue, .Gaussian3x3),
+            (EmbossKernels.Gaussian5x5.rawValue, .Gaussian5x5),
+            (EmbossKernels.LeftSobel.rawValue, .LeftSobel),
+            (EmbossKernels.TopSobel.rawValue, .TopSobel),
+            (EmbossKernels.RightSobel.rawValue, .RightSobel),
+            (EmbossKernels.BottomSobel.rawValue, .BottomSobel),
+            (EmbossKernels.Mean3x3.rawValue, .Mean3x3),
+            (EmbossKernels.Mean5x5.rawValue, .Mean5x5),
+            (EmbossKernels.HorizontalLines.rawValue, .HorizontalLines),
+            (EmbossKernels.VerticalLines.rawValue, .VerticalLines),
+            (EmbossKernels.Lines45.rawValue, .Lines45),
+            (EmbossKernels.Lines135.rawValue, .Lines135),
+            (EmbossKernels.Smoothing.rawValue, .Smoothing),
     ]
     
-    let KernelData: [EmbossKernels: (Int, Int, [Float])] =
+    let KernelData: [EmbossKernels: (Int, Int, Double, Double, [Float])] =
         [
-            .Kernel1: (3, 3,
+            .Emboss1: (3, 3, 1.0, 0.5,
                        [0.0, 1.0, 0.0,
                         0.0, 0.0, 0.0,
                         0.0, -1.0, 0.0]),
-            .Kernel2: (3, 3,
+            .Emboss2: (3, 3, 1.0, 0.5,
                        [1.0, 0.0, 0.0,
                         0.0, 0.0, 0.0,
                         0.0, 0.0, -1.0]),
-            .Kernel3: (3, 3,
+            .Emboss3: (3, 3, 1.0, 0.5,
                        [0.0, 0.0, 0.0,
                         1.0, 0.0, -1.0,
                         0.0, 0.0, 0.0]),
-            .Kernel4: (3, 3,
+            .Emboss4: (3, 3, 1.0, 0.5,
                        [0.0, 0.0, 1.0,
                         0.0, 0.0, 0.0,
                         -1.0, 0.0, 0.0]),
-            .Kernel5: (3, 3,
+            .Emboss5: (3, 3, 1.0, 0.5,
                        [-1.0, 0.0, 0.0,
                         0.0, 0.0, 0.0,
                         0.0, 0.0, 1.0]),
-            .Kernel6: (3, 3,
+            .Emboss6: (3, 3, 1.0, 0.5,
                        [0.0, 0.0, 1.0,
                         0.0, 0.0, 0.0,
                         -1.0, 0.0, 0.0]),
-            .Kernel7: (5, 5,
+            .Emboss7: (5, 5, 1.0, 0.5,
                        [1.0, 0.0, 0.0, 0.0, 0.0,
                         0.0, 1.0, 0.0, 0.0, 0.0,
                         0.0, 0.0, 0.0, 0.0, 0.0,
                         0.0, 0.0, 0.0, -1.0, 0.0,
                         0.0, 0.0, 0.0, 0.0, -1.0]),
-            .Identity: (3, 3,
-                        [1.0, 0.0, 0.0,
+            .Emboss8: (3, 3, 1.0, 0.0,
+                       [-2.0, -1.0, 1.0,
+                        -1.0, 1.0, 1.0,
+                        0.0, 1.0, 2.0]),
+            .Identity: (3, 3, 1.0, 0.0,
+                        [0.0, 0.0, 0.0,
                          0.0, 1.0, 0.0,
-                         0.0, 0.0, 1.0])
+                         0.0, 0.0, 0.0]),
+            .EmbossDN: (3, 3, 1.0, 0.5,
+                        [2.0, 0.0, 0.0,
+                         0.0, -1.0, 0.0,
+                         0.0, 0.0, -1.0]),
+            .Edges: (3, 3, 1.0, 0.0,
+                     [-1.0, -1.0, -1.0,
+                      -1.0, 8.0, -1.0,
+                      -1.0, -1.0, -1.0]),
+            .Sharpen: (3, 3, 1.0, 1.0 / 8.0,
+                       [-1.0, -1.0, -1.0,
+                        -1.0, 9.0, -1.0,
+                        -1.0, -1.0, -1.0]),
+            .Sharpen3x3: (3, 3, 1.0, 0.0,
+                          [0, -2.0, 0.0,
+                           -2.0, 11.0, -2.0,
+                           0.0, -2.0, 0.0]),
+            .Sharpen5x5: (5, 5, 1.0, 0.0,
+                          [-1.0, -1.0, -1.0, -1.0, -1.0,
+                           -1.0, 2.0, 2.0, 2.0, -1.0,
+                           -1.0, 2.0, 8.0, 2.0, 1.0,
+                           -1.0, 2.0, 2.0, 2.0, -1.0,
+                           -1.0, -1.0, -1.0, -1.0, -1.0 ]),
+            .UnsharpMask: (5, 5, -1.0 / 256.0, 0.5,
+                           [1.0, 4.0, 6.0, 1.0,
+                            4.0, 16.0, 24.0, 16.0, 4.0,
+                            6.0, 24.0, -476.0, 24.0, 6.0,
+                            4.0, 16.0, 24.0, 16.0, 4.0,
+                            1.0, 4.0, 6.0, 1.0]),
+            .HighPass: (3, 3, 1.0, 0.5,
+                        [-1.0, -2.0, -1.0,
+                         -2.0, 12, -2.0,
+                         -1.0, -2.0, -1.0]),
+            .LowPass3x3: (3, 3, 1.0, 0.0,
+                          [1.0, 2.0, 1.0,
+                           2.0, 4.0, 2.0,
+                           1.0, 2.0, 1.0]),
+            .LowPass5x5: (5, 5, 1.0, 0.0,
+                          [1.0, 1.0, 1.0, 1.0, 1.0,
+                           1.0, 4.0, 4.0, 4.0, 1.0,
+                           1.0, 4.0, 12.0, 4.0, 1.0,
+                           1.0, 4.0, 4.0, 4.0, 1.0,
+                           0.0, 0.0, -1.0, 0.0, 0.0 ]),
+            .Gaussian3x3: (3, 3, /*1.0 / 16.0*/1.0, 0.0,
+                           [1.0, 2.0, 1.0,
+                            2.0, 4.0, 2.0,
+                            1.0, 2.0, 1.0]),
+            .Gaussian5x5: (5, 5, /*1.0 / 256.0*/1.0, 0.0,
+                           [1.0, 4.0, 6.0, 4.0, 1.0,
+                            4.0, 16.0, 24.0, 16.0, 4.0,
+                            6.0, 24.0, 36.0, 24.0, 6.0,
+                            4.0, 16.0, 24.0, 16.0, 4.0,
+                            1.0, 4.0, 6.0, 4.0, 1.0]),
+            /*
+             [2.0, 4.0, 5.0, 4.0, 2.0,
+             4.0, 9.0, 12.0, 9.0, 4.0,
+             5.0, 12.0, 15.0, 12.0, 5.0,
+             4.0, 9.0, 12.0, 9.0, 4.0,
+             2.0, 4.0, 5.0, 4.0, 2.0]),
+             */
+            .Mean3x3: (3, 3, 1.0, 0.0,
+                       [0.1111, 0.1111, 0.1111,
+                        0.1111, 0.1111, 0.1111,
+                        0.1111, 0.1111, 0.1111]),
+            .Mean5x5: (5, 5, 1.0, 0.0,
+                       [0.04, 0.04, 0.04, 0.04, 0.04,
+                        0.04, 0.04, 0.04, 0.04, 0.04,
+                        0.04, 0.04, 0.04, 0.04, 0.04,
+                        0.04, 0.04, 0.04, 0.04, 0.04,
+                        0.04, 0.04, 0.04, 0.04, 0.04,]),
+            .Outline: (3, 3, 1.0, 0.5,
+                       [-1.0, -1.0, -1.0,
+                        -1.0, 8.0, -1.0,
+                        -1.0, -1.0, -1.0]),
+            .LeftSobel: (3, 3, 1.0, 0.0,
+                         [1.0, 0.0, -1.0,
+                          2.0, 0.0, -2.0,
+                          1.0, 0.0, -1.0]),
+            .TopSobel: (3, 3, 1.0, 1.0,
+                        [1.0, 2.0, 0.0,
+                         0.0, 0.0, 0.0,
+                         -1.0, -2.0, -1.0]),
+            .RightSobel: (3, 3, 1.0, 0.0,
+                          [-1.0, 0.0, 1.0,
+                           -2.0, 0.0, 2.0,
+                           -1.0, 0.0, 1.0]),
+            .BottomSobel: (3, 3, 1.0, 0.0,
+                           [-1.0, -2.0, -1.0,
+                            0.0, 0.0, 0.0,
+                            1.0, 2.0, 1.0]),
+            .HorizontalLines: (3, 3, 1.0, 0.0,
+            [-1.0, -1.0, -1.0,
+                2.0, 2.0, 2.0,
+                -1.0, -1.0, -1.0]),
+            .VerticalLines: (3, 3, 1.0, 0.0,
+                               [-1.0, 2.0, -1.0,
+                                -1.0, 2.0, -1.0,
+                                -1.0, 2.0, -1.0]),
+            .Lines45: (3, 3, 1.0, 0.0,
+                               [-1.0, -1.0, 2.0,
+                                -1.0, 2.0, -1.0,
+                                2.0, -1.0, -1.0]),
+            .Lines135: (3, 3, 1.0, 0.0,
+                               [2.0, -1.0, -1.0,
+                                -1.0, 2.0, -1.0,
+                                -1.0, -1.0, 2.0]),
+            .Smoothing: (5, 5, 1.0, 0.0,
+            [0.0, 1.0, 2.0, 1.0, 0.0,
+             1.0, 4.0, 8.0, 4.0, 1.0,
+             2.0, 8.0, 16.0, 8.0, 2.0,
+                          1.0, 4.0, 8.0, 4.0, 1.0,
+                0.0, 1.0, 2.0, 1.0, 0.0]),
     ]
     
     func numberOfComponents(in pickerView: UIPickerView) -> Int
@@ -92,16 +231,18 @@ class ConvolutionEmbossSettingsUICode: FilterSettingUIBase, UIPickerViewDelegate
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int)
     {
         UpdateValue(WithValue: row, ToField: .CurrentKernelIndex)
-UpdateSample(row)
+        UpdateSample(row)
     }
     
     func UpdateSample(_ AtIndex: Int)
     {
-                let SelectedKernel = KernelList[AtIndex].1
-        let (Width, Height, Kernel) = KernelData[SelectedKernel]!
+        let SelectedKernel = KernelList[AtIndex].1
+        let (Width, Height, Factor, Bias, Kernel) = KernelData[SelectedKernel]!
         UpdateValue(WithValue: Convolution.KernelToString(Kernel), ToField: .ConvolutionKernel)
         UpdateValue(WithValue: Width, ToField: .ConvolutionWidth)
         UpdateValue(WithValue: Height, ToField: .ConvolutionHeight)
+        UpdateValue(WithValue: Factor, ToField: .ConvolutionFactor)
+        UpdateValue(WithValue: Bias, ToField:. ConvolutionBias)
         ShowSampleView()
     }
     
@@ -110,12 +251,36 @@ UpdateSample(row)
 
 enum EmbossKernels: String
 {
-    case Kernel1 = "Kernel1"
-    case Kernel2 = "Kernel2"
-    case Kernel3 = "Kernel3"
-    case Kernel4 = "Kernel4"
-    case Kernel5 = "Kernel2a"
-    case Kernel6 = "Kernel2b"
-    case Kernel7 = "Kernel5"
+    case Emboss1 = "Emboss 1"
+    case Emboss2 = "Emboss 2"
+    case Emboss3 = "Emboss 3"
+    case Emboss4 = "Emboss 4"
+    case Emboss5 = "Emboss 2a"
+    case Emboss6 = "Emboss 2b"
+    case Emboss7 = "Emboss 5"
+    case Emboss8 = "Emboss 6"
     case Identity = "Identity"
+    case EmbossDN = "Emboss DN"
+    case Edges = "Edge Detection"
+    case Sharpen5x5 = "Sharpen 5x5"
+    case Sharpen = "Sharpen"
+    case Sharpen3x3 = "Sharpen 3x3"
+    case HighPass = "High Pass"
+    case LowPass3x3 = "Low Pass 3x3"
+    case LowPass5x5 = "Low Pass 5x5"
+    case Gaussian3x3 = "Gaussian 3x3"
+    case Gaussian5x5 = "Gaussian 5x5"
+    case Mean3x3 = "Mean 3x3"
+    case Mean5x5 = "Mean 5x5"
+    case UnsharpMask = "Unsharp Mask"
+    case Outline = "Outline"
+    case BottomSobel = "Sobel: Bottom"
+    case TopSobel = "Sobel: Top"
+    case LeftSobel = "Sobel: Left"
+    case RightSobel = "Sobel: Right"
+    case HorizontalLines = "Horizontal Lines"
+    case VerticalLines = "Vertical Lines"
+    case Lines45 = "45° Lines"
+    case Lines135 = "135° Lines"
+    case Smoothing = "Smoothing"
 }
