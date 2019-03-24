@@ -365,6 +365,7 @@
 		17F017832247723000AE07E8 /* MPSMedian.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17F017822247723000AE07E8 /* MPSMedian.swift */; };
 		17F017862247743F00AE07E8 /* MPSMedianSettingsUI.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 17F017852247743F00AE07E8 /* MPSMedianSettingsUI.storyboard */; };
 		17F017882247755F00AE07E8 /* MPSMedianSettingsUICode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17F017872247755F00AE07E8 /* MPSMedianSettingsUICode.swift */; };
+		17F0178B22479DBB00AE07E8 /* NetComm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17F0178A22479DBB00AE07E8 /* NetComm.swift */; };
 		17F23696221528290091B865 /* ColorListPicker.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 17F23695221528290091B865 /* ColorListPicker.storyboard */; };
 		17F2369922152A140091B865 /* PredefinedColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17F2369822152A140091B865 /* PredefinedColor.swift */; };
 		17F2369B22152A4B0091B865 /* PredefinedColorGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17F2369A22152A4B0091B865 /* PredefinedColorGroup.swift */; };
@@ -757,6 +758,7 @@
 		17F017822247723000AE07E8 /* MPSMedian.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MPSMedian.swift; sourceTree = "<group>"; };
 		17F017852247743F00AE07E8 /* MPSMedianSettingsUI.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = MPSMedianSettingsUI.storyboard; sourceTree = "<group>"; };
 		17F017872247755F00AE07E8 /* MPSMedianSettingsUICode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MPSMedianSettingsUICode.swift; sourceTree = "<group>"; };
+		17F0178A22479DBB00AE07E8 /* NetComm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetComm.swift; sourceTree = "<group>"; };
 		17F23695221528290091B865 /* ColorListPicker.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = ColorListPicker.storyboard; sourceTree = "<group>"; };
 		17F2369822152A140091B865 /* PredefinedColor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PredefinedColor.swift; sourceTree = "<group>"; };
 		17F2369A22152A4B0091B865 /* PredefinedColorGroup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PredefinedColorGroup.swift; sourceTree = "<group>"; };
@@ -1094,6 +1096,7 @@
 				171E542D21E44E180045ED77 /* Assets.xcassets */,
 				171E543221E44E180045ED77 /* Info.plist */,
 				171D627921EDF496004D3545 /* Main */,
+				17F0178922479D9A00AE07E8 /* NetComm */,
 				171F3CFD2209CB2D0098E2B7 /* Utilities */,
 				171D625521ED971C004D3545 /* Filters */,
 				171D625C21EDB409004D3545 /* AVCamShaders */,
@@ -2292,6 +2295,14 @@
 			path = Median;
 			sourceTree = "<group>";
 		};
+		17F0178922479D9A00AE07E8 /* NetComm */ = {
+			isa = PBXGroup;
+			children = (
+				17F0178A22479DBB00AE07E8 /* NetComm.swift */,
+			);
+			path = NetComm;
+			sourceTree = "<group>";
+		};
 		17F23697221529F10091B865 /* Colors */ = {
 			isa = PBXGroup;
 			children = (
@@ -2827,6 +2838,7 @@
 				179D181022465EA000182760 /* HalfAndHalfSettingsUICode.swift in Sources */,
 				17CE373A2213AF330070ED87 /* ColorPickerProtocol.swift in Sources */,
 				17C67577222D1E4D00D53B93 /* ColorInverter.swift in Sources */,
+				17F0178B22479DBB00AE07E8 /* NetComm.swift in Sources */,
 				1763F0722221443B00E1E2E8 /* MainUIProtocol.swift in Sources */,
 				17D60D84220FEA7700933F15 /* MonochromeColorsSettingUICode.swift in Sources */,
 				17D7511321F41CD40050A2B5 /* MainUIPhoto.swift in Sources */,
