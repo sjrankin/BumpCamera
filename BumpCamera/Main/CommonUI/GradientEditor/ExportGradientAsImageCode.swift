@@ -9,7 +9,8 @@
 import Foundation
 import UIKit
 
-class ExportGradientAsImageCode: UITableViewController, UIActivityItemSource, GradientPickerProtocol
+class ExportGradientAsImageCode: UITableViewController, UIActivityItemSource,
+    GradientPickerProtocol
 {
     weak var ParentDelegate: GradientPickerProtocol? = nil
     
