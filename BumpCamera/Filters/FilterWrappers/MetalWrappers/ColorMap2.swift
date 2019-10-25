@@ -271,7 +271,8 @@ class ColorMap2: FilterParent, Renderer
                                 bytesPerRow: (CgImage?.bytesPerRow)!, space: RGBColorSpace, bitmapInfo: BitmapInfo.rawValue)
         Context!.draw(CgImage!, in: CGRect(x: 0, y: 0, width: CGFloat(ImageWidth), height: CGFloat(ImageHeight)))
         let TextureDescriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: .rgba8Unorm,
-                                                                         width: Int(ImageWidth), height: Int(ImageHeight), mipmapped: true)
+                                                                         width: Int(ImageWidth), height: Int(ImageHeight),
+                                                                         mipmapped: true)
         guard let Texture = ImageDevice?.makeTexture(descriptor: TextureDescriptor) else
         {
             print("Error creating input texture in ColorMap2.Render.")
